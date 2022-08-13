@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 http://maven.apache.org/xsd/settings-1.2.0.xsd">
+
+
+    <proxies>
+
+    </proxies>
+
+    <mirrors>
+
+    </mirrors>
+
+    <servers>
+        <server>
+            <id>ossrh</id>
+            <username>SeverusQingyu</username>
+            <password>Qy####{1010}</password>
+        </server>
+
+        <server>
+            <id>release</id>
+            <username>SeverusQingyu</username>
+            <password>Qy####{1010}</password>
+        </server>
+    </servers>
+
+    <profiles>
+        <profile>
+            <id>ossrh</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!--这里填你安装的GnuPG位置-->
+                <gpg.executable>F:/ProgramFiles/GnuPG/bin/gpg.exe</gpg.executable>
+                <gpg.passphrase>yyj.981010</gpg.passphrase>
+                <!--这里填你秘钥在磁盘上的位置,可通过上面步骤的 gpg -list-keys找到-->
+                <gpg.homedir>C:/Users/Yangy/AppData/Roaming/gnupg/</gpg.homedir>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>release</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!--这里填你安装的GnuPG位置-->
+                <gpg.executable>F:/ProgramFiles/GnuPG/bin/gpg.exe</gpg.executable>
+                <gpg.passphrase>yyj.981010</gpg.passphrase>
+                <!--这里填你秘钥在磁盘上的位置,可通过上面步骤的 gpg -list-keys找到-->
+                <gpg.homedir>C:/Users/Yangy/AppData/Roaming/gnupg/</gpg.homedir>
+            </properties>
+        </profile>
+    </profiles>
+
+</settings>

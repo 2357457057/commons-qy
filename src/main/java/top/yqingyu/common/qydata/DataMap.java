@@ -7,6 +7,7 @@ import com.alibaba.fastjson2.JSONObject;
 import top.yqingyu.common.qymsg.QyMsgHeader;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -42,6 +43,18 @@ public class DataMap extends HashMap implements QyData, Cloneable {
                 QyDataset dataset = new DatasetList();
                 dataset.addAll((JSONArray) value);
                 value = dataset;
+            } else if (value instanceof Map) {
+                String s = JSON.toJSONString(value);
+                JSONObject jsonObject = JSONObject.parseObject(s);
+                QyData data = new DataMap();
+                data.putAll(jsonObject);
+                value = data;
+            } else if (value instanceof Collection<?>) {
+                String s = JSON.toJSONString(value);
+                JSONArray of = JSONArray.of(s);
+                QyDataset data = new DatasetList();
+                data.addAll(of);
+                value = data;
             }
 
             this.put(name, value);
@@ -106,6 +119,57 @@ public class DataMap extends HashMap implements QyData, Cloneable {
     public boolean getBoolean(String name, boolean defaultValue) {
         String value = this.getString(name, "");
         return "".equals(value) ? defaultValue : Boolean.valueOf(value);
+    }
+
+    public TimeUnit getTimeUnit(String name, TimeUnit defaultValue) {
+        String value = this.getString(name, "");
+        if ("NANOSECONDS".equals(value.toUpperCase()))
+            return TimeUnit.NANOSECONDS;
+
+        if ("MICROSECONDS".equals(value.toUpperCase()))
+            return TimeUnit.MICROSECONDS;
+
+        if ("SECONDS".equals(value.toUpperCase()))
+            return TimeUnit.SECONDS;
+
+        if ("MINUTES".equals(value.toUpperCase()))
+            return TimeUnit.MINUTES;
+
+        if ("HOURS".equals(value.toUpperCase()))
+            return TimeUnit.HOURS;
+
+        if ("DAYS".equals(value.toUpperCase()))
+            return TimeUnit.DAYS;
+
+        if ("MILLISECONDS".equals(value.toUpperCase()))
+            return TimeUnit.MILLISECONDS;
+
+        return defaultValue;
+
+    }
+
+    public TimeUnit getTimeUnit(String name) {
+        String value = this.getString(name, "");
+        if ("NANOSECONDS".equals(value.toUpperCase()))
+            return TimeUnit.NANOSECONDS;
+
+        if ("MICROSECONDS".equals(value.toUpperCase()))
+            return TimeUnit.MICROSECONDS;
+
+        if ("SECONDS".equals(value.toUpperCase()))
+            return TimeUnit.SECONDS;
+
+        if ("MINUTES".equals(value.toUpperCase()))
+            return TimeUnit.MINUTES;
+
+        if ("HOURS".equals(value.toUpperCase()))
+            return TimeUnit.HOURS;
+
+        if ("DAYS".equals(value.toUpperCase()))
+            return TimeUnit.DAYS;
+
+        return TimeUnit.MILLISECONDS;
+
     }
 
     public DataMap getData(String name) {

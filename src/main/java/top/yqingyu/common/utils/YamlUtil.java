@@ -1,5 +1,7 @@
 package top.yqingyu.common.utils;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import org.yaml.snakeyaml.Yaml;
 import top.yqingyu.common.qydata.DataMap;
 import top.yqingyu.common.qydata.DatasetList;
@@ -7,6 +9,7 @@ import top.yqingyu.common.qydata.DatasetList;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,13 +52,13 @@ public class YamlUtil {
     }
 
     /**
-     *
      * @param fileName 配置文件名称
      * @return Util
      * @author YYJ
      * @version 1.0.0
-     * @description      */
-    public static YamlUtil loadYaml(String fileName){
+     * @description 加载配置文件
+     */
+    public static YamlUtil loadYaml(String fileName) {
 
         YamlUtil yamlUtil = new YamlUtil();
 
@@ -65,35 +68,38 @@ public class YamlUtil {
 
         HashMap<String, File> map = getYaml(fileName);
 
-        map.forEach((k,v)->{
+        map.forEach((k, v) -> {
             try {
-                DataMap dataMap = yaml.loadAs(new FileInputStream(v), DataMap.class);
-                cfgData.put(k,dataMap);
+                HashMap hashMap = yaml.loadAs(new FileInputStream(v), HashMap.class);
+
+                String s = JSON.toJSONString(hashMap);
+                cfgData.put(k, JSON.parseObject(s));
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
         });
 
-       return yamlUtil;
+        return yamlUtil;
     }
 
     public static HashMap<String, File> getYaml(String cfgFileName) {
-        return getConfigFile("application", ".*[.](yml|yaml)");
+        return getConfigFile(cfgFileName, ".*[.](yml|yaml)");
     }
 
+
+
     /**
-     *
      * @param cfgFileName 配置文件名称
      * @param target_Regx 目标文件正则表达式
-     * @return  目标文件list
+     * @return 目标文件list
      * @author YYJ
      * @description 获取运行路径中的文件
-     *
-     * */
+     */
     public static HashMap<String, File> getConfigFile(String cfgFileName, String target_Regx) {
 
         File file = new File(System.getProperty("user.dir"));
 
+        AtomicInteger atomicInteger = new AtomicInteger();
 
         Pattern tgPattern = Pattern.compile(target_Regx);
 
@@ -126,8 +132,12 @@ public class YamlUtil {
                 if (poll.isFile()) {
                     String name = poll.getName();
                     Matcher matcher = tgPattern.matcher(name);
-                    if (name.contains(cfgFileName) && matcher.find())
-                        map.put(name, poll);
+                    if (name.contains(cfgFileName) && matcher.find()) {
+                        if (map.get(name) != null)
+                            map.put(name + "_" + atomicInteger.getAndIncrement(), poll);
+                        else
+                            map.put(name, poll);
+                    }
                 }
             }
         } while (queue.size() > 0);

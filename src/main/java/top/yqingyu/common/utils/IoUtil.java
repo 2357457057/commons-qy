@@ -234,23 +234,6 @@ public class IoUtil {
      * date 2022/5/7 1:12
      * return void
      */
-    public static void writeMessage(Socket socket, String userId, String msg) throws Exception {
-
-        byte[] qyMsgBytes = getQyMsgBytes(
-                userId.getBytes(StandardCharsets.UTF_8),
-                msg.getBytes(StandardCharsets.UTF_8)
-        );
-        OutputStream outputStream = socket.getOutputStream();
-        outputStream.write(qyMsgBytes);
-        outputStream.flush();
-    }
-
-
-    /**
-     * 写出带有用户名的信息
-     * date 2022/5/7 1:12
-     * return void
-     */
     public static void writeMessage(Socket socket, QyMsgHeader msg) throws Exception {
 
 
@@ -267,6 +250,11 @@ public class IoUtil {
 
     public static QyMsgHeader readMsg(Socket socket) throws Exception {
         byte[] bytes = readQyBytes(socket);
+        return JSON.parseObject(bytes, QyMsgHeader.class);
+    }
+
+    public static QyMsgHeader readMsg(Socket socket,int timeout) throws Exception {
+        byte[] bytes = readQyBytes(socket,timeout);
         return JSON.parseObject(bytes, QyMsgHeader.class);
     }
 
@@ -292,11 +280,6 @@ public class IoUtil {
         outputStream.flush();
     }
 
-    public static String[] readUserMessage(SocketChannel socketChannel) throws IOException {
-        String userId = readMessage(socketChannel);
-        String msg = readMessage(socketChannel);
-        return new String[]{userId, msg};
-    }
 
     public static QyMsgHeader readMessage2(SocketChannel socketChannel) throws IOException {
 
@@ -361,11 +344,6 @@ public class IoUtil {
     }
 
 
-    public static String[] readUserMessage(Socket socket, int timeout) throws Exception {
-        String userId = readMessage(socket, timeout);
-        String msg = readMessage(socket, timeout);
-        return new String[]{userId, msg};
-    }
 
     /**
      * description: 读取 Socket 中的杨氏消息体
@@ -387,7 +365,7 @@ public class IoUtil {
 
     public static byte[] readQyBytes(Socket socket, int timeout) throws Exception {
         InputStream inputStream = socket.getInputStream();
-        byte[] buff = IoUtil.readBytes(inputStream, MSG_LENGTH_LENGTH, timeout);
+        byte[] buff = IoUtil.readBytes(inputStream, MSG_LENGTH_LENGTH);
         String msgLength = new String(buff, StandardCharsets.UTF_8);
 
         buff = IoUtil.readBytes(inputStream, Integer.parseInt(msgLength, MSG_LENGTH_RADIX), timeout);

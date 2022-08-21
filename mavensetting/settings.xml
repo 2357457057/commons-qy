@@ -16,13 +16,13 @@
         <server>
             <id>ossrh</id>
             <username>SeverusQingyu</username>
-            <password>Qy####{1010}</password>
+            <password>Qy$&amp;@*{4728}</password>
         </server>
 
         <server>
             <id>release</id>
             <username>SeverusQingyu</username>
-            <password>Qy####{1010}</password>
+            <password>Qy$&amp;@*{4728}</password>
         </server>
     </servers>
 

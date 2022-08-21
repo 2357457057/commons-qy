@@ -108,12 +108,12 @@ public class DataMap extends HashMap implements QyData, Cloneable {
         return "".equals(value) ? defaultValue : Boolean.valueOf(value);
     }
 
-    public QyData getData(String name) {
+    public DataMap getData(String name) {
         return (DataMap) this.get(name);
     }
 
-    public QyDataset getDataset(String name) {
-        return (QyDataset) this.get(name);
+    public DatasetList getDataset(String name) {
+        return (DatasetList) this.get(name);
     }
 
     public QyDataset toDataset() throws Exception {

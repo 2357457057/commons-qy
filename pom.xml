@@ -15,23 +15,6 @@
         <maven.compiler.release>17</maven.compiler.release>
         <java.version>17</java.version>
 
-        <javafx.version>18.0.1</javafx.version>
-
-        <spring-cloud.version>3.1.3</spring-cloud.version>
-
-        <netty.version>4.1.78.Final</netty.version>
-        <zookeeper.version>3.8.0</zookeeper.version>
-        <kafka.version>3.2.0</kafka.version>
-        <spark.version>3.3.0</spark.version>
-        <scala.version>2.13</scala.version>
-
-        <!--log-->
-        <logback.version>1.3.0-alpha14</logback.version>
-        <slf4j.version>2.0.0-alpha5</slf4j.version>
-        <log4j.version>1.2.17</log4j.version>
-        <log4j-core.version>2.17.2</log4j-core.version>
-        <log4j-slf4j-impl.version>2.17.2</log4j-slf4j-impl.version>
-
         <!--google-->
         <gson.version>2.9.0</gson.version>
         <guava.version>31.1-jre</guava.version>
@@ -45,30 +28,17 @@
 
         <!--alibaba-->
         <fastjson2.version>2.0.8</fastjson2.version>
-        <druid.version>1.2.6</druid.version>
 
         <!--http-->
         <httpclient.version>4.5.13</httpclient.version>
         <httpcore.version>4.4.13</httpcore.version>
 
-        <!--DB-->
-        <mariadb.version>2.7.3</mariadb.version>
-        <oracle.version>19.3.0.0</oracle.version>
-        <mybatis.version>2.2.0</mybatis.version>
-
-
-        <protostuff.version>1.8.0</protostuff.version>
         <snakeyaml.version>1.29</snakeyaml.version>
         <jwt.version>3.18.2</jwt.version>
-        <baidu-api.version>1.0.0</baidu-api.version>
         <ftp-jsch.version>0.1.55</ftp-jsch.version>
         <lombok.version>1.18.24</lombok.version>
         <hutool.version>5.8.3</hutool.version>
 
-
-        <spring-boot.version>2.7.1</spring-boot.version>
-
-        <commons-qy.version>1.0.2</commons-qy.version>
 
         <!--plugins-->
         <compiler-plugin.version>3.10.1</compiler-plugin.version>
@@ -76,20 +46,22 @@
         <jar-plugin.version>3.2.2</jar-plugin.version>
         <assembly-plugin.version>3.4.1</assembly-plugin.version>
         <maven-plugin.version>3.3.0</maven-plugin.version>
-        <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
-
-
 
 
         <package.type>release</package.type>
-<!--        <package.type>ossrh</package.type>-->
+        <!--        <package.type>ossrh</package.type>-->
 
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.0-alpha5</version>
         </dependency>
 
 
@@ -141,20 +113,6 @@
             <artifactId>hutool-all</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
 
 
         <dependency>
@@ -166,51 +124,15 @@
             <groupId>com.alibaba.fastjson2</groupId>
             <artifactId>fastjson2-extension</artifactId>
         </dependency>
-
-
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-autoconfigure</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-            </exclusions>
-
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web-services</artifactId>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
         </dependency>
         <dependency>
             <groupId>com.jcraft</groupId>
             <artifactId>jsch</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-1.2-api</artifactId>
@@ -227,79 +149,6 @@
 
 
             <dependency>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-controls</artifactId>
-                <version>${javafx.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-fxml</artifactId>
-                <version>${javafx.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-parent</artifactId>
-                <version>${spring-boot.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter</artifactId>
-                <version>${spring-boot.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-logging</artifactId>
-                <version>${spring-boot.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-web</artifactId>
-                <version>${spring-boot.version}</version>
-            </dependency>
-
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-web-services</artifactId>
-                <version>${spring-boot.version}</version>
-            </dependency>
-
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-batch</artifactId>
-                <version>${spring-boot.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-devtools</artifactId>
-                <version>${spring-boot.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-test</artifactId>
-                <version>${spring-boot.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-configuration-processor</artifactId>
-                <version>${spring-boot.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.batch</groupId>
-                <artifactId>spring-batch-test</artifactId>
-                <version>4.3.6</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
@@ -312,45 +161,6 @@
                 <version>${ftp-jsch.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.mybatis.spring.boot</groupId>
-                <artifactId>mybatis-spring-boot-starter</artifactId>
-                <version>${mybatis.version}</version>
-            </dependency>
-
-
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-core</artifactId>
-                <version>${log4j-core.version}</version>
-            </dependency>
-
-
-            <!-- https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter -->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>druid-spring-boot-starter</artifactId>
-                <version>${druid.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mariadb.jdbc</groupId>
-                <artifactId>mariadb-java-client</artifactId>
-                <version>${mariadb.version}</version>
-            </dependency>
-
-
-            <dependency>
-                <groupId>com.oracle.ojdbc</groupId>
-                <artifactId>ojdbc8</artifactId>
-                <version>${oracle.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/com.oracle.ojdbc/orai18n -->
-            <dependency>
-                <groupId>com.oracle.ojdbc</groupId>
-                <artifactId>orai18n</artifactId>
-                <version>${oracle.version}</version>
-            </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
             <dependency>
@@ -422,41 +232,6 @@
             </dependency>
 
 
-            <!-- https://mvnrepository.com/artifact/log4j/log4j -->
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>${log4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-slf4j-impl</artifactId>
-                <version>${log4j-slf4j-impl.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-core</artifactId>
-                <version>${logback.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
 
 
             <!--       JWT-->
@@ -464,14 +239,6 @@
                 <groupId>com.auth0</groupId>
                 <artifactId>java-jwt</artifactId>
                 <version>${jwt.version}</version>
-            </dependency>
-
-
-            <!--        百度api-->
-            <dependency>
-                <groupId>com.baidubce</groupId>
-                <artifactId>api-explorer-sdk</artifactId>
-                <version>${baidu-api.version}</version>
             </dependency>
 
 
@@ -484,7 +251,7 @@
     <groupId>top.yqingyu</groupId>
     <artifactId>commons-qy</artifactId>
     <!--需要特别注意,你上传的是SNAPSHOT仓库,所以此处版本号后缀必须带SNAPSHOT-->
-    <version>1.2.1</version>
+    <version>1.2.2</version>
 
     <!--项目信息...-->
 
@@ -511,11 +278,11 @@
     </developers>
 
     <!--项目在github或其它托管平台的地址-->
-        <scm>
-            <connection>https://gitee.com/vqingyu/App.git</connection>
-            <developerConnection>scm:git:ssh://git@gitee.com:vqingyu/commons-qy.git</developerConnection>
-            <url>https://github.com/2357457057/QyTools</url>
-        </scm>
+    <scm>
+        <connection>https://gitee.com/vqingyu/App.git</connection>
+        <developerConnection>scm:git:ssh://git@gitee.com:vqingyu/commons-qy.git</developerConnection>
+        <url>https://github.com/2357457057/QyTools</url>
+    </scm>
 
     <name>commons-qy</name>
     <description>common tools package</description>
@@ -545,17 +312,17 @@
                 <!--发布到中央SNAPSHOT仓库插件-->
                 <plugins>
                     <!--                    SNAPSHOT版本插件-->
-<!--                                        <plugin>-->
-<!--                                            <groupId>org.sonatype.plugins</groupId>-->
-<!--                                            <artifactId>nexus-staging-maven-plugin</artifactId>-->
-<!--                                            <version>1.6.7</version>-->
-<!--                                            <extensions>true</extensions>-->
-<!--                                            <configuration>-->
-<!--                                                <serverId>ossrh</serverId>-->
-<!--                                                <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>-->
-<!--                                                <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
-<!--                                            </configuration>-->
-<!--                                        </plugin>-->
+                    <!--                                        <plugin>-->
+                    <!--                                            <groupId>org.sonatype.plugins</groupId>-->
+                    <!--                                            <artifactId>nexus-staging-maven-plugin</artifactId>-->
+                    <!--                                            <version>1.6.7</version>-->
+                    <!--                                            <extensions>true</extensions>-->
+                    <!--                                            <configuration>-->
+                    <!--                                                <serverId>ossrh</serverId>-->
+                    <!--                                                <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>-->
+                    <!--                                                <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
+                    <!--                                            </configuration>-->
+                    <!--                                        </plugin>-->
 
                     <!--release版本插件-->
                     <plugin>

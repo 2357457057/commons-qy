@@ -1,14 +1,12 @@
 package top.yqingyu.common.utils;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
 import org.yaml.snakeyaml.Yaml;
 import top.yqingyu.common.qydata.DataMap;
-import top.yqingyu.common.qydata.DatasetList;
+import top.yqingyu.common.qydata.DataList;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,8 +37,8 @@ public class YamlUtil {
         return cfgData.getData(key);
     }
 
-    public DatasetList getDataList(String key) {
-        return cfgData.getDataset(key);
+    public DataList getDataList(String key) {
+        return cfgData.getDataList(key);
     }
 
     public DataMap getCfgData() {

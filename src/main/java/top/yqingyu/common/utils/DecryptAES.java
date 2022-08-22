@@ -1,7 +1,10 @@
 package top.yqingyu.common.utils;
 
+
+import com.alibaba.fastjson2.JSONObject;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
+import top.yqingyu.common.qydata.DataMap;
 import top.yqingyu.common.qymsg.QyMsgHeader;
 
 import javax.crypto.*;
@@ -24,6 +27,10 @@ public class DecryptAES {
 
 
     public static void main(String[] args) {
+
+        DataMap dataMap = new DataMap();
+
+        System.out.println(dataMap instanceof JSONObject);
 
 //        byte[] bytes1 = encryptKeyByte(null);
 //        byte[] bytes = decryptKeyByte(new String(bytes1, StandardCharsets.UTF_8));

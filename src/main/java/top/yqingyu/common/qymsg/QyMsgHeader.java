@@ -35,26 +35,27 @@ public final class QyMsgHeader implements Serializable, Cloneable {
 
     }
 
-    public QyMsgHeader putMsgData(String msgKey,String msgValue) {
-        this.dataMap.put(msgKey,  msgValue);
+    public QyMsgHeader putMsgData(String msgKey, String msgValue) {
+        this.dataMap.put(msgKey, msgValue);
         return this;
     }
 
-    public QyMsgHeader putMsgData(String msgKey,Object msgValue) {
-        this.dataMap.put(msgKey,  msgValue);
+    public QyMsgHeader putMsgData(String msgKey, Object msgValue) {
+        this.dataMap.put(msgKey, msgValue);
         return this;
     }
+
     public String gainMsg() {
         return this.dataMap.getString("MSG", "");
     }
+
     public Object gainObjMsg() {
-        return this.dataMap.get("MSG", null);
+        return this.dataMap.get("MSG");
     }
 
     public DataMap gainMsgData() {
         return this.dataMap;
     }
-
 
 
     public String gainMsgValue(String key) {
@@ -82,7 +83,6 @@ public final class QyMsgHeader implements Serializable, Cloneable {
         public static Integer AC = 1 << 2;             // 认证消息
         public static Integer HEART_BEAT = 1 << 4;     //心跳
         public static Integer NORM_MSG = 1 << 8; //普通消息
-
         public static Integer ERR_MSG = 1 << 6; //普通消息
 
 

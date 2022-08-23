@@ -26,37 +26,6 @@ public class DecryptAES {
     }
 
 
-    public static void main(String[] args) {
-
-        DataMap dataMap = new DataMap();
-
-        System.out.println(dataMap instanceof JSONObject);
-
-//        byte[] bytes1 = encryptKeyByte(null);
-//        byte[] bytes = decryptKeyByte(new String(bytes1, StandardCharsets.UTF_8));
-//
-//        System.out.println(Arrays.toString(bytes));
-//        System.out.println(Arrays.toString(bytes1));
-//        System.out.println(new String(bytes1, StandardCharsets.UTF_8));
-//
-//        byte[] bytes2 = encryptAES(new String(bytes1, StandardCharsets.UTF_8), new String(bytes1, StandardCharsets.UTF_8));
-//
-//        assert bytes2 != null;
-//        System.out.println(new String(bytes2));
-//
-//        byte[] bytes3 = decryptAES(bytes2, new String(bytes1, StandardCharsets.UTF_8));
-//
-//        System.out.println(new String(bytes3, StandardCharsets.UTF_8));
-
-        System.out.println(new String(encryptKeyByteBase64("C##USER_QY"), StandardCharsets.UTF_8));
-        System.out.println(new String(encryptKeyByteBase64("system"), StandardCharsets.UTF_8));
-
-        String jkttKlFES1dZJHpFdXU0YSZSWFkxPEw3IW1EJT03 = decryptBase64Key("JkttKlFES1dZJHpFdXU0YSZSWFkxPEw3IW1EJT03");
-        System.out.println(jkttKlFES1dZJHpFdXU0YSZSWFkxPEw3IW1EJT03);
-
-
-    }
-
 
     /**
      * 加密key

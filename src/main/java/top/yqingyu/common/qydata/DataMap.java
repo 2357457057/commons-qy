@@ -11,6 +11,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.charset.UnsupportedCharsetException;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -22,7 +25,7 @@ import java.util.function.Function;
 /**
  * @author YYJ
  * @version 1.0.1
- * @ClassName top.yqingyu.common.IData.DataMap
+ * @ClassName top.yqingyu.common.qydata.DataMap
  * @Description 彻底重构
  * @createTime 2022年07月06日 18:03:00
  */
@@ -664,7 +667,7 @@ public class DataMap extends JSONObject implements Serializable, Cloneable {
      */
     @Override
     public DataMap fluentPut(String key, Object value) {
-        return (DataMap)super.fluentPut(key, value);
+        return (DataMap) super.fluentPut(key, value);
     }
 
     /**
@@ -1090,6 +1093,383 @@ public class DataMap extends JSONObject implements Serializable, Cloneable {
 
     }
 
+
+    public Charset getCharSet(String name) {
+        String charset = this.getString2(name);
+        charset = charset.toUpperCase();
+        try {
+            switch (charset) {
+                case "GB18030":
+                    return Charset.forName("GB18030");
+                case "GBK":
+                    return Charset.forName("GBK");
+                case "IBM437":
+                    return Charset.forName("IBM437");
+                case "IBM737":
+                    return Charset.forName("IBM737");
+                case "IBM775":
+                    return Charset.forName("IBM775");
+                case "IBM850":
+                    return Charset.forName("IBM850");
+                case "IBM852":
+                    return Charset.forName("IBM852");
+                case "IBM855":
+                    return Charset.forName("IBM855");
+                case "IBM857":
+                    return Charset.forName("IBM857");
+                case "IBM858":
+                    return Charset.forName("IBM858");
+                case "IBM862":
+                    return Charset.forName("IBM862");
+                case "IBM866":
+                    return Charset.forName("IBM866");
+                case "IBM874":
+                    return Charset.forName("IBM874");
+                case "ISO_8859_1":
+                    return Charset.forName("ISO_8859_1");
+                case "ISO_8859_13":
+                    return Charset.forName("ISO_8859_13");
+                case "ISO_8859_15":
+                    return Charset.forName("ISO_8859_15");
+                case "ISO_8859_16":
+                    return Charset.forName("ISO_8859_16");
+                case "ISO_8859_2":
+                    return Charset.forName("ISO_8859_2");
+                case "ISO_8859_4":
+                    return Charset.forName("ISO_8859_4");
+                case "ISO_8859_5":
+                    return Charset.forName("ISO_8859_5");
+                case "ISO_8859_7":
+                    return Charset.forName("ISO_8859_7");
+                case "ISO_8859_9":
+                    return Charset.forName("ISO_8859_9");
+                case "JIS_X_0201":
+                    return Charset.forName("JIS_X_0201");
+                case "JOHAB":
+                    return Charset.forName("Johab");
+                case "KOI8_R":
+                    return Charset.forName("KOI8_R");
+                case "KOI8_U":
+                    return Charset.forName("KOI8_U");
+                case "MS1250":
+                    return Charset.forName("MS1250");
+                case "MS1251":
+                    return Charset.forName("MS1251");
+                case "MS1252":
+                    return Charset.forName("MS1252");
+                case "MS1253":
+                    return Charset.forName("MS1253");
+                case "MS1254":
+                    return Charset.forName("MS1254");
+                case "MS1255":
+                    return Charset.forName("MS1255");
+                case "MS1256":
+                    return Charset.forName("MS1256");
+                case "MS1257":
+                    return Charset.forName("MS1257");
+                case "MS1258":
+                    return Charset.forName("MS1258");
+                case "MS874":
+                    return Charset.forName("MS874");
+                case "MS932":
+                    return Charset.forName("MS932");
+                case "MS936":
+                    return Charset.forName("MS936");
+                case "MS949":
+                    return Charset.forName("MS949");
+                case "MS950":
+                    return Charset.forName("MS950");
+                case "MS950_HKSCS":
+                    return Charset.forName("MS950_HKSCS");
+                case "MS950_HKSCS_XP":
+                    return Charset.forName("MS950_HKSCS_XP");
+                case "SJIS":
+                    return Charset.forName("SJIS");
+                case "US_ASCII":
+                    return Charset.forName("US_ASCII");
+                case "UTF_16":
+                    return Charset.forName("UTF_16");
+                case "UTF_16BE":
+                    return Charset.forName("UTF_16BE");
+                case "UTF_16LE":
+                    return Charset.forName("UTF_16LE");
+                case "UTF_32":
+                    return Charset.forName("UTF_32");
+                case "UTF_32BE":
+                    return Charset.forName("UTF_32BE");
+                case "UTF_32BE_BOM":
+                    return Charset.forName("UTF_32BE_BOM");
+                case "UTF_32LE":
+                    return Charset.forName("UTF_32LE");
+                case "UTF_32LE_BOM":
+                    return Charset.forName("UTF_32LE_BOM");
+                case "UTF_8":
+                    return Charset.forName("UTF_8");
+                case "BIG5":
+                    return Charset.forName("Big5");
+                case "BIG5_HKSCS":
+                    return Charset.forName("Big5_HKSCS");
+                case "BIG5_HKSCS_2001":
+                    return Charset.forName("Big5_HKSCS_2001");
+                case "BIG5_SOLARIS":
+                    return Charset.forName("Big5_Solaris");
+                case "EUC_CN":
+                    return Charset.forName("EUC_CN");
+                case "EUC_JP":
+                    return Charset.forName("EUC_JP");
+                case "EUC_JP_LINUX":
+                    return Charset.forName("EUC_JP_LINUX");
+                case "EUC_JP_OPEN":
+                    return Charset.forName("EUC_JP_Open");
+                case "EUC_KR":
+                    return Charset.forName("EUC_KR");
+                case "EUC_TW":
+                    return Charset.forName("EUC_TW");
+                case "IBM037":
+                    return Charset.forName("IBM037");
+                case "IBM1006":
+                    return Charset.forName("IBM1006");
+                case "IBM1025":
+                    return Charset.forName("IBM1025");
+                case "IBM1026":
+                    return Charset.forName("IBM1026");
+                case "IBM1046":
+                    return Charset.forName("IBM1046");
+                case "IBM1047":
+                    return Charset.forName("IBM1047");
+                case "IBM1097":
+                    return Charset.forName("IBM1097");
+                case "IBM1098":
+                    return Charset.forName("IBM1098");
+                case "IBM1112":
+                    return Charset.forName("IBM1112");
+                case "IBM1122":
+                    return Charset.forName("IBM1122");
+                case "IBM1123":
+                    return Charset.forName("IBM1123");
+                case "IBM1124":
+                    return Charset.forName("IBM1124");
+                case "IBM1129":
+                    return Charset.forName("IBM1129");
+                case "IBM1140":
+                    return Charset.forName("IBM1140");
+                case "IBM1141":
+                    return Charset.forName("IBM1141");
+                case "IBM1142":
+                    return Charset.forName("IBM1142");
+                case "IBM1143":
+                    return Charset.forName("IBM1143");
+                case "IBM1144":
+                    return Charset.forName("IBM1144");
+                case "IBM1145":
+                    return Charset.forName("IBM1145");
+                case "IBM1146":
+                    return Charset.forName("IBM1146");
+                case "IBM1147":
+                    return Charset.forName("IBM1147");
+                case "IBM1148":
+                    return Charset.forName("IBM1148");
+                case "IBM1149":
+                    return Charset.forName("IBM1149");
+                case "IBM1166":
+                    return Charset.forName("IBM1166");
+                case "IBM1364":
+                    return Charset.forName("IBM1364");
+                case "IBM1381":
+                    return Charset.forName("IBM1381");
+                case "IBM1383":
+                    return Charset.forName("IBM1383");
+                case "IBM273":
+                    return Charset.forName("IBM273");
+                case "IBM277":
+                    return Charset.forName("IBM277");
+                case "IBM278":
+                    return Charset.forName("IBM278");
+                case "IBM280":
+                    return Charset.forName("IBM280");
+                case "IBM284":
+                    return Charset.forName("IBM284");
+                case "IBM285":
+                    return Charset.forName("IBM285");
+                case "IBM290":
+                    return Charset.forName("IBM290");
+                case "IBM29626C":
+                    return Charset.forName("IBM29626C");
+                case "IBM297":
+                    return Charset.forName("IBM297");
+                case "IBM300":
+                    return Charset.forName("IBM300");
+                case "IBM33722":
+                    return Charset.forName("IBM33722");
+                case "IBM420":
+                    return Charset.forName("IBM420");
+                case "IBM424":
+                    return Charset.forName("IBM424");
+                case "IBM500":
+                    return Charset.forName("IBM500");
+                case "IBM833":
+                    return Charset.forName("IBM833");
+                case "IBM834":
+                    return Charset.forName("IBM834");
+                case "IBM838":
+                    return Charset.forName("IBM838");
+                case "IBM856":
+                    return Charset.forName("IBM856");
+                case "IBM860":
+                    return Charset.forName("IBM860");
+                case "IBM861":
+                    return Charset.forName("IBM861");
+                case "IBM863":
+                    return Charset.forName("IBM863");
+                case "IBM864":
+                    return Charset.forName("IBM864");
+                case "IBM865":
+                    return Charset.forName("IBM865");
+                case "IBM868":
+                    return Charset.forName("IBM868");
+                case "IBM869":
+                    return Charset.forName("IBM869");
+                case "IBM870":
+                    return Charset.forName("IBM870");
+                case "IBM871":
+                    return Charset.forName("IBM871");
+                case "IBM875":
+                    return Charset.forName("IBM875");
+                case "IBM918":
+                    return Charset.forName("IBM918");
+                case "IBM921":
+                    return Charset.forName("IBM921");
+                case "IBM922":
+                    return Charset.forName("IBM922");
+                case "IBM930":
+                    return Charset.forName("IBM930");
+                case "IBM933":
+                    return Charset.forName("IBM933");
+                case "IBM935":
+                    return Charset.forName("IBM935");
+                case "IBM937":
+                    return Charset.forName("IBM937");
+                case "IBM939":
+                    return Charset.forName("IBM939");
+                case "IBM942":
+                    return Charset.forName("IBM942");
+                case "IBM942C":
+                    return Charset.forName("IBM942C");
+                case "IBM943":
+                    return Charset.forName("IBM943");
+                case "IBM943C":
+                    return Charset.forName("IBM943C");
+                case "IBM948":
+                    return Charset.forName("IBM948");
+                case "IBM949":
+                    return Charset.forName("IBM949");
+                case "IBM949C":
+                    return Charset.forName("IBM949C");
+                case "IBM950":
+                    return Charset.forName("IBM950");
+                case "IBM964":
+                    return Charset.forName("IBM964");
+                case "IBM970":
+                    return Charset.forName("IBM970");
+                case "ISCII91":
+                    return Charset.forName("ISCII91");
+                case "ISO2022_CN":
+                    return Charset.forName("ISO2022_CN");
+                case "ISO2022_CN_CNS":
+                    return Charset.forName("ISO2022_CN_CNS");
+                case "ISO2022_CN_GB":
+                    return Charset.forName("ISO2022_CN_GB");
+                case "ISO2022_JP":
+                    return Charset.forName("ISO2022_JP");
+                case "ISO2022_JP_2":
+                    return Charset.forName("ISO2022_JP_2");
+                case "ISO2022_KR":
+                    return Charset.forName("ISO2022_KR");
+                case "ISO_8859_11":
+                    return Charset.forName("ISO_8859_11");
+                case "ISO_8859_3":
+                    return Charset.forName("ISO_8859_3");
+                case "ISO_8859_6":
+                    return Charset.forName("ISO_8859_6");
+                case "ISO_8859_8":
+                    return Charset.forName("ISO_8859_8");
+                case "JIS_X_0208":
+                    return Charset.forName("JIS_X_0208");
+                case "JIS_X_0208_MS5022X":
+                    return Charset.forName("JIS_X_0208_MS5022X");
+                case "JIS_X_0208_MS932":
+                    return Charset.forName("JIS_X_0208_MS932");
+                case "JIS_X_0208_SOLARIS":
+                    return Charset.forName("JIS_X_0208_Solaris");
+                case "JIS_X_0212":
+                    return Charset.forName("JIS_X_0212");
+                case "JIS_X_0212_MS5022X":
+                    return Charset.forName("JIS_X_0212_MS5022X");
+                case "JIS_X_0212_SOLARIS":
+                    return Charset.forName("JIS_X_0212_Solaris");
+                case "JISAUTODETECT":
+                    return Charset.forName("JISAutoDetect");
+                case "MACARABIC":
+                    return Charset.forName("MacArabic");
+                case "MACCENTRALEUROPE":
+                    return Charset.forName("MacCentralEurope");
+                case "MACCROATIAN":
+                    return Charset.forName("MacCroatian");
+                case "MACCYRILLIC":
+                    return Charset.forName("MacCyrillic");
+                case "MACDINGBAT":
+                    return Charset.forName("MacDingbat");
+                case "MACGREEK":
+                    return Charset.forName("MacGreek");
+                case "MACHEBREW":
+                    return Charset.forName("MacHebrew");
+                case "MACICELAND":
+                    return Charset.forName("MacIceland");
+                case "MACROMAN":
+                    return Charset.forName("MacRoman");
+                case "MACROMANIA":
+                    return Charset.forName("MacRomania");
+                case "MACSYMBOL":
+                    return Charset.forName("MacSymbol");
+                case "MACTHAI":
+                    return Charset.forName("MacThai");
+                case "MACTURKISH":
+                    return Charset.forName("MacTurkish");
+                case "MACUKRAINE":
+                    return Charset.forName("MacUkraine");
+                case "MS50220":
+                    return Charset.forName("MS50220");
+                case "MS50221":
+                    return Charset.forName("MS50221");
+                case "MS932_0213":
+                    return Charset.forName("MS932_0213");
+                case "MSISO2022JP":
+                    return Charset.forName("MSISO2022JP");
+                case "PCK":
+                    return Charset.forName("PCK");
+                case "SJIS_0213":
+                    return Charset.forName("SJIS_0213");
+                case "TIS_620":
+                    return Charset.forName("TIS_620");
+                default:
+                    return null;
+            }
+        } catch (UnsupportedCharsetException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    public Charset getCharSet(String name, Charset defaultValue) {
+        Charset charSet = this.getCharSet(name);
+        return charSet == null ? defaultValue : charSet;
+    }
+
+    public Charset getCharSetDef2$UTF8(String name, String defaultValue) {
+        Charset charSet = this.getCharSet(name);
+        return charSet != null ? charSet : this.getCharSet(defaultValue, StandardCharsets.UTF_8);
+    }
 
     public DataMap getData(String name) {
         return (DataMap) super.getJSONObject(name);

@@ -16,8 +16,8 @@ import java.util.stream.Stream;
 /**
  * @author YYJ
  * @version 1.0.1
- * @ClassName top.yqingyu.common.ayData.DataList
- * @description  彻底重构
+ * @ClassName top.yqingyu.common.qydata.DataList
+ * @description 彻底重构
  * @createTime 2022年07月06日 18:11:00
  */
 public class DataList extends JSONArray implements Cloneable, Serializable {
@@ -409,9 +409,9 @@ public class DataList extends JSONArray implements Cloneable, Serializable {
     }
 
     /**
-     * @param type
-     * @param <T>
-     * @return
+     * @param type 类型
+     * @param <T>  泛型
+     * @return T
      */
     @Override
     public <T> T to(Class<T> type) {
@@ -543,7 +543,7 @@ public class DataList extends JSONArray implements Cloneable, Serializable {
      */
     @Override
     public DataList fluentClear() {
-        return (DataList)super.fluentClear();
+        return (DataList) super.fluentClear();
     }
 
     /**
@@ -552,7 +552,7 @@ public class DataList extends JSONArray implements Cloneable, Serializable {
      */
     @Override
     public DataList fluentRemove(int index) {
-        return (DataList)super.fluentRemove(index);
+        return (DataList) super.fluentRemove(index);
     }
 
     /**
@@ -562,7 +562,7 @@ public class DataList extends JSONArray implements Cloneable, Serializable {
      */
     @Override
     public DataList fluentSet(int index, Object element) {
-        return (DataList)super.fluentSet(index, element);
+        return (DataList) super.fluentSet(index, element);
     }
 
     /**
@@ -571,7 +571,7 @@ public class DataList extends JSONArray implements Cloneable, Serializable {
      */
     @Override
     public DataList fluentRemove(Object o) {
-        return (DataList)super.fluentRemove(o);
+        return (DataList) super.fluentRemove(o);
     }
 
     /**
@@ -580,7 +580,7 @@ public class DataList extends JSONArray implements Cloneable, Serializable {
      */
     @Override
     public DataList fluentRemoveAll(Collection<?> c) {
-        return (DataList)super.fluentRemoveAll(c);
+        return (DataList) super.fluentRemoveAll(c);
     }
 
     /**
@@ -589,7 +589,7 @@ public class DataList extends JSONArray implements Cloneable, Serializable {
      */
     @Override
     public DataList fluentAddAll(Collection<?> c) {
-        return (DataList)super.fluentAddAll(c);
+        return (DataList) super.fluentAddAll(c);
     }
 
     /**

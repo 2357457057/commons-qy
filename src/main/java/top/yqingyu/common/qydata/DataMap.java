@@ -46,6 +46,14 @@ public class DataMap extends JSONObject implements Serializable, Cloneable {
         super(map);
     }
 
+    public DataMap(List<?> list) {
+        super();
+        if (list != null && list.size() > 0)
+            for (int i = 0; i < list.size(); i++) {
+                this.put(String.valueOf(i), list.get(i));
+            }
+    }
+
     public DataMap(int initialCapacity) {
         super(initialCapacity);
     }
@@ -139,8 +147,9 @@ public class DataMap extends JSONObject implements Serializable, Cloneable {
      * @return {@link DataList} or null
      */
     public DataList getDataList(String key) {
-        return (DataList) super.getJSONArray(key);
+        return (DataList) this.get(key);
     }
+
 
     /**
      * @param key       key
@@ -162,7 +171,29 @@ public class DataMap extends JSONObject implements Serializable, Cloneable {
      * @return {@link DataMap} or null
      */
     public DataMap getDataMap(String key) {
-        return (DataMap) super.getJSONObject(key);
+        Object o = this.get(key);
+
+        DataMap data = null;
+        if (o instanceof JSONObject) {
+
+            data = new DataMap();
+            data.putAll((JSONObject) o);
+            this.put(key, data);
+        } else if (o instanceof JSONArray) {
+
+            data = new DataMap((JSONArray) o);
+        } else if (o instanceof Map<?, ?>) {
+
+            data = new DataMap();
+            data.putAll((Map) o);
+            this.put(key, data);
+        } else if (o instanceof List<?>) {
+
+            data = new DataMap((List) o);
+        } else {
+            return null;
+        }
+        return data;
     }
 
     /**
@@ -1466,7 +1497,7 @@ public class DataMap extends JSONObject implements Serializable, Cloneable {
     }
 
     public DataMap getData(String name) {
-        return (DataMap) super.getJSONObject(name);
+        return this.getDataMap(name);
     }
 
 

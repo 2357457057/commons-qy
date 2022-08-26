@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.*;
 import com.alibaba.fastjson2.schema.JSONSchema;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -87,7 +88,47 @@ public class DataList extends JSONArray implements Cloneable, Serializable {
      */
 
     public DataList getDataList(int index) {
-        return (DataList) super.getJSONArray(index);
+        Object value = get(index);
+
+        if (value instanceof JSONArray) {
+            return new DataList((JSONArray) value);
+        }
+
+        if (value instanceof String) {
+            String str = (String) value;
+
+            if (str.isEmpty() || "null".equalsIgnoreCase(str)) {
+                return null;
+            }
+            DataList objects = new DataList();
+            objects.add(str);
+            return objects;
+        }
+
+        if (value instanceof Collection) {
+            return new DataList((Collection<?>) value);
+        }
+
+        if (value instanceof Object[]) {
+            return new DataList(value);
+        }
+
+        if (value == null) {
+            return null;
+        }
+
+        Class<?> valueClass = value.getClass();
+        if (valueClass.isArray()) {
+            int length = Array.getLength(value);
+            DataList jsonArray = new DataList(length);
+            for (int i = 0; i < length; i++) {
+                Object item = Array.get(value, i);
+                jsonArray.add(item);
+            }
+            return jsonArray;
+        }
+        return null;
+
     }
 
     /**
@@ -98,7 +139,27 @@ public class DataList extends JSONArray implements Cloneable, Serializable {
      * @throws IndexOutOfBoundsException if the index is out of range {@code (index < 0 || index >= size())}
      */
     public DataMap getDataMap(int index) {
-        return (DataMap) super.getJSONObject(index);
+        Object o = this.get(index);
+
+        DataMap data = null;
+        if (o instanceof JSONObject) {
+            data = new DataMap();
+            data.putAll((JSONObject) o);
+            this.set(index, data);
+        } else if (o instanceof JSONArray) {
+            data = new DataMap((JSONArray) o);
+
+        } else if (o instanceof Map<?, ?>) {
+            data = new DataMap();
+            data.putAll((Map) o);
+            this.set(index, data);
+        } else if (o instanceof List<?>) {
+            data = new DataMap((List<?>) o);
+        } else {
+            return null;
+        }
+
+        return data;
     }
 
     /**

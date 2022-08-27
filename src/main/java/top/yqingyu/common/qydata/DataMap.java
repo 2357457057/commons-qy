@@ -558,7 +558,7 @@ public class DataMap extends JSONObject implements Serializable, Cloneable {
      * @since 2.0.7
      */
     @Override
-    public <T> T to(TypeReference typeReference, JSONReader.Feature... features) {
+    public <T> T to(TypeReference<?> typeReference, JSONReader.Feature... features) {
         return super.to(typeReference, features);
     }
 
@@ -611,7 +611,7 @@ public class DataMap extends JSONObject implements Serializable, Cloneable {
      * @deprecated since 2.0.4, please use {@link #to(Type, JSONReader.Feature...)}
      */
     @Override
-    public <T> T toJavaObject(TypeReference typeReference, JSONReader.Feature... features) {
+    public <T> T toJavaObject(TypeReference<?> typeReference, JSONReader.Feature... features) {
         return super.toJavaObject(typeReference, features);
     }
 
@@ -1635,7 +1635,7 @@ public class DataMap extends JSONObject implements Serializable, Cloneable {
     /**
      * See {@link DataMap#parseObject} for details
      */
-    public static <T> T parseObject(String text, TypeReference typeReference, JSONReader.Feature... features) {
+    public static <T> T parseObject(String text, TypeReference<?> typeReference, JSONReader.Feature... features) {
         return JSON.parseObject(text, typeReference, features);
     }
 

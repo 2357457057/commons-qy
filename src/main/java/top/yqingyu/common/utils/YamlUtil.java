@@ -67,6 +67,7 @@ public class YamlUtil {
         DataMap cfgData = new DataMap();
         yamlUtil.setCfgData(cfgData);
 
+        AtomicInteger atomicInteger = new AtomicInteger();
         if (loadType == LoadType.OUTER || loadType == LoadType.BOTH) {
             HashMap<String, File> map = getYamlOuter(fileName);
             map.forEach((k, v) -> {
@@ -74,7 +75,10 @@ public class YamlUtil {
                     HashMap hashMap = yaml.loadAs(new FileInputStream(v), HashMap.class);
 
                     String s = JSON.toJSONString(hashMap);
-                    cfgData.put(k, JSON.parseObject(s));
+                    if (cfgData.containsKey(k))
+                        cfgData.put(k + "_" + atomicInteger.getAndIncrement(), JSON.parseObject(s));
+                    else
+                        cfgData.put(k, JSON.parseObject(s));
                 } catch (FileNotFoundException e) {
                     throw new RuntimeException(e);
                 }
@@ -93,7 +97,11 @@ public class YamlUtil {
                         throw new RuntimeException(e);
                     }
                     String s = JSON.toJSONString(hashMap);
-                    cfgData.put(k, JSON.parseObject(s));
+                    if (cfgData.containsKey(k))
+                        cfgData.put(k + "_" + atomicInteger.getAndIncrement(), JSON.parseObject(s));
+                    else
+                        cfgData.put(k, JSON.parseObject(s));
+
                 });
 
             } catch (Exception e) {
@@ -111,7 +119,7 @@ public class YamlUtil {
      * @author YYJ
      * @description 加载配置文件
      */
-    public static YamlUtil loadYaml(String path,String fileName, LoadType loadType) {
+    public static YamlUtil loadYaml(String path, String fileName, LoadType loadType) {
 
         YamlUtil yamlUtil = new YamlUtil();
         Yaml yaml = new Yaml();
@@ -119,7 +127,7 @@ public class YamlUtil {
         yamlUtil.setCfgData(cfgData);
 
         if (loadType == LoadType.OUTER || loadType == LoadType.BOTH) {
-            HashMap<String, File> map = getYamlOuter(path,fileName);
+            HashMap<String, File> map = getYamlOuter(path, fileName);
             map.forEach((k, v) -> {
                 try {
                     HashMap hashMap = yaml.loadAs(new FileInputStream(v), HashMap.class);
@@ -135,10 +143,10 @@ public class YamlUtil {
     }
 
     public static HashMap<String, File> getYamlOuter(String cfgFileName) {
-        return getYamlOuter(System.getProperty("user.dir"),cfgFileName);
+        return getYamlOuter(System.getProperty("user.dir"), cfgFileName);
     }
 
-    public static HashMap<String, File> getYamlOuter(String path,String cfgFileName) {
+    public static HashMap<String, File> getYamlOuter(String path, String cfgFileName) {
         return getConfigFileOuter(path, cfgFileName, ".*[.](yml|yaml)");
     }
 

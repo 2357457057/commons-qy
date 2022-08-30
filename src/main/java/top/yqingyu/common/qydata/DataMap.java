@@ -7,6 +7,7 @@ import com.alibaba.fastjson2.filter.ValueFilter;
 import com.alibaba.fastjson2.schema.JSONSchema;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -147,7 +148,46 @@ public class DataMap extends JSONObject implements Serializable, Cloneable {
      * @return {@link DataList} or null
      */
     public DataList getDataList(String key) {
-        return (DataList) this.get(key);
+        Object value = this.get(key);
+
+        if (value instanceof JSONArray) {
+            return new DataList((JSONArray) value);
+        }
+
+        if (value instanceof String) {
+            String str = (String) value;
+
+            if (str.isEmpty() || "null".equalsIgnoreCase(str)) {
+                return null;
+            }
+            DataList objects = new DataList();
+            objects.add(str);
+            return objects;
+        }
+
+        if (value instanceof Collection) {
+            return new DataList((Collection<?>) value);
+        }
+
+        if (value instanceof Object[]) {
+            return new DataList(value);
+        }
+
+        if (value == null) {
+            return null;
+        }
+
+        Class<?> valueClass = value.getClass();
+        if (valueClass.isArray()) {
+            int length = Array.getLength(value);
+            DataList jsonArray = new DataList(length);
+            for (int i = 0; i < length; i++) {
+                Object item = Array.get(value, i);
+                jsonArray.add(item);
+            }
+            return jsonArray;
+        }
+        return null;
     }
 
 

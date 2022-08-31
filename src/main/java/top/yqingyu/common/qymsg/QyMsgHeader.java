@@ -20,6 +20,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @SuppressWarnings("all")
 public final class QyMsgHeader implements Serializable, Cloneable {
+//    private final static long serialVersionUID = -1854823182151532168L;
     private Integer msgType;  // 2  bytes, 1 Object , 0 String
     private String from; //来自谁的消息
     private String to;  //发给谁的消息

@@ -6,17 +6,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import top.yqingyu.common.qymsg.QyMsgHeader;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -253,8 +255,8 @@ public class IoUtil {
         return JSON.parseObject(bytes, QyMsgHeader.class);
     }
 
-    public static QyMsgHeader readMsg(Socket socket,int timeout) throws Exception {
-        byte[] bytes = readQyBytes(socket,timeout);
+    public static QyMsgHeader readMsg(Socket socket, int timeout) throws Exception {
+        byte[] bytes = readQyBytes(socket, timeout);
         return JSON.parseObject(bytes, QyMsgHeader.class);
     }
 
@@ -344,7 +346,6 @@ public class IoUtil {
     }
 
 
-
     /**
      * description: 读取 Socket 中的杨氏消息体
      *
@@ -370,6 +371,88 @@ public class IoUtil {
 
         buff = IoUtil.readBytes(inputStream, Integer.parseInt(msgLength, MSG_LENGTH_RADIX), timeout);
         return buff;
+    }
+
+    /**
+     * 序列化写出
+     *
+     * @author YYJ
+     * @version 1.0.0
+     * @description
+     */
+    public static void writeSerializable(SocketChannel socketChannel, QyMsgHeader qyMsgHeader) throws Exception {
+        writeQyBytes(socketChannel, objToSerializBytes(qyMsgHeader));
+    }
+
+    /**
+     * 序列化写出
+     *
+     * @author YYJ
+     * @version 1.0.0
+     * @description
+     */
+    public static void writeSerializable$(Socket socket, QyMsgHeader qyMsgHeader) throws Exception {
+        writeQyBytes(socket, objToSerializBytes(qyMsgHeader));
+    }
+
+
+    /**
+     * 序列化读取
+     *
+     * @author YYJ
+     * @version 1.0.0
+     * @description
+     */
+    public static QyMsgHeader readSerializable(SocketChannel socketChannel) throws Exception {
+        return deserializationObj(readQyBytes(socketChannel), QyMsgHeader.class);
+    }
+
+    /**
+     * 序列化读取
+     *
+     * @author YYJ
+     * @version 1.0.0
+     * @description
+     */
+    public static QyMsgHeader readSerializable(Socket socket) throws Exception {
+        return deserializationObj(readQyBytes(socket), QyMsgHeader.class);
+    }
+
+
+    public static <T> T deserializationObj(byte[] bytes2, Class<T> tClass) throws IOException, ClassNotFoundException {
+        byte[] bytes = bytes2;
+        ArrayList<Integer> integers = new ArrayList<>();
+        for (byte b : bytes) {
+            integers.add(Integer.decode("" + b));
+        }
+        ObjectInputStream inputStream = new ObjectInputStream(new WriteStreamToInputStream(integers));
+        T o = (T) inputStream.readObject();
+        return o;
+    }
+
+    /**
+     * 序列化写出
+     *
+     * @author YYJ
+     * @version 1.0.0
+     * @description
+     */
+    public static void writeSerializable(Socket socket, QyMsgHeader qyMsgHeader) throws Exception {
+        writeQyBytes(socket, objToSerializBytes(qyMsgHeader));
+    }
+
+
+    public static byte[] objToSerializBytes(Object obj) throws IOException {
+        ArrayList<Integer> integers = new ArrayList<>();
+        ObjectOutputStream outputStream = new ObjectOutputStream(new ReadStreamFromOutputStream(integers));
+        outputStream.writeObject(obj);
+        byte[] bytes = new byte[integers.size()];
+        AtomicInteger atomicInteger = new AtomicInteger();
+        integers.forEach(integer -> {
+            byte a = 0;
+            bytes[atomicInteger.getAndIncrement()] = integer.byteValue();
+        });
+        return bytes;
     }
 
     /**
@@ -452,6 +535,53 @@ public class IoUtil {
             socket2.close();
             socket1.close();
             log.error("forward 异常", e);
+        }
+    }
+
+    /**
+     * 从OutputStream 读取数据
+     *
+     * @author YYJ
+     * @version 1.0.0
+     * @description
+     */
+    public static class ReadStreamFromOutputStream extends OutputStream {
+        private final List<Integer> list;
+
+
+        public ReadStreamFromOutputStream(List<Integer> list) {
+            this.list = list;
+        }
+
+        @Override
+        public void write(int b) throws IOException {
+            if (b != -1) {
+                list.add(b);
+            }
+        }
+    }
+
+    /**
+     * @author YYJ
+     * @version 1.0.0
+     * @description 将流写入InputStream
+     */
+    public static class WriteStreamToInputStream extends InputStream {
+
+        private final List<Integer> list;
+        private static final AtomicInteger atomicInteger = new AtomicInteger();
+
+        public WriteStreamToInputStream(List<Integer> list) {
+            this.list = list;
+        }
+
+        @Override
+        public int read() throws IOException {
+            int i = atomicInteger.getAndIncrement();
+            if (i < list.size())
+                return list.get(i);
+            else
+                return -1;
         }
     }
 

@@ -1,20 +1,16 @@
 package top.yqingyu.common.utils;
 
 import cn.hutool.core.io.IORuntimeException;
-import com.alibaba.fastjson2.JSON;
+import cn.hutool.core.lang.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
-import top.yqingyu.common.qymsg.QyMsgHeader;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
+import java.util.*;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -31,36 +27,9 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 public class IoUtil {
 
-    private final static int MSG_LENGTH_LENGTH = 8;
-
-    private static final int MSG_LENGTH_RADIX = 32;
-
-
-    private static final ExecutorService IO_POOL = ThreadUtil.createQyFixedThreadPool(50, "IO", null);
-
-
-    private static byte[] getQyMsgBytes(byte[]... bytess) {
-        byte[] buf = new byte[0];
-
-        for (byte[] bytes : bytess) {
-            StringBuilder msgLength = new StringBuilder();
-            msgLength.append(Integer.toUnsignedString(bytes.length, MSG_LENGTH_RADIX));
-
-            //长度信息不足MSG_LENGTH_LENGTH位按0补充
-            while (msgLength.toString().getBytes(StandardCharsets.UTF_8).length != MSG_LENGTH_LENGTH) {
-                msgLength.insert(0, '0');
-            }
-            buf = ArrayUtils.addAll(buf, msgLength.toString().getBytes(StandardCharsets.UTF_8));
-            buf = ArrayUtils.addAll(buf, bytes);
-        }
-
-        //将信息长度与信息组合
-        return buf;
-    }
-
 
     /**
-     * description: 读取InputStream中的数据直至读到一定长度的    byte
+     * description: 读取InputStream中的数据读到一定长度的 byte
      *
      * @author yqingyu
      * DATE 2022/4/22
@@ -112,7 +81,6 @@ public class IoUtil {
             int i = 0;
         };
 
-
         FutureTask<Integer> task = new FutureTask<>(() -> {
             for (; ref.i < len; ref.i++) {
                 int c = in.read();
@@ -128,10 +96,9 @@ public class IoUtil {
 
 
         try {
-            IO_POOL.execute(task);
+            new Thread(task).start();
             ref.i = task.get(timeout, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
-            e.printStackTrace();
         }
 
         readLength = ref.i + 1;
@@ -182,243 +149,6 @@ public class IoUtil {
     }
 
 
-    public static void writeMessage(SocketChannel socketChannel, String userId, String msg) throws Exception {
-        writeQyBytes(
-                socketChannel,
-                getQyMsgBytes(
-                        userId.getBytes(StandardCharsets.UTF_8),
-                        msg.getBytes(StandardCharsets.UTF_8)
-                ));
-    }
-
-    /**
-     * description: 通过 SocketChannel 写出杨氏消息体
-     *
-     * @author yqingyu
-     * DATE 2022/4/22
-     */
-    public static void writeMessage(SocketChannel socketChannel, String msg) throws Exception {
-        try {
-            writeQyBytes(socketChannel, msg.getBytes(StandardCharsets.UTF_8));
-        } catch (Exception e) {
-            throw new Exception("WriteMsgError", e);
-        }
-    }
-
-    /**
-     * description: 通过 SocketChannel 写出杨氏消息体
-     *
-     * @author yqingyu
-     * DATE 2022/4/22
-     */
-    public static void writeMessage(SocketChannel socketChannel, QyMsgHeader msg) throws Exception {
-        try {
-            writeQyBytes(socketChannel, msg.toString().getBytes(StandardCharsets.UTF_8));
-        } catch (Exception e) {
-            throw new Exception("WriteMsgError", e);
-        }
-    }
-
-
-    public static void writeQyBytes(SocketChannel socketChannel, byte[] bytes) throws Exception {
-
-        bytes = getQyMsgBytes(bytes);
-
-        ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length);
-        byteBuffer.put(bytes);
-        byteBuffer.flip();
-        socketChannel.write(byteBuffer);
-    }
-
-
-    /**
-     * 写出带有用户名的信息
-     * date 2022/5/7 1:12
-     * return void
-     */
-    public static void writeMessage(Socket socket, QyMsgHeader msg) throws Exception {
-
-
-        byte[] bytes = JSON.toJSONBytes(msg);
-
-        byte[] qyMsgBytes = getQyMsgBytes(
-                bytes
-        );
-        OutputStream outputStream = socket.getOutputStream();
-        outputStream.write(qyMsgBytes);
-        outputStream.flush();
-    }
-
-
-    public static QyMsgHeader readMsg(Socket socket) throws Exception {
-        byte[] bytes = readQyBytes(socket);
-        return JSON.parseObject(bytes, QyMsgHeader.class);
-    }
-
-    public static QyMsgHeader readMsg(Socket socket, int timeout) throws Exception {
-        byte[] bytes = readQyBytes(socket, timeout);
-        return JSON.parseObject(bytes, QyMsgHeader.class);
-    }
-
-
-    /**
-     * description: 通过 Socket 写出杨氏消息体
-     *
-     * @author yqingyu
-     * DATE 2022/4/22
-     */
-    public static void writeMessage(Socket socket, String msg) throws Exception {
-        writeQyBytes(socket, msg.getBytes(StandardCharsets.UTF_8));
-    }
-
-
-    public static void writeQyBytes(Socket socket, byte[] bytes) throws Exception {
-
-        OutputStream outputStream = socket.getOutputStream();
-
-        bytes = getQyMsgBytes(bytes);
-
-        outputStream.write(bytes);
-        outputStream.flush();
-    }
-
-
-    public static QyMsgHeader readMessage2(SocketChannel socketChannel) throws IOException {
-
-        QyMsgHeader qyMsgHeader = JSON.parseObject(readQyBytes(socketChannel), QyMsgHeader.class);
-        return qyMsgHeader;
-    }
-
-    /**
-     * description: 读取 SocketChannel 中的杨氏消息体
-     *
-     * @author yqingyu
-     * DATE 2022/4/22
-     */
-    public static String readMessage(SocketChannel socketChannel) throws IOException {
-
-        try {
-            return new String(readQyBytes(socketChannel), StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            socketChannel.close();
-            e.printStackTrace();
-            throw e;
-        }
-    }
-
-    public static byte[] readQyBytes(SocketChannel socketChannel) throws IOException {
-        String len = new String(readBytes(socketChannel, MSG_LENGTH_LENGTH), StandardCharsets.UTF_8);
-
-        return readBytes(socketChannel, Integer.parseInt(len, MSG_LENGTH_RADIX));
-    }
-
-
-    public static String[] readUserMessage(Socket socket) throws IOException {
-        String userId = readMessage(socket);
-        String msg = readMessage(socket);
-        return new String[]{userId, msg};
-    }
-
-    /**
-     * description: 读取 Socket 中的杨氏消息体
-     *
-     * @author yqingyu
-     * DATE 2022/4/22
-     */
-    public static String readMessage(Socket socket) throws IOException {
-        String msg;
-        try {
-            msg = new String(readQyBytes(socket), StandardCharsets.UTF_8);
-        } catch (IORuntimeException e) {
-            msg = "";
-            log.error("消息读取异常 ", e);
-        }
-        return msg;
-    }
-
-    public static byte[] readQyBytes(Socket socket) throws IOException {
-        InputStream inputStream = socket.getInputStream();
-        byte[] buff = IoUtil.readBytes(inputStream, MSG_LENGTH_LENGTH);
-        String msgLength = new String(buff, StandardCharsets.UTF_8);
-
-        buff = IoUtil.readBytes(inputStream, Integer.parseInt(msgLength, MSG_LENGTH_RADIX));
-        return buff;
-    }
-
-
-    /**
-     * description: 读取 Socket 中的杨氏消息体
-     *
-     * @author yqingyu
-     * DATE 2022/4/22
-     */
-    public static String readMessage(Socket socket, int timeout) throws Exception {
-        String msg;
-        try {
-            msg = new String(readQyBytes(socket, timeout), StandardCharsets.UTF_8);
-        } catch (IORuntimeException e) {
-            msg = "";
-            e.printStackTrace();
-            throw e;
-        }
-        return msg;
-    }
-
-    public static byte[] readQyBytes(Socket socket, int timeout) throws Exception {
-        InputStream inputStream = socket.getInputStream();
-        byte[] buff = IoUtil.readBytes(inputStream, MSG_LENGTH_LENGTH);
-        String msgLength = new String(buff, StandardCharsets.UTF_8);
-
-        buff = IoUtil.readBytes(inputStream, Integer.parseInt(msgLength, MSG_LENGTH_RADIX), timeout);
-        return buff;
-    }
-
-    /**
-     * 序列化写出
-     *
-     * @author YYJ
-     * @version 1.0.0
-     * @description
-     */
-    public static void writeSerializable(SocketChannel socketChannel, QyMsgHeader qyMsgHeader) throws Exception {
-        writeQyBytes(socketChannel, objToSerializBytes(qyMsgHeader));
-    }
-
-    /**
-     * 序列化写出
-     *
-     * @author YYJ
-     * @version 1.0.0
-     * @description
-     */
-    public static void writeSerializable$(Socket socket, QyMsgHeader qyMsgHeader) throws Exception {
-        writeQyBytes(socket, objToSerializBytes(qyMsgHeader));
-    }
-
-
-    /**
-     * 序列化读取
-     *
-     * @author YYJ
-     * @version 1.0.0
-     * @description
-     */
-    public static QyMsgHeader readSerializable(SocketChannel socketChannel) throws Exception {
-        return deserializationObj(readQyBytes(socketChannel), QyMsgHeader.class);
-    }
-
-    /**
-     * 序列化读取
-     *
-     * @author YYJ
-     * @version 1.0.0
-     * @description
-     */
-    public static QyMsgHeader readSerializable(Socket socket) throws Exception {
-        return deserializationObj(readQyBytes(socket), QyMsgHeader.class);
-    }
-
-
     public static <T> T deserializationObj(byte[] bytes2, Class<T> tClass) throws IOException, ClassNotFoundException {
         byte[] bytes = bytes2;
         ArrayList<Integer> integers = new ArrayList<>();
@@ -430,22 +160,13 @@ public class IoUtil {
         return o;
     }
 
-    /**
-     * 序列化写出
-     *
-     * @author YYJ
-     * @version 1.0.0
-     * @description
-     */
-    public static void writeSerializable(Socket socket, QyMsgHeader qyMsgHeader) throws Exception {
-        writeQyBytes(socket, objToSerializBytes(qyMsgHeader));
-    }
 
-
-    public static byte[] objToSerializBytes(Object obj) throws IOException {
-        ArrayList<Integer> integers = new ArrayList<>();
+    public static byte[] objToSerializBytes(Serializable obj) throws IOException {
+        LinkedList<Integer> integers = new LinkedList<>();
         ObjectOutputStream outputStream = new ObjectOutputStream(new ReadStreamFromOutputStream(integers));
         outputStream.writeObject(obj);
+        outputStream.flush();
+        outputStream.close();
         byte[] bytes = new byte[integers.size()];
         AtomicInteger atomicInteger = new AtomicInteger();
         integers.forEach(integer -> {
@@ -546,10 +267,10 @@ public class IoUtil {
      * @description
      */
     public static class ReadStreamFromOutputStream extends OutputStream {
-        private final List<Integer> list;
+        private final Queue<Integer> list;
 
 
-        public ReadStreamFromOutputStream(List<Integer> list) {
+        public ReadStreamFromOutputStream(Queue<Integer> list) {
             this.list = list;
         }
 
@@ -558,6 +279,10 @@ public class IoUtil {
             if (b != -1) {
                 list.add(b);
             }
+        }
+
+        public void clean() {
+            list.clear();
         }
     }
 
@@ -569,7 +294,7 @@ public class IoUtil {
     public static class WriteStreamToInputStream extends InputStream {
 
         private final List<Integer> list;
-        private static final AtomicInteger atomicInteger = new AtomicInteger();
+        private final AtomicInteger atomicInteger = new AtomicInteger();
 
         public WriteStreamToInputStream(List<Integer> list) {
             this.list = list;
@@ -583,7 +308,23 @@ public class IoUtil {
             else
                 return -1;
         }
+
+        public void clean() {
+            list.clear();
+            atomicInteger.set(0);
+        }
     }
 
+    public static final String dict = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
 
+    public static void main(String[] args) {
+        for (int i = 0; i < 100; i++) {
+            long l = System.currentTimeMillis();
+            String random = RandomStringUtils.random(16, dict);
+            long l1 = System.currentTimeMillis() - l;
+            System.out.println(l1);
+            System.out.println(random);
+
+        }
+    }
 }

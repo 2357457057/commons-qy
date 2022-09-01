@@ -1,11 +1,9 @@
 package top.yqingyu.common.utils;
 
 
-import com.alibaba.fastjson2.JSONObject;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
-import top.yqingyu.common.qydata.DataMap;
-import top.yqingyu.common.qymsg.QyMsgHeader;
+import top.yqingyu.common.qymsg.QyMsg;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
@@ -129,7 +127,7 @@ public class DecryptAES {
      * @param value
      * @return
      */
-    public static byte[] encryptKeyByte2(QyMsgHeader value) {
+    public static byte[] encryptKeyByte2(QyMsg value) {
 
 
         byte[]  key = value.toString().getBytes(StandardCharsets.UTF_8);

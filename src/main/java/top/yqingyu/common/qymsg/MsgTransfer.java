@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import top.yqingyu.common.utils.IoUtil;
+import top.yqingyu.common.utils.ThreadUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +14,7 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.concurrent.ExecutorService;
 
@@ -133,7 +135,7 @@ public class MsgTransfer {
 
         if (MsgType.AC.equals(qyMsg.getMsgType())) {
 
-            sb.replace(1, 1, DATA_TYPE_2_CHAR.get(DataType.JSON));
+            sb.replace(1, 2, DATA_TYPE_2_CHAR.get(DataType.JSON));
             sb.append(BOOLEAN_2_SEGMENTION.get(false));
             byte[] body = JSON.toJSONString(qyMsg).getBytes(StandardCharsets.UTF_8);
             sb.append(getLength(body));
@@ -142,7 +144,7 @@ public class MsgTransfer {
 
         } else if (MsgType.HEART_BEAT.equals(qyMsg.getMsgType())) {
 
-            sb.replace(1, 1, DATA_TYPE_2_CHAR.get(DataType.STRING));
+            sb.replace(1, 2, DATA_TYPE_2_CHAR.get(DataType.STRING));
             sb.append(BOOLEAN_2_SEGMENTION.get(false));
             byte[] body = qyMsg.getFrom().getBytes(StandardCharsets.UTF_8);
             sb.append(getLength(body));
@@ -160,6 +162,22 @@ public class MsgTransfer {
         return buf;
     }
 
+    public static void main(String[] args) {
+        init(32, ThreadUtil.createQyFixedThreadPool(1,null,null));
+        QyMsg qyMsg = new QyMsg(MsgType.HEART_BEAT,DataType.STREAM);
+        qyMsg.putMsg("ACAC");
+
+        qyMsg.setFrom("小杨");
+        long l = System.currentTimeMillis();
+        byte[] bytes = assemblyQyMsg(qyMsg);
+        System.out.println(System.currentTimeMillis()-l);
+         l = System.currentTimeMillis();
+         bytes = assemblyQyMsg(qyMsg);
+        System.out.println(System.currentTimeMillis()-l);
+        System.out.println(bytes.length);
+        System.out.println(Arrays.toString(bytes));
+        System.out.println(new String(bytes,StandardCharsets.UTF_8));
+    }
 
     public static void writeMessage(SocketChannel socketChannel, String userId, String msg) throws Exception {
         writeQyBytes(

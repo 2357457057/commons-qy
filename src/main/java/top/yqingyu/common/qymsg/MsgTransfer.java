@@ -13,6 +13,7 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.Hashtable;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -24,17 +25,66 @@ import java.util.concurrent.ExecutorService;
  */
 @Slf4j
 public class MsgTransfer {
+    //消息长度占位长度
+    private static final int BODY_LENGTH_LENGTH = 5;
+
     private static final int MSG_LENGTH_LENGTH = 8;
-
     private static int MSG_LENGTH_RADIX = 0;
-
 
     private static ExecutorService IO_POOL = null;
 
+    private static Hashtable<DataType, String> DATA_TYPE_2_CHAR = null;
+    private static Hashtable<String, DataType> CHAR_2_DATA_TYPE = null;
+
+    private static Hashtable<MsgType, String> MSG_TYPE_2_CHAR = null;
+    private static Hashtable<String, MsgType> CHAR_2_MSG_TYPE = null;
+    private static Hashtable<String, Boolean> SEGMENTION_2_BOOLEAN = null;
+    private static Hashtable<Boolean, String> BOOLEAN_2_SEGMENTION = null;
 
     public static void init(int radix, ExecutorService pool) {
         MSG_LENGTH_RADIX = radix;
         IO_POOL = pool;
+        //消息类型映射
+        {
+            MSG_TYPE_2_CHAR = new Hashtable<>();
+            MSG_TYPE_2_CHAR.put(MsgType.AC, "#");
+            MSG_TYPE_2_CHAR.put(MsgType.HEART_BEAT, "&");
+            MSG_TYPE_2_CHAR.put(MsgType.NORM_MSG, "%");
+            MSG_TYPE_2_CHAR.put(MsgType.ERR_MSG, "=");
+
+            CHAR_2_MSG_TYPE = new Hashtable<>();
+            CHAR_2_MSG_TYPE.put("#", MsgType.AC);
+            CHAR_2_MSG_TYPE.put("&", MsgType.HEART_BEAT);
+            CHAR_2_MSG_TYPE.put("%", MsgType.NORM_MSG);
+            CHAR_2_MSG_TYPE.put("=", MsgType.ERR_MSG);
+
+        }
+        //数据类型映射
+        {
+            DATA_TYPE_2_CHAR = new Hashtable<>();
+            DATA_TYPE_2_CHAR.put(DataType.OBJECT, "=");
+            DATA_TYPE_2_CHAR.put(DataType.JSON, "%");
+            DATA_TYPE_2_CHAR.put(DataType.STRING, "&");
+            DATA_TYPE_2_CHAR.put(DataType.STREAM, "#");
+
+            CHAR_2_DATA_TYPE = new Hashtable<>();
+            CHAR_2_DATA_TYPE.put("=", DataType.OBJECT);
+            CHAR_2_DATA_TYPE.put("%", DataType.JSON);
+            CHAR_2_DATA_TYPE.put("&", DataType.STRING);
+            CHAR_2_DATA_TYPE.put("#", DataType.STREAM);
+        }
+        //消息分片映射
+        {
+            SEGMENTION_2_BOOLEAN = new Hashtable<>();
+            SEGMENTION_2_BOOLEAN.put("+", true);
+            SEGMENTION_2_BOOLEAN.put("-", false);
+
+            BOOLEAN_2_SEGMENTION = new Hashtable<>();
+            BOOLEAN_2_SEGMENTION.put(true, "+");
+            BOOLEAN_2_SEGMENTION.put(false, "-");
+
+        }
+
     }
 
 
@@ -46,7 +96,7 @@ public class MsgTransfer {
             msgLength.append(Integer.toUnsignedString(bytes.length, MSG_LENGTH_RADIX));
 
             //长度信息不足MSG_LENGTH_LENGTH位按0补充
-            while (msgLength.toString().getBytes(StandardCharsets.UTF_8).length != MSG_LENGTH_LENGTH) {
+            while (msgLength.toString().getBytes(StandardCharsets.UTF_8).length != BODY_LENGTH_LENGTH) {
                 msgLength.insert(0, '0');
             }
             buf = ArrayUtils.addAll(buf, msgLength.toString().getBytes(StandardCharsets.UTF_8));
@@ -56,10 +106,56 @@ public class MsgTransfer {
         return buf;
     }
 
+    private static String getLength(byte[] bytes) {
+        StringBuilder msgLength = new StringBuilder();
+        msgLength.append(Integer.toUnsignedString(bytes.length, MSG_LENGTH_RADIX));
+        //长度信息不足MSG_LENGTH_LENGTH位按0补充
+        while (msgLength.toString().getBytes(StandardCharsets.UTF_8).length != BODY_LENGTH_LENGTH) {
+            msgLength.insert(0, '0');
+        }
+        //将信息长度与信息组合
+        return msgLength.toString();
+    }
 
-    private static byte[] getQyMsgBytes(QyMsg qyMsg) {
+
+    /**
+     * @param qyMsg
+     * @return
+     * @author YYJ
+     * @version 1.0.0
+     * @description 消息组装
+     */
+    private static byte[] assemblyQyMsg(QyMsg qyMsg) {
         byte[] buf = new byte[0];
+        StringBuilder sb = new StringBuilder();
+        sb.append(MSG_TYPE_2_CHAR.get(qyMsg.getMsgType()));
+        sb.append(DATA_TYPE_2_CHAR.get(qyMsg.getDataType()));
 
+        if (MsgType.AC.equals(qyMsg.getMsgType())) {
+
+            sb.replace(1, 1, DATA_TYPE_2_CHAR.get(DataType.JSON));
+            sb.append(BOOLEAN_2_SEGMENTION.get(false));
+            byte[] body = JSON.toJSONString(qyMsg).getBytes(StandardCharsets.UTF_8);
+            sb.append(getLength(body));
+            byte[] header = sb.toString().getBytes(StandardCharsets.UTF_8);
+            buf = ArrayUtils.addAll(header, body);
+
+        } else if (MsgType.HEART_BEAT.equals(qyMsg.getMsgType())) {
+
+            sb.replace(1, 1, DATA_TYPE_2_CHAR.get(DataType.STRING));
+            sb.append(BOOLEAN_2_SEGMENTION.get(false));
+            byte[] body = qyMsg.getFrom().getBytes(StandardCharsets.UTF_8);
+            sb.append(getLength(body));
+            byte[] header = sb.toString().getBytes(StandardCharsets.UTF_8);
+            buf = ArrayUtils.addAll(header, body);
+
+        } else if (MsgType.NORM_MSG.equals(qyMsg.getMsgType())) {
+
+        } else if (MsgType.ERR_MSG.equals(qyMsg.getMsgType())) {
+
+        } else {
+
+        }
         //将信息长度与信息组合
         return buf;
     }
@@ -190,7 +286,7 @@ public class MsgTransfer {
     }
 
     public static byte[] readQyBytes(SocketChannel socketChannel) throws IOException {
-        String len = new String(IoUtil.readBytes(socketChannel, MSG_LENGTH_LENGTH), StandardCharsets.UTF_8);
+        String len = new String(IoUtil.readBytes(socketChannel, BODY_LENGTH_LENGTH), StandardCharsets.UTF_8);
 
         return IoUtil.readBytes(socketChannel, Integer.parseInt(len, MSG_LENGTH_RADIX));
     }
@@ -215,7 +311,7 @@ public class MsgTransfer {
 
     public static byte[] readQyBytes(Socket socket) throws IOException {
         InputStream inputStream = socket.getInputStream();
-        byte[] buff = IoUtil.readBytes(inputStream, MSG_LENGTH_LENGTH);
+        byte[] buff = IoUtil.readBytes(inputStream, BODY_LENGTH_LENGTH);
         String msgLength = new String(buff, StandardCharsets.UTF_8);
 
         buff = IoUtil.readBytes(inputStream, Integer.parseInt(msgLength, MSG_LENGTH_RADIX));
@@ -243,7 +339,7 @@ public class MsgTransfer {
 
     public static byte[] readQyBytes(Socket socket, int timeout) throws Exception {
         InputStream inputStream = socket.getInputStream();
-        byte[] buff = IoUtil.readBytes(inputStream, MSG_LENGTH_LENGTH);
+        byte[] buff = IoUtil.readBytes(inputStream, BODY_LENGTH_LENGTH);
         String msgLength = new String(buff, StandardCharsets.UTF_8);
 
         buff = IoUtil.readBytes(inputStream, Integer.parseInt(msgLength, MSG_LENGTH_RADIX), timeout);

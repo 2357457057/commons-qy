@@ -1,6 +1,6 @@
 package top.yqingyu.common.qymsg;
 
-import org.jetbrains.annotations.NotNull;
+
 
 /**
  * @author YYJ

@@ -315,16 +315,4 @@ public class IoUtil {
         }
     }
 
-    public static final String dict = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
-
-    public static void main(String[] args) {
-        for (int i = 0; i < 100; i++) {
-            long l = System.currentTimeMillis();
-            String random = RandomStringUtils.random(16, dict);
-            long l1 = System.currentTimeMillis() - l;
-            System.out.println(l1);
-            System.out.println(random);
-
-        }
-    }
 }

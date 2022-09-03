@@ -4,6 +4,8 @@ import cn.hutool.core.io.IORuntimeException;
 import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import top.yqingyu.common.utils.ArrayUtil;
 import top.yqingyu.common.utils.IoUtil;
 import top.yqingyu.common.utils.ThreadUtil;
 
@@ -14,6 +16,7 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.concurrent.ExecutorService;
@@ -40,8 +43,14 @@ public class MsgTransfer {
 
     private static Hashtable<MsgType, String> MSG_TYPE_2_CHAR = null;
     private static Hashtable<String, MsgType> CHAR_2_MSG_TYPE = null;
-    private static Hashtable<String, Boolean> SEGMENTION_2_BOOLEAN = null;
-    private static Hashtable<Boolean, String> BOOLEAN_2_SEGMENTION = null;
+    private static Hashtable<String, Boolean> SEGMENTATION_2_BOOLEAN = null;
+    private static Hashtable<Boolean, String> BOOLEAN_2_SEGMENTATION = null;
+
+    //    private static final int MSG_LENGTH_MAX = 33_554_432;
+    private static final int MSG_LENGTH_MAX = 100;
+
+    private static final String DICT = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
+
 
     public static void init(int radix, ExecutorService pool) {
         MSG_LENGTH_RADIX = radix;
@@ -77,13 +86,13 @@ public class MsgTransfer {
         }
         //消息分片映射
         {
-            SEGMENTION_2_BOOLEAN = new Hashtable<>();
-            SEGMENTION_2_BOOLEAN.put("+", true);
-            SEGMENTION_2_BOOLEAN.put("-", false);
+            SEGMENTATION_2_BOOLEAN = new Hashtable<>();
+            SEGMENTATION_2_BOOLEAN.put("+", true);
+            SEGMENTATION_2_BOOLEAN.put("-", false);
 
-            BOOLEAN_2_SEGMENTION = new Hashtable<>();
-            BOOLEAN_2_SEGMENTION.put(true, "+");
-            BOOLEAN_2_SEGMENTION.put(false, "-");
+            BOOLEAN_2_SEGMENTATION = new Hashtable<>();
+            BOOLEAN_2_SEGMENTATION.put(true, "+");
+            BOOLEAN_2_SEGMENTATION.put(false, "-");
 
         }
 
@@ -127,56 +136,174 @@ public class MsgTransfer {
      * @version 1.0.0
      * @description 消息组装
      */
-    private static byte[] assemblyQyMsg(QyMsg qyMsg) {
-        byte[] buf = new byte[0];
+    private static ArrayList<byte[]> assemblyQyMsg(QyMsg qyMsg) throws IOException {
+        ArrayList<byte[]> list = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
         sb.append(MSG_TYPE_2_CHAR.get(qyMsg.getMsgType()));
         sb.append(DATA_TYPE_2_CHAR.get(qyMsg.getDataType()));
 
         if (MsgType.AC.equals(qyMsg.getMsgType())) {
 
-            sb.replace(1, 2, DATA_TYPE_2_CHAR.get(DataType.JSON));
-            sb.append(BOOLEAN_2_SEGMENTION.get(false));
-            byte[] body = JSON.toJSONString(qyMsg).getBytes(StandardCharsets.UTF_8);
-            sb.append(getLength(body));
-            byte[] header = sb.toString().getBytes(StandardCharsets.UTF_8);
-            buf = ArrayUtils.addAll(header, body);
-
+            //认证消息组装
+            AC_Assembly(sb, qyMsg, list);
         } else if (MsgType.HEART_BEAT.equals(qyMsg.getMsgType())) {
 
-            sb.replace(1, 2, DATA_TYPE_2_CHAR.get(DataType.STRING));
-            sb.append(BOOLEAN_2_SEGMENTION.get(false));
-            byte[] body = qyMsg.getFrom().getBytes(StandardCharsets.UTF_8);
-            sb.append(getLength(body));
-            byte[] header = sb.toString().getBytes(StandardCharsets.UTF_8);
-            buf = ArrayUtils.addAll(header, body);
-
+            //心跳消息组装
+            HEART_BEAT_Assembly(sb, qyMsg, list);
         } else if (MsgType.NORM_MSG.equals(qyMsg.getMsgType())) {
 
+            //普通消息组装
+            NORM_MSG_Assembly(sb, qyMsg, list);
         } else if (MsgType.ERR_MSG.equals(qyMsg.getMsgType())) {
 
+            ERR_MSG_Assembly(sb, qyMsg, list);
         } else {
 
+            //普通消息组装
+            NORM_MSG_Assembly(sb, qyMsg, list);
         }
         //将信息长度与信息组合
-        return buf;
+        return list;
     }
 
-    public static void main(String[] args) {
-        init(32, ThreadUtil.createQyFixedThreadPool(1,null,null));
-        QyMsg qyMsg = new QyMsg(MsgType.HEART_BEAT,DataType.STREAM);
+    /**
+     * 认证消息组装
+     *
+     * @param qyMsg 消息体对象
+     * @param sb    消息头SB
+     * @param list  返回的消息集合
+     */
+    private static void AC_Assembly(StringBuilder sb, QyMsg qyMsg, ArrayList<byte[]> list) {
+        sb.replace(1, 2, DATA_TYPE_2_CHAR.get(DataType.JSON));
+        sb.append(BOOLEAN_2_SEGMENTATION.get(false));
+        byte[] body = JSON.toJSONString(qyMsg).getBytes(StandardCharsets.UTF_8);
+        sb.append(getLength(body));
+        byte[] header = sb.toString().getBytes(StandardCharsets.UTF_8);
+        list.add(ArrayUtils.addAll(header, body));
+    }
+
+    /**
+     * 心跳消息组装
+     *
+     * @param qyMsg 消息体对象
+     * @param sb    消息头SB
+     * @param list  返回的消息集合
+     */
+    private static void HEART_BEAT_Assembly(StringBuilder sb, QyMsg qyMsg, ArrayList<byte[]> list) {
+        sb.replace(1, 2, DATA_TYPE_2_CHAR.get(DataType.STRING));
+        sb.append(BOOLEAN_2_SEGMENTATION.get(false));
+        byte[] body = qyMsg.getFrom().getBytes(StandardCharsets.UTF_8);
+        sb.append(getLength(body));
+        byte[] header = sb.toString().getBytes(StandardCharsets.UTF_8);
+        list.add(ArrayUtils.addAll(header, body));
+    }
+
+    /**
+     * 常规消息组装
+     *
+     * @param qyMsg 消息体对象
+     * @param sb    消息头SB
+     * @param list  返回的消息集合
+     */
+    private static void NORM_MSG_Assembly(StringBuilder sb, QyMsg qyMsg, ArrayList<byte[]> list) throws IOException {
+
+        if (DataType.JSON.equals(qyMsg.getDataType())) {
+
+            byte[] body = JSON.toJSONString(qyMsg).getBytes(StandardCharsets.UTF_8);
+            OUT_OF_LENGTH_MSG_Assembly(body, sb, list);
+        } else if (DataType.OBJECT.equals(qyMsg.getDataType())) {
+
+            byte[] body = IoUtil.objToSerializBytes(qyMsg);
+            OUT_OF_LENGTH_MSG_Assembly(body, sb, list);
+        } else if (DataType.STRING.equals(qyMsg.getDataType())) {
+
+            byte[] body = (qyMsg.getFrom() + MsgHelper.gainMsg(qyMsg)).getBytes(StandardCharsets.UTF_8);
+            OUT_OF_LENGTH_MSG_Assembly(body, sb, list);
+        } else if (DataType.STREAM.equals(qyMsg.getDataType())) {
+
+            byte[] bytes = qyMsg.getFrom().getBytes(StandardCharsets.UTF_8);
+            OUT_OF_LENGTH_MSG_Assembly(ArrayUtils.addAll(bytes, (byte[]) MsgHelper.gainObjMsg(qyMsg)), sb, list);
+        } else {
+            byte[] bytes = qyMsg.getFrom().getBytes(StandardCharsets.UTF_8);
+            OUT_OF_LENGTH_MSG_Assembly(ArrayUtils.addAll(bytes, (byte[]) MsgHelper.gainObjMsg(qyMsg)), sb, list);
+        }
+    }
+
+    /**
+     * 异常消息组装
+     *
+     * @param qyMsg 消息体对象
+     * @param sb    消息头SB
+     * @param list  返回的消息集合
+     */
+    private static void ERR_MSG_Assembly(StringBuilder sb, QyMsg qyMsg, ArrayList<byte[]> list) {
+        if (DataType.JSON.equals(qyMsg.getDataType())) {
+
+            byte[] body = JSON.toJSONString(qyMsg).getBytes(StandardCharsets.UTF_8);
+            OUT_OF_LENGTH_MSG_Assembly(body, sb, list);
+        } else {
+            byte[] body = (qyMsg.getFrom() + MsgHelper.gainMsg(qyMsg)).getBytes(StandardCharsets.UTF_8);
+            OUT_OF_LENGTH_MSG_Assembly(body, sb, list);
+        }
+    }
+
+
+    /**
+     * 对消息长度的判断  拆分并组装
+     *
+     * @param body 原消息体byte
+     * @param sb   消息头SB
+     * @param list 返回的消息集合
+     */
+    private static void OUT_OF_LENGTH_MSG_Assembly(byte[] body, StringBuilder sb, ArrayList<byte[]> list) {
+        ArrayList<byte[]> bodyList = ArrayUtil.checkArrayLength(body, MSG_LENGTH_MAX);
+        if (bodyList.size() == 1) {
+            sb.append(BOOLEAN_2_SEGMENTATION.get(false));
+            sb.append(getLength(body));
+            byte[] header = sb.toString().getBytes(StandardCharsets.UTF_8);
+            list.add(ArrayUtils.addAll(header, body));
+        } else {
+            sb.append(BOOLEAN_2_SEGMENTATION.get(true));
+            String part_trade_id = RandomStringUtils.random(16, DICT);
+            for (int i = 1; i <= bodyList.size(); i++) {
+                StringBuilder builder = new StringBuilder(sb);
+                byte[] cBody = bodyList.get(i - 1);
+                builder.append(getLength(cBody));
+                builder.append(part_trade_id);
+                builder.append(Integer.toUnsignedString(i));
+                builder.append(Integer.toUnsignedString(bodyList.size()));
+                byte[] cHeader = builder.toString().getBytes(StandardCharsets.UTF_8);
+                list.add(ArrayUtils.addAll(cHeader, cBody));
+            }
+        }
+    }
+
+
+    public static void main(String[] args) throws IOException {
+        init(32, ThreadUtil.createQyFixedThreadPool(1, null, null));
+        QyMsg qyMsg = new QyMsg(MsgType.NORM_MSG, DataType.OBJECT);
         qyMsg.putMsg("ACAC");
 
         qyMsg.setFrom("小杨");
-        long l = System.currentTimeMillis();
-        byte[] bytes = assemblyQyMsg(qyMsg);
-        System.out.println(System.currentTimeMillis()-l);
-         l = System.currentTimeMillis();
-         bytes = assemblyQyMsg(qyMsg);
-        System.out.println(System.currentTimeMillis()-l);
-        System.out.println(bytes.length);
-        System.out.println(Arrays.toString(bytes));
-        System.out.println(new String(bytes,StandardCharsets.UTF_8));
+        ArrayList<byte[]> list = null;
+        long l1 = System.currentTimeMillis();
+        for (int i = 0; i < 1000000; i++) {
+//            long l = System.currentTimeMillis();
+            list = assemblyQyMsg(qyMsg);
+//            System.out.println(System.currentTimeMillis() - l);
+        }
+        System.out.println(System.currentTimeMillis() - l1);
+
+        for (byte[] bytes : list) {
+            ArrayList<Integer> stream = new ArrayList<>();
+            for (byte b : bytes) {
+                stream.add((int) b);
+            }
+            IoUtil.WriteStreamToInputStream inputStream = new IoUtil.WriteStreamToInputStream(stream);
+            byte[] readBytes = IoUtil.readBytes(inputStream, 8);
+            System.out.println(new String(readBytes, StandardCharsets.UTF_8));
+        }
+
     }
 
     public static void writeMessage(SocketChannel socketChannel, String userId, String msg) throws Exception {

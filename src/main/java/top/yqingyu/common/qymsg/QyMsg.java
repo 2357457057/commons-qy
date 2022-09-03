@@ -20,10 +20,22 @@ public class QyMsg implements Serializable, Cloneable {
     private final static long serialVersionUID = -1854823182151532168L;
     private final MsgType msgType;
     private DataType dataType;
+
     //来自谁的消息
     private String from;
+
     //发给谁的消息
     private String to;
+
+    //是否分区
+    private boolean segmentation;
+
+    //碎片ID
+    private String partition_id;
+
+    private Integer numerator;
+    //分片
+    private Integer denominator;
     private DataMap dataMap = new DataMap(); //具体消息
 
     public QyMsg(MsgType msgType, DataType dataType) {

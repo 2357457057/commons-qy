@@ -1,11 +1,5 @@
 package top.yqingyu.common.qymsg;
 
-import com.alibaba.fastjson2.JSON;
-import top.yqingyu.common.qydata.DataMap;
-import top.yqingyu.common.utils.IoUtil;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author YYJ
@@ -29,16 +23,6 @@ public class MsgHelper {
         return msg.getDataMap().getString(key, "");
     }
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
-        QyMsg qyMsg = new QyMsg(MsgType.NORM_MSG, DataType.JSON);
-        qyMsg.setFrom("小杨");
-        qyMsg.setTo("小苏");
-        qyMsg.putMsg("我爱你");
 
-        byte[] bytes = IoUtil.objToSerializBytes(qyMsg);
-        QyMsg qyMsg1 = IoUtil.deserializationObj(bytes, QyMsg.class);
-        System.out.println(qyMsg1);
-
-    }
 
 }

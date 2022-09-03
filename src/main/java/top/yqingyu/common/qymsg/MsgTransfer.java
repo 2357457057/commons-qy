@@ -29,10 +29,11 @@ import java.util.concurrent.ExecutorService;
  * @createTime 2022年09月01日 23:03:00
  */
 @Slf4j
+@SuppressWarnings("all")
 public class MsgTransfer {
     //消息长度占位长度
     private static final int BODY_LENGTH_LENGTH = 5;
-    private static final int BODY_LENGTH_MAX = 1024;
+    private static int BODY_LENGTH_MAX = 1024 * 1;
 
 //    private static final int MSG_LENGTH_MAX = 33_554_432;
 
@@ -40,21 +41,18 @@ public class MsgTransfer {
 
     private static ExecutorService IO_POOL = null;
 
-    private static Hashtable<DataType, Character> DATA_TYPE_2_CHAR = null;
-    private static Hashtable<Character, DataType> CHAR_2_DATA_TYPE = null;
+    private static Hashtable<DataType, Character> DATA_TYPE_2_CHAR;
+    private static Hashtable<Character, DataType> CHAR_2_DATA_TYPE;
 
-    private static Hashtable<MsgType, Character> MSG_TYPE_2_CHAR = null;
-    private static Hashtable<Character, MsgType> CHAR_2_MSG_TYPE = null;
-    private static Hashtable<Character, Boolean> SEGMENTATION_2_BOOLEAN = null;
-    private static Hashtable<Boolean, Character> BOOLEAN_2_SEGMENTATION = null;
+    private static Hashtable<MsgType, Character> MSG_TYPE_2_CHAR;
+    private static Hashtable<Character, MsgType> CHAR_2_MSG_TYPE;
+    private static Hashtable<Character, Boolean> SEGMENTATION_2_BOOLEAN;
+    private static Hashtable<Boolean, Character> BOOLEAN_2_SEGMENTATION;
 
 
     private static final String DICT = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
 
-
-    public static void init(int radix, ExecutorService pool) {
-        MSG_LENGTH_RADIX = radix;
-        IO_POOL = pool;
+    static {
         //消息类型映射
         {
             MSG_TYPE_2_CHAR = new Hashtable<>();
@@ -95,7 +93,39 @@ public class MsgTransfer {
             BOOLEAN_2_SEGMENTATION.put(false, '-');
 
         }
+    }
 
+
+    public static void init(int radix, int body_length_max, ExecutorService pool) {
+        MSG_LENGTH_RADIX = radix;
+        BODY_LENGTH_MAX = body_length_max;
+        IO_POOL = pool;
+
+    }
+
+    private static char DATA_TYPE_2_CHAR(DataType dataType) {
+        return DATA_TYPE_2_CHAR.get(dataType);
+    }
+
+    private static DataType CHAR_2_DATA_TYPE(char c) {
+        return CHAR_2_DATA_TYPE.get(c);
+    }
+
+    private static char MSG_TYPE_2_CHAR(MsgType msgType) {
+        return MSG_TYPE_2_CHAR.get(msgType);
+    }
+
+    private static MsgType CHAR_2_MSG_TYPE(char c) {
+        return CHAR_2_MSG_TYPE.get(c);
+    }
+
+    private static boolean SEGMENTATION_2_BOOLEAN(char c) {
+
+        return SEGMENTATION_2_BOOLEAN.get(c);
+    }
+
+    private static char BOOLEAN_2_SEGMENTATION(boolean b) {
+        return BOOLEAN_2_SEGMENTATION.get(b);
     }
 
 
@@ -137,8 +167,8 @@ public class MsgTransfer {
     public static ArrayList<byte[]> assembly(QyMsg qyMsg) throws IOException {
         ArrayList<byte[]> list = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
-        sb.append(MSG_TYPE_2_CHAR.get(qyMsg.getMsgType()));
-        sb.append(DATA_TYPE_2_CHAR.get(qyMsg.getDataType()));
+        sb.append(MSG_TYPE_2_CHAR(qyMsg.getMsgType()));
+        sb.append(DATA_TYPE_2_CHAR(qyMsg.getDataType()));
 
         if (MsgType.AC.equals(qyMsg.getMsgType())) {
 
@@ -179,9 +209,9 @@ public class MsgTransfer {
         String $3 = s.substring(4);     //后五位
 
 
-        if (SEGMENTATION_2_BOOLEAN.get($2)) {
-            QyMsg parse = new QyMsg(CHAR_2_MSG_TYPE.get($0), CHAR_2_DATA_TYPE.get($1));
-            parse.setSegmentation(SEGMENTATION_2_BOOLEAN.get($2));
+        if (SEGMENTATION_2_BOOLEAN($2)) {
+            QyMsg parse = new QyMsg(CHAR_2_MSG_TYPE($0), CHAR_2_DATA_TYPE($1));
+            parse.setSegmentation(SEGMENTATION_2_BOOLEAN($2));
             readBytes = IoUtil.readBytes(inputStream, 18);
             String partition_numerator_denominator = new String(readBytes, StandardCharsets.UTF_8);
             parse.setPartition_id(partition_numerator_denominator.substring(0, 16));
@@ -192,7 +222,7 @@ public class MsgTransfer {
             segmentation$queue.add(parse);
             return null;
         } else {
-            MsgType msgType = CHAR_2_MSG_TYPE.get($0);
+            MsgType msgType = CHAR_2_MSG_TYPE($0);
             if (MsgType.AC.equals(msgType)) {
 
                 //认证消息解析
@@ -215,6 +245,55 @@ public class MsgTransfer {
         }
     }
 
+    /**
+     * @author YYJ
+     * @description 消息解析
+     */
+    public static QyMsg disassembly(SocketChannel socketChannel, Queue<QyMsg> segmentation$queue) throws IOException, ClassNotFoundException {
+
+        byte[] readBytes = IoUtil.readBytes(socketChannel, 8);
+        String s = new String(readBytes, StandardCharsets.UTF_8);
+        char $0 = s.charAt(0);//msg  type
+        char $1 = s.charAt(1);//data type
+        char $2 = s.charAt(2);//是否分片
+        String $3 = s.substring(4);     //后五位
+
+
+        if (SEGMENTATION_2_BOOLEAN($2)) {
+            QyMsg parse = new QyMsg(CHAR_2_MSG_TYPE($0), CHAR_2_DATA_TYPE($1));
+            parse.setSegmentation(SEGMENTATION_2_BOOLEAN($2));
+            readBytes = IoUtil.readBytes(socketChannel, 18);
+            String partition_numerator_denominator = new String(readBytes, StandardCharsets.UTF_8);
+            parse.setPartition_id(partition_numerator_denominator.substring(0, 16));
+            parse.setNumerator(Integer.parseInt(partition_numerator_denominator.substring(16, 17), MSG_LENGTH_RADIX));
+            parse.setDenominator(Integer.parseInt(partition_numerator_denominator.substring(17, 18), MSG_LENGTH_RADIX));
+            readBytes = IoUtil.readBytes(socketChannel, Integer.parseInt($3, MSG_LENGTH_RADIX));
+            parse.putMsg(readBytes);
+            segmentation$queue.add(parse);
+            return null;
+        } else {
+            MsgType msgType = CHAR_2_MSG_TYPE($0);
+            if (MsgType.AC.equals(msgType)) {
+
+                //认证消息解析
+                return AC_Disassembly($3, socketChannel);
+            } else if (MsgType.HEART_BEAT.equals(msgType)) {
+
+                //心跳消息解析
+                return HEART_BEAT_Disassembly($0, $1, $2, $3, socketChannel);
+            } else if (MsgType.NORM_MSG.equals(msgType)) {
+
+                //普通消息解析
+                return NORM_MSG_Disassembly($0, $1, $2, $3, socketChannel);
+            } else if (MsgType.ERR_MSG.equals(msgType)) {
+                //异常消息解析
+                return ERR_MSG_Disassembly($0, $1, $2, $3, socketChannel);
+            } else {
+                //普通消息解析
+                return NORM_MSG_Disassembly($0, $1, $2, $3, socketChannel);
+            }
+        }
+    }
 
     /**
      * 认证消息组装
@@ -224,8 +303,8 @@ public class MsgTransfer {
      * @param list  返回的消息集合
      */
     private static void AC_Assembly(StringBuilder sb, QyMsg qyMsg, ArrayList<byte[]> list) {
-        sb.setCharAt(1, DATA_TYPE_2_CHAR.get(DataType.JSON));
-        sb.append(BOOLEAN_2_SEGMENTATION.get(false));
+        sb.setCharAt(1, DATA_TYPE_2_CHAR(DataType.JSON));
+        sb.append(BOOLEAN_2_SEGMENTATION(false));
         byte[] body = JSON.toJSONBytes(qyMsg);
         sb.append(getLength(body));
         byte[] header = sb.toString().getBytes(StandardCharsets.UTF_8);
@@ -240,8 +319,8 @@ public class MsgTransfer {
      * @param list  返回的消息集合
      */
     private static void HEART_BEAT_Assembly(StringBuilder sb, QyMsg qyMsg, ArrayList<byte[]> list) {
-        sb.setCharAt(1, DATA_TYPE_2_CHAR.get(DataType.STRING));
-        sb.append(BOOLEAN_2_SEGMENTATION.get(false));
+        sb.setCharAt(1, DATA_TYPE_2_CHAR(DataType.STRING));
+        sb.append(BOOLEAN_2_SEGMENTATION(false));
         byte[] body = qyMsg.getFrom().getBytes(StandardCharsets.UTF_8);
         sb.append(getLength(body));
         byte[] header = sb.toString().getBytes(StandardCharsets.UTF_8);
@@ -307,7 +386,7 @@ public class MsgTransfer {
     private static void OUT_OF_LENGTH_MSG_Assembly(byte[] body, StringBuilder sb, ArrayList<byte[]> list) {
         ArrayList<byte[]> bodyList = ArrayUtil.checkArrayLength(body, BODY_LENGTH_MAX);
         if (bodyList.size() == 1) {
-            sb.append(BOOLEAN_2_SEGMENTATION.get(false));
+            sb.append(BOOLEAN_2_SEGMENTATION(false));
             sb.append(getLength(body));
             byte[] header = sb.toString().getBytes(StandardCharsets.UTF_8);
             list.add(ArrayUtils.addAll(header, body));
@@ -342,9 +421,9 @@ public class MsgTransfer {
      * 心跳消息组装
      */
     private static QyMsg HEART_BEAT_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, InputStream inputStream) {
-        QyMsg qyMsg = new QyMsg(CHAR_2_MSG_TYPE.get(msg_type), CHAR_2_DATA_TYPE.get(data_type));
+        QyMsg qyMsg = new QyMsg(CHAR_2_MSG_TYPE(msg_type), CHAR_2_DATA_TYPE(data_type));
         byte[] bytes = IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
-        qyMsg.setSegmentation(SEGMENTATION_2_BOOLEAN.get(segmentation));
+        qyMsg.setSegmentation(SEGMENTATION_2_BOOLEAN(segmentation));
         qyMsg.setFrom(new String(bytes, StandardCharsets.UTF_8));
         return qyMsg;
     }
@@ -354,26 +433,26 @@ public class MsgTransfer {
      */
     private static QyMsg NORM_MSG_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, InputStream inputStream) throws IOException, ClassNotFoundException {
 
-        if (DataType.JSON.equals(CHAR_2_DATA_TYPE.get(msg_type))) {
+        if (DataType.JSON.equals(CHAR_2_DATA_TYPE(msg_type))) {
 
             byte[] bytes = IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
             return JSON.parseObject(bytes, QyMsg.class);
-        } else if (DataType.OBJECT.equals(CHAR_2_DATA_TYPE.get(msg_type))) {
+        } else if (DataType.OBJECT.equals(CHAR_2_DATA_TYPE(msg_type))) {
 
             byte[] bytes = IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
             return IoUtil.deserializationObj(bytes, QyMsg.class);
-        } else if (DataType.STRING.equals(CHAR_2_DATA_TYPE.get(msg_type))) {
+        } else if (DataType.STRING.equals(CHAR_2_DATA_TYPE(msg_type))) {
 
             byte[] bytes = IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
             String s = new String(bytes, StandardCharsets.UTF_8);
             String from = s.substring(0, 32);
             String msg = s.substring(32);
-            QyMsg qyMsg = new QyMsg(CHAR_2_MSG_TYPE.get(msg_type), CHAR_2_DATA_TYPE.get(data_type));
+            QyMsg qyMsg = new QyMsg(CHAR_2_MSG_TYPE(msg_type), CHAR_2_DATA_TYPE(data_type));
             qyMsg.setFrom(from);
             qyMsg.putMsg(msg);
 
             return qyMsg;
-        } else if (DataType.STREAM.equals(CHAR_2_DATA_TYPE.get(msg_type))) {
+        } else if (DataType.STREAM.equals(CHAR_2_DATA_TYPE(msg_type))) {
             return streamDeal(msg_type, data_type, msg_length, inputStream);
         } else {
             return streamDeal(msg_type, data_type, msg_length, inputStream);
@@ -385,7 +464,7 @@ public class MsgTransfer {
      */
     private static QyMsg ERR_MSG_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, InputStream inputStream) {
 
-        if (DataType.JSON.equals(CHAR_2_DATA_TYPE.get(msg_type))) {
+        if (DataType.JSON.equals(CHAR_2_DATA_TYPE(msg_type))) {
             byte[] bytes = IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
             return JSON.parseObject(bytes, QyMsg.class);
         } else {
@@ -394,19 +473,95 @@ public class MsgTransfer {
     }
 
     /**
-     *
      * @author YYJ
      * @description 流类型数据处理
-     * */
+     */
     @NotNull
     private static QyMsg streamDeal(char msg_type, char data_type, String msg_length, InputStream inputStream) {
-        QyMsg qyMsg = new QyMsg(CHAR_2_MSG_TYPE.get(msg_type), CHAR_2_DATA_TYPE.get(data_type));
+        QyMsg qyMsg = new QyMsg(CHAR_2_MSG_TYPE(msg_type), CHAR_2_DATA_TYPE(data_type));
         byte[] bytes = IoUtil.readBytes(inputStream, 36);
         qyMsg.setFrom(new String(bytes, StandardCharsets.UTF_8));
         qyMsg.putMsg(IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MSG_LENGTH_RADIX) - 36));
         return qyMsg;
     }
 
+    /**
+     * @param msg_length    消息长度
+     * @param socketChannel 流
+     * @description 认证消息解析
+     */
+    private static QyMsg AC_Disassembly(String msg_length, SocketChannel socketChannel) throws IOException {
+        byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
+        return JSON.parseObject(bytes, QyMsg.class);
+    }
+
+    /**
+     * 心跳消息组装
+     */
+    private static QyMsg HEART_BEAT_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, SocketChannel socketChannel) throws IOException {
+        byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
+        QyMsg qyMsg = new QyMsg(CHAR_2_MSG_TYPE(msg_type), CHAR_2_DATA_TYPE(data_type));
+        qyMsg.setSegmentation(SEGMENTATION_2_BOOLEAN(segmentation));
+        qyMsg.setFrom(new String(bytes, StandardCharsets.UTF_8));
+        return qyMsg;
+    }
+
+    /**
+     * 常规消息组装
+     */
+    private static QyMsg NORM_MSG_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, SocketChannel socketChannel) throws IOException, ClassNotFoundException {
+
+        if (DataType.JSON.equals(CHAR_2_DATA_TYPE(msg_type))) {
+
+            byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
+            return JSON.parseObject(bytes, QyMsg.class);
+        } else if (DataType.OBJECT.equals(CHAR_2_DATA_TYPE(msg_type))) {
+
+            byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
+            return IoUtil.deserializationObj(bytes, QyMsg.class);
+        } else if (DataType.STRING.equals(CHAR_2_DATA_TYPE(msg_type))) {
+
+            byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
+            String s = new String(bytes, StandardCharsets.UTF_8);
+            String from = s.substring(0, 32);
+            String msg = s.substring(32);
+            QyMsg qyMsg = new QyMsg(CHAR_2_MSG_TYPE(msg_type), CHAR_2_DATA_TYPE(data_type));
+            qyMsg.setFrom(from);
+            qyMsg.putMsg(msg);
+
+            return qyMsg;
+        } else if (DataType.STREAM.equals(CHAR_2_DATA_TYPE(msg_type))) {
+            return streamDeal(msg_type, data_type, msg_length, socketChannel);
+        } else {
+            return streamDeal(msg_type, data_type, msg_length, socketChannel);
+        }
+    }
+
+    /**
+     * 异常消息组装
+     */
+    private static QyMsg ERR_MSG_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, SocketChannel socketChannel) throws IOException {
+
+        if (DataType.JSON.equals(CHAR_2_DATA_TYPE(msg_type))) {
+            byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
+            return JSON.parseObject(bytes, QyMsg.class);
+        } else {
+            return streamDeal(msg_type, data_type, msg_length, socketChannel);
+        }
+    }
+
+    /**
+     * @author YYJ
+     * @description 流类型数据处理
+     */
+    @NotNull
+    private static QyMsg streamDeal(char msg_type, char data_type, String msg_length, SocketChannel socketChannel) throws IOException {
+        byte[] bytes = IoUtil.readBytes(socketChannel, 36);
+        QyMsg qyMsg = new QyMsg(CHAR_2_MSG_TYPE(msg_type), CHAR_2_DATA_TYPE(data_type));
+        qyMsg.setFrom(new String(bytes, StandardCharsets.UTF_8));
+        qyMsg.putMsg(IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MSG_LENGTH_RADIX) - 36));
+        return qyMsg;
+    }
 
     public static void writeMessage(SocketChannel socketChannel, String userId, String msg) throws Exception {
         writeQyBytes(socketChannel, getQyMsgBytes(userId.getBytes(StandardCharsets.UTF_8), msg.getBytes(StandardCharsets.UTF_8)));

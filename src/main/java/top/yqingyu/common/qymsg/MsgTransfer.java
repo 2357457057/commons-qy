@@ -214,9 +214,10 @@ public class MsgTransfer {
      * @author YYJ
      * @description 消息解析
      */
-    public static QyMsg disassembly(Socket socket, Queue<QyMsg> segmentation$queue) throws IOException, ClassNotFoundException {
+    public static QyMsg disassembly(Socket socket, Queue<QyMsg> segmentation$queue, long sleep) throws IOException, ClassNotFoundException, InterruptedException {
         InputStream inputStream = socket.getInputStream();
         byte[] readBytes = IoUtil.readBytes(inputStream, 8);
+        Thread.sleep(sleep);
         String s = new String(readBytes, StandardCharsets.UTF_8);
         char $0 = s.charAt(0);//msg  type
         char $1 = s.charAt(1);//data type
@@ -464,7 +465,7 @@ public class MsgTransfer {
             String msg = s.substring(32);
             QyMsg qyMsg = new QyMsg(CHAR_2_MSG_TYPE(msg_type), CHAR_2_DATA_TYPE(data_type));
             qyMsg.setFrom(from);
-            qyMsg.putMsg(msg);
+            qyMsg.putMsg(msg.getBytes(StandardCharsets.UTF_8));
 
             return qyMsg;
         } else if (DataType.STREAM.equals(CHAR_2_DATA_TYPE(data_type))) {
@@ -542,7 +543,7 @@ public class MsgTransfer {
             String msg = s.substring(32);
             QyMsg qyMsg = new QyMsg(CHAR_2_MSG_TYPE(msg_type), CHAR_2_DATA_TYPE(data_type));
             qyMsg.setFrom(from);
-            qyMsg.putMsg(msg);
+            qyMsg.putMsg(msg.getBytes(StandardCharsets.UTF_8));
 
             return qyMsg;
         } else if (DataType.STREAM.equals(CHAR_2_DATA_TYPE(data_type))) {

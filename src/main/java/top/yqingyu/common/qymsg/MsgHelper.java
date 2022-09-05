@@ -1,6 +1,25 @@
 package top.yqingyu.common.qymsg;
 
 
+import cn.hutool.core.date.LocalDateTimeUtil;
+import lombok.extern.slf4j.Slf4j;
+import com.alibaba.fastjson2.JSON;
+import org.apache.commons.lang3.ArrayUtils;
+import top.yqingyu.common.utils.IoUtil;
+import top.yqingyu.common.utils.ThreadUtil;
+
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * @author YYJ
  * @version 1.0.0
@@ -8,7 +27,8 @@ package top.yqingyu.common.qymsg;
  * @description
  * @createTime 2022年09月02日 00:31:00
  */
-public class MsgHelper {
+@Slf4j
+public class MsgHelper implements Runnable {
 
 
     public static String gainMsg(QyMsg msg) {
@@ -23,6 +43,144 @@ public class MsgHelper {
         return msg.getDataMap().getString(key, "");
     }
 
+    public static Object gainMsgOBJ(QyMsg msg, String key) {
+        return msg.getDataMap().get(key);
+    }
 
 
+    private final BlockingQueue<QyMsg> inQueue;
+    private final BlockingQueue<QyMsg> outQueue;
+
+    private final AtomicBoolean running;
+    private final int clearTime;
+    private final HashMap<String, ArrayList<QyMsg>> MSG_CONTAINER = new HashMap<>();
+
+    public MsgHelper(BlockingQueue<QyMsg> inQueue, BlockingQueue<QyMsg> outQueue, AtomicBoolean running, int clearTime) {
+        this.inQueue = inQueue;
+        this.outQueue = outQueue;
+        this.running = running;
+        this.clearTime = clearTime;
+    }
+
+    /**
+     * @param inQueue  输入队列
+     * @param outQueue 输出队列
+     * @param thName   线程名称
+     * @param running  运行
+     * @author YYJ
+     * @description 初始化消息组装类
+     */
+    public static void init(BlockingQueue<QyMsg> inQueue, BlockingQueue<QyMsg> outQueue, String thName, AtomicBoolean running, int clearTime) {
+        Thread thread = new Thread(new MsgHelper(inQueue, outQueue, running, clearTime));
+        thread.setName(thName);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    @Override
+    public void run() {
+
+        String monitor = Thread.currentThread().getName() + "monitor";
+
+
+        ThreadUtil.createPeriodScheduled(0, 30, TimeUnit.MINUTES, () -> {
+            ThreadUtil.setThisThreadName(monitor);
+            try {
+                LocalDateTime now = LocalDateTime.now();
+                MSG_CONTAINER.forEach((k, list) -> {
+                    Optional<QyMsg> max =
+                            list.stream()
+                                    .max((o1, o2) ->
+                                            (int) LocalDateTimeUtil.between(
+                                                    (LocalDateTime) MsgHelper.gainMsgOBJ(o1, "now"),
+                                                    (LocalDateTime) MsgHelper.gainMsgOBJ(o2, "now"),
+                                                    ChronoUnit.SECONDS)
+                                    );
+
+                    if (max.isPresent()) {
+
+                        QyMsg maxMsg = max.get();
+                        long min = LocalDateTimeUtil.between(now, (LocalDateTime) MsgHelper.gainMsgOBJ(maxMsg, "now"), ChronoUnit.MINUTES);
+
+                        if (min > clearTime) {
+                            MSG_CONTAINER.remove(k);
+                        }
+
+                    }
+                });
+            } catch (Exception e) {
+
+                log.error("容器清除器异常", e);
+
+            }
+
+        });
+        while (running.get()) {
+            try {
+                QyMsg take = inQueue.take();
+                String partition_id = take.getPartition_id();
+                Integer denominator = take.getDenominator();
+                ArrayList<QyMsg> list = MSG_CONTAINER.get(partition_id);
+
+                //最后一块拼图。
+                if (list != null && list.size() + 1 == denominator) {
+                    list.add(take);
+                    byte[] b = new byte[0];
+                    AtomicReference<byte[]> buf = new AtomicReference<>();
+                    buf.set(b);
+                    list
+                            .stream()
+                            .sorted(Comparator.comparingInt(QyMsg::getNumerator))
+                            .forEach(a ->
+                                    buf.set(
+                                            ArrayUtils.addAll(buf.get(), (byte[]) MsgHelper.gainObjMsg(a))
+                                    )
+                            );
+
+                    MsgType msgType = take.getMsgType();
+                    DataType dataType = take.getDataType();
+
+                    QyMsg out = new QyMsg(msgType, dataType);
+                    out.setSegmentation(false);
+                    out.setFrom(take.getFrom());
+
+                    if (DataType.JSON.equals(dataType)) {
+
+                        out = JSON.parseObject(buf.get(), QyMsg.class);
+
+                    } else if (DataType.OBJECT.equals(dataType)) {
+
+                        out = IoUtil.deserializationObj(buf.get(), QyMsg.class);
+
+                    } else if (DataType.STRING.equals(dataType)) {
+
+                        String s = new String(buf.get(), StandardCharsets.UTF_8);
+                        out.putMsg(s);
+                    } else if (DataType.STREAM.equals(dataType)) {
+                        out.putMsg(buf.get());
+                    } else {
+                        out.putMsg(buf.get());
+                    }
+
+
+                    outQueue.put(out);
+                    MSG_CONTAINER.remove(partition_id);
+
+                } else if (list != null && MSG_CONTAINER.get(partition_id).size() + 1 != denominator) {
+                    take.putMsgData("now", LocalDateTime.now());
+                    MSG_CONTAINER.get(partition_id).add(take);
+                } else {
+
+                    ArrayList<QyMsg> qyMsgArrayList = new ArrayList<>();
+                    qyMsgArrayList.add(take);
+                    MSG_CONTAINER.put(partition_id, qyMsgArrayList);
+                }
+
+
+            } catch (Exception e) {
+                log.info("消息组装异常", e);
+            }
+        }
+
+    }
 }

@@ -151,13 +151,16 @@ public class IoUtil {
 
 
     public static <T> T deserializationObj(byte[] bytes2, Class<T> tClass) throws IOException, ClassNotFoundException {
-        byte[] bytes = bytes2;
         ArrayList<Integer> integers = new ArrayList<>();
-        for (byte b : bytes) {
+        for (byte b : bytes2) {
             integers.add(Integer.decode("" + b));
         }
-        ObjectInputStream inputStream = new ObjectInputStream(new WriteStreamToInputStream(integers));
+        WriteStreamToInputStream stream = new WriteStreamToInputStream(integers);
+
+        ObjectInputStream inputStream = new ObjectInputStream(stream);
         T o = (T) inputStream.readObject();
+        stream.close();
+        inputStream.close();
         return o;
     }
 

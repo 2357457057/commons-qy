@@ -159,6 +159,21 @@ public class MsgTransfer {
     }
 
 
+    public static void writeQyMsg(SocketChannel socketChannel, QyMsg qyMsg) throws Exception {
+        ArrayList<byte[]> assembly = assembly(qyMsg);
+        for (byte[] bytes : assembly) {
+            writeBytes(socketChannel, bytes);
+        }
+    }
+
+    public static void writeQyMsg(Socket socket, QyMsg qyMsg) throws Exception {
+        ArrayList<byte[]> assembly = assembly(qyMsg);
+        for (byte[] bytes : assembly) {
+            writeBytes(socket, bytes);
+        }
+    }
+
+
     /**
      * @param qyMsg 消息
      * @author YYJ
@@ -604,6 +619,19 @@ public class MsgTransfer {
         byteBuffer.put(bytes);
         byteBuffer.flip();
         socketChannel.write(byteBuffer);
+    }
+
+    public static void writeBytes(SocketChannel socketChannel, byte[] bytes) throws Exception {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length);
+        byteBuffer.put(bytes);
+        byteBuffer.flip();
+        socketChannel.write(byteBuffer);
+    }
+
+    public static void writeBytes(Socket socket, byte[] bytes) throws Exception {
+        OutputStream outputStream = socket.getOutputStream();
+        outputStream.write(bytes);
+        outputStream.flush();
     }
 
 

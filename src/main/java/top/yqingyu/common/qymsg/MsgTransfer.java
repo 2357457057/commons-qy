@@ -214,8 +214,8 @@ public class MsgTransfer {
      * @author YYJ
      * @description 消息解析
      */
-    public static QyMsg disassembly(InputStream inputStream, Queue<QyMsg> segmentation$queue) throws IOException, ClassNotFoundException {
-
+    public static QyMsg disassembly(Socket socket, Queue<QyMsg> segmentation$queue) throws IOException, ClassNotFoundException {
+        InputStream inputStream = socket.getInputStream();
         byte[] readBytes = IoUtil.readBytes(inputStream, 8);
         String s = new String(readBytes, StandardCharsets.UTF_8);
         char $0 = s.charAt(0);//msg  type
@@ -448,15 +448,15 @@ public class MsgTransfer {
      */
     private static QyMsg NORM_MSG_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, InputStream inputStream) throws IOException, ClassNotFoundException {
 
-        if (DataType.JSON.equals(CHAR_2_DATA_TYPE(msg_type))) {
+        if (DataType.JSON.equals(CHAR_2_DATA_TYPE(data_type))) {
 
             byte[] bytes = IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
             return JSON.parseObject(bytes, QyMsg.class);
-        } else if (DataType.OBJECT.equals(CHAR_2_DATA_TYPE(msg_type))) {
+        } else if (DataType.OBJECT.equals(CHAR_2_DATA_TYPE(data_type))) {
 
             byte[] bytes = IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
             return IoUtil.deserializationObj(bytes, QyMsg.class);
-        } else if (DataType.STRING.equals(CHAR_2_DATA_TYPE(msg_type))) {
+        } else if (DataType.STRING.equals(CHAR_2_DATA_TYPE(data_type))) {
 
             byte[] bytes = IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
             String s = new String(bytes, StandardCharsets.UTF_8);
@@ -467,7 +467,7 @@ public class MsgTransfer {
             qyMsg.putMsg(msg);
 
             return qyMsg;
-        } else if (DataType.STREAM.equals(CHAR_2_DATA_TYPE(msg_type))) {
+        } else if (DataType.STREAM.equals(CHAR_2_DATA_TYPE(data_type))) {
             return streamDeal(msg_type, data_type, msg_length, inputStream);
         } else {
             return streamDeal(msg_type, data_type, msg_length, inputStream);
@@ -479,7 +479,7 @@ public class MsgTransfer {
      */
     private static QyMsg ERR_MSG_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, InputStream inputStream) {
 
-        if (DataType.JSON.equals(CHAR_2_DATA_TYPE(msg_type))) {
+        if (DataType.JSON.equals(CHAR_2_DATA_TYPE(data_type))) {
             byte[] bytes = IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
             return JSON.parseObject(bytes, QyMsg.class);
         } else {
@@ -526,15 +526,15 @@ public class MsgTransfer {
      */
     private static QyMsg NORM_MSG_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, SocketChannel socketChannel) throws IOException, ClassNotFoundException {
 
-        if (DataType.JSON.equals(CHAR_2_DATA_TYPE(msg_type))) {
+        if (DataType.JSON.equals(CHAR_2_DATA_TYPE(data_type))) {
 
             byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
             return JSON.parseObject(bytes, QyMsg.class);
-        } else if (DataType.OBJECT.equals(CHAR_2_DATA_TYPE(msg_type))) {
+        } else if (DataType.OBJECT.equals(CHAR_2_DATA_TYPE(data_type))) {
 
             byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
             return IoUtil.deserializationObj(bytes, QyMsg.class);
-        } else if (DataType.STRING.equals(CHAR_2_DATA_TYPE(msg_type))) {
+        } else if (DataType.STRING.equals(CHAR_2_DATA_TYPE(data_type))) {
 
             byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
             String s = new String(bytes, StandardCharsets.UTF_8);
@@ -545,7 +545,7 @@ public class MsgTransfer {
             qyMsg.putMsg(msg);
 
             return qyMsg;
-        } else if (DataType.STREAM.equals(CHAR_2_DATA_TYPE(msg_type))) {
+        } else if (DataType.STREAM.equals(CHAR_2_DATA_TYPE(data_type))) {
             return streamDeal(msg_type, data_type, msg_length, socketChannel);
         } else {
             return streamDeal(msg_type, data_type, msg_length, socketChannel);
@@ -557,7 +557,7 @@ public class MsgTransfer {
      */
     private static QyMsg ERR_MSG_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, SocketChannel socketChannel) throws IOException {
 
-        if (DataType.JSON.equals(CHAR_2_DATA_TYPE(msg_type))) {
+        if (DataType.JSON.equals(CHAR_2_DATA_TYPE(data_type))) {
             byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MSG_LENGTH_RADIX));
             return JSON.parseObject(bytes, QyMsg.class);
         } else {
@@ -596,19 +596,19 @@ public class MsgTransfer {
         }
     }
 
-    /**
-     * description: 通过 SocketChannel 写出杨氏消息体
-     *
-     * @author yqingyu
-     * DATE 2022/4/22
-     */
-    public static void writeMessage(SocketChannel socketChannel, QyMsg msg) throws Exception {
-        try {
-            writeQyBytes(socketChannel, msg.toString().getBytes(StandardCharsets.UTF_8));
-        } catch (Exception e) {
-            throw new Exception("WriteMsgError", e);
-        }
-    }
+//    /**
+//     * description: 通过 SocketChannel 写出杨氏消息体
+//     *
+//     * @author yqingyu
+//     * DATE 2022/4/22
+//     */
+//    public static void writeMessage(SocketChannel socketChannel, QyMsg msg) throws Exception {
+//        try {
+//            writeQyBytes(socketChannel, msg.toString().getBytes(StandardCharsets.UTF_8));
+//        } catch (Exception e) {
+//            throw new Exception("WriteMsgError", e);
+//        }
+//    }
 
 
     public static void writeQyBytes(SocketChannel socketChannel, byte[] bytes) throws Exception {

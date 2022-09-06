@@ -28,11 +28,12 @@ public class ClazzUtil {
     private static final Logger logger = LoggerFactory.getLogger(ClazzUtil.class);
 
     /**
-      * description: 获取指定包名下的所有类
-      * @param isRecursive 是否递归
-      * @author yqingyu
-      * DATE 2022/4/24
-      */
+     * description: 获取指定包名下的所有类
+     *
+     * @param isRecursive 是否递归
+     * @author yqingyu
+     * DATE 2022/4/24
+     */
     public static List<Class<?>> getClassList(String packageName, boolean isRecursive) {
         List<Class<?>> classList = new ArrayList<>();
         try {
@@ -52,8 +53,8 @@ public class ClazzUtil {
                             JarEntry jarEntry = jarEntries.nextElement();
                             String jarEntryName = jarEntry.getName();
                             if (jarEntryName.endsWith(".class")) {
-                                String className = jarEntryName.substring(0, jarEntryName.lastIndexOf(".")).replaceAll("/", ".");
-                                if (isRecursive || className.substring(0, className.lastIndexOf(".")).equals(packageName)) {
+                                String className = jarEntryName.substring(0, Math.max(jarEntryName.lastIndexOf("."),0)).replaceAll("/", ".");
+                                if (isRecursive || className.substring(0, Math.max(className.lastIndexOf("."), 0)).equals(packageName)) {
                                     classList.add(Class.forName(className));
                                 }
                             }
@@ -62,7 +63,7 @@ public class ClazzUtil {
                 }
             }
         } catch (Exception e) {
-           logger.error("读取包{}下所有类失败,递归开关{}  E: {}",packageName,isRecursive,e);
+            logger.error("读取包{}下所有类失败,递归开关{}  E: {}", packageName, isRecursive, e);
         }
         return classList;
     }
@@ -87,7 +88,7 @@ public class ClazzUtil {
                             JarEntry jarEntry = jarEntries.nextElement();
                             String jarEntryName = jarEntry.getName();
                             if (jarEntryName.endsWith(".class")) {
-                                String className = jarEntryName.substring(0, jarEntryName.lastIndexOf(".")).replaceAll("/", ".");
+                                String className = jarEntryName.substring(0,  Math.max(jarEntryName.lastIndexOf("."), 0)).replaceAll("/", ".");
                                 Class<?> cls = Class.forName(className);
                                 if (cls.isAnnotationPresent(annotationClass)) {
                                     classList.add(cls);
@@ -136,7 +137,7 @@ public class ClazzUtil {
     }
 
     private static String getClassName(String packageName, String fileName) {
-        String className = fileName.substring(0, fileName.lastIndexOf("."));
+        String className = fileName.substring(0, Math.max(fileName.lastIndexOf("."),0));
         if (StringUtils.isNotEmpty(packageName)) {
             className = packageName + "." + className;
         }

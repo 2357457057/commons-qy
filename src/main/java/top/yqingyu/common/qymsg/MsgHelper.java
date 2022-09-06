@@ -2,8 +2,8 @@ package top.yqingyu.common.qymsg;
 
 
 import cn.hutool.core.date.LocalDateTimeUtil;
-import lombok.extern.slf4j.Slf4j;
 import com.alibaba.fastjson2.JSON;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import top.yqingyu.common.utils.IoUtil;
 import top.yqingyu.common.utils.ThreadUtil;
@@ -19,6 +19,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author YYJ
@@ -55,6 +56,8 @@ public class MsgHelper implements Runnable {
     private final int clearTime;
     private final HashMap<String, ArrayList<QyMsg>> MSG_CONTAINER = new HashMap<>();
 
+    private final ReentrantLock lock  = new ReentrantLock();
+
     public MsgHelper(BlockingQueue<QyMsg> inQueue, BlockingQueue<QyMsg> outQueue, AtomicBoolean running, int clearTime) {
         this.inQueue = inQueue;
         this.outQueue = outQueue;
@@ -86,6 +89,7 @@ public class MsgHelper implements Runnable {
         ThreadUtil.createPeriodScheduled(0, 30, TimeUnit.MINUTES, () -> {
             ThreadUtil.setThisThreadName(monitor);
             try {
+                lock.lock();
                 LocalDateTime now = LocalDateTime.now();
                 MSG_CONTAINER.forEach((k, list) -> {
                     Optional<QyMsg> max =
@@ -99,11 +103,12 @@ public class MsgHelper implements Runnable {
 
                     if (max.isPresent()) {
 
+                        //当前分区的数据最老数据
                         QyMsg maxMsg = max.get();
                         long min = LocalDateTimeUtil.between(now, (LocalDateTime) MsgHelper.gainMsgOBJ(maxMsg, "now"), ChronoUnit.MINUTES);
-
                         if (min > clearTime) {
                             MSG_CONTAINER.remove(k);
+                            log.debug("消息过期，已清除 {} ",maxMsg);
                         }
 
                     }
@@ -112,11 +117,14 @@ public class MsgHelper implements Runnable {
 
                 log.error("容器清除器异常", e);
 
+            }finally {
+                lock.unlock();
             }
 
         });
         while (running.get()) {
             try {
+                lock.lock();
                 QyMsg take = inQueue.take();
                 String partition_id = take.getPartition_id();
                 Integer denominator = take.getDenominator();
@@ -165,6 +173,7 @@ public class MsgHelper implements Runnable {
 
                     outQueue.put(out);
                     MSG_CONTAINER.remove(partition_id);
+                    log.debug("消息partition {} 拼接完成",partition_id);
 
                 } else if (list != null && MSG_CONTAINER.get(partition_id).size() + 1 != denominator) {
                     take.putMsgData("now", LocalDateTime.now());
@@ -178,7 +187,9 @@ public class MsgHelper implements Runnable {
 
 
             } catch (Exception e) {
-                log.info("消息组装异常", e);
+                log.debug("消息组装异常", e);
+            }finally {
+                lock.unlock();
             }
         }
 

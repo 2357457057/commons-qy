@@ -26,7 +26,7 @@ import java.nio.channels.ServerSocketChannel;
 public class CreateServer {
     private static final Logger log = LoggerFactory.getLogger(CreateServer.class);
     private Integer port;
-    private String name;
+    private String serverName;
     private final Selector selector;
     private ServerSocketChannel serverSocketChannel;
     private Class<? extends EventHandler> eventClazz;
@@ -39,7 +39,7 @@ public class CreateServer {
 
     public CreateServer(int port, String name, Selector selector, ServerSocketChannel serverSocketChannel, Class<? extends EventHandler> eventClazz, HandlerDispatcher handlerDispatcher) {
         this.port = port;
-        this.name = name;
+        this.serverName = name;
         this.selector = selector;
         this.serverSocketChannel = serverSocketChannel;
         this.eventClazz = eventClazz;
@@ -59,7 +59,7 @@ public class CreateServer {
         server.serverSocketChannel = ServerSocketChannel.open();
         server.serverSocketChannel.configureBlocking(false);
         server.port = port;
-        server.name = serverName;
+        server.serverName = serverName;
         return server;
     }
 
@@ -67,7 +67,6 @@ public class CreateServer {
     /**
      * step1
      *
-     * @param port       服务器端口
      * @param serverName 服务器名称
      * @author YYJ
      * @description
@@ -76,7 +75,7 @@ public class CreateServer {
         CreateServer server = new CreateServer(Selector.open());
         server.serverSocketChannel = ServerSocketChannel.open();
         server.serverSocketChannel.configureBlocking(false);
-        server.name = serverName;
+        server.serverName = serverName;
         return server;
     }
 
@@ -86,6 +85,8 @@ public class CreateServer {
      * @description
      */
     public CreateServer setRouter(HandlerRouter handlerRouter) throws ClosedChannelException {
+        if (this.eventClazz == null)
+            throw new RuntimeException("where is EventHandler ?");
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT, handlerRouter);
         return this;
     }
@@ -106,6 +107,15 @@ public class CreateServer {
      */
     public CreateServer defaultFixRouter(int size) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         return this.setRouter(HandlerRouter.createDefault(serverSocketChannel, size, 2, eventClazz));
+    }
+
+
+    /**
+     * @author YYJ
+     * @description 创建默认路由，默认handler数量,并为每个handler指定 size 的任务线程池
+     */
+    public CreateServer defaultRouterPerPool(int perHandlerPoolSize) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        return this.setRouter(HandlerRouter.createDefault(serverSocketChannel, eventClazz, perHandlerPoolSize));
     }
 
     /**
@@ -143,8 +153,8 @@ public class CreateServer {
         if (this.handlerDispatcher == null) {
             handlerDispatcher = new HandlerDispatcher(selector);
         }
-        handlerDispatcher.start(name == null ? "QyServer" : name);
-        log.info("{} start success ! bind port: {}", name, port);
+        handlerDispatcher.start(serverName == null ? "QyServer" : serverName);
+        log.info("{} start success ! bind port: {}", serverName, port);
         return this;
     }
 
@@ -158,7 +168,7 @@ public class CreateServer {
     public void stop() throws IOException {
         handlerDispatcher.stop();
         serverSocketChannel.close();
-        log.info("{} stop success !  port{} unbind", name, port);
+        log.info("{} stop success !  port{} unbind", serverName, port);
     }
 
     /**
@@ -171,6 +181,26 @@ public class CreateServer {
     public CreateServer listenPort(int port) throws IOException {
         if (this.port == null) {
             this.port = port;
+        } else
+            log.warn("use constructor init port {}", this.port);
+
+        log.info("server {} bind port {}", serverName, this.port);
+        ServerSocket serverSocket = serverSocketChannel.socket();
+        InetSocketAddress inetSocketAddress = new InetSocketAddress(this.port);
+        serverSocket.bind(inetSocketAddress);
+        return this;
+    }
+
+    /**
+     * step 4
+     * 监听端口 若未在创建构造方法初始化将监听本端口
+     *
+     * @author YYJ
+     * @description
+     */
+    public CreateServer listenPort() throws IOException {
+        if (this.port == null) {
+            throw new RuntimeException("port not init");
         }
         ServerSocket serverSocket = serverSocketChannel.socket();
         InetSocketAddress inetSocketAddress = new InetSocketAddress(this.port);

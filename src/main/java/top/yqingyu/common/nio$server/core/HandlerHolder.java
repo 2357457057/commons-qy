@@ -44,7 +44,12 @@ public class HandlerHolder {
 
     public static HandlerHolder createDefaultSize(Class<? extends EventHandler> clazz) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         int i = Runtime.getRuntime().availableProcessors();
-        return new HandlerHolder(i * 2, 2, clazz);
+        return createFixed(i * 2, 2, clazz);
+    }
+
+    public static HandlerHolder createDefaultSize(Class<? extends EventHandler> clazz,int perHandlerPoolSize) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        int i = Runtime.getRuntime().availableProcessors();
+        return new HandlerHolder(i * 2, perHandlerPoolSize, clazz);
     }
 
     public static HandlerHolder createFixed(int size, int perHandlerPoolSize, Class<? extends EventHandler> clazz) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {

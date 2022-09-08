@@ -33,6 +33,10 @@ public class HandlerRouter {
     public static HandlerRouter createDefault(ServerSocketChannel serverSocketChannel, Class<? extends EventHandler> clazz) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         return new HandlerRouter(serverSocketChannel, HandlerHolder.createDefaultSize(clazz));
     }
+    public static HandlerRouter createDefault(ServerSocketChannel serverSocketChannel, Class<? extends EventHandler> clazz,int perHandlerPoolSize) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        return new HandlerRouter(serverSocketChannel, HandlerHolder.createDefaultSize(clazz,perHandlerPoolSize));
+    }
+
 
     public static HandlerRouter createDefault(ServerSocketChannel serverSocketChannel, int size, int perHandlerPoolSize, Class<? extends EventHandler> clazz) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         return new HandlerRouter(serverSocketChannel, HandlerHolder.createFixed(size, perHandlerPoolSize, clazz));

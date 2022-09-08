@@ -1,5 +1,6 @@
 package top.yqingyu.common.nio$server;
 
+import cn.hutool.core.date.LocalDateTimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.nio$server.core.HandlerDispatcher;
@@ -14,6 +15,8 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * @author YYJ
@@ -31,13 +34,17 @@ public class CreateServer {
     private ServerSocketChannel serverSocketChannel;
     private Class<? extends EventHandler> eventClazz;
 
+    private final LocalDateTime startTime;
+
     private HandlerDispatcher handlerDispatcher;
 
     private CreateServer(Selector selector) {
+        this.startTime = getTime();
         this.selector = selector;
     }
 
     public CreateServer(int port, String name, Selector selector, ServerSocketChannel serverSocketChannel, Class<? extends EventHandler> eventClazz, HandlerDispatcher handlerDispatcher) {
+        this.startTime = getTime();
         this.port = port;
         this.serverName = name;
         this.selector = selector;
@@ -154,7 +161,8 @@ public class CreateServer {
             handlerDispatcher = new HandlerDispatcher(selector);
         }
         handlerDispatcher.start(serverName == null ? "QyServer" : serverName);
-        log.info("{} start success ! bind port: {}", serverName, port);
+        long time = LocalDateTimeUtil.between(this.startTime, getTime(), ChronoUnit.NANOS);
+        log.info("{} start success ! cost {}nanos", serverName, time);
         return this;
     }
 
@@ -184,10 +192,10 @@ public class CreateServer {
         } else
             log.warn("use constructor init port {}", this.port);
 
-        log.info("server {} bind port {}", serverName, this.port);
         ServerSocket serverSocket = serverSocketChannel.socket();
         InetSocketAddress inetSocketAddress = new InetSocketAddress(this.port);
         serverSocket.bind(inetSocketAddress);
+        log.info("server {} bind port {}", serverName, this.port);
         return this;
     }
 
@@ -205,6 +213,11 @@ public class CreateServer {
         ServerSocket serverSocket = serverSocketChannel.socket();
         InetSocketAddress inetSocketAddress = new InetSocketAddress(this.port);
         serverSocket.bind(inetSocketAddress);
+        log.info("server {} bind port {}", serverName, this.port);
         return this;
+    }
+
+    private LocalDateTime getTime() {
+        return LocalDateTime.now();
     }
 }

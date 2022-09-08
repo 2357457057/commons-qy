@@ -1,6 +1,7 @@
 package top.yqingyu.common.nio$server.core;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.yqingyu.common.nio$server.event.EventHandler;
 import top.yqingyu.common.utils.ThreadUtil;
 
@@ -20,8 +21,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @description
  * @createTime 2022年09月07日 13:42:00
  */
-@Slf4j
+
 public class HandlerHolder {
+
+    private static final Logger log = LoggerFactory.getLogger(HandlerHolder.class);
 
     private final ArrayList<EventHandler> list;
     private final int size;

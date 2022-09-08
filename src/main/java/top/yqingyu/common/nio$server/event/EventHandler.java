@@ -1,6 +1,7 @@
 package top.yqingyu.common.nio$server.event;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
@@ -16,8 +17,9 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @description
  * @createTime 2022年09月07日 15:58:00
  */
-@Slf4j
+
 public abstract class EventHandler implements Runnable {
+    private static final Logger log = LoggerFactory.getLogger(EventHandler.class);
     private final Selector selector;
     protected final ThreadPoolExecutor POOL;
 

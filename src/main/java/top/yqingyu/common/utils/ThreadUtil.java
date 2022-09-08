@@ -29,7 +29,7 @@ public class ThreadUtil {
         ThreadFactory QyThreadFactory(String poolName, String threadName) {
 
 
-            StringBuilder sb = new StringBuilder("QyPool");
+            StringBuilder sb = new StringBuilder("Pool");
 
             SecurityManager s = System.getSecurityManager();
 

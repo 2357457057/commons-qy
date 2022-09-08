@@ -1,8 +1,9 @@
 package top.yqingyu.common.utils;
 
 import cn.hutool.core.io.IORuntimeException;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.Socket;
@@ -25,11 +26,10 @@ import java.util.concurrent.atomic.AtomicReference;
  * @description
  * @modified by
  */
-@Slf4j
+
 public class IoUtil {
 
-
-    /**
+    private static final Logger log = LoggerFactory.getLogger(IoUtil.class);    /**
      * description: 读取InputStream中的数据读到一定长度的 byte
      *
      * @author yqingyu

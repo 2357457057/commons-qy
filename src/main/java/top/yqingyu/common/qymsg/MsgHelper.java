@@ -3,8 +3,9 @@ package top.yqingyu.common.qymsg;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.alibaba.fastjson2.JSON;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.yqingyu.common.utils.IoUtil;
 import top.yqingyu.common.utils.ThreadUtil;
 
@@ -28,10 +29,10 @@ import java.util.concurrent.locks.ReentrantLock;
  * @description
  * @createTime 2022年09月02日 00:31:00
  */
-@Slf4j
+
 public class MsgHelper implements Runnable {
 
-
+    private static final Logger log = LoggerFactory.getLogger(MsgHelper.class);
     public static String gainMsg(QyMsg msg) {
         return msg.getDataMap().getString("MSG", "");
     }

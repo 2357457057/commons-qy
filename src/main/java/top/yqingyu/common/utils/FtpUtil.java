@@ -1,13 +1,13 @@
 package top.yqingyu.common.utils;
 
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.yqingyu.common.bean.FtpInfo;
-
 
 import java.io.*;
 
@@ -18,11 +18,11 @@ import java.io.*;
  * @description
  * @modified by
  */
-@Slf4j
+
 public class FtpUtil {
 
 
-
+    private static final Logger log = LoggerFactory.getLogger(FtpUtil.class);
     /**
      * 设置缓冲区大小4M
      **/

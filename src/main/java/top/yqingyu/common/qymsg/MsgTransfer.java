@@ -2,8 +2,9 @@ package top.yqingyu.common.qymsg;
 
 import cn.hutool.core.io.IORuntimeException;
 import com.alibaba.fastjson2.JSON;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.yqingyu.common.utils.IoUtil;
 
 import java.io.IOException;
@@ -25,10 +26,11 @@ import java.util.concurrent.ExecutorService;
  * @description
  * @createTime 2022年09月01日 23:03:00
  */
-@Slf4j
+
 @SuppressWarnings("all")
 public class MsgTransfer {
     //消息长度占位长度
+    private static final Logger log = LoggerFactory.getLogger(MsgTransfer.class);
     protected static int BODY_LENGTH_MAX = 1024 * 1;
 
 //    private static final int MSG_LENGTH_MAX = 33_554_432;

@@ -1,8 +1,9 @@
 package top.yqingyu.common.qymsg;
 
 import com.alibaba.fastjson2.JSON;
-import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.yqingyu.common.utils.IoUtil;
 
 import java.io.IOException;
@@ -19,10 +20,10 @@ import java.util.concurrent.BlockingQueue;
  * @description
  * @createTime 2022年09月06日 10:36:00
  */
-@Slf4j
+
 public class DisassemblyMsg {
 
-
+    private static final Logger log = LoggerFactory.getLogger(DisassemblyMsg.class);
     /**
      * @param sleep 服务端出口有限，需增加间隔时间，否则会导致流读不完整
      * @author YYJ

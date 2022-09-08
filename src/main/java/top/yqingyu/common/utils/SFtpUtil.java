@@ -1,22 +1,16 @@
 package top.yqingyu.common.utils;
 
 
+import com.jcraft.jsch.*;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import top.yqingyu.common.bean.FtpInfo;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 import java.util.Vector;
-
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
-
-
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
-import top.yqingyu.common.bean.FtpInfo;
 
 /**
  * @author YYJ
@@ -25,10 +19,10 @@ import top.yqingyu.common.bean.FtpInfo;
  * @description
  * @modified by
  */
-@Slf4j
+
 public class SFtpUtil {
 
-
+    private static final Logger log = LoggerFactory.getLogger(FtpUtil.class);
 
     private ChannelSftp sftp;
     private Session session;

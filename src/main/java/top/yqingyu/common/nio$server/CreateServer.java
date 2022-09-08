@@ -1,6 +1,7 @@
 package top.yqingyu.common.nio$server;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.yqingyu.common.nio$server.core.HandlerDispatcher;
 import top.yqingyu.common.nio$server.core.HandlerRouter;
 import top.yqingyu.common.nio$server.event.EventHandler;
@@ -21,9 +22,9 @@ import java.nio.channels.ServerSocketChannel;
  * @description
  * @createTime 2022年09月07日 19:49:00
  */
-@Slf4j
-public class CreateServer {
 
+public class CreateServer {
+    private static final Logger log = LoggerFactory.getLogger(CreateServer.class);
     private int port;
     private String name;
     private final Selector selector;

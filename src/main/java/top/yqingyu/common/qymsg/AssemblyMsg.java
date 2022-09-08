@@ -1,9 +1,10 @@
 package top.yqingyu.common.qymsg;
 
 import com.alibaba.fastjson2.JSON;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.yqingyu.common.utils.ArrayUtil;
 import top.yqingyu.common.utils.IoUtil;
 
@@ -18,9 +19,9 @@ import java.util.ArrayList;
  * @description
  * @createTime 2022年09月06日 10:36:00
  */
-@Slf4j
- class AssemblyMsg {
 
+ class AssemblyMsg {
+    private static final Logger log = LoggerFactory.getLogger(AssemblyMsg.class);
 
     /**
      * @param qyMsg 消息

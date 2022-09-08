@@ -18,6 +18,7 @@ public class DemoServer {
                 .createDefault(8080, "main")
                 .implEvent(EventHandler.class)
                 .defaultFixRouter(4,2)
+                .listenPort()
                 .start();
     }
 }

@@ -54,7 +54,7 @@ public class HandlerRouter {
             handlerHolder.startHandle(eventHandler);
             nextSelector.wakeup();
         } catch (Exception e) {
-            log.error("分发器异常", e);
+            log.error("router error", e);
         }
 
     }

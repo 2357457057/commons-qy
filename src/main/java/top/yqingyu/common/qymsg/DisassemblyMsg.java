@@ -1,6 +1,7 @@
 package top.yqingyu.common.qymsg;
 
 import com.alibaba.fastjson2.JSON;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import top.yqingyu.common.utils.IoUtil;
 
@@ -18,6 +19,7 @@ import java.util.concurrent.BlockingQueue;
  * @description
  * @createTime 2022年09月06日 10:36:00
  */
+@Slf4j
 public class DisassemblyMsg {
 
 
@@ -48,6 +50,7 @@ public class DisassemblyMsg {
             readBytes = IoUtil.readBytes(inputStream, Integer.parseInt($3, MsgTransfer.MSG_LENGTH_RADIX));
             parse.putMsg(readBytes);
             segmentation$queue.add(parse);
+            log.debug("part msg id: {} the part {} of {}", parse.getPartition_id(), parse.getNumerator(), parse.getDenominator());
             return null;
         } else {
             MsgType msgType = MsgTransfer.CHAR_2_MSG_TYPE($0);
@@ -77,7 +80,7 @@ public class DisassemblyMsg {
      * @author YYJ
      * @description 消息解析
      */
-    public static QyMsg disassembly(SocketChannel socketChannel, BlockingQueue<QyMsg> segmentation$queue ,long sleep) throws IOException, ClassNotFoundException, InterruptedException {
+    public static QyMsg disassembly(SocketChannel socketChannel, BlockingQueue<QyMsg> segmentation$queue, long sleep) throws IOException, ClassNotFoundException, InterruptedException {
 
         byte[] readBytes = IoUtil.readBytes(socketChannel, 8);
         String s = new String(readBytes, StandardCharsets.UTF_8);
@@ -99,6 +102,7 @@ public class DisassemblyMsg {
             readBytes = IoUtil.readBytes(socketChannel, Integer.parseInt($3, MsgTransfer.MSG_LENGTH_RADIX));
             parse.putMsg(readBytes);
             segmentation$queue.add(parse);
+            log.debug("part msg id: {} the part {} of {}", parse.getPartition_id(), parse.getNumerator(), parse.getDenominator());
             return null;
         } else {
             MsgType msgType = MsgTransfer.CHAR_2_MSG_TYPE($0);

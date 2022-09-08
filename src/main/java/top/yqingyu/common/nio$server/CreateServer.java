@@ -116,17 +116,16 @@ public class CreateServer {
 
     /**
      * 启动服务器
-     * step 4
+     * step 5
      *
      * @author YYJ
      * @description
      */
-    public CreateServer start() throws IOException {
+    public CreateServer start() {
         if (this.handlerDispatcher == null) {
             handlerDispatcher = new HandlerDispatcher(selector);
         }
         handlerDispatcher.start(name == null ? "QyServer" : name);
-        create();
         log.info("{} start success ! bind port: {}", name, port);
         return this;
     }
@@ -140,18 +139,21 @@ public class CreateServer {
      */
     public void stop() throws IOException {
         handlerDispatcher.stop();
+        serverSocketChannel.close();
         log.info("{} stop success !  port{} unbind", name, port);
     }
 
     /**
-     * 绑定端口
+     * step 4
+     * 监听端口
      *
      * @author YYJ
      * @description
      */
-    private void create() throws IOException {
+    public CreateServer listenPort() throws IOException {
         ServerSocket serverSocket = serverSocketChannel.socket();
         InetSocketAddress inetSocketAddress = new InetSocketAddress(port);
         serverSocket.bind(inetSocketAddress);
+        return this;
     }
 }

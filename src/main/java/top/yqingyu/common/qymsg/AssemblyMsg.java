@@ -149,13 +149,13 @@ import java.util.ArrayList;
     private static void OUT_OF_LENGTH_MSG_Assembly(byte[] body, StringBuilder sb, ArrayList<byte[]> list) {
         ArrayList<byte[]> bodyList = ArrayUtil.checkArrayLength(body, MsgTransfer.BODY_LENGTH_MAX);
         if (bodyList.size() == 1) {
-            log.debug("单条消息 {}", new String(body, StandardCharsets.UTF_8));
+            log.debug("single msg {}", new String(body, StandardCharsets.UTF_8));
             sb.append(MsgTransfer.BOOLEAN_2_SEGMENTATION(false));
             sb.append(MsgTransfer.getLength(body));
             byte[] header = sb.toString().getBytes(StandardCharsets.UTF_8);
             list.add(ArrayUtils.addAll(header, body));
         } else {
-            log.debug("分片消息 {}", new String(body, StandardCharsets.UTF_8));
+            log.debug("part msg {}", new String(body, StandardCharsets.UTF_8));
             sb.append(MsgTransfer.BOOLEAN_2_SEGMENTATION(true));
             String part_trade_id = RandomStringUtils.random(16, MsgTransfer.DICT);
             for (int i = 1; i <= bodyList.size(); i++) {

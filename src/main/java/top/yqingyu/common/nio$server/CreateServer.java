@@ -161,8 +161,8 @@ public class CreateServer {
             handlerDispatcher = new HandlerDispatcher(selector);
         }
         handlerDispatcher.start(serverName == null ? "QyServer" : serverName);
-        long time = LocalDateTimeUtil.between(this.startTime, getTime(), ChronoUnit.NANOS);
-        log.info("{} start success ! cost {}nanos", serverName, time);
+        long time = LocalDateTimeUtil.between(this.startTime, getTime(), ChronoUnit.MICROS);
+        log.info("{} start success ! cost: {} micros", serverName, time);
         return this;
     }
 

@@ -98,9 +98,6 @@
         </dependency>
 
 
-
-
-
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
@@ -144,7 +141,6 @@
 
     <dependencyManagement>
         <dependencies>
-
 
 
             <dependency>
@@ -241,7 +237,7 @@
     <groupId>top.yqingyu</groupId>
     <artifactId>commons-qy</artifactId>
     <!--需要特别注意,你上传的是SNAPSHOT仓库,所以此处版本号后缀必须带SNAPSHOT-->
-    <version>1.4.4.8</version>
+    <version>1.4.5</version>
 
     <!--项目信息...-->
 

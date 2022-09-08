@@ -36,7 +36,6 @@
         <snakeyaml.version>1.31</snakeyaml.version>
         <jwt.version>4.0.0</jwt.version>
         <ftp-jsch.version>0.1.55</ftp-jsch.version>
-        <lombok.version>1.18.24</lombok.version>
         <hutool.version>5.8.5</hutool.version>
 
 
@@ -53,10 +52,7 @@
 
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
+
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -149,12 +145,6 @@
     <dependencyManagement>
         <dependencies>
 
-
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-            </dependency>
 
 
             <dependency>
@@ -251,7 +241,7 @@
     <groupId>top.yqingyu</groupId>
     <artifactId>commons-qy</artifactId>
     <!--需要特别注意,你上传的是SNAPSHOT仓库,所以此处版本号后缀必须带SNAPSHOT-->
-    <version>1.4.4.5</version>
+    <version>1.4.4.6</version>
 
     <!--项目信息...-->
 

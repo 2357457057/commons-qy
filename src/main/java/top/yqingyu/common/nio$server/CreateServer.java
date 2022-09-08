@@ -25,7 +25,7 @@ import java.nio.channels.ServerSocketChannel;
 
 public class CreateServer {
     private static final Logger log = LoggerFactory.getLogger(CreateServer.class);
-    private int port;
+    private Integer port;
     private String name;
     private final Selector selector;
     private ServerSocketChannel serverSocketChannel;
@@ -59,6 +59,23 @@ public class CreateServer {
         server.serverSocketChannel = ServerSocketChannel.open();
         server.serverSocketChannel.configureBlocking(false);
         server.port = port;
+        server.name = serverName;
+        return server;
+    }
+
+
+    /**
+     * step1
+     *
+     * @param port       服务器端口
+     * @param serverName 服务器名称
+     * @author YYJ
+     * @description
+     */
+    public static CreateServer createDefault(String serverName) throws IOException {
+        CreateServer server = new CreateServer(Selector.open());
+        server.serverSocketChannel = ServerSocketChannel.open();
+        server.serverSocketChannel.configureBlocking(false);
         server.name = serverName;
         return server;
     }
@@ -146,14 +163,17 @@ public class CreateServer {
 
     /**
      * step 4
-     * 监听端口
+     * 监听端口 若未在创建构造方法初始化将监听本端口
      *
      * @author YYJ
      * @description
      */
-    public CreateServer listenPort() throws IOException {
+    public CreateServer listenPort(int port) throws IOException {
+        if (this.port == null) {
+            this.port = port;
+        }
         ServerSocket serverSocket = serverSocketChannel.socket();
-        InetSocketAddress inetSocketAddress = new InetSocketAddress(port);
+        InetSocketAddress inetSocketAddress = new InetSocketAddress(this.port);
         serverSocket.bind(inetSocketAddress);
         return this;
     }

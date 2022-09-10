@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.nio$server.core.HandlerDispatcher;
 import top.yqingyu.common.nio$server.core.HandlerRouter;
-import top.yqingyu.common.nio$server.event.EventHandler;
+import top.yqingyu.common.nio$server.core.EventHandler;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

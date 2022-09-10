@@ -2,7 +2,6 @@ package top.yqingyu.common.nio$server.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.yqingyu.common.nio$server.event.EventHandler;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -33,8 +32,9 @@ public class HandlerRouter {
     public static HandlerRouter createDefault(ServerSocketChannel serverSocketChannel, Class<? extends EventHandler> clazz) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         return new HandlerRouter(serverSocketChannel, HandlerHolder.createDefaultSize(clazz));
     }
-    public static HandlerRouter createDefault(ServerSocketChannel serverSocketChannel, Class<? extends EventHandler> clazz,int perHandlerPoolSize) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        return new HandlerRouter(serverSocketChannel, HandlerHolder.createDefaultSize(clazz,perHandlerPoolSize));
+
+    public static HandlerRouter createDefault(ServerSocketChannel serverSocketChannel, Class<? extends EventHandler> clazz, int perHandlerPoolSize) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        return new HandlerRouter(serverSocketChannel, HandlerHolder.createDefaultSize(clazz, perHandlerPoolSize));
     }
 
 

@@ -2,7 +2,6 @@ package top.yqingyu.common.nio$server.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.yqingyu.common.nio$server.event.EventHandler;
 import top.yqingyu.common.utils.ThreadUtil;
 
 import java.io.IOException;

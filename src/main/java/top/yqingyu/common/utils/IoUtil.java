@@ -29,7 +29,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class IoUtil {
 
-    private static final Logger log = LoggerFactory.getLogger(IoUtil.class);    /**
+    private static final Logger log = LoggerFactory.getLogger(IoUtil.class);
+
+    /**
      * description: 读取InputStream中的数据读到一定长度的 byte
      *
      * @author yqingyu
@@ -149,6 +151,56 @@ public class IoUtil {
 
     }
 
+    /**
+     * description: for http
+     *
+     * @author yqingyu
+     * DATE 2022/4/21
+     */
+    public static byte[] readBytes2(SocketChannel socketChannel, int len) throws IOException {
+
+        AtomicInteger integer = new AtomicInteger();
+        ByteBuffer byteBuffer = ByteBuffer.allocate(len);
+        byte[] bytes = new byte[0];
+        while (true) {
+            byteBuffer.clear();
+            int n = socketChannel.read(byteBuffer);
+            if (n == -1) {
+                break;
+            }
+            if (n == 0) {
+                if (integer.getAndIncrement() == 3) {
+                    break;
+                }
+            }
+            byteBuffer.flip();
+            int limit = byteBuffer.limit();
+            byte[] currentData = new byte[limit];
+            for (int i = 0; i < limit; i++) {
+                currentData[i] = byteBuffer.get(i);
+            }
+            bytes = ArrayUtils.addAll(bytes, currentData);
+
+            if (bytes.length == len) {
+                break;
+            }
+        }
+        return bytes;
+
+    }
+
+    public static void writeBytes(SocketChannel socketChannel, byte[] bytes) throws Exception {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length);
+        byteBuffer.put(bytes);
+        byteBuffer.flip();
+        socketChannel.write(byteBuffer);
+    }
+
+    public static void writeBytes(Socket socket, byte[] bytes) throws Exception {
+        OutputStream outputStream = socket.getOutputStream();
+        outputStream.write(bytes);
+        outputStream.flush();
+    }
 
     public static <T> T deserializationObj(byte[] bytes2, Class<T> tClass) throws IOException, ClassNotFoundException {
         ArrayList<Integer> integers = new ArrayList<>();

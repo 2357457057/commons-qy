@@ -1,13 +1,13 @@
-package top.yqingyu.common.nio$server.event;
+package top.yqingyu.common.nio$server.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -22,6 +22,8 @@ public abstract class EventHandler implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(EventHandler.class);
     private final Selector selector;
     protected final ThreadPoolExecutor POOL;
+
+    protected final LinkedBlockingQueue QUEUE = new LinkedBlockingQueue();
 
     public EventHandler(Selector selector, ThreadPoolExecutor pool) {
         this.selector = selector;
@@ -60,8 +62,9 @@ public abstract class EventHandler implements Runnable {
         }
     }
 
-    public abstract void read(Selector selector, SelectionKey selectionKey) throws IOException;
+    public abstract void read(Selector selector, SelectionKey selectionKey) throws Exception;
 
-    public abstract void write(Selector selector, SelectionKey selectionKey) throws IOException;
+    public abstract void write(Selector selector, SelectionKey selectionKey) throws Exception;
 
+    public abstract void assess(Selector selector, SelectionKey selectionKey) throws Exception;
 }

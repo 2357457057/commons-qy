@@ -19,6 +19,8 @@ import java.util.Hashtable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 
+import static top.yqingyu.common.utils.IoUtil.writeBytes;
+
 /**
  * @author YYJ
  * @version 1.0.0
@@ -259,18 +261,7 @@ public class MsgTransfer {
         socketChannel.write(byteBuffer);
     }
 
-    public static void writeBytes(SocketChannel socketChannel, byte[] bytes) throws Exception {
-        ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length);
-        byteBuffer.put(bytes);
-        byteBuffer.flip();
-        socketChannel.write(byteBuffer);
-    }
 
-    public static void writeBytes(Socket socket, byte[] bytes) throws Exception {
-        OutputStream outputStream = socket.getOutputStream();
-        outputStream.write(bytes);
-        outputStream.flush();
-    }
 
 
     /**

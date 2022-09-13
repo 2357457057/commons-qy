@@ -196,6 +196,13 @@ public class IoUtil {
         socketChannel.write(byteBuffer);
     }
 
+    public static void writeBytes(SocketChannel socketChannel, byte[] bytes,int length) throws Exception {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(length);
+        byteBuffer.put(bytes);
+        byteBuffer.flip();
+        socketChannel.write(byteBuffer);
+    }
+
     public static void writeBytes(Socket socket, byte[] bytes) throws Exception {
         OutputStream outputStream = socket.getOutputStream();
         outputStream.write(bytes);

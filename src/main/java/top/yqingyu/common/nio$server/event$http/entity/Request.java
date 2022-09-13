@@ -23,6 +23,7 @@ public class Request {
 
     private final DataMap header = new DataMap();
 
+    private final DataMap cookie = new DataMap();
     private String ContentType;
 
     private byte[] body;
@@ -49,7 +50,7 @@ public class Request {
     }
 
     public void setHttpVersion(byte[] httpVersion) {
-        this.httpVersion = Request.HttpVersion.getVersion(new String(httpVersion, StandardCharsets.UTF_8));
+        this.httpVersion = HttpVersion.getVersion(new String(httpVersion, StandardCharsets.UTF_8));
     }
 
 
@@ -69,12 +70,30 @@ public class Request {
         return header;
     }
 
+    public String getHeader(String head) {
+        return header.getString(head);
+    }
+
     public void putHeader(String key, Object obj) {
         this.header.put(key, obj);
     }
 
+    public DataMap getCookie() {
+        return this.cookie;
+    }
+
+    public String getCookie(String cook) {
+        return this.cookie.getString(cook);
+    }
+
     public void putHeader(byte[] key, byte[] obj) {
-        this.header.put(new String(key, StandardCharsets.UTF_8), new String(obj, StandardCharsets.UTF_8));
+        String keyStr = new String(key, StandardCharsets.UTF_8);
+        String vStr = new String(obj, StandardCharsets.UTF_8);
+        if ("Cookie".equals(keyStr)) {
+            String[] split = vStr.split("=");
+            this.cookie.put(split[0], split[1]);
+        } else
+            this.header.put(keyStr, vStr);
     }
 
 
@@ -141,26 +160,6 @@ public class Request {
             else return null;
 
 
-        }
-    }
-
-    public enum HttpVersion {
-
-        V_1_1("HTTP/1.1"),
-        V_2("HTTP/2"),
-
-        V_3("HTTP/3");
-        private final String v;
-
-        HttpVersion(String v) {
-            this.v = v;
-        }
-
-        public static HttpVersion getVersion(String v) {
-            if (V_1_1.v.equals(v)) return V_1_1;
-            if (V_2.v.equals(v)) return V_2;
-            if (V_3.v.equals(v)) return V_3;
-            else return null;
         }
     }
 

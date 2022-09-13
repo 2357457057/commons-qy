@@ -214,6 +214,33 @@ public class ArrayUtil {
         return list;
     }
 
+//
+//    public static byte[] replace(byte[] source, byte[] oldB, byte[] newB) {
+//        ArrayList<Integer> list = indexOfTarget(source, oldB);
+//        int size = list.size();
+//
+//        if (size == 0) {
+//            return source;
+//        }
+//        int newLength = source.length + (newB.length - oldB.length) * size;
+//        byte[] newBytes = new byte[newLength];
+//        int srcPos = 0;
+//        int destPos = 0;
+//        for (Integer integer : list) {
+//
+//            System.arraycopy(source, srcPos, newBytes, destPos, integer + 1);
+//            System.arraycopy(newB, 0, newBytes, integer, newB.length);
+//            srcPos = integer + oldB.length;
+//            destPos = integer + newB.length;
+//
+//        }
+//        return newBytes;
+//    }
+//
+//    public static byte[] replaceAll(byte[] source, byte[] target) {
+//
+//    }
+
     /**
      * 依据目标数组拆分源数组
      *

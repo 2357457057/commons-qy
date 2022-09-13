@@ -1,0 +1,400 @@
+package top.yqingyu.common.nio$server.event$http.entity;
+
+import org.apache.hc.core5.http.HeaderElement;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.message.BasicHeaderValueFormatter;
+import org.apache.hc.core5.http.message.BasicHeaderValueParser;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
+import org.apache.hc.core5.http.message.ParserCursor;
+import org.apache.hc.core5.util.Args;
+import org.apache.hc.core5.util.CharArrayBuffer;
+import org.apache.hc.core5.util.TextUtils;
+import top.yqingyu.common.utils.YamlUtil;
+
+import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.charset.UnsupportedCharsetException;
+import java.util.*;
+
+/**
+ * @author YYJ
+ * @version 1.0.0
+ * @ClassName top.yqingyu.common.nio$server.event$http.entity.ContentType
+ * @description
+ * @createTime 2022年09月11日 00:03:00
+ */
+public class ContentType implements Serializable {
+
+
+    private static final long serialVersionUID = -7768694718232371896L;
+
+    private String adviceStatusCode;
+
+    public String getAdviceStatusCode() {
+        return adviceStatusCode;
+    }
+
+    public ContentType setAdviceStatusCode(String adviceStatusCode) {
+        this.adviceStatusCode = adviceStatusCode;
+        return this;
+    }
+
+    /**
+     * Param that represent {@code charset} constant.
+     */
+    private static final String CHARSET = "charset";
+
+    // constants
+    public static final ContentType APPLICATION_ATOM_XML = create(
+            "application/atom+xml", StandardCharsets.UTF_8);
+    public static final ContentType APPLICATION_FORM_URLENCODED = create(
+            "application/x-www-form-urlencoded", StandardCharsets.ISO_8859_1);
+    public static final ContentType APPLICATION_JSON = create(
+            "application/json", StandardCharsets.UTF_8);
+
+
+    public static final ContentType TEXT_MARKDOWN = create("text/markdown", StandardCharsets.UTF_8);
+    public static final ContentType TEXT_XML = create("text/xml", StandardCharsets.UTF_8);
+    public static final ContentType TEXT_HTML = create("text/html", StandardCharsets.UTF_8);
+    public static final ContentType TEXT_CSS = create("text/css", StandardCharsets.UTF_8);
+    public static final ContentType APPLICATION_JS = create("application/javascript", StandardCharsets.UTF_8);
+    public static final ContentType APPLICATION_PDF = create("application/pdf", StandardCharsets.UTF_8);
+    public static final ContentType APPLICATION_XML = create("application/xml", StandardCharsets.UTF_8);
+    public static final ContentType APPLICATION_OCTET_STREAM = create("application/octet-stream", (Charset) null);
+
+
+    public static final ContentType IMAGE_BMP = create(
+            "image/bmp");
+    public static final ContentType IMAGE_GIF = create(
+            "image/gif");
+    public static final ContentType IMAGE_JPEG = create(
+            "image/jpeg");
+    public static final ContentType IMAGE_PNG = create(
+            "image/png");
+    public static final ContentType IMAGE_X_ICON = create(
+            "image/x-icon");
+    public static final ContentType IMAGE_SVG = create(
+            "image/svg+xml");
+    public static final ContentType IMAGE_TIFF = create(
+            "image/tiff");
+    public static final ContentType IMAGE_WEBP = create(
+            "image/webp");
+    public static final ContentType MULTIPART_FORM_DATA = create(
+            "multipart/form-data", StandardCharsets.ISO_8859_1);
+
+    /**
+     * Public constant media type for {@code multipart/mixed}.
+     *
+     * @since 5.1
+     */
+    public static final ContentType MULTIPART_MIXED = create(
+            "multipart/mixed", StandardCharsets.ISO_8859_1);
+
+    /**
+     * Public constant media type for {@code multipart/related}.
+     *
+     * @since 5.1
+     */
+    public static final ContentType MULTIPART_RELATED = create(
+            "multipart/related", StandardCharsets.ISO_8859_1);
+
+
+    public static final ContentType TEXT_PLAIN = create(
+            "text/plain", StandardCharsets.UTF_8);
+    /**
+     * Public constant media type for {@code text/event-stream}.
+     *
+     * @see <a href="https://www.w3.org/TR/eventsource/">Server-Sent Events W3C recommendation</a>
+     * @since 5.1
+     */
+    public static final ContentType TEXT_EVENT_STREAM = create(
+            "text/event-stream", StandardCharsets.UTF_8);
+
+    public static final ContentType WILDCARD = create(
+            "*/*", (Charset) null);
+
+    /**
+     * An empty immutable {@code NameValuePair} array.
+     */
+    private static final NameValuePair[] EMPTY_NAME_VALUE_PAIR_ARRAY = new NameValuePair[0];
+
+
+    // defaults
+    public static final ContentType DEFAULT_TEXT = TEXT_PLAIN;
+    public static final ContentType DEFAULT_BINARY = APPLICATION_OCTET_STREAM;
+
+    private final String mimeType;
+    private final Charset charset;
+    private final NameValuePair[] params;
+
+    ContentType(
+            final String mimeType,
+            final Charset charset) {
+        this.mimeType = mimeType;
+        this.charset = charset;
+        this.params = null;
+    }
+
+    ContentType(
+            final String mimeType,
+            final Charset charset,
+            final NameValuePair[] params) {
+        this.mimeType = mimeType;
+        this.charset = charset;
+        this.params = params;
+    }
+
+    public String getMimeType() {
+        return this.mimeType;
+    }
+
+    public Charset getCharset() {
+        return this.charset;
+    }
+
+    /**
+     * @since 4.3
+     */
+    public String getParameter(final String name) {
+        Args.notEmpty(name, "Parameter name");
+        if (this.params == null) {
+            return null;
+        }
+        for (final NameValuePair param : this.params) {
+            if (param.getName().equalsIgnoreCase(name)) {
+                return param.getValue();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Generates textual representation of this content type which can be used as the value
+     * of a {@code Content-Type} header.
+     */
+    @Override
+    public String toString() {
+        final CharArrayBuffer buf = new CharArrayBuffer(64);
+        buf.append(this.mimeType);
+        if (this.params != null) {
+            buf.append("; ");
+            BasicHeaderValueFormatter.INSTANCE.formatParameters(buf, this.params, false);
+        } else if (this.charset != null) {
+            buf.append("; charset=");
+            buf.append(this.charset.name());
+        }
+        return buf.toString();
+    }
+
+    private static boolean valid(final String s) {
+        for (int i = 0; i < s.length(); i++) {
+            final char ch = s.charAt(i);
+            if (ch == '"' || ch == ',' || ch == ';') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Creates a new instance of {@link ContentType}.
+     *
+     * @param mimeType MIME type. It may not be {@code null} or empty. It may not contain
+     *                 characters {@code <">, <;>, <,>} reserved by the HTTP specification.
+     * @param charset  charset.
+     * @return content type
+     */
+    public static ContentType create(final String mimeType, final Charset charset) {
+        final String normalizedMimeType = Args.notBlank(mimeType, "MIME type").toLowerCase(Locale.ROOT);
+        Args.check(valid(normalizedMimeType), "MIME type may not contain reserved characters");
+        return new ContentType(normalizedMimeType, charset);
+    }
+
+    /**
+     * Creates a new instance of {@link ContentType} without a charset.
+     *
+     * @param mimeType MIME type. It may not be {@code null} or empty. It may not contain
+     *                 characters {@code <">, <;>, <,>} reserved by the HTTP specification.
+     * @return content type
+     */
+    public static ContentType create(final String mimeType) {
+        return create(mimeType, (Charset) null);
+    }
+
+    /**
+     * Creates a new instance of {@link ContentType}.
+     *
+     * @param mimeType MIME type. It may not be {@code null} or empty. It may not contain
+     *                 characters {@code <">, <;>, <,>} reserved by the HTTP specification.
+     * @param charset  charset. It may not contain characters {@code <">, <;>, <,>} reserved by the HTTP
+     *                 specification. This parameter is optional.
+     * @return content type
+     * @throws UnsupportedCharsetException Thrown when the named charset is not available in
+     *                                     this instance of the Java virtual machine
+     */
+    public static ContentType create(
+            final String mimeType, final String charset) throws UnsupportedCharsetException {
+        return create(mimeType, !TextUtils.isBlank(charset) ? Charset.forName(charset) : null);
+    }
+
+    private static ContentType create(final HeaderElement helem, final boolean strict) {
+        final String mimeType = helem.getName();
+        if (TextUtils.isBlank(mimeType)) {
+            return null;
+        }
+        return create(helem.getName(), helem.getParameters(), strict);
+    }
+
+    private static ContentType create(final String mimeType, final NameValuePair[] params, final boolean strict) {
+        Charset charset = null;
+        if (params != null) {
+            for (final NameValuePair param : params) {
+                if (param.getName().equalsIgnoreCase(CHARSET)) {
+                    final String s = param.getValue();
+                    if (!TextUtils.isBlank(s)) {
+                        try {
+                            charset = Charset.forName(s);
+                        } catch (final UnsupportedCharsetException ex) {
+                            if (strict) {
+                                throw ex;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        return new ContentType(mimeType, charset, params != null && params.length > 0 ? params : null);
+    }
+
+    public static ContentType parseContentType(String resourceUrl) {
+        String[] s;
+
+        if (YamlUtil.isWindows())
+            s = resourceUrl.split("\\\\");
+        else
+            s = resourceUrl.split("/");
+
+        String fileName = s[s.length - 1];
+        String[] extendName = fileName.split("[.]");
+        if (extendName.length == 1) {
+            return ContentType.TEXT_HTML;
+        } else {
+            String code = "200";
+            return switch (extendName[1]) {
+                case "js" -> APPLICATION_JS.setAdviceStatusCode(code);
+                case "css" -> TEXT_CSS.setAdviceStatusCode(code);
+                case "pdf" -> APPLICATION_PDF;
+                case "png" -> IMAGE_PNG.setAdviceStatusCode(code);
+                case "jpg", "jpeg" -> IMAGE_JPEG.setAdviceStatusCode(code);
+                case "gif" -> IMAGE_GIF.setAdviceStatusCode(code);
+                case "ico" -> IMAGE_X_ICON;
+                case "md" -> TEXT_MARKDOWN;
+                case "webp" -> IMAGE_WEBP;
+                case "xlsx", "xls" -> TEXT_XML;
+                case "txt", "java", "yml", "yaml" -> TEXT_PLAIN;
+                case "doc", "docx", "exe", "zip", "rar", "7z", "msi" -> APPLICATION_OCTET_STREAM;
+                default -> ContentType.TEXT_HTML;
+            };
+        }
+    }
+
+    /**
+     * Creates a new instance of {@link ContentType} with the given parameters.
+     *
+     * @param mimeType MIME type. It may not be {@code null} or empty. It may not contain
+     *                 characters {@code <">, <;>, <,>} reserved by the HTTP specification.
+     * @param params   parameters.
+     * @return content type
+     * @since 4.4
+     */
+    public static ContentType create(
+            final String mimeType, final NameValuePair... params) throws UnsupportedCharsetException {
+        final String type = Args.notBlank(mimeType, "MIME type").toLowerCase(Locale.ROOT);
+        Args.check(valid(type), "MIME type may not contain reserved characters");
+        return create(mimeType, params, true);
+    }
+
+
+    public static ContentType parse(final CharSequence s) throws UnsupportedCharsetException {
+        return parse(s, true);
+    }
+
+
+    public static ContentType parseLenient(final CharSequence s) throws UnsupportedCharsetException {
+        return parse(s, false);
+    }
+
+    private static ContentType parse(final CharSequence s, final boolean strict) throws UnsupportedCharsetException {
+        if (TextUtils.isBlank(s)) {
+            return null;
+        }
+        final ParserCursor cursor = new ParserCursor(0, s.length());
+        final HeaderElement[] elements = BasicHeaderValueParser.INSTANCE.parseElements(s, cursor);
+        if (elements.length > 0) {
+            return create(elements[0], strict);
+        }
+        return null;
+    }
+
+
+    /**
+     * Creates a new instance with this MIME type and the given Charset.
+     *
+     * @param charset charset
+     * @return a new instance with this MIME type and the given Charset.
+     * @since 4.3
+     */
+    public ContentType withCharset(final Charset charset) {
+        return create(this.getMimeType(), charset);
+    }
+
+    /**
+     * Creates a new instance with this MIME type and the given Charset name.
+     *
+     * @param charset name
+     * @return a new instance with this MIME type and the given Charset name.
+     * @throws UnsupportedCharsetException Thrown when the named charset is not available in
+     *                                     this instance of the Java virtual machine
+     * @since 4.3
+     */
+    public ContentType withCharset(final String charset) {
+        return create(this.getMimeType(), charset);
+    }
+
+    /**
+     * Creates a new instance with this MIME type and the given parameters.
+     *
+     * @param params
+     * @return a new instance with this MIME type and the given parameters.
+     * @since 4.4
+     */
+    public ContentType withParameters(
+            final NameValuePair... params) throws UnsupportedCharsetException {
+        if (params.length == 0) {
+            return this;
+        }
+        final Map<String, String> paramMap = new LinkedHashMap<>();
+        if (this.params != null) {
+            for (final NameValuePair param : this.params) {
+                paramMap.put(param.getName(), param.getValue());
+            }
+        }
+        for (final NameValuePair param : params) {
+            paramMap.put(param.getName(), param.getValue());
+        }
+        final List<NameValuePair> newParams = new ArrayList<>(paramMap.size() + 1);
+        if (this.charset != null && !paramMap.containsKey(CHARSET)) {
+            newParams.add(new BasicNameValuePair(CHARSET, this.charset.name()));
+        }
+        for (final Map.Entry<String, String> entry : paramMap.entrySet()) {
+            newParams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+        }
+        return create(this.getMimeType(), newParams.toArray(EMPTY_NAME_VALUE_PAIR_ARRAY), true);
+    }
+
+    public boolean isSameMimeType(final ContentType contentType) {
+        return contentType != null && mimeType.equalsIgnoreCase(contentType.getMimeType());
+    }
+}

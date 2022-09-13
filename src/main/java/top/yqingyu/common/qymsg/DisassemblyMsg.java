@@ -1,7 +1,6 @@
 package top.yqingyu.common.qymsg;
 
 import com.alibaba.fastjson2.JSON;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.utils.IoUtil;
@@ -199,7 +198,6 @@ public class DisassemblyMsg {
      * @author YYJ
      * @description 流类型数据处理
      */
-    @NotNull
     private static QyMsg streamDeal(char msg_type, char data_type, String msg_length, InputStream inputStream) {
         QyMsg qyMsg = new QyMsg(MsgTransfer.CHAR_2_MSG_TYPE(msg_type), MsgTransfer.CHAR_2_DATA_TYPE(data_type));
         byte[] bytes = IoUtil.readBytes(inputStream, 36);
@@ -277,7 +275,6 @@ public class DisassemblyMsg {
      * @author YYJ
      * @description 流类型数据处理
      */
-    @NotNull
     private static QyMsg streamDeal(char msg_type, char data_type, String msg_length, SocketChannel socketChannel) throws IOException {
         byte[] bytes = IoUtil.readBytes(socketChannel, 36);
         QyMsg qyMsg = new QyMsg(MsgTransfer.CHAR_2_MSG_TYPE(msg_type), MsgTransfer.CHAR_2_DATA_TYPE(data_type));

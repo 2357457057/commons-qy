@@ -1,6 +1,7 @@
 package top.yqingyu.common.utils;
 
 import com.alibaba.fastjson2.JSON;
+import org.apache.commons.lang3.StringUtils;
 import org.yaml.snakeyaml.Yaml;
 import top.yqingyu.common.qydata.DataMap;
 import top.yqingyu.common.qydata.DataList;
@@ -262,4 +263,47 @@ public class YamlUtil {
     public static enum LoadType {
         OUTER, INNER, BOTH;
     }
+
+    /**
+     * @param rootPath 文件映射
+     * @return 目标文件list
+     * @author YYJ
+     */
+    public static HashMap<String, String> getFilePathMapping(String rootPath) {
+        String file_separator = System.getProperty("file.separator");
+
+        if (rootPath.endsWith(file_separator) && rootPath.length() > 1)
+            rootPath = StringUtils.removeEnd(rootPath, file_separator);
+
+        File file = new File(rootPath);
+        File[] files = file.listFiles();
+        HashMap<String, String> map = new HashMap<>();
+
+        assert files != null;
+        LinkedList<File> queue = new LinkedList<>(Arrays.asList(files));
+        do {
+            File poll = queue.poll();
+            if (poll != null) {
+
+                File[] listFiles = null;
+                if (poll.isDirectory()) {
+                    listFiles = poll.listFiles();
+                }
+                if (listFiles != null && listFiles.length > 0)
+                    queue.addAll(Arrays.asList(listFiles));
+
+                if (poll.isFile()) {
+                    String path = poll.getPath();
+                    map.put(path.replace(rootPath, ""), path);
+                }
+            }
+        } while (queue.size() > 0);
+
+        return map;
+    }
+
+    public static boolean isWindows() {
+        return "\\".equals(System.getProperty("file.separator"));
+    }
+
 }

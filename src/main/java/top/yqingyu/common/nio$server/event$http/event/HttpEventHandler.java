@@ -4,15 +4,22 @@ package top.yqingyu.common.nio$server.event$http.event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.nio$server.core.EventHandler;
+import top.yqingyu.common.nio$server.event$http.compoment.LocationMapping;
+import top.yqingyu.common.nio$server.event$http.entity.HttpVersion;
 import top.yqingyu.common.nio$server.event$http.entity.Request;
+import top.yqingyu.common.nio$server.event$http.entity.Response;
 import top.yqingyu.common.utils.ArrayUtil;
 import top.yqingyu.common.utils.IoUtil;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,6 +44,9 @@ public class HttpEventHandler extends EventHandler {
     private static final int DEFAULT_BUF_LENGTH = 1024;
     private static final Logger log = LoggerFactory.getLogger(HttpEventHandler.class);
 
+    static {
+
+    }
     @Override
     public void read(Selector selector, SelectionKey selectionKey) throws Exception {
 
@@ -50,11 +60,11 @@ public class HttpEventHandler extends EventHandler {
 
             int currentStep = enumerator.getAndIncrement();
 
-            byte[] temp;
+            byte[] temp = new byte[0];
             try {
                 temp = IoUtil.readBytes2(socketChannel, DEFAULT_BUF_LENGTH);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                socketChannel.close();
             }
             currentLength = temp.length;
 
@@ -81,16 +91,32 @@ public class HttpEventHandler extends EventHandler {
 
                 request.setBody(body);
 
-                log.info("RCV_Request location: {}", request.getUrl());
-                log.info("RCV_Request method: {}", request.getMethod().name());
-                log.info("RCV_Request Content-Type: {}", request.getHeader().getString("Content-Type"));
-                log.info("RCV_Request body: \r\n{}", new String(request.getBody(), StandardCharsets.UTF_8));
+                log.info("RCV_Request location: {}", request);
 
-                IoUtil.writeBytes(socketChannel, ("HTTP/1.1 200 OK\r\n" +
-                        "Content-Type: text/html\r\n" +
-                        "\r\n" + "<h1>HELLO WORLD ^m^!</h1>"+
-                        new String(request.getBody(), StandardCharsets.UTF_8)).getBytes(StandardCharsets.UTF_8) );
-                socketChannel.register(selector, SelectionKey.OP_READ);
+
+                Response response = new Response();
+                response.setHttpVersion(HttpVersion.V_1_1);
+                response.putHeaderDate(LocalDateTime.now(ZoneId.systemDefault()));
+
+                File file = LocationMapping.initResourceHeader(request.getUrl(), response, request);
+                //响应头
+                IoUtil.writeBytes(socketChannel, response.toString().getBytes(StandardCharsets.UTF_8));
+
+                if (file != null && "200".equals(response.getState_code())) {
+                    FileInputStream resourceStream = new FileInputStream(file);
+                    byte[] buf = new byte[1024];
+                    int length;
+                    while ((length = resourceStream.read(buf, 0, 1024)) > 0) {
+                        byte[] temps = new byte[length];
+                        System.arraycopy(buf, 0, temps, 0, length);
+                        buf = temps;
+                        IoUtil.writeBytes(socketChannel, buf);
+                        buf = new byte[1024];
+                    }
+                    resourceStream.close();
+                }
+                log.info(response.toString());
+//                socketChannel.register(selector, SelectionKey.OP_READ);
                 socketChannel.close();
                 break;
             } else if (currentLength == 0) {
@@ -131,11 +157,6 @@ public class HttpEventHandler extends EventHandler {
     }
 
 
-    /**
-     * @param selector
-     * @param selectionKey
-     * @throws IOException
-     */
     @Override
     public void assess(Selector selector, SelectionKey selectionKey) throws Exception {
 
@@ -155,4 +176,6 @@ public class HttpEventHandler extends EventHandler {
         }
 
     }
+
+
 }

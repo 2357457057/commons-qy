@@ -39,7 +39,7 @@ public class HttpEventHandler extends EventHandler {
      */
     @Override
     public void loading() {
-        String path = "C:\\Users\\Yangy\\OneDrive\\桌面\\webapps\\ROOT";
+        String path = "C:\\Users\\Yangy\\OneDrive\\桌面\\webapps\\";
         LocationMapping.loadingFileResource(path);
         log.info("localResourcePath: {}", path);
     }
@@ -48,7 +48,6 @@ public class HttpEventHandler extends EventHandler {
 
     @Override
     public void read(Selector selector, SelectionKey selectionKey) throws Exception {
-
         SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
         new SuperRoute().superServlet(socketChannel);
         socketChannel.close();

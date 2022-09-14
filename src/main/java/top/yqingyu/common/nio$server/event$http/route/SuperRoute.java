@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.nio$server.event$http.compoment.LocationMapping;
+import top.yqingyu.common.nio$server.event$http.entity.ContentType;
 import top.yqingyu.common.nio$server.event$http.entity.HttpVersion;
 import top.yqingyu.common.nio$server.event$http.entity.Request;
 import top.yqingyu.common.nio$server.event$http.entity.Response;
@@ -14,10 +15,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static top.yqingyu.common.nio$server.event$http.entity.Response.*;
 import static top.yqingyu.common.utils.ArrayUtil.*;
@@ -47,18 +48,21 @@ public class SuperRoute {
 
         Response response = new Response();
         response.setHttpVersion(HttpVersion.V_1_1);
-        response.putHeaderDate(LocalDateTime.now(ZoneId.of("America/Chicago")));
+        response.putHeaderDate(ZonedDateTime.now());
+        AtomicReference<Response> resp = new AtomicReference<>();
 
-        initResponse(request, response);
+        resp.set(response);
+
+        initResponse(request, resp);
         //响应
-        doResponse(socketChannel, response);
+        doResponse(socketChannel, resp);
 
 
     }
 
-    public static void initResponse(Request request, Response response) {
+    public static void initResponse(Request request, AtomicReference<Response> resp) {
 
-
+        Response response = resp.get();
         //优先文件资源
         if (!response.isAssemble())
             LocationMapping.fileResourceMapping(request, response);
@@ -68,9 +72,33 @@ public class SuperRoute {
 
         //NotFount
         if (!response.isAssemble()) {
-            Response.$404_NOT_FOUND.putHeaderDate(LocalDateTime.now());
+            resp.setRelease(Response.$404_NOT_FOUND.putHeaderDate(ZonedDateTime.now()));
         }
 
+    }
+
+    private void doResponse(SocketChannel socketChannel, AtomicReference<Response> resp) throws Exception {
+        Response response = resp.get();
+        ContentType type = response.gainHeaderContentType();
+        //Header
+        IoUtil.writeBytes(socketChannel, response.toString().getBytes(type.getCharset()));
+
+        //body
+        if (!"304".equals(response.getStatue_code()) || (response.getStrBody() != null ^ response.gainFileBody() == null)) {
+            InputStream resourceStream = response.gainBodyStream();
+            byte[] buf = new byte[1024];
+            int length;
+            while ((length = resourceStream.read(buf, 0, 1024)) > 0) {
+                byte[] temps = new byte[length];
+                System.arraycopy(buf, 0, temps, 0, length);
+                buf = temps;
+                IoUtil.writeBytes(socketChannel, buf);
+                buf = new byte[1024];
+            }
+            resourceStream.close();
+        }
+
+        log.debug("Response: {}", response.toJsonString());
     }
 
 
@@ -114,7 +142,7 @@ public class SuperRoute {
 
                     //body超出最大值直接关闭连接
                     if (all.length > MaxHeaderLength) {
-                        Response response = $400_BAD_REQUEST.putHeaderDate(LocalDateTime.now());
+                        Response response = $400_BAD_REQUEST.putHeaderDate(ZonedDateTime.now());
                         IoUtil.writeBytes(socketChannel, request.toString().getBytes(StandardCharsets.UTF_8));
                         log.error(response.toJsonString());
                         socketChannel.close();
@@ -130,7 +158,7 @@ public class SuperRoute {
                         // 当只收到消息头，且消息头有 Content-Length 且Content-Length在一定的范围内
                         if (bytes.size() == 1 && StringUtils.equalsIgnoreCase("0", request.getHeader().getString("Content-Length"))) {
 
-                            Response response = $100_CONTINUE.putHeaderDate(LocalDateTime.now());
+                            Response response = $100_CONTINUE.putHeaderDate(ZonedDateTime.now());
                             IoUtil.writeBytes(socketChannel, response.toString().getBytes(StandardCharsets.UTF_8));
                             log.debug(response.toJsonString());
                         }
@@ -144,7 +172,7 @@ public class SuperRoute {
                     //body超出最大值直接关闭连接
                     if (contentLength > MaxBodyLength || all.length > MaxBodyLength) {
 
-                        Response response = $413_ENTITY_LARGE.putHeaderDate(LocalDateTime.now());
+                        Response response = $413_ENTITY_LARGE.putHeaderDate(ZonedDateTime.now());
                         IoUtil.writeBytes(socketChannel, request.toString().getBytes(StandardCharsets.UTF_8));
                         log.error(response.toJsonString());
                         socketChannel.close();
@@ -156,7 +184,7 @@ public class SuperRoute {
                         int idx = firstIndexOfTarget(all, RN_RN);
                         int efIdx = idx + RN_RN.length;
                         if (idx == -1) {
-                            Response response = $400_BAD_REQUEST.putHeaderDate(LocalDateTime.now());
+                            Response response = $400_BAD_REQUEST.putHeaderDate(ZonedDateTime.now());
                             IoUtil.writeBytes(socketChannel, request.toString().getBytes(StandardCharsets.UTF_8));
                             log.error(response.toJsonString());
                             socketChannel.close();
@@ -182,7 +210,7 @@ public class SuperRoute {
 
         } while (!request.isParseEnd());
 
-        log.info("RCV_Request: {}", request);
+        log.debug("Request: {}", request);
         return request;
     }
 
@@ -213,29 +241,6 @@ public class SuperRoute {
             ArrayList<byte[]> headerName_value = splitByTarget(bytes, COLON_SPACE);
             request.putHeader(headerName_value.get(0), headerName_value.get(1));
         }
-    }
-
-    private void doResponse(SocketChannel socketChannel, Response response) throws Exception {
-        //Header
-        IoUtil.writeBytes(socketChannel, response.toString().getBytes(StandardCharsets.UTF_8));
-
-        //body
-        if (!"304".equals(response.getStatue_code()) || (response.getStrBody() != null ^ response.gainFileBody() == null)) {
-            InputStream resourceStream = response.gainBodyStream();
-            byte[] buf = new byte[1024];
-            int length;
-            while ((length = resourceStream.read(buf, 0, 1024)) > 0) {
-                byte[] temps = new byte[length];
-                System.arraycopy(buf, 0, temps, 0, length);
-                buf = temps;
-                IoUtil.writeBytes(socketChannel, buf);
-                buf = new byte[1024];
-            }
-            resourceStream.close();
-        }
-
-
-        log.debug(response.toJsonString());
     }
 
 

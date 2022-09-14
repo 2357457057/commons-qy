@@ -1,17 +1,19 @@
 package top.yqingyu.common.nio$server.event$http.entity;
 
-import cn.hutool.core.date.LocalDateTimeUtil;
 import com.alibaba.fastjson2.JSON;
 import org.apache.commons.lang3.StringUtils;
 import top.yqingyu.common.qydata.DataMap;
 import top.yqingyu.common.utils.IoUtil;
+import top.yqingyu.common.utils.LocalDateTimeUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+
+import static top.yqingyu.common.utils.LocalDateTimeUtil.HTTP_FORMATTER;
 
 /**
  * @author YYJ
@@ -25,7 +27,7 @@ public class Response {
     public static final Response $404_NOT_FOUND = new Response().setStatue_code("404").setHttpVersion(HttpVersion.V_1_1).setString_body("木有资源啦 ^ Ω ^").putHeaderContentType(ContentType.TEXT_PLAIN).setAssemble(true);
     public static final Response $413_ENTITY_LARGE = new Response().setStatue_code("413 Request Entity Too Large").setHttpVersion(HttpVersion.V_1_1).setString_body("413 Request Entity Too Large").putHeaderContentType(ContentType.TEXT_PLAIN).setAssemble(true);
     public static final Response $100_CONTINUE = new Response().setStatue_code("100 Continue").setHttpVersion(HttpVersion.V_1_1).setAssemble(true);
-    public static final Response $400_BAD_REQUEST = new Response().setStatue_code("400 Bad Request").setHttpVersion(HttpVersion.V_1_1).setString_body("400 Bad Request").setAssemble(true);
+    public static final Response $400_BAD_REQUEST = new Response().setStatue_code("400 Bad Request").setHttpVersion(HttpVersion.V_1_1).setString_body("400 Bad Request").putHeaderContentType(ContentType.TEXT_PLAIN).setAssemble(true);
 
 
     private HttpVersion httpVersion;
@@ -92,9 +94,9 @@ public class Response {
         return this;
     }
 
-    public Response putHeaderDate(LocalDateTime ldt) {
-        String s = LocalDateTimeUtil.format(ldt, "EEE, d MMM yyyy HH:mm:ss");
-        header.put("Date", s);
+    public Response putHeaderDate(ZonedDateTime ldt) {
+        String s = HTTP_FORMATTER.format(ldt);
+        header.put("Date", LocalDateTimeUtil.formatHttpTime(s));
         return this;
     }
 

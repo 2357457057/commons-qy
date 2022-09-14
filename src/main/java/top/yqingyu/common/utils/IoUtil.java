@@ -393,14 +393,12 @@ public class IoUtil {
         }
 
         @Override
-        public int read() throws IOException {
+        public int read() {
             int i = atomicInteger.getAndIncrement();
-            int ret = 0;
+            int ret;
             if (i < bytes.length) {
-                byte b = bytes[i];
-                ret = b;
-                if (b < 0)
-                    ret = 255 + b;
+                ret = bytes[i];
+
                 return ret;
             } else
                 return -1;

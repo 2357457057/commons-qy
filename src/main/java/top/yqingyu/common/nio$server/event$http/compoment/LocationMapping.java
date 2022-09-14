@@ -2,9 +2,11 @@ package top.yqingyu.common.nio$server.event$http.compoment;
 
 import cn.hutool.core.lang.UUID;
 import org.apache.commons.lang3.StringUtils;
+import top.yqingyu.common.nio$server.event$http.entity.Bean;
 import top.yqingyu.common.nio$server.event$http.entity.ContentType;
 import top.yqingyu.common.nio$server.event$http.entity.Request;
 import top.yqingyu.common.nio$server.event$http.entity.Response;
+import top.yqingyu.common.utils.StringUtil;
 import top.yqingyu.common.utils.YamlUtil;
 
 import java.io.File;
@@ -21,6 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LocationMapping {
 
     public static final ConcurrentHashMap<String, String> FILE_RESOURCE_MAPPING = new ConcurrentHashMap<>();
+
+    public static final ConcurrentHashMap<String, Bean> BEAN_RESOURCE_MAPPING = new ConcurrentHashMap<>();
     public static final ConcurrentHashMap<String, String> FILE_CACHING = new ConcurrentHashMap<>();
 
     public static void loadingFileResource(String rootPath) {
@@ -28,9 +32,8 @@ public class LocationMapping {
         FILE_RESOURCE_MAPPING.putAll(mapping);
     }
 
-    public static File initResourceHeader(String url, Response response, Request request) {
-
-        //去掉问号。 TODO 将get请求参数拼接到Request
+    public static void fileResourceMapping(Request request, Response response) {
+        String url = request.getUrl();
         String[] urls = url.split("[?]");
         url = urls[0];
 
@@ -64,10 +67,12 @@ public class LocationMapping {
             String eTag = request.getHeader("If-None-Match");
             String eTagValue = FILE_CACHING.get(url);
 
-            //部分资源缓存
-            if (StringUtils.isNotBlank(eTag) && StringUtils.isNotBlank(eTagValue) && StringUtils.equals(eTag, eTagValue)) {
+            //当且仅当完全相同时可采用缓存
+            if (StringUtil.equalsNull(eTag, eTagValue)) {
                 stateCode = "304";
                 response.putHeader("ETag", eTag);
+            } else if (StringUtils.isNotBlank(eTagValue)) {
+                response.putHeader("ETag", eTagValue);
             } else {
                 eTag = "W/\"" + UUID.randomUUID() + "\"";
                 response.putHeader("ETag", eTag);
@@ -78,12 +83,15 @@ public class LocationMapping {
                     .putHeaderContentType(contentType)
                     .putHeaderAcceptRanges()
                     .putHeaderContentLength(file.length())
-                    .setState_code(stateCode);
-            return file;
+                    .setStatue_code(stateCode);
+            response.setFile_body(file);
+            response.setAssemble(true);
         }
-        response.putHeaderContentType(ContentType.DEFAULT_TEXT);
-        response.setState_code("404");
-        response.setBody("木有资源啦 ^ Ω ^");
-        return null;
+    }
+
+    public static void beanResourceMapping(Request request, Response response) {
+        String url = request.getUrl();
+        String[] urls = url.split("[?]");
+
     }
 }

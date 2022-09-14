@@ -214,6 +214,30 @@ public class ArrayUtil {
         return list;
     }
 
+    /**
+     * 寻找目标数组的索引起始值
+     *
+     * @param source 源数组
+     * @param target 目标数组
+     * @return 索引值的集合
+     * @author YYJ
+     * @description
+     */
+    public static int firstIndexOfTarget(byte[] source, byte[] target) {
+        AtomicInteger enumerator = new AtomicInteger();
+        int targetLength = target.length;
+        for (int i = 0; i < source.length; i++) {
+            int tIdx = enumerator.getAndIncrement();
+            if (source[i] == target[tIdx] && tIdx + 1 == targetLength) {
+                return i - targetLength + 1;
+            } else if (source[i] != target[tIdx]) {
+                enumerator.set(0);
+            }
+        }
+        return -1;
+    }
+
+
 //
 //    public static byte[] replace(byte[] source, byte[] oldB, byte[] newB) {
 //        ArrayList<Integer> list = indexOfTarget(source, oldB);

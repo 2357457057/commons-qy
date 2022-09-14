@@ -196,7 +196,7 @@ public class IoUtil {
         socketChannel.write(byteBuffer);
     }
 
-    public static void writeBytes(SocketChannel socketChannel, byte[] bytes,int length) throws Exception {
+    public static void writeBytes(SocketChannel socketChannel, byte[] bytes, int length) throws Exception {
         ByteBuffer byteBuffer = ByteBuffer.allocate(length);
         byteBuffer.put(bytes);
         byteBuffer.flip();
@@ -375,6 +375,35 @@ public class IoUtil {
         public void clean() {
             list.clear();
             atomicInteger.set(0);
+        }
+    }
+
+    /**
+     * @author YYJ
+     * @version 1.0.0
+     * @description 将流写入InputStream
+     */
+    public static class WriteStreamToInputStream2 extends InputStream {
+
+        private final byte[] bytes;
+        private final AtomicInteger atomicInteger = new AtomicInteger(0);
+
+        public WriteStreamToInputStream2(byte[] bytes) {
+            this.bytes = bytes;
+        }
+
+        @Override
+        public int read() throws IOException {
+            int i = atomicInteger.getAndIncrement();
+            int ret = 0;
+            if (i < bytes.length) {
+                byte b = bytes[i];
+                ret = b;
+                if (b < 0)
+                    ret = 255 + b;
+                return ret;
+            } else
+                return -1;
         }
     }
 

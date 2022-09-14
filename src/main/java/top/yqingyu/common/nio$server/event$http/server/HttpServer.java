@@ -1,7 +1,6 @@
 package top.yqingyu.common.nio$server.event$http.server;
 
 import top.yqingyu.common.nio$server.CreateServer;
-import top.yqingyu.common.nio$server.event$http.compoment.LocationMapping;
 import top.yqingyu.common.nio$server.event$http.event.HttpEventHandler;
 
 import java.io.IOException;
@@ -17,10 +16,10 @@ import java.lang.reflect.InvocationTargetException;
 public class HttpServer {
     public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
-        LocationMapping.loadingFileResource("C:\\Users\\Yangy\\OneDrive\\桌面\\webapps\\ROOT");
         CreateServer
                 .createDefault("Http-Qy")
                 .implEvent(HttpEventHandler.class)
+                .loadingEventResource()
                 .defaultFixRouter(32)
                 .listenPort(6453)
                 .start();

@@ -19,10 +19,26 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class DemoEventHandler extends EventHandler {
 
+    public DemoEventHandler() {
+        super();
+    }
+
     private static final Logger log = LoggerFactory.getLogger(DemoEventHandler.class);
 
     public DemoEventHandler(Selector selector, ThreadPoolExecutor pool) {
         super(selector, pool);
+    }
+
+    /**
+     * 单次加载资源
+     *
+     * @param obj 资源
+     * @author YYJ
+     * @description
+     */
+    @Override
+    public void loading() {
+
     }
 
     /**

@@ -20,8 +20,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public abstract class EventHandler implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(EventHandler.class);
-    private final Selector selector;
-    protected final ThreadPoolExecutor POOL;
+    private  Selector selector;
+    protected  ThreadPoolExecutor POOL;
 
     protected final LinkedBlockingQueue QUEUE = new LinkedBlockingQueue();
 
@@ -30,9 +30,21 @@ public abstract class EventHandler implements Runnable {
         POOL = pool;
     }
 
+    public EventHandler() {
+    }
+
+    /**
+     * 单次加载资源
+     *
+     * @author YYJ
+     * @description
+     */
+    public abstract void loading();
+
     public Selector getSelector() {
         return selector;
     }
+
 
     @Override
     public void run() {

@@ -9,6 +9,7 @@ import top.yqingyu.common.nio$server.core.EventHandler;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.nio.channels.ClosedChannelException;
@@ -145,6 +146,7 @@ public class CreateServer {
      */
     public CreateServer implEvent(Class<? extends EventHandler> eventClazz) {
         this.eventClazz = eventClazz;
+        log.debug("Configured Event Handlers");
         return this;
     }
 
@@ -216,6 +218,18 @@ public class CreateServer {
         log.info("server {} bind port {}", serverName, this.port);
         return this;
     }
+
+    @SuppressWarnings("all")
+    public CreateServer loadingEventResource() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException {
+        LocalDateTime time = getTime();
+        Method method = eventClazz.getMethod("loading");
+        EventHandler eventHandler = eventClazz.getConstructor().newInstance();
+        method.invoke(eventHandler);
+
+        log.info("{} loading event resource cost: {} micros",serverName, LocalDateTimeUtil.between(time, getTime(), ChronoUnit.MICROS));
+        return this;
+    }
+
 
     private LocalDateTime getTime() {
         return LocalDateTime.now();

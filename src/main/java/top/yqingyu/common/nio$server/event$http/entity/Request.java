@@ -16,25 +16,32 @@ public class Request {
 
 
     private HttpMethod method;
-
     private HttpVersion httpVersion;
-
+    private String ContentType;
     private String url;
 
+    private final DataMap urlParam = new DataMap();
     private final DataMap header = new DataMap();
-
     private final DataMap cookie = new DataMap();
-    private String ContentType;
 
     private byte[] body;
 
+    private boolean parseEnd = false;
+
+    public boolean isParseEnd() {
+        return parseEnd;
+    }
+
+    public void setParseEnd(boolean parseEnd) {
+        this.parseEnd = parseEnd;
+    }
 
     public HttpMethod getMethod() {
         return method;
     }
 
     public void setMethod(byte[] method) {
-        this.method = Request.HttpMethod.getMethod(new String(method, StandardCharsets.UTF_8));
+        this.method = HttpMethod.getMethod(new String(method, StandardCharsets.UTF_8));
     }
 
     public void setMethod(HttpMethod method) {
@@ -78,6 +85,18 @@ public class Request {
         this.header.put(key, obj);
     }
 
+    public DataMap getUrlParam() {
+        return urlParam;
+    }
+
+    public String getUrlParam(String key) {
+        return urlParam.getString(key);
+    }
+
+    public void putUrlParam(String key, Object obj) {
+        this.urlParam.put(key, obj);
+    }
+
     public DataMap getCookie() {
         return this.cookie;
     }
@@ -90,8 +109,11 @@ public class Request {
         String keyStr = new String(key, StandardCharsets.UTF_8);
         String vStr = new String(obj, StandardCharsets.UTF_8);
         if ("Cookie".equals(keyStr)) {
-            String[] split = vStr.split("=");
-            this.cookie.put(split[0], split[1]);
+            String[] cookies = vStr.split("; ");
+            for (String coo : cookies) {
+                String[] split = coo.split("=");
+                this.cookie.put(split[0], split[1]);
+            }
         } else
             this.header.put(keyStr, vStr);
     }
@@ -105,62 +127,17 @@ public class Request {
         ContentType = contentType;
     }
 
+    //防止body过大导致toString异常
     public byte[] getBody() {
+        return null;
+    }
+
+    public byte[] gainBody() {
         return body;
     }
 
     public void setBody(byte[] body) {
         this.body = body;
-    }
-
-    public enum HttpMethod {
-        GET,
-        POST,
-
-        /**
-         * Supported Methods
-         */
-        OPTIONS,
-
-        /**
-         * return a demo head
-         */
-        HEAD,
-        /**
-         * Uploading resources
-         */
-        PUT,
-        /**
-         * Delete the resource
-         */
-        DELETE,
-
-        /**
-         * Echo-Request
-         */
-        TRACE,
-
-        /**
-         * I guess it's to support SSL, I don't know
-         */
-        CONNECT;
-
-        public static HttpMethod getMethod(String m) {
-
-
-            if (GET.name().equals(m)) return GET;
-            if (POST.name().equals(m)) return POST;
-            if (OPTIONS.name().equals(m)) return OPTIONS;
-            if (HEAD.name().equals(m)) return HEAD;
-            if (PUT.name().equals(m)) return PUT;
-            if (DELETE.name().equals(m)) return DELETE;
-            if (TRACE.name().equals(m)) return TRACE;
-            if (CONNECT.name().equals(m)) return CONNECT;
-
-            else return null;
-
-
-        }
     }
 
 

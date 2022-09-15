@@ -3,6 +3,7 @@ package top.yqingyu.common.nio$server.event$http.entity;
 import com.alibaba.fastjson2.JSON;
 import top.yqingyu.common.qydata.DataMap;
 
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -17,7 +18,6 @@ public class Request {
 
     private HttpMethod method;
     private HttpVersion httpVersion;
-    private String ContentType;
     private String url;
 
     private final DataMap urlParam = new DataMap();
@@ -70,7 +70,8 @@ public class Request {
     }
 
     public void setUrl(byte[] url) {
-        this.url = new String(url, StandardCharsets.UTF_8);
+        //中文解码
+        this.url = URLDecoder.decode(new String(url, StandardCharsets.UTF_8), StandardCharsets.UTF_8);
     }
 
     public DataMap getHeader() {
@@ -107,7 +108,7 @@ public class Request {
 
     public void putHeader(byte[] key, byte[] obj) {
         String keyStr = new String(key, StandardCharsets.UTF_8);
-        String vStr = new String(obj, StandardCharsets.UTF_8);
+        String vStr = obj == null ? "" : new String(obj, StandardCharsets.UTF_8);
         if ("Cookie".equals(keyStr)) {
             String[] cookies = vStr.split("; ");
             for (String coo : cookies) {
@@ -119,13 +120,6 @@ public class Request {
     }
 
 
-    public String getContentType() {
-        return ContentType;
-    }
-
-    public void setContentType(String contentType) {
-        ContentType = contentType;
-    }
 
     //防止body过大导致toString异常
     public byte[] getBody() {

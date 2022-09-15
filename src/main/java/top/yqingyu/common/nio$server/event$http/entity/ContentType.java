@@ -64,24 +64,24 @@ public class ContentType implements Serializable {
     public static final ContentType APPLICATION_OCTET_STREAM = create("application/octet-stream", (Charset) null);
 
 
-    public static final ContentType IMAGE_BMP = create(
-            "image/bmp");
-    public static final ContentType IMAGE_GIF = create(
-            "image/gif");
-    public static final ContentType IMAGE_JPEG = create(
-            "image/jpeg");
-    public static final ContentType IMAGE_PNG = create(
-            "image/png");
-    public static final ContentType IMAGE_X_ICON = create(
-            "image/x-icon");
-    public static final ContentType IMAGE_SVG = create(
-            "image/svg+xml");
-    public static final ContentType IMAGE_TIFF = create(
-            "image/tiff");
-    public static final ContentType IMAGE_WEBP = create(
-            "image/webp");
-    public static final ContentType MULTIPART_FORM_DATA = create(
-            "multipart/form-data", StandardCharsets.ISO_8859_1);
+    public static final ContentType IMAGE_BMP = create("image/bmp");
+    public static final ContentType IMAGE_GIF = create("image/gif");
+    public static final ContentType IMAGE_JPEG = create("image/jpeg");
+    public static final ContentType IMAGE_PNG = create("image/png");
+    public static final ContentType IMAGE_X_ICON = create("image/x-icon");
+    public static final ContentType IMAGE_SVG = create("image/svg+xml");
+    public static final ContentType IMAGE_TIFF = create("image/tiff");
+    public static final ContentType IMAGE_WEBP = create("image/webp");
+
+    public static final ContentType VIDEO_MP4 = create("video/mp4");
+    public static final ContentType VIDEO_MPEG4 = create("video/mpeg4");
+    public static final ContentType VIDEO_WMV = create("video/x-ms-wmv");
+    public static final ContentType VIDEO_AVI = create("video/avi");
+    public static final ContentType VIDEO_WEBM = create("video/webm");
+
+    public static final ContentType AUDIO_MP3 = create("audio/mp3");
+
+    public static final ContentType MULTIPART_FORM_DATA = create("multipart/form-data", StandardCharsets.ISO_8859_1);
 
     /**
      * Public constant media type for {@code multipart/mixed}.
@@ -282,7 +282,7 @@ public class ContentType implements Serializable {
             return ContentType.TEXT_HTML;
         } else {
             String code = "200";
-            return switch (extendName[1]) {
+            return switch (extendName[extendName.length - 1]) {
                 case "js" -> APPLICATION_JS.setAdviceStatusCode(code);
                 case "css" -> TEXT_CSS.setAdviceStatusCode(code);
                 case "pdf" -> APPLICATION_PDF;
@@ -294,7 +294,12 @@ public class ContentType implements Serializable {
                 case "webp" -> IMAGE_WEBP;
                 case "xlsx", "xls" -> TEXT_XML;
                 case "txt", "java", "yml", "yaml" -> TEXT_PLAIN;
-                case "doc", "docx", "exe", "zip", "rar", "7z", "msi" -> APPLICATION_OCTET_STREAM;
+                case "doc", "docx", "exe", "zip", "rar", "7z", "msi", "rpm", "iso" -> APPLICATION_OCTET_STREAM;
+                case "mp3" -> AUDIO_MP3;
+                case "m4a", "m4v", "mp4" -> VIDEO_MP4;
+                case "avi" -> VIDEO_AVI;
+                case "webm" -> VIDEO_WEBM;
+                case "wmv" -> VIDEO_WMV;
                 default -> ContentType.TEXT_HTML;
             };
         }

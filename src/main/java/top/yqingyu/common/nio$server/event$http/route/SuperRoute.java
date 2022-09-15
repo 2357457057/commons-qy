@@ -11,8 +11,12 @@ import top.yqingyu.common.nio$server.event$http.entity.Response;
 import top.yqingyu.common.utils.ArrayUtil;
 import top.yqingyu.common.utils.IoUtil;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.channels.FileChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
@@ -52,15 +56,16 @@ public class SuperRoute {
         AtomicReference<Response> resp = new AtomicReference<>();
 
         resp.set(response);
-
-        initResponse(request, resp);
-        //响应
-        doResponse(socketChannel, resp);
-
+        //为解析错误的报文会直接返回
+        if (request.isParseEnd()) {
+            initResponse(request, resp);
+            //响应
+            doResponse(socketChannel, resp);
+        }
 
     }
 
-    public static void initResponse(Request request, AtomicReference<Response> resp) {
+    public static void initResponse(Request request, AtomicReference<Response> resp) throws InvocationTargetException, IllegalAccessException {
 
         Response response = resp.get();
         //优先文件资源
@@ -80,22 +85,42 @@ public class SuperRoute {
     private void doResponse(SocketChannel socketChannel, AtomicReference<Response> resp) throws Exception {
         Response response = resp.get();
         ContentType type = response.gainHeaderContentType();
+        byte[] bytes;
+        if (type.getCharset() != null)
+            bytes = response.toString().getBytes(type.getCharset());
+        else
+            bytes = response.toString().getBytes();
+
         //Header
-        IoUtil.writeBytes(socketChannel, response.toString().getBytes(type.getCharset()));
+        IoUtil.writeBytes(socketChannel, bytes);
 
         //body
         if (!"304".equals(response.getStatue_code()) || (response.getStrBody() != null ^ response.gainFileBody() == null)) {
-            InputStream resourceStream = response.gainBodyStream();
             byte[] buf = new byte[1024];
             int length;
-            while ((length = resourceStream.read(buf, 0, 1024)) > 0) {
-                byte[] temps = new byte[length];
-                System.arraycopy(buf, 0, temps, 0, length);
-                buf = temps;
-                IoUtil.writeBytes(socketChannel, buf);
-                buf = new byte[1024];
+            long total = 0;
+            InputStream resourceStream = response.gainBodyStream();
+
+            File file_body = response.getFile_body();
+            if (file_body != null) {
+                FileChannel channel = ((FileInputStream) resourceStream).getChannel();
+                long l = 0;
+                long size = channel.size();
+                do {
+                    l += channel.transferTo(l, size / 1024, socketChannel);
+                } while (l != size);
+                channel.close();
+                resourceStream.close();
+            } else {
+                while ((length = resourceStream.read(buf)) > 0) {
+                    byte[] temps = new byte[length];
+                    System.arraycopy(buf, 0, temps, 0, length);
+                    IoUtil.writeBytes(socketChannel, temps);
+                    total += temps.length;
+                }
+                resourceStream.close();
             }
-            resourceStream.close();
+            log.info("{}", total);
         }
 
         log.debug("Response: {}", response.toJsonString());
@@ -140,10 +165,10 @@ public class SuperRoute {
                 //头部解析
                 if (!flag) {
 
-                    //body超出最大值直接关闭连接
+                    //header超出最大值直接关闭连接
                     if (all.length > MaxHeaderLength) {
                         Response response = $400_BAD_REQUEST.putHeaderDate(ZonedDateTime.now());
-                        IoUtil.writeBytes(socketChannel, request.toString().getBytes(StandardCharsets.UTF_8));
+                        IoUtil.writeBytes(socketChannel, response.toString().getBytes(StandardCharsets.UTF_8));
                         log.error(response.toJsonString());
                         socketChannel.close();
                         break;
@@ -207,8 +232,7 @@ public class SuperRoute {
                     }
                 }
             }
-
-        } while (!request.isParseEnd());
+        } while (!request.isParseEnd() && all.length != 0);
 
         log.debug("Request: {}", request);
         return request;
@@ -239,7 +263,7 @@ public class SuperRoute {
         }
         for (byte[] bytes : info$header) {
             ArrayList<byte[]> headerName_value = splitByTarget(bytes, COLON_SPACE);
-            request.putHeader(headerName_value.get(0), headerName_value.get(1));
+            request.putHeader(headerName_value.get(0), headerName_value.size() == 2 ? headerName_value.get(1) : null);
         }
     }
 

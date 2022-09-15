@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 /**
  * @author YYJ
  * @version 1.0.0
- * @ClassName top.yqingyu.common.nio$server.event$http.annotation.RestController
+ * @ClassName top.yqingyu.common.nio$server.event$http.annotation.QyController
  * @description
  * @createTime 2022年09月14日 11:26:00
  */
@@ -15,10 +15,12 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RestController {
+public @interface QyController {
 
     HttpMethod[] method() default {HttpMethod.POST};
 
     String path() default "";
+
+    boolean rest() default false;
 
 }

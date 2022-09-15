@@ -25,9 +25,9 @@ import static top.yqingyu.common.utils.LocalDateTimeUtil.HTTP_FORMATTER;
 public class Response {
 
     public static final Response $404_NOT_FOUND = new Response().setStatue_code("404").setHttpVersion(HttpVersion.V_1_1).setString_body("木有资源啦 ^ Ω ^").putHeaderContentType(ContentType.TEXT_PLAIN).setAssemble(true);
-    public static final Response $413_ENTITY_LARGE = new Response().setStatue_code("413 Request Entity Too Large").setHttpVersion(HttpVersion.V_1_1).setString_body("413 Request Entity Too Large").putHeaderContentType(ContentType.TEXT_PLAIN).setAssemble(true);
-    public static final Response $100_CONTINUE = new Response().setStatue_code("100 Continue").setHttpVersion(HttpVersion.V_1_1).setAssemble(true);
-    public static final Response $400_BAD_REQUEST = new Response().setStatue_code("400 Bad Request").setHttpVersion(HttpVersion.V_1_1).setString_body("400 Bad Request").putHeaderContentType(ContentType.TEXT_PLAIN).setAssemble(true);
+    public static final Response $413_ENTITY_LARGE = new Response().setStatue_code("413").setHttpVersion(HttpVersion.V_1_1).setString_body("413 Request Entity Too Large").putHeaderContentType(ContentType.TEXT_PLAIN).setAssemble(true);
+    public static final Response $100_CONTINUE = new Response().setStatue_code("100").setHttpVersion(HttpVersion.V_1_1).setAssemble(true);
+    public static final Response $400_BAD_REQUEST = new Response().setStatue_code("400").setHttpVersion(HttpVersion.V_1_1).setString_body("400 Bad Request").putHeaderContentType(ContentType.TEXT_PLAIN).setAssemble(true);
 
 
     private HttpVersion httpVersion;
@@ -139,17 +139,24 @@ public class Response {
         return new IoUtil.WriteStreamToInputStream2(string_body.getBytes(StandardCharsets.UTF_8));
     }
 
+    public File getFile_body() {
+        return file_body;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(httpVersion.getV()).append(" ").append(statue_code).append("\r\n");
-        header.forEach((k, v) -> sb.append(k).append(":").append(" ").append(v).append("\r\n"));
-        sb.append("\r\n");
+
         if (StringUtils.isBlank(gainHeaderContentLength())) {
             if (StringUtils.isNotBlank(string_body))
                 putHeaderContentLength(string_body.getBytes(StandardCharsets.UTF_8).length);
-            else if (file_body != null) putHeaderContentLength(file_body.length());
+            else if (file_body != null)
+                putHeaderContentLength(file_body.length());
         }
+
+        header.forEach((k, v) -> sb.append(k).append(":").append(" ").append(v).append("\r\n"));
+        sb.append("\r\n");
         return sb.toString();
     }
 

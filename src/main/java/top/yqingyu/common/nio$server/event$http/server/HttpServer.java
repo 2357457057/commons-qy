@@ -21,7 +21,7 @@ public class HttpServer {
                 .implEvent(HttpEventHandler.class)
                 .loadingEventResource()
                 .defaultFixRouter(32)
-                .listenPort(6453)
+                .listenPort(4731)
                 .start();
     }
 }

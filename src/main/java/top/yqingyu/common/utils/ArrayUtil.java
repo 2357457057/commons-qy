@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @Description The array-related operations. partly original and partly copied from commons-lang3   ^ u ^
  * @createTime 2022年09月03日 08:12:00
  */
+@SuppressWarnings("all")
 public class ArrayUtil {
 
     public static final byte[] RN = "\r\n".getBytes(StandardCharsets.UTF_8);

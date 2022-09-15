@@ -21,6 +21,7 @@ public @interface QyController {
 
     String path() default "";
 
-    boolean rest() default false;
+    //TODO 待支持
+    boolean restful() default false;
 
 }

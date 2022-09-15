@@ -14,7 +14,7 @@ import java.time.ZonedDateTime;
  * @description
  * @createTime 2022年09月15日 14:09:00
  */
-@QyController(path = "/qy_demo")
+@QyController(path = "qy_demo")
 public class DemoController {
 
     @QyController(path = "demo1", method = {HttpMethod.POST, HttpMethod.GET})
@@ -27,9 +27,11 @@ public class DemoController {
         return sb.toString();
     }
 
-    @QyController(path = "demo2", method = {HttpMethod.POST, HttpMethod.GET})
-    public String demo2(String yyj,DataMap data) {
+    @QyController(path = "demo2", method = {HttpMethod.POST})
+    public String demo2(String yyj, DataMap data, String aa) {
         System.out.println(yyj);
+        System.out.println(data);
+        System.out.println(aa);
         StringBuilder sb = new StringBuilder();
         sb.append("<h1>").append("Hello~ Qy Framework  ~").append("</h1>");
         sb.append("<h2>").append("demo2").append("</h2>");

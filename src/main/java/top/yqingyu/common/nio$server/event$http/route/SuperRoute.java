@@ -120,7 +120,6 @@ public class SuperRoute {
                 }
                 resourceStream.close();
             }
-            log.info("{}", total);
         }
 
         log.debug("Response: {}", response.toJsonString());

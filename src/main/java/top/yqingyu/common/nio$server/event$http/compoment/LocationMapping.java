@@ -19,7 +19,9 @@ import java.lang.reflect.*;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -182,63 +184,66 @@ public class LocationMapping {
 
                 Parameter[] parameters = invokeMethod.getParameters();
                 Object[] args = new Object[parameters.length];
+                String[] paramName = bean.getMethodParamName();
+                DataMap urlParam = request.getUrlParam();
 
                 if (HttpMethod.GET.equals(request.getMethod())) {
                     //================================================================
-                    //==       优先拼装 request/response 其次属性名称 其次数量           ==
+                    //==       优先拼装 request/response 其次一个 其次属性名称           ==
                     //================================================================
-                    if (parameters.length == 1) {
-                        Type paramType = parameters[0].getParameterizedType();
-                        String typeName = paramType.getTypeName();
-                        if (Request.class.getName().equals(typeName)) {
-                            args[0] = request;
-                        } else if (Response.class.getName().equals(typeName)) {
-                            args[0] = request;
-                        } else {
-                            DataMap urlParam = request.getUrlParam();
-                            if (urlParam.size() == 1) {
-                                urlParam.forEach((k, v) -> args[0] = v);
-                            } else if (urlParam.size() > 1) {
-                                String name = parameters[0].getName();
+                    if (parameters.length >= 1) {
+                        for (int i = 0; i < parameters.length; i++) {
+                            Type paramType = parameters[i].getParameterizedType();
+                            String typeName = paramType.getTypeName();
+                            int finalI = i;
+                            if (Request.class.getName().equals(typeName)) {
+                                args[i] = request;
+                            } else if (Response.class.getName().equals(typeName)) {
+                                args[i] = request;
+                            } else if (parameters.length == 1) {
+                                Set<String> keySet = urlParam.keySet();
+                                Iterator<String> iterator = keySet.iterator();
+                                args[i] = urlParam.get(iterator.next());
+                            } else {
                                 urlParam.forEach((k, v) -> {
-                                    if (name.equals(k)) {
-                                        args[0] = v;
-                                    } else if (name.equalsIgnoreCase(k)) {
-                                        args[0] = v;
+                                    if (paramName[finalI].equals(k)) {
+                                        args[finalI] = v;
+                                    } else if (paramName[finalI].equalsIgnoreCase(k)) {
+                                        args[finalI] = v;
                                     }
                                 });
-
                             }
                         }
-                    } else if (parameters.length > 1) {
-
                     }
                 } else if (HttpMethod.POST.equals(request.getMethod())) {
-                    if (parameters.length == 1) {
-
-                        Type paramType = parameters[0].getParameterizedType();
-                        String typeName = paramType.getTypeName();
-
-                        if (Request.class.getName().equals(typeName)) {
-                            args[0] = request;
-                        } else if (Response.class.getName().equals(typeName)) {
-                            args[0] = request;
-
-                        } else if (ClazzUtil.isBaseType(paramType)) {
-                            args[0] = new String(request.gainBody(), requestCtTyp.getCharset() == null ? StandardCharsets.UTF_8 : requestCtTyp.getCharset());
-                        } else {
-                            args[0] = JSON.parseObject(request.gainBody(), paramType);
+                    //=======================================================================================
+                    //==   优先拼装 request/response > url名称属性&&基础属性 > baseParam(包含String) > Object   ==
+                    //=======================================================================================
+                    if (parameters.length >= 1) {
+                        for (int i = 0; i < parameters.length; i++) {
+                            Type paramType = parameters[i].getParameterizedType();
+                            String typeName = paramType.getTypeName();
+                            if (Request.class.getName().equals(typeName)) {
+                                args[i] = request;
+                            } else if (Response.class.getName().equals(typeName)) {
+                                args[i] = request;
+                            } else if (StringUtils.isNotBlank(urlParam.getString(paramName[i])) && ClazzUtil.isBaseType(paramType)) {
+                                args[i] = urlParam.getString(paramName[i]);
+                            } else if (ClazzUtil.isBaseType(paramType)) {
+                                args[i] = new String(request.gainBody(), requestCtTyp.getCharset() == null ? StandardCharsets.UTF_8 : requestCtTyp.getCharset());
+                            } else {
+                                args[i] = JSON.parseObject(request.gainBody(), paramType);
+                            }
                         }
-                    } else if (parameters.length > 1) {
-
                     }
                 }
-
-//======================================================================================================
+                //================================================================
+                //==              执行目标方法                                    ==
                 Object methodReturn = invokeMethod.invoke(invokeObj, args);
-//======================================================================================================
+                //==                                                            ==
+                //================================================================
 
-                if (methodReturn instanceof String) {
+                if (ClazzUtil.isBaseType(methodReturn.getClass())) {
                     response.setString_body((String) methodReturn)
                             .putHeaderContentType(ContentType.TEXT_HTML);
                 } else {
@@ -260,7 +265,8 @@ public class LocationMapping {
                     .putHeaderDate(ZonedDateTime.now())
                     .setAssemble(true);
 
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             response
                     .setString_body("呜呜，人家坏掉了")
                     .setStatue_code("500")

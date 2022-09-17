@@ -272,6 +272,9 @@ public class YamlUtil {
     public static HashMap<String, String> getFilePathMapping(String rootPath) {
         String file_separator = System.getProperty("file.separator");
 
+        if (isWindows() && rootPath.indexOf("/") == rootPath.length() - 1)
+            rootPath = StringUtils.removeEnd(rootPath, "/");
+
         if (rootPath.endsWith(file_separator) && rootPath.length() > 1)
             rootPath = StringUtils.removeEnd(rootPath, file_separator);
 

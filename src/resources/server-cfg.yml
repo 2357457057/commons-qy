@@ -1,0 +1,7 @@
+server:
+  port: 4732
+  handler-num:
+  per-worker-num:
+  only-resource: true
+  local-resource-path: 'H:'
+  controller-package: top.yqingyu.common.web.controller

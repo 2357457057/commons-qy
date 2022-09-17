@@ -47,7 +47,7 @@ public class SuperRoute implements Callable {
 
     private static final Logger log = LoggerFactory.getLogger(SuperRoute.class);
 
-    public SuperRoute(SocketChannel socketChannel, ConcurrentHashSet<Integer> SINGLE_OPS) {
+     SuperRoute(SocketChannel socketChannel, ConcurrentHashSet<Integer> SINGLE_OPS) {
         this.socketChannel = socketChannel;
         this.SINGLE_OPS = SINGLE_OPS;
     }
@@ -89,7 +89,7 @@ public class SuperRoute implements Callable {
      * @author YYJ
      * @description
      */
-    public void initResponse(Request request, AtomicReference<Response> resp) {
+     void initResponse(Request request, AtomicReference<Response> resp) {
 
         Response response = resp.get();
         //优先文件资源
@@ -289,7 +289,7 @@ public class SuperRoute implements Callable {
         return request;
     }
 
-    public static void assembleHeader(Request request, byte[] header) {
+     static void assembleHeader(Request request, byte[] header) {
         //只剩body
         ArrayList<byte[]> info$header = ArrayUtil.splitByTarget(header, RN);
         ArrayList<byte[]> info = splitByTarget(info$header.remove(0), SPACE);

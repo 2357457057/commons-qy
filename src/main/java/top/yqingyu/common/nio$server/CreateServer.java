@@ -222,7 +222,8 @@ public class CreateServer {
     @SuppressWarnings("all")
     public CreateServer loadingEventResource() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException {
         LocalDateTime time = getTime();
-        Method method = eventClazz.getMethod("loading");
+        Method method = eventClazz.getDeclaredMethod("loading");
+        method.setAccessible(true);
         EventHandler eventHandler = eventClazz.getConstructor().newInstance();
         method.invoke(eventHandler);
 

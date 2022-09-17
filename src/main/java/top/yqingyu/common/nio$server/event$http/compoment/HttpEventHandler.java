@@ -1,12 +1,12 @@
-package top.yqingyu.common.nio$server.event$http.event;
+package top.yqingyu.common.nio$server.event$http.compoment;
 
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.nio$server.core.EventHandler;
-import top.yqingyu.common.nio$server.event$http.compoment.LocationMapping;
-import top.yqingyu.common.nio$server.event$http.compoment.SuperRoute;
+import top.yqingyu.common.qydata.DataMap;
 import top.yqingyu.common.utils.IoUtil;
+import top.yqingyu.common.utils.YamlUtil;
 
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -26,6 +26,10 @@ public class HttpEventHandler extends EventHandler {
         super();
     }
 
+    public static int port;
+    public static int handlerNumber;
+    public static int perHandlerWorker;
+
     public HttpEventHandler(Selector selector) {
         super(selector);
     }
@@ -37,10 +41,22 @@ public class HttpEventHandler extends EventHandler {
      * @description
      */
     @Override
-    public void loading() {
-        String path = "H:";
+    protected void loading() {
+
+        DataMap yamlUtil = YamlUtil.loadYaml("server-cfg", YamlUtil.LoadType.BOTH).getCfgData();
+        DataMap cfg = yamlUtil.getDataMap("server-cfg.yml");
+        DataMap server = cfg.getDataMap("server");
+
+
+        String path = server.getString("local-resource-path", System.getProperty("user.dir"));
+        String scan_package = server.getString("controller-package", "top.yqingyu.common.web.controller");
+        port = server.getIntValue("port", 4732);
+        handlerNumber = server.getIntValue("handler-num", 4);
+        perHandlerWorker = server.getIntValue("per-worker-num", 4);
+
         LocationMapping.loadingFileResource(path);
-        LocationMapping.loadingBeanResource();
+        if (!server.getBooleanValue("only-resource", true))
+            LocationMapping.loadingBeanResource(scan_package);
         log.info("localResourcePath: {}", path);
     }
 
@@ -61,7 +77,6 @@ public class HttpEventHandler extends EventHandler {
                 "\r\n" +
                 "{}").getBytes(StandardCharsets.UTF_8));
         socketChannel.register(selector, SelectionKey.OP_READ);
-
         socketChannel.close();
     }
 

@@ -36,15 +36,15 @@ public class LocationMapping {
 
     public static final ConcurrentHashMap<String, String> FILE_RESOURCE_MAPPING = new ConcurrentHashMap<>();
 
-    public static final ConcurrentHashMap<String, Bean> BEAN_RESOURCE_MAPPING = new ConcurrentHashMap<>();
-    public static final ConcurrentHashMap<String, String> FILE_CACHING = new ConcurrentHashMap<>();
+     static final ConcurrentHashMap<String, Bean> BEAN_RESOURCE_MAPPING = new ConcurrentHashMap<>();
+     static final ConcurrentHashMap<String, String> FILE_CACHING = new ConcurrentHashMap<>();
 
-    public static void loadingFileResource(String rootPath) {
+     static void loadingFileResource(String rootPath) {
         HashMap<String, String> mapping = YamlUtil.getFilePathMapping(rootPath);
         FILE_RESOURCE_MAPPING.putAll(mapping);
     }
 
-    public static void loadingBeanResource() {
+     static void loadingBeanResource(String packageName) {
 
         List<Class<?>> classes = ClazzUtil.getClassListByAnnotation("top.yqingyu.common", QyController.class);
 
@@ -100,7 +100,7 @@ public class LocationMapping {
     }
 
 
-    public static void fileResourceMapping(Request request, Response response) {
+     static void fileResourceMapping(Request request, Response response) {
         boolean redirect = false;
         String url = request.getUrl();
         String[] urls = url.split("[?]");
@@ -173,7 +173,7 @@ public class LocationMapping {
         }
     }
 
-    public static void beanResourceMapping(Request request, Response response) {
+     static void beanResourceMapping(Request request, Response response) {
         String url = request.getUrl();
         String[] urls = url.split("[?]");
         url = urls[0];

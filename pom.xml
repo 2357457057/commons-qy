@@ -54,12 +54,12 @@
     <dependencies>
 
 
-<!--        <dependency>-->
-<!--            <groupId>ch.qos.logback</groupId>-->
-<!--            <artifactId>logback-classic</artifactId>-->
-<!--            <version>1.4.0</version>-->
-<!--&lt;!&ndash;            <scope>provided</scope>&ndash;&gt;-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.0</version>
+<!--            <scope>provided</scope>-->
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>

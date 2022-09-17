@@ -42,7 +42,7 @@ public abstract class EventHandler implements Runnable {
      * @author YYJ
      * @description
      */
-    public abstract void loading();
+    protected abstract void loading();
 
     public Selector getSelector() {
         return selector;
@@ -65,7 +65,7 @@ public abstract class EventHandler implements Runnable {
                     SocketChannel channel = (SocketChannel) selectionKey.channel();
                     int i = channel.hashCode();
                     //发现多线程时同一个selectKey会空读轮询 此处添加hash简单排除，以防处理异常
-                    if (SINGLE_OPS.add(i) && selectionKey.isValid()) {
+                    if (selectionKey.isValid() && SINGLE_OPS.add(i)) {
                         log.debug("{}入", i);
                         if (selectionKey.isReadable()) {
                             read(selector, channel);

@@ -1,10 +1,12 @@
 package top.yqingyu.common.nio$server.core;
 
+import cn.hutool.core.collection.ConcurrentHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
+import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -20,14 +22,15 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public abstract class EventHandler implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(EventHandler.class);
-    private  Selector selector;
-    protected  ThreadPoolExecutor POOL;
+    private Selector selector;
+    protected ThreadPoolExecutor POOL;
 
+    protected final ConcurrentHashSet<Integer> SINGLE_OPS = new ConcurrentHashSet<>();
     protected final LinkedBlockingQueue QUEUE = new LinkedBlockingQueue();
 
-    public EventHandler(Selector selector, ThreadPoolExecutor pool) {
+
+    public EventHandler(Selector selector) {
         this.selector = selector;
-        POOL = pool;
     }
 
     public EventHandler() {
@@ -59,11 +62,16 @@ public abstract class EventHandler implements Runnable {
 
                     SelectionKey selectionKey = iterator.next();
                     iterator.remove();
-
-                    if (selectionKey.isReadable()) {
-                        read(selector, selectionKey);
-                    } else if (selectionKey.isWritable()) {
-                        write(selector, selectionKey);
+                    SocketChannel channel = (SocketChannel) selectionKey.channel();
+                    int i = channel.hashCode();
+                    //发现多线程时同一个selectKey会空读轮询 此处添加hash简单排除，以防处理异常
+                    if (SINGLE_OPS.add(i) && selectionKey.isValid()) {
+                        log.debug("{}入", i);
+                        if (selectionKey.isReadable()) {
+                            read(selector, channel);
+                        } else if (selectionKey.isWritable()) {
+                            write(selector, channel);
+                        }
                     }
                 }
 
@@ -74,9 +82,9 @@ public abstract class EventHandler implements Runnable {
         }
     }
 
-    public abstract void read(Selector selector, SelectionKey selectionKey) throws Exception;
+    public abstract void read(Selector selector, SocketChannel socketChannel) throws Exception;
 
-    public abstract void write(Selector selector, SelectionKey selectionKey) throws Exception;
+    public abstract void write(Selector selector, SocketChannel socketChannel) throws Exception;
 
-    public abstract void assess(Selector selector, SelectionKey selectionKey) throws Exception;
+    public abstract void assess(Selector selector, SocketChannel socketChannel) throws Exception;
 }

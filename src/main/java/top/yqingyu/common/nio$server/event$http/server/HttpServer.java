@@ -17,10 +17,10 @@ public class HttpServer {
     public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
         CreateServer
-                .createDefault("Http-Qy")
+                .createDefault("QyHttp")
                 .implEvent(HttpEventHandler.class)
                 .loadingEventResource()
-                .defaultFixRouter(32)
+                .defaultFixRouter(1,32)
                 .listenPort(4731)
                 .start();
     }

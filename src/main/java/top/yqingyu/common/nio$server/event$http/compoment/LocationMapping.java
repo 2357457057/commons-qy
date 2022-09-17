@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.asm.impl.MethodParamGetter;
 import top.yqingyu.common.nio$server.event$http.annotation.QyController;
-import top.yqingyu.common.nio$server.event$http.entity.*;
 import top.yqingyu.common.nio$server.event$http.exception.HttpException;
 import top.yqingyu.common.qydata.DataMap;
 import top.yqingyu.common.utils.ClazzUtil;
@@ -102,11 +101,15 @@ public class LocationMapping {
 
 
     public static void fileResourceMapping(Request request, Response response) {
+        boolean redirect = false;
         String url = request.getUrl();
         String[] urls = url.split("[?]");
         url = urls[0];
 
-        if (YamlUtil.isWindows()) url = url.replaceAll("/", "\\\\");
+        if (url.indexOf("/") == 0) {
+            url = url.replaceFirst("/", "");
+        }
+
         String s = FILE_RESOURCE_MAPPING.get(url);
 
         if (StringUtils.isBlank(s)) {
@@ -114,33 +117,29 @@ public class LocationMapping {
         }
 
         if (StringUtils.isBlank(s)) {
-            if (YamlUtil.isWindows())
-                s = FILE_RESOURCE_MAPPING.get(url.replaceFirst("\\\\", ""));
-            else
-                s = FILE_RESOURCE_MAPPING.get(url.replaceFirst("/", ""));
-
-        }
-
-        if (YamlUtil.isWindows()) {
-            url = url + "\\";
-            url = url.replace("\\\\", "\\");
-        } else {
-            url = url + "/";
-            url = url.replace("//", "/");
-        }
-
-        if (StringUtils.isBlank(s)) {
             s = FILE_RESOURCE_MAPPING.get(url + "index.html");
+
         }
+
         if (StringUtils.isBlank(s)) {
             s = FILE_RESOURCE_MAPPING.get(url + "index.htm");
+        }
+
+        if (StringUtils.isBlank(s)) {
+            s = FILE_RESOURCE_MAPPING.get(url + "/index.html");
+            if (StringUtils.isNotBlank(s)) redirect = true;
+        }
+
+        if (StringUtils.isBlank(s)) {
+            s = FILE_RESOURCE_MAPPING.get(url + "/index.htm");
+            if (StringUtils.isNotBlank(s)) redirect = true;
         }
 
         if (StringUtils.isNotBlank(s)) {
             File file = new File(s);
             ContentType contentType = ContentType.parseContentType(s);
             String stateCode = "200";
-
+            //浏览器传来是否缓存校验数据唯一ID
             String eTag = request.getHeader("If-None-Match");
             String eTagValue = FILE_CACHING.get(url);
 
@@ -159,7 +158,16 @@ public class LocationMapping {
             response
                     .putHeaderContentType(contentType)
                     .putHeaderAcceptRanges()
+                    .putHeaderCROS()
                     .setStatue_code(stateCode);
+            if (redirect) {
+                response
+                        .setStatue_code("301")
+                        .putHeaderRedirect("/" + url + "/index.html");
+            }
+            if (ContentType.VIDEO_MP4.equals(contentType)) {
+                response.putHeaderContentRanges();
+            }
             response.setFile_body(file);
             response.setAssemble(true);
         }
@@ -199,8 +207,8 @@ public class LocationMapping {
                             if (Request.class.getName().equals(typeName)) {
                                 args[i] = request;
                             } else if (Response.class.getName().equals(typeName)) {
-                                args[i] = request;
-                            } else if (parameters.length == 1) {
+                                args[i] = response;
+                            } else if (parameters.length == 1 && urlParam.size() == 1) {
                                 Set<String> keySet = urlParam.keySet();
                                 Iterator<String> iterator = keySet.iterator();
                                 args[i] = urlParam.get(iterator.next());
@@ -227,9 +235,9 @@ public class LocationMapping {
                                 args[i] = request;
                             } else if (Response.class.getName().equals(typeName)) {
                                 args[i] = request;
-                            } else if (StringUtils.isNotBlank(urlParam.getString(paramName[i])) && ClazzUtil.isBaseType(paramType)) {
+                            } else if (StringUtils.isNotBlank(urlParam.getString(paramName[i])) && ClazzUtil.canValueof(paramType)) {
                                 args[i] = urlParam.getString(paramName[i]);
-                            } else if (ClazzUtil.isBaseType(paramType)) {
+                            } else if (ClazzUtil.canValueof(paramType)) {
                                 args[i] = new String(request.gainBody(), requestCtTyp.getCharset() == null ? StandardCharsets.UTF_8 : requestCtTyp.getCharset());
                             } else {
                                 args[i] = JSON.parseObject(request.gainBody(), paramType);
@@ -243,7 +251,7 @@ public class LocationMapping {
                 //==                                                            ==
                 //================================================================
 
-                if (ClazzUtil.isBaseType(methodReturn.getClass())) {
+                if (ClazzUtil.canValueof(methodReturn.getClass())) {
                     response.setString_body((String) methodReturn)
                             .putHeaderContentType(ContentType.TEXT_HTML);
                 } else {

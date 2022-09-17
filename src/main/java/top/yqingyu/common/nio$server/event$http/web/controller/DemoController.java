@@ -1,7 +1,7 @@
 package top.yqingyu.common.nio$server.event$http.web.controller;
 
 import top.yqingyu.common.nio$server.event$http.annotation.QyController;
-import top.yqingyu.common.nio$server.event$http.entity.HttpMethod;
+import top.yqingyu.common.nio$server.event$http.compoment.*;
 import top.yqingyu.common.qydata.DataMap;
 import top.yqingyu.common.utils.LocalDateTimeUtil;
 
@@ -17,17 +17,46 @@ import java.time.ZonedDateTime;
 @QyController(path = "qy_demo")
 public class DemoController {
 
-    @QyController(path = "demo1", method = {HttpMethod.POST, HttpMethod.GET})
-    public String demo1(DataMap dataMap) {
+
+    @QyController(path = "testSessionAndCookie", method = {HttpMethod.GET})
+    public String demo3(Request req, Response resp) {
+
+        Session session = req.getSession();
+        session.set("name", "yyj");
+        session.set("age", "101");
+
+        Cookie cookie = new Cookie("test", LocalDateTimeUtil.HTTP_FORMATTER.format(ZonedDateTime.now()));
+        resp.addCookie(cookie);
+
+        cookie.setMaxAge(60 * 60);
+
+        return "SessionAndCookie-Test";
+    }
+
+    @QyController(path = "get", method = {HttpMethod.GET})
+    public String demo4(Request req) {
+
+        Session session = req.getSession();
+        String name = (String) session.get("name");
+        String age = (String) session.get("age");
+
+        String test = req.getCookie("test");
+
+        return "cookie: " + age + test + "<br>Session: " + name + LocalDateTimeUtil.HTTP_FORMATTER.format(ZonedDateTime.now());
+    }
+
+
+    @QyController(path = "demo1", method = {HttpMethod.GET})
+    public String demo1(Request r, String name) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Hello Qy Framework  ~").append("<br>");
+        sb.append("Hi ").append(name).append(" Welcome to Qy Framework  ~").append("<br>");
         sb.append("demo1").append("<br>");
         sb.append(LocalDateTimeUtil.HTTP_FORMATTER.format(ZonedDateTime.now()));
 
         return sb.toString();
     }
 
-    @QyController(path = "demo2", method = {HttpMethod.POST})
+    @QyController(path = "demo2", method = {HttpMethod.GET})
     public String demo2(String yyj, DataMap data, String aa) {
         System.out.println(yyj);
         System.out.println(data);

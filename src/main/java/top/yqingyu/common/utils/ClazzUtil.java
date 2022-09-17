@@ -71,16 +71,8 @@ public class ClazzUtil {
     }
 
 
-    public static boolean isBaseType(java.lang.reflect.Type type) {
-        String typeName = type.getTypeName();
-        switch (typeName) {
-            case "byte", "short", "int", "long", "char", "float", "double", "boolean", "java.lang.String" -> {
-                return true;
-            }
-            default -> {
-                return false;
-            }
-        }
+    public static boolean canValueof(java.lang.reflect.Type type) {
+        return ValueOfMap.containsKey(type) || ValueOfMap.containsValue(type);
     }
 
     // 获取指定包名下的所有类（可根据注解进行过滤）
@@ -252,6 +244,12 @@ public class ClazzUtil {
      */
     private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new IdentityHashMap<>(9);
 
+
+    /**
+     * 可执行Valueof方法
+     */
+    private static final Map<Class<?>, Class<?>> ValueOfMap = new IdentityHashMap<>(9);
+
     /**
      * Map with primitive type as key and corresponding wrapper
      * type as value, for example: int.class -> Integer.class.
@@ -292,6 +290,16 @@ public class ClazzUtil {
         primitiveWrapperTypeMap.put(Long.class, long.class);
         primitiveWrapperTypeMap.put(Short.class, short.class);
         primitiveWrapperTypeMap.put(Void.class, void.class);
+
+        ValueOfMap.put(Boolean.class, boolean.class);
+        ValueOfMap.put(Byte.class, byte.class);
+        ValueOfMap.put(Character.class, char.class);
+        ValueOfMap.put(Double.class, double.class);
+        ValueOfMap.put(Float.class, float.class);
+        ValueOfMap.put(Integer.class, int.class);
+        ValueOfMap.put(Long.class, long.class);
+        ValueOfMap.put(Short.class, short.class);
+        ValueOfMap.put(String.class, String.class);
 
         // Map entry iteration is less expensive to initialize than forEach with lambdas
         for (Map.Entry<Class<?>, Class<?>> entry : primitiveWrapperTypeMap.entrySet()) {

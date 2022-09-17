@@ -2,7 +2,7 @@ package top.yqingyu.common.nio$server.event$http.web.controller;
 
 import top.yqingyu.common.nio$server.event$http.annotation.QyController;
 import top.yqingyu.common.nio$server.event$http.compoment.LocationMapping;
-import top.yqingyu.common.nio$server.event$http.entity.HttpMethod;
+import top.yqingyu.common.nio$server.event$http.compoment.HttpMethod;
 import top.yqingyu.common.qydata.DataMap;
 
 /**
@@ -15,11 +15,10 @@ import top.yqingyu.common.qydata.DataMap;
 @QyController(path = "root")
 public class Resource {
 
-    @QyController(path = "file", method = {HttpMethod.POST, HttpMethod.GET})
+    @QyController(path = "file", method = { HttpMethod.GET})
     public String showResource(DataMap dataMap) {
         StringBuilder sb = new StringBuilder();
-        LocationMapping.FILE_RESOURCE_MAPPING.forEach((k, v) -> sb.append(k).append("<br>"));
-
+        LocationMapping.FILE_RESOURCE_MAPPING.forEach((k, v) -> sb.append("<a href = '/").append(k.replaceAll("\\\\", "/")).append("'>").append(k).append("</a>").append("<br>"));
         return sb.toString();
     }
 }

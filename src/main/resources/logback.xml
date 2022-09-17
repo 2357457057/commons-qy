@@ -24,7 +24,7 @@
             <pattern>${log.color}</pattern>
         </layout>
         <filter class="ThresholdFilter">
-            <level>DEBUG</level>
+            <level>ALL</level>
         </filter>
     </appender>
 
@@ -76,7 +76,7 @@
             <pattern>${log.pattern}</pattern>
         </encoder>
         <triggeringPolicy class="SizeBasedTriggeringPolicy">
-            <maxFileSize>100MB</maxFileSize>
+            <maxFileSize>20MB</maxFileSize>
         </triggeringPolicy>
         <filter class="LevelFilter">
             <level>DEBUG</level>

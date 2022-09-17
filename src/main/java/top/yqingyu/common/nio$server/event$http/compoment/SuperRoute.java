@@ -1,13 +1,10 @@
-package top.yqingyu.common.nio$server.event$http.route;
+package top.yqingyu.common.nio$server.event$http.compoment;
 
+import cn.hutool.core.collection.ConcurrentHashSet;
+import cn.hutool.core.date.LocalDateTimeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.yqingyu.common.nio$server.event$http.compoment.LocationMapping;
-import top.yqingyu.common.nio$server.event$http.entity.ContentType;
-import top.yqingyu.common.nio$server.event$http.entity.HttpVersion;
-import top.yqingyu.common.nio$server.event$http.entity.Request;
-import top.yqingyu.common.nio$server.event$http.entity.Response;
 import top.yqingyu.common.utils.ArrayUtil;
 import top.yqingyu.common.utils.IoUtil;
 
@@ -15,16 +12,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static top.yqingyu.common.nio$server.event$http.entity.Response.*;
+import static top.yqingyu.common.nio$server.event$http.compoment.Response.*;
 import static top.yqingyu.common.utils.ArrayUtil.*;
 
 /**
@@ -35,9 +34,10 @@ import static top.yqingyu.common.utils.ArrayUtil.*;
  * @createTime 2022年09月14日 18:34:00
  */
 
-public class SuperRoute {
+public class SuperRoute implements Callable {
 
-
+    private final ConcurrentHashSet<Integer> SINGLE_OPS;
+    private final SocketChannel socketChannel;
     private static final int DEFAULT_BUF_LENGTH = 1024;
     //最大Body长度 64M
     private static final long MaxBodyLength = 1024 * 1024 * 64;
@@ -47,33 +47,81 @@ public class SuperRoute {
 
     private static final Logger log = LoggerFactory.getLogger(SuperRoute.class);
 
-    public void superServlet(SocketChannel socketChannel) throws Exception {
-        Request request = parseRequest(socketChannel);
-
-        Response response = new Response();
-        response.setHttpVersion(HttpVersion.V_1_1);
-        response.putHeaderDate(ZonedDateTime.now());
-        AtomicReference<Response> resp = new AtomicReference<>();
-
-        resp.set(response);
-        //为解析错误的报文会直接返回
-        if (request.isParseEnd()) {
-            initResponse(request, resp);
-            //响应
-            doResponse(socketChannel, resp);
-        }
-
+    public SuperRoute(SocketChannel socketChannel, ConcurrentHashSet<Integer> SINGLE_OPS) {
+        this.socketChannel = socketChannel;
+        this.SINGLE_OPS = SINGLE_OPS;
     }
 
-    public static void initResponse(Request request, AtomicReference<Response> resp) throws InvocationTargetException, IllegalAccessException {
+    @Override
+    public Object call() throws Exception {
+        LocalDateTime now = LocalDateTime.now();
+        try {
+            Request request = parseRequest();
+            Response response = new Response();
+            response.setHttpVersion(HttpVersion.V_1_1);
+            response.putHeaderDate(ZonedDateTime.now());
+            AtomicReference<Response> resp = new AtomicReference<>();
+
+            resp.set(response);
+
+            //解析错误的报文会在解析过程中直接返回
+            if (request.isParseEnd()) {
+                //响应初始化，寻找本地资源
+                initResponse(request, resp);
+                //响应
+                doResponse(resp);
+            }
+
+        } finally {
+            //处理完毕需要需丢掉SINGLE中的记录
+            int i = socketChannel.hashCode();
+            SINGLE_OPS.remove(i);
+            socketChannel.close();
+            log.info("{}出 cost {} NANOS", i, LocalDateTimeUtil.between(now, LocalDateTime.now(), ChronoUnit.NANOS));
+        }
+
+        return null;
+    }
+
+    /**
+     * 寻找相应的资源。
+     *
+     * @author YYJ
+     * @description
+     */
+    public void initResponse(Request request, AtomicReference<Response> resp) {
 
         Response response = resp.get();
         //优先文件资源
         if (!response.isAssemble())
             LocationMapping.fileResourceMapping(request, response);
+
         //接口
-        if (!response.isAssemble())
+        if (!response.isAssemble()) {
+
+            //session相关逻辑
+            Session session = null;
+            String sessionID = request.getCookie(Session.name);
+            if (Session.SESSION_CONTAINER.containsKey(sessionID))
+                session = Session.SESSION_CONTAINER.get(sessionID);
+            else {
+                session = new Session();
+                Session.SESSION_CONTAINER.put(session.getSessionVersionID(), session);
+            }
+            request.setSession(session);
+
+
+            //接口资源
             LocationMapping.beanResourceMapping(request, response);
+
+            if (response.isAssemble() && request.getSession().isNewInstance()) {
+                session.setNewInstance(false);
+                Cookie cookie = new Cookie(Session.name, session.getSessionVersionID());
+                cookie.setMaxAge(60 * 60 * 24);
+                response.addCookie(cookie);
+            }
+
+        }
 
         //NotFount
         if (!response.isAssemble()) {
@@ -82,7 +130,7 @@ public class SuperRoute {
 
     }
 
-    private void doResponse(SocketChannel socketChannel, AtomicReference<Response> resp) throws Exception {
+    private void doResponse(AtomicReference<Response> resp) throws Exception {
         Response response = resp.get();
         ContentType type = response.gainHeaderContentType();
         byte[] bytes;
@@ -98,7 +146,6 @@ public class SuperRoute {
         if (!"304".equals(response.getStatue_code()) || (response.getStrBody() != null ^ response.gainFileBody() == null)) {
             byte[] buf = new byte[1024];
             int length;
-            long total = 0;
             InputStream resourceStream = response.gainBodyStream();
 
             File file_body = response.getFile_body();
@@ -107,7 +154,7 @@ public class SuperRoute {
                 long l = 0;
                 long size = channel.size();
                 do {
-                    l += channel.transferTo(l, size / 1024, socketChannel);
+                    l += channel.transferTo(l, 1024 * 1024 * 2, socketChannel);
                 } while (l != size);
                 channel.close();
                 resourceStream.close();
@@ -116,7 +163,6 @@ public class SuperRoute {
                     byte[] temps = new byte[length];
                     System.arraycopy(buf, 0, temps, 0, length);
                     IoUtil.writeBytes(socketChannel, temps);
-                    total += temps.length;
                 }
                 resourceStream.close();
             }
@@ -126,7 +172,7 @@ public class SuperRoute {
     }
 
 
-    private Request parseRequest(SocketChannel socketChannel) throws Exception {
+    private Request parseRequest() throws Exception {
         int currentLength;
         byte[] all = new byte[0];
         AtomicInteger enumerator = new AtomicInteger();
@@ -155,7 +201,7 @@ public class SuperRoute {
                     body = ArrayUtil.addAll(body, bytes);
                 }
                 request.setBody(body);
-                request.setParseEnd(true);
+                request.setParseEnd();
                 break;
                 //当报文总长度超出 DEFAULT_BUF_LENGTH
             } else {
@@ -166,7 +212,7 @@ public class SuperRoute {
 
                     //header超出最大值直接关闭连接
                     if (all.length > MaxHeaderLength) {
-                        Response response = $400_BAD_REQUEST.putHeaderDate(ZonedDateTime.now());
+                        Response response = $400_BAD_REQUEST.putHeaderDate(ZonedDateTime.now()).setAssemble(true);
                         IoUtil.writeBytes(socketChannel, response.toString().getBytes(StandardCharsets.UTF_8));
                         log.error(response.toJsonString());
                         socketChannel.close();
@@ -189,6 +235,12 @@ public class SuperRoute {
                     }
                 }
 
+                //get无body
+                if (HttpMethod.GET.equals(request.getMethod())) {
+                    request.setParseEnd();
+                    break;
+                }
+
                 //body解析
                 if (flag) {
                     long contentLength = request.getHeader().getLongValue("Content-Length", -1);
@@ -196,7 +248,7 @@ public class SuperRoute {
                     //body超出最大值直接关闭连接
                     if (contentLength > MaxBodyLength || all.length > MaxBodyLength) {
 
-                        Response response = $413_ENTITY_LARGE.putHeaderDate(ZonedDateTime.now());
+                        Response response = $413_ENTITY_LARGE.putHeaderDate(ZonedDateTime.now()).setAssemble(true);
                         IoUtil.writeBytes(socketChannel, request.toString().getBytes(StandardCharsets.UTF_8));
                         log.error(response.toJsonString());
                         socketChannel.close();
@@ -204,18 +256,18 @@ public class SuperRoute {
                     }
 
                     //说明已经读完
-                    if (currentLength < DEFAULT_BUF_LENGTH) {
+                    if (currentLength < DEFAULT_BUF_LENGTH || all.length == currentLength) {
                         int idx = firstIndexOfTarget(all, RN_RN);
                         int efIdx = idx + RN_RN.length;
                         if (idx == -1) {
-                            Response response = $400_BAD_REQUEST.putHeaderDate(ZonedDateTime.now());
+                            Response response = $400_BAD_REQUEST.putHeaderDate(ZonedDateTime.now()).setAssemble(true);
                             IoUtil.writeBytes(socketChannel, request.toString().getBytes(StandardCharsets.UTF_8));
                             log.error(response.toJsonString());
                             socketChannel.close();
                             break;
                             //最后一位
                         } else if (efIdx == all.length) {
-                            request.setParseEnd(true);
+                            request.setParseEnd();
                         } else {
                             byte[] body = new byte[all.length - efIdx];
 
@@ -225,7 +277,7 @@ public class SuperRoute {
                             }
                             System.arraycopy(all, efIdx, body, 0, body.length);
                             request.setBody(body);
-                            request.setParseEnd(true);
+                            request.setParseEnd();
                         }
 
                     }

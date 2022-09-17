@@ -1,7 +1,8 @@
-package top.yqingyu.common.nio$server.event$http.entity;
+package top.yqingyu.common.nio$server.event$http.compoment;
 
 import com.alibaba.fastjson2.JSON;
 import org.apache.commons.lang3.StringUtils;
+import top.yqingyu.common.qydata.ConcurrentDataSet;
 import top.yqingyu.common.qydata.DataMap;
 import top.yqingyu.common.utils.IoUtil;
 import top.yqingyu.common.utils.LocalDateTimeUtil;
@@ -33,8 +34,10 @@ public class Response {
     private HttpVersion httpVersion;
     private String statue_code;
     private final DataMap header = new DataMap();
-    private String string_body;
 
+    private final ConcurrentDataSet<Cookie> cookie = new ConcurrentDataSet<>();
+
+    private String string_body;
     private File file_body;
 
     private boolean assemble = false;
@@ -66,8 +69,8 @@ public class Response {
         return this;
     }
 
-    public Response putHeaderServer(String value) {
-        header.put("Server", "QingYu2.1");
+    public Response putHeaderServer() {
+        header.put("Server", "QyHttpServer2.3");
         return this;
     }
 
@@ -93,6 +96,30 @@ public class Response {
         header.put("Accept-Ranges", "bytes");
         return this;
     }
+
+    public Response putHeaderContentRanges() {
+        header.put("Content-Ranges", "bytes=0-1");
+        return this;
+    }
+
+    public Response putHeaderCROS() {
+        header.put("Access-Control-Allow-Origin", "*");
+        return this;
+    }
+
+    public String getHeaderCROS() {
+        return this.header.getString("Access-Control-Allow-Origin");
+    }
+
+    public Response putHeaderRedirect(String url) {
+        header.put("Location", url);
+        return this;
+    }
+
+    public String getHeaderRedirect() {
+        return this.header.getString("Location");
+    }
+
 
     public Response putHeaderDate(ZonedDateTime ldt) {
         String s = HTTP_FORMATTER.format(ldt);
@@ -143,8 +170,14 @@ public class Response {
         return file_body;
     }
 
+    public void addCookie(Cookie c) {
+        this.cookie.add(c);
+    }
+
+
     @Override
     public String toString() {
+        this.putHeaderServer();
         StringBuilder sb = new StringBuilder();
         sb.append(httpVersion.getV()).append(" ").append(statue_code).append("\r\n");
 
@@ -156,6 +189,9 @@ public class Response {
         }
 
         header.forEach((k, v) -> sb.append(k).append(":").append(" ").append(v).append("\r\n"));
+
+        cookie.forEach((e) -> sb.append(e.toSetString()));
+
         sb.append("\r\n");
         return sb.toString();
     }

@@ -1,6 +1,6 @@
 package top.yqingyu.common.nio$server.event$http.annotation;
 
-import top.yqingyu.common.nio$server.event$http.entity.HttpMethod;
+import top.yqingyu.common.nio$server.event$http.compoment.HttpMethod;
 
 import java.lang.annotation.*;
 
@@ -23,5 +23,7 @@ public @interface QyController {
 
     //TODO 待支持
     boolean restful() default false;
+    //跨域
+    boolean cors() default false;
 
 }

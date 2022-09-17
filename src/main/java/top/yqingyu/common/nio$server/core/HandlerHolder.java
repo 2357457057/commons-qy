@@ -10,7 +10,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.channels.Selector;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -27,6 +26,7 @@ public class HandlerHolder {
 
     private final ArrayList<EventHandler> list;
     private final int size;
+    private final int perHandlerPoolSize;
     private final AtomicInteger IDX = new AtomicInteger();
 
     public final HashSet<EventHandler> RUNNER = new HashSet<>();
@@ -34,10 +34,11 @@ public class HandlerHolder {
 
     private HandlerHolder(int size, int perHandlerPoolSize, Class<? extends EventHandler> clazz) throws IOException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         this.size = size;
+        this.perHandlerPoolSize = perHandlerPoolSize;
         this.list = new ArrayList<>(size);
-        Constructor<? extends EventHandler> constructor = clazz.getConstructor(Selector.class, ThreadPoolExecutor.class);
+        Constructor<? extends EventHandler> constructor = clazz.getConstructor(Selector.class);
         for (int i = 0; i < size; i++) {
-            list.add(constructor.newInstance(Selector.open(), ThreadUtil.createQyFixedThreadPool(perHandlerPoolSize, null, null)));
+            list.add(constructor.newInstance(Selector.open()));
         }
     }
 
@@ -46,7 +47,7 @@ public class HandlerHolder {
         return createFixed(i * 2, 2, clazz);
     }
 
-    public static HandlerHolder createDefaultSize(Class<? extends EventHandler> clazz,int perHandlerPoolSize) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public static HandlerHolder createDefaultSize(Class<? extends EventHandler> clazz, int perHandlerPoolSize) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         int i = Runtime.getRuntime().availableProcessors();
         return new HandlerHolder(i * 2, perHandlerPoolSize, clazz);
     }
@@ -63,8 +64,10 @@ public class HandlerHolder {
     public void startHandle(EventHandler eventHandler) {
         if (RUNNER.add(eventHandler)) {
             Thread thread = new Thread(eventHandler);
+            String name = Thread.currentThread().getName();
             thread.setDaemon(true);
-            thread.setName(Thread.currentThread().getName() + "-EventHandler" + IDX.get());
+            thread.setName(name + "-Handler" + IDX.get());
+            eventHandler.POOL = ThreadUtil.createQyFixedThreadPool(perHandlerPoolSize, new ThreadUtil.QyCurrentPoolNameFactory().QyThreadFactory(thread.getName(), "th"));
             thread.start();
             log.debug("create handler");
         }

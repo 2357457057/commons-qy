@@ -5,10 +5,9 @@ import org.slf4j.LoggerFactory;
 import top.yqingyu.common.nio$server.core.EventHandler;
 
 import java.io.IOException;
-import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.nio.channels.SocketChannel;
 
 /**
  * @author YYJ
@@ -25,14 +24,13 @@ public class DemoEventHandler extends EventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(DemoEventHandler.class);
 
-    public DemoEventHandler(Selector selector, ThreadPoolExecutor pool) {
-        super(selector, pool);
+    public DemoEventHandler(Selector selector) {
+        super(selector);
     }
 
     /**
      * 单次加载资源
      *
-     * @param obj 资源
      * @author YYJ
      * @description
      */
@@ -43,35 +41,33 @@ public class DemoEventHandler extends EventHandler {
 
     /**
      * @param selector
-     * @param selectionKey
+     * @param socketChannel
      * @throws IOException
      */
     @Override
-    public void read(Selector selector, SelectionKey selectionKey) throws IOException {
+    public void read(Selector selector,SocketChannel socketChannel) throws IOException {
         log.info("HELLO WORLD! - ++");
-        SelectableChannel channel = selectionKey.channel();
-        channel.register(selector, SelectionKey.OP_WRITE);
+        socketChannel.register(selector, SelectionKey.OP_WRITE);
     }
 
     /**
      * @param selector
-     * @param selectionKey
+     * @param socketChannel
      * @throws IOException
      */
     @Override
-    public void write(Selector selector, SelectionKey selectionKey) throws IOException {
+    public void write(Selector selector, SocketChannel socketChannel) throws IOException {
         log.info("HELLO WORLD! - ==");
-        SelectableChannel channel = selectionKey.channel();
-        channel.close();
+        socketChannel.close();
     }
 
     /**
      * @param selector
-     * @param selectionKey
+     * @param socketChannel
      * @throws IOException
      */
     @Override
-    public void assess(Selector selector, SelectionKey selectionKey) throws IOException, InterruptedException {
+    public void assess(Selector selector, SocketChannel socketChannel) throws IOException, InterruptedException {
             while (true){
                 Object take = QUEUE.take();
 

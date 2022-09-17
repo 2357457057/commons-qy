@@ -294,7 +294,12 @@ public class YamlUtil {
 
                 if (poll.isFile()) {
                     String path = poll.getPath();
-                    map.put(path.replace(rootPath, ""), path);
+                    String key = path.replace(rootPath, "");
+
+                    if (isWindows())
+                        key = key.replaceAll("\\\\", "/");
+
+                    map.put(key, path);
                 }
             }
         } while (queue.size() > 0);

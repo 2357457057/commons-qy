@@ -5,14 +5,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.nio$server.core.EventHandler;
 import top.yqingyu.common.nio$server.event$http.compoment.LocationMapping;
-import top.yqingyu.common.nio$server.event$http.route.SuperRoute;
+import top.yqingyu.common.nio$server.event$http.compoment.SuperRoute;
 import top.yqingyu.common.utils.IoUtil;
 
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author YYJ
@@ -27,8 +26,8 @@ public class HttpEventHandler extends EventHandler {
         super();
     }
 
-    public HttpEventHandler(Selector selector, ThreadPoolExecutor pool) {
-        super(selector, pool);
+    public HttpEventHandler(Selector selector) {
+        super(selector);
     }
 
     /**
@@ -48,17 +47,14 @@ public class HttpEventHandler extends EventHandler {
     private static final Logger log = LoggerFactory.getLogger(HttpEventHandler.class);
 
     @Override
-    public void read(Selector selector, SelectionKey selectionKey) throws Exception {
-        SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
-        new SuperRoute().superServlet(socketChannel);
-//        Thread.sleep(2000);
-        socketChannel.close();
+    @SuppressWarnings("unchecked")
+    public void read(Selector selector, SocketChannel socketChannel) throws Exception {
+        POOL.submit(new SuperRoute(socketChannel, SINGLE_OPS));
     }
 
 
     @Override
-    public void write(Selector selector, SelectionKey selectionKey) throws Exception {
-        SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
+    public void write(Selector selector, SocketChannel socketChannel) throws Exception {
 
         IoUtil.writeBytes(socketChannel, ("HTTP/1.1 200 OK\r\n" +
                 "Content-Type:application/json\r\n" +
@@ -71,23 +67,7 @@ public class HttpEventHandler extends EventHandler {
 
 
     @Override
-    public void assess(Selector selector, SelectionKey selectionKey) throws Exception {
-
-        while (true) {
-            try {
-                Object take = QUEUE.take();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            try {
-                write(selector, selectionKey);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
-
-        }
-
+    public void assess(Selector selector, SocketChannel socketChannel) throws Exception {
     }
 
 

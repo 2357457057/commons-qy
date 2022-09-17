@@ -1,4 +1,4 @@
-package top.yqingyu.common.nio$server.event$http.entity;
+package top.yqingyu.common.nio$server.event$http.compoment;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;

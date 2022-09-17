@@ -78,8 +78,9 @@ public class ClazzUtil {
     // 获取指定包名下的所有类（可根据注解进行过滤）
     public static List<Class<?>> getClassListByAnnotation(String packageName, Class<? extends Annotation> annotationClass) {
         List<Class<?>> classList = new ArrayList<Class<?>>();
+        String packageUrl = packageName.replaceAll("\\.", "/");
         try {
-            Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources(packageName.replaceAll("\\.", "/"));
+            Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources(packageUrl);
             while (urls.hasMoreElements()) {
                 URL url = urls.nextElement();
                 if (url != null) {
@@ -94,12 +95,17 @@ public class ClazzUtil {
                         while (jarEntries.hasMoreElements()) {
                             JarEntry jarEntry = jarEntries.nextElement();
                             String jarEntryName = jarEntry.getName();
-                            if (jarEntryName.endsWith(".class")) {
+                            if (jarEntryName.endsWith(".class")&&jarEntryName.contains(packageUrl)) {
                                 String className = jarEntryName.substring(0, Math.max(jarEntryName.lastIndexOf("."), 0)).replaceAll("/", ".");
-                                Class<?> cls = Class.forName(className);
-                                if (cls.isAnnotationPresent(annotationClass)) {
-                                    classList.add(cls);
+                                try {
+                                    Class<?> cls = Class.forName(className);
+                                    if (cls.isAnnotationPresent(annotationClass)) {
+                                        classList.add(cls);
+                                    }
+                                }catch (Exception e){
+                                    e.printStackTrace();
                                 }
+
                             }
                         }
                     }

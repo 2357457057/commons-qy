@@ -111,6 +111,11 @@ public class Request {
         return this.cookie;
     }
 
+    boolean canCompress() {
+        String string = header.getString("Accept-Encoding", "");
+        return string.toUpperCase().contains("GZIP");
+    }
+
     public HttpMethod getMethod() {
         return method;
     }

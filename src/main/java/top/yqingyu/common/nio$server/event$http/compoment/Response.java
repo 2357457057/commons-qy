@@ -4,13 +4,10 @@ import com.alibaba.fastjson2.JSON;
 import org.apache.commons.lang3.StringUtils;
 import top.yqingyu.common.qydata.ConcurrentDataSet;
 import top.yqingyu.common.qydata.DataMap;
-import top.yqingyu.common.utils.IoUtil;
 import top.yqingyu.common.utils.LocalDateTimeUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 
@@ -40,7 +37,11 @@ public class Response {
     private String string_body;
     private File file_body;
 
+    private byte[] compress_body;
+
     private boolean assemble = false;
+
+    private boolean compress = false;
 
     public File gainFileBody() {
         return file_body;
@@ -120,6 +121,15 @@ public class Response {
         return this.header.getString("Location");
     }
 
+    public void putHeaderCompress() {
+        compress = true;
+        header.put("Content-Encoding", "gzip");
+    }
+
+    public boolean isCompress() {
+        return compress;
+    }
+
 
     public Response putHeaderDate(ZonedDateTime ldt) {
         String s = HTTP_FORMATTER.format(ldt);
@@ -150,23 +160,27 @@ public class Response {
         return header;
     }
 
-    public String getStrBody() {
+    String getStrBody() {
         return string_body;
     }
+
 
     public Response setString_body(String string_body) {
         this.string_body = string_body;
         return this;
     }
 
-    public InputStream gainBodyStream() throws FileNotFoundException {
-        if (file_body != null) {
-            return new FileInputStream(file_body);
-        }
-        return new IoUtil.WriteStreamToInputStream2(string_body.getBytes(StandardCharsets.UTF_8));
+    void setCompress_body(byte[] compress_body) {
+        this.compress_body = compress_body;
     }
 
-    public File getFile_body() {
+    byte[] gainBodyBytes() throws FileNotFoundException {
+        if (compress)
+            return compress_body;
+        return string_body.getBytes(StandardCharsets.UTF_8);
+    }
+
+    File getFile_body() {
         return file_body;
     }
 

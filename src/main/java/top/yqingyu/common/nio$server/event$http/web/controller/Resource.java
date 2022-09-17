@@ -1,9 +1,10 @@
 package top.yqingyu.common.nio$server.event$http.web.controller;
 
 import top.yqingyu.common.nio$server.event$http.annotation.QyController;
-import top.yqingyu.common.nio$server.event$http.compoment.LocationMapping;
 import top.yqingyu.common.nio$server.event$http.compoment.HttpMethod;
-import top.yqingyu.common.qydata.DataMap;
+import top.yqingyu.common.nio$server.event$http.compoment.LocationMapping;
+import top.yqingyu.common.nio$server.event$http.exception.HttpException;
+import top.yqingyu.common.utils.YamlUtil;
 
 /**
  * @author YYJ
@@ -15,10 +16,19 @@ import top.yqingyu.common.qydata.DataMap;
 @QyController(path = "root")
 public class Resource {
 
-    @QyController(path = "file", method = { HttpMethod.GET})
-    public String showResource(DataMap dataMap) {
+    @QyController(path = "file", method = {HttpMethod.GET})
+    public String showResource(String name) {
+        if (!"yyj".equals(name))
+            throw new HttpException.MethodNotSupposedException("我C");
+
         StringBuilder sb = new StringBuilder();
-        LocationMapping.FILE_RESOURCE_MAPPING.forEach((k, v) -> sb.append("<a href = '/").append(k.replaceAll("\\\\", "/")).append("'>").append(k).append("</a>").append("<br>"));
+        LocationMapping.FILE_RESOURCE_MAPPING.forEach((k, v) -> {
+            sb.append("<a href = '");
+            if (YamlUtil.isWindows()) {
+                sb.append("/");
+            }
+            sb.append(k.replaceAll("\\\\", "/")).append("'>").append(k).append("</a>").append("<br>");
+        });
         return sb.toString();
     }
 }

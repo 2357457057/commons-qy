@@ -36,17 +36,17 @@ public class LocationMapping {
 
     public static final ConcurrentHashMap<String, String> FILE_RESOURCE_MAPPING = new ConcurrentHashMap<>();
 
-     static final ConcurrentHashMap<String, Bean> BEAN_RESOURCE_MAPPING = new ConcurrentHashMap<>();
-     static final ConcurrentHashMap<String, String> FILE_CACHING = new ConcurrentHashMap<>();
+    static final ConcurrentHashMap<String, Bean> BEAN_RESOURCE_MAPPING = new ConcurrentHashMap<>();
+    static final ConcurrentHashMap<String, String> FILE_CACHING = new ConcurrentHashMap<>();
 
-     static void loadingFileResource(String rootPath) {
+    static void loadingFileResource(String rootPath) {
         HashMap<String, String> mapping = YamlUtil.getFilePathMapping(rootPath);
         FILE_RESOURCE_MAPPING.putAll(mapping);
     }
 
-     static void loadingBeanResource(String packageName) {
+    static void loadingBeanResource(String packageName) {
 
-        List<Class<?>> classes = ClazzUtil.getClassListByAnnotation("top.yqingyu.common", QyController.class);
+        List<Class<?>> classes = ClazzUtil.getClassListByAnnotation(packageName, QyController.class);
 
         for (Class<?> aClass : classes) {
             QyController annotation = aClass.getAnnotation(QyController.class);
@@ -100,13 +100,13 @@ public class LocationMapping {
     }
 
 
-     static void fileResourceMapping(Request request, Response response) {
+    static void fileResourceMapping(Request request, Response response) {
         boolean redirect = false;
         String url = request.getUrl();
         String[] urls = url.split("[?]");
         url = urls[0];
 
-        if (url.indexOf("/") == 0) {
+        if (url.indexOf("/") == 0 && YamlUtil.isWindows()) {
             url = url.replaceFirst("/", "");
         }
 
@@ -173,7 +173,7 @@ public class LocationMapping {
         }
     }
 
-     static void beanResourceMapping(Request request, Response response) {
+    static void beanResourceMapping(Request request, Response response) {
         String url = request.getUrl();
         String[] urls = url.split("[?]");
         url = urls[0];

@@ -42,6 +42,7 @@ public class LocationMapping {
     static void loadingFileResource(String rootPath) {
         HashMap<String, String> mapping = YamlUtil.getFilePathMapping(rootPath);
         FILE_RESOURCE_MAPPING.putAll(mapping);
+        log.debug("loading  {} resource mapping", rootPath);
     }
 
     static void loadingBeanResource(String packageName) {

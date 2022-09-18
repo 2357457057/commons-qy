@@ -4,6 +4,7 @@ package top.yqingyu.common.nio$server.event$http.compoment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.nio$server.core.EventHandler;
+import top.yqingyu.common.qydata.DataList;
 import top.yqingyu.common.qydata.DataMap;
 import top.yqingyu.common.utils.IoUtil;
 import top.yqingyu.common.utils.UnitUtil;
@@ -58,13 +59,31 @@ public class HttpEventHandler extends EventHandler {
                 Long workerKeepLiveTime = server.$2MILLS("worker-keep-live-time", UnitUtil.$2MILLS("2H"));
                 boolean open_resource = server.getBooleanValue("open-resource", true);
                 boolean open_controller = server.getBooleanValue("open-controller", true);
-                String path = server.getString("local-resource-path", System.getProperty("user.dir"));
-                String scan_package = server.getString("controller-package", "top.yqingyu.common.web.controller");
 
-                if (open_resource) LocationMapping.loadingBeanResource(scan_package);
-                if (open_controller) LocationMapping.loadingFileResource(path);
+                if (open_resource) {
+                    DataList pathList = server.getDataList("local-resource-path");
+                    if (pathList == null || pathList.size() == 0) {
+                        String path = System.getProperty("user.dir");
+                        LocationMapping.loadingFileResource(path);
+                    } else {
+                        for (int i = 0; i < pathList.size(); i++) {
+                            LocationMapping.loadingFileResource(pathList.getString(i));
+                        }
+                    }
 
-                log.info("localResourcePath: {}", path);
+                }
+
+                if (open_controller) {
+                    DataList scan_packages = server.getDataList("controller-package");
+                    if (scan_packages == null || scan_packages.size() == 0) {
+                        LocationMapping.loadingBeanResource("top.yqingyu.common.web.controller");
+                    } else {
+                        for (int i = 0; i < scan_packages.size(); i++) {
+                            LocationMapping.loadingBeanResource(scan_packages.getString(i));
+                        }
+                    }
+                }
+
             }
 
             DataMap transfer = cfg.getNotNUllData("transfer");
@@ -72,7 +91,7 @@ public class HttpEventHandler extends EventHandler {
                 DataMap request = transfer.getNotNUllData("request");
                 {
                     DEFAULT_BUF_LENGTH = request.$2B("parse-buffer-size", UnitUtil.$2B("1KB"));
-                    MAX_HEADER_SIZE = request.$2B("max-header-size",UnitUtil.$2B("64KB") );
+                    MAX_HEADER_SIZE = request.$2B("max-header-size", UnitUtil.$2B("64KB"));
                     MAX_BODY_SIZE = request.$2B("max-body-size", UnitUtil.$2B("128MB"));
                 }
                 DataMap response = transfer.getNotNUllData("response");
@@ -82,17 +101,17 @@ public class HttpEventHandler extends EventHandler {
             }
             DataMap file_compress = cfg.getNotNUllData("file-compress");
             {
-                FILE_COMPRESS_ON = file_compress.getBoolean("open",true);
+                FILE_COMPRESS_ON = file_compress.getBoolean("open", true);
                 MAX_SINGLE_FILE_COMPRESS_SIZE = file_compress.$2B("max-single-file-compress-size", UnitUtil.$2B("128MB"));
-                DataMap compressPool = file_compress.getData("compress-cache-pool");
+                DataMap compressPool = file_compress.getNotNUllData("compress-cache-pool");
                 {
                     MAX_FILE_CACHE_SIZE = compressPool.$2B("max-file-cache-size", UnitUtil.$2B("0.5GB"));
-                    CACHE_POOL_ON = compressPool.getBoolean("open",true);
+                    CACHE_POOL_ON = compressPool.getBoolean("open", true);
                 }
             }
 
             DataMap session = cfg.getNotNUllData("session");
-            Long aLong = session.$2S("session-timeout", UnitUtil.$2S("7D"));
+            SESSION_TIME_OUT = session.$2S("session-timeout", UnitUtil.$2S("7D"));
 
         }
     }

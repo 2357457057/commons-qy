@@ -5,8 +5,8 @@ server:
   worker-keep-live-time: 2H
   open-resource: false
   open-controller: false
-  local-resource-path: /var/www/html/
-  controller-package: top.yqingyu.common.nio$server.event$http.web.controller
+  local-resource-path: #[/var/www/html/]
+  controller-package: #[top.yqingyu.common.nio$server.event$http.web.controller]
 
 transfer:
   request:

@@ -41,21 +41,29 @@ public class SuperRoute implements Callable {
 
     private final ConcurrentHashSet<Integer> SINGLE_OPS;
     private final SocketChannel socketChannel;
-    private static final int DEFAULT_BUF_LENGTH = 1024;
-    private static final int DEFAULT_SEND_BUF_LENGTH = 1024 * 1024 * 2;
+    static long DEFAULT_BUF_LENGTH;
     //最大Body长度 64M
-    private static final long MaxBodyLength = 1024 * 1024 * 64;
-    ;
+    static long MAX_BODY_SIZE ;
+
     //最大header长度 128KB
-    private static final long MaxHeaderLength = 1024 * 128;
+    static long MAX_HEADER_SIZE;
+
+    static long DEFAULT_SEND_BUF_LENGTH;
+
+    static boolean FILE_COMPRESS_ON;
 
     //最大压缩源文件大小 128MB
-    private static final long MaxOriginLength = 1024 * 1024 * 128;
+    static long MAX_SINGLE_FILE_COMPRESS_SIZE;
+
+    //是否开启缓存池
+    static boolean CACHE_POOL_ON;
 
     //最大缓存池大小 1.5GB
-    private static final long MaxFileCacheSize = 1024 * 1024 * 1536;
+    static long MAX_FILE_CACHE_SIZE;
 
-    private static final AtomicLong CurrentFileCacheSize = new AtomicLong();
+    static long SESSION_TIME_OUT;
+
+    private final AtomicLong CurrentFileCacheSize = new AtomicLong();
 
     private static final ConcurrentDataMap<String, byte[]> FILE_BYTE_CACHE = new ConcurrentDataMap<>();
     private static final Logger log = LoggerFactory.getLogger(SuperRoute.class);
@@ -71,7 +79,7 @@ public class SuperRoute implements Callable {
         try {
             Request request = parseRequest();
             LocalDateTime now1 = LocalDateTime.now();
-            log.info("1: {}", LocalDateTimeUtil.between(now, now1, ChronoUnit.MILLIS));
+            log.info("1: {}", LocalDateTimeUtil.between(now, now1, ChronoUnit.MICROS));
 
 
             Response response = new Response();
@@ -86,11 +94,19 @@ public class SuperRoute implements Callable {
                 //响应初始化，寻找本地资源
                 initResponse(request, resp);
                 LocalDateTime now2 = LocalDateTime.now();
-                log.info("2: {}", LocalDateTimeUtil.between(now1, now2, ChronoUnit.MILLIS));
+                log.info("2: {}", LocalDateTimeUtil.between(now1, now2, ChronoUnit.MICROS));
+
+                //压缩
+                if (FILE_COMPRESS_ON)
+                    compress(request, resp);
+
+                LocalDateTime now3 = LocalDateTime.now();
+                log.info("3: {}", LocalDateTimeUtil.between(now2, now3, ChronoUnit.MICROS));
+
                 //响应
                 doResponse(request, resp);
-                LocalDateTime now3 = LocalDateTime.now();
-                log.info("3: {}", LocalDateTimeUtil.between(now2, now3, ChronoUnit.MILLIS));
+                LocalDateTime now4 = LocalDateTime.now();
+                log.info("4: {}", LocalDateTimeUtil.between(now3, now4, ChronoUnit.MICROS));
             }
 
         } finally {
@@ -98,7 +114,7 @@ public class SuperRoute implements Callable {
             int i = socketChannel.hashCode();
             SINGLE_OPS.remove(i);
             socketChannel.close();
-            log.info("{}出 cost {} NANOS", i, LocalDateTimeUtil.between(now, LocalDateTime.now(), ChronoUnit.MILLIS));
+            log.info("{}出 cost {} MICROS", i, LocalDateTimeUtil.between(now, LocalDateTime.now(), ChronoUnit.MICROS));
         }
 
         return null;
@@ -118,7 +134,7 @@ public class SuperRoute implements Callable {
             LocalDateTime now4 = LocalDateTime.now();
             LocationMapping.fileResourceMapping(request, response);
             LocalDateTime now5 = LocalDateTime.now();
-            log.info("4: {}", LocalDateTimeUtil.between(now4, now5, ChronoUnit.MILLIS));
+            log.info("5: {}", LocalDateTimeUtil.between(now4, now5, ChronoUnit.MICROS));
         }
 
         //接口
@@ -140,18 +156,18 @@ public class SuperRoute implements Callable {
             LocalDateTime now6 = LocalDateTime.now();
             LocationMapping.beanResourceMapping(request, response);
             LocalDateTime now7 = LocalDateTime.now();
-            log.info("5: {}", LocalDateTimeUtil.between(now6, now7, ChronoUnit.MILLIS));
+            log.info("6: {}", LocalDateTimeUtil.between(now6, now7, ChronoUnit.MICROS));
 
             if (response.isAssemble() && request.getSession().isNewInstance()) {
                 session.setNewInstance(false);
                 Cookie cookie = new Cookie(Session.name, session.getSessionVersionID());
-                cookie.setMaxAge(60 * 60 * 24);
+                cookie.setMaxAge((int) SESSION_TIME_OUT);
                 response.addCookie(cookie);
             }
 
         }
 
-        //NotFount
+        //NotFound
         if (!response.isAssemble()) {
             resp.setRelease(Response.$404_NOT_FOUND.putHeaderDate(ZonedDateTime.now()));
         }
@@ -160,14 +176,15 @@ public class SuperRoute implements Callable {
 
 
     /**
-     *  对response 压缩、缓存。
+     * 对response 压缩、缓存。
      *
-     * @param response 响应
+     * @param resp    响应
      * @param request 请求
      * @author YYJ
      * @description
-     * */
-    private void compress(Response response,Request request) throws IOException {
+     */
+    private void compress(Request request, AtomicReference<Response> resp) throws IOException {
+        Response response = resp.get();
         String url = request.getUrl();
         ContentType requestCtTyp = ContentType.parse(request.getHeader("Content-Type"));
 
@@ -190,9 +207,14 @@ public class SuperRoute implements Callable {
                     } else {
                         File file = response.getFile_body();
                         long length = file.length();
-                        if (length < MaxOriginLength && CurrentFileCacheSize.get() < MaxFileCacheSize) {
-                            CurrentFileCacheSize.addAndGet(length);
+                        if (length < MAX_SINGLE_FILE_COMPRESS_SIZE && CurrentFileCacheSize.get() < MAX_FILE_CACHE_SIZE) {
                             byte[] bytes = GzipUtil.$2CompressBytes(response.getFile_body());
+                            //开启压缩池
+                            if (CACHE_POOL_ON) {
+                                FILE_BYTE_CACHE.put(url, bytes);
+                                CurrentFileCacheSize.addAndGet(bytes.length);
+                            }
+
                             response.setCompress_body(bytes);
                             response.putHeaderContentLength(bytes.length).putHeaderCompress();
                         }
@@ -220,7 +242,7 @@ public class SuperRoute implements Callable {
         IoUtil.writeBytes(socketChannel, bytes);
         //body
         if (!"304".equals(response.getStatue_code()) || (response.getStrBody() != null ^ response.gainFileBody() == null)) {
-            byte[] buf = new byte[DEFAULT_SEND_BUF_LENGTH];
+            byte[] buf = new byte[(int) DEFAULT_SEND_BUF_LENGTH];
             int length;
             File file_body = response.getFile_body();
             if (file_body != null && !response.isCompress()) {
@@ -250,7 +272,7 @@ public class SuperRoute implements Callable {
             int currentStep = enumerator.getAndIncrement();
             byte[] temp = new byte[0];
             try {
-                temp = IoUtil.readBytes2(socketChannel, DEFAULT_BUF_LENGTH);
+                temp = IoUtil.readBytes2(socketChannel, (int) DEFAULT_BUF_LENGTH);
             } catch (IOException e) {
                 socketChannel.close();
             }
@@ -278,7 +300,7 @@ public class SuperRoute implements Callable {
                 if (!flag) {
 
                     //header超出最大值直接关闭连接
-                    if (all.length > MaxHeaderLength) {
+                    if (all.length > MAX_HEADER_SIZE) {
                         Response response = $400_BAD_REQUEST.putHeaderDate(ZonedDateTime.now()).setAssemble(true);
                         IoUtil.writeBytes(socketChannel, response.toString().getBytes(StandardCharsets.UTF_8));
                         log.error(response.toJsonString());
@@ -313,7 +335,7 @@ public class SuperRoute implements Callable {
                     long contentLength = request.getHeader().getLongValue("Content-Length", -1);
 
                     //body超出最大值直接关闭连接
-                    if (contentLength > MaxBodyLength || all.length > MaxBodyLength) {
+                    if (contentLength > MAX_BODY_SIZE || all.length > MAX_BODY_SIZE) {
 
                         Response response = $413_ENTITY_LARGE.putHeaderDate(ZonedDateTime.now()).setAssemble(true);
                         IoUtil.writeBytes(socketChannel, request.toString().getBytes(StandardCharsets.UTF_8));

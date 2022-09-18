@@ -1,0 +1,27 @@
+server:
+  port: 4732
+  handler-num: 2
+  per-worker-num: 8
+  worker-keep-live-time: 2H
+  open-resource: false
+  open-controller: false
+  local-resource-path: /var/www/html/
+  controller-package: top.yqingyu.common.nio$server.event$http.web.controller
+
+transfer:
+  request:
+    parse-buffer-size: 1KB
+    max-header-size: 128KB
+    max-body-size: 64MB
+  response:
+    send-buf-size: 2MB
+
+file-compress:
+  open: true
+  max-single-file-compress-size: 128MB
+  compress-cache-pool:
+    open: true
+    max-file-cache-size: 1.5GB
+
+session:
+  session-timeout: 24H

@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.*;
 import com.alibaba.fastjson2.filter.NameFilter;
 import com.alibaba.fastjson2.filter.ValueFilter;
 import com.alibaba.fastjson2.schema.JSONSchema;
+import top.yqingyu.common.utils.UnitUtil;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -247,6 +248,119 @@ public class DataMap extends JSONObject implements Serializable, Cloneable {
         return super.getString(key);
     }
 
+
+    public Long $2B(String name, Long defaultValue) {
+        Long aLong = UnitUtil.$2B(this.getString(name));
+        if (aLong == null || aLong.longValue() == 0)
+            return defaultValue;
+        return aLong;
+    }
+
+    public Long $2KB(String name, Long defaultValue) {
+        Long aLong = UnitUtil.$2KB(this.getString(name));
+        if (aLong == null || aLong.longValue() == 0)
+            return defaultValue;
+        return aLong;
+    }
+
+    public Long $2MB(String name, Long defaultValue) {
+        Long aLong = UnitUtil.$2MB(this.getString(name));
+        if (aLong == null || aLong.longValue() == 0)
+            return defaultValue;
+        return aLong;
+    }
+
+    public Long $2GB(String name, Long defaultValue) {
+        Long aLong = UnitUtil.$2GB(this.getString(name));
+        if (aLong == null || aLong.longValue() == 0)
+            return defaultValue;
+        return aLong;
+    }
+
+    public Long $2TB(String name, Long defaultValue) {
+        Long aLong = UnitUtil.$2TB(this.getString(name));
+        if (aLong == null || aLong.longValue() == 0)
+            return defaultValue;
+        return aLong;
+    }
+
+    public Long $2YEAR(String name, Long defaultValue) {
+        Long aLong = UnitUtil.$2YEAR(this.getString(name));
+        if (aLong == null || aLong.longValue() == 0)
+            return defaultValue;
+        return aLong;
+    }
+
+    public Long $2QUARTER(String name, Long defaultValue) {
+        Long aLong = UnitUtil.$2QUARTER(this.getString(name));
+        if (aLong == null || aLong.longValue() == 0)
+            return defaultValue;
+        return aLong;
+    }
+
+    public Long $2MONTH(String name, Long defaultValue) {
+        Long aLong = UnitUtil.$2MONTH(this.getString(name));
+        if (aLong == null || aLong.longValue() == 0)
+            return defaultValue;
+        return aLong;
+    }
+
+    public Long $2WEEK(String name, Long defaultValue) {
+        Long aLong = UnitUtil.$2WEEK(this.getString(name));
+        if (aLong == null || aLong.longValue() == 0)
+            return defaultValue;
+        return aLong;
+    }
+
+    public Long $2DAY(String name, Long defaultValue) {
+        Long aLong = UnitUtil.$2DAY(this.getString(name));
+        if (aLong == null || aLong.longValue() == 0)
+            return defaultValue;
+        return aLong;
+    }
+
+    public Long $2H(String name, Long defaultValue) {
+        Long aLong = UnitUtil.$2H(this.getString(name));
+        if (aLong == null || aLong.longValue() == 0)
+            return defaultValue;
+        return aLong;
+    }
+
+    public Long $2MIN(String name, Long defaultValue) {
+        Long aLong = UnitUtil.$2MIN(this.getString(name));
+        if (aLong == null || aLong.longValue() == 0)
+            return defaultValue;
+        return aLong;
+    }
+
+    public Long $2S(String name, Long defaultValue) {
+        Long aLong = UnitUtil.$2S(this.getString(name));
+        if (aLong == null || aLong.longValue() == 0)
+            return defaultValue;
+        return aLong;
+    }
+
+    public Long $2MILLS(String name, Long defaultValue) {
+        Long aLong = UnitUtil.$2MILLS(this.getString(name));
+        if (aLong == null || aLong.longValue() == 0)
+            return defaultValue;
+        return aLong;
+    }
+
+    public Long $2MICOS(String name, Long defaultValue) {
+        Long aLong = UnitUtil.$2MICOS(this.getString(name));
+        if (aLong == null || aLong.longValue() == 0)
+            return defaultValue;
+        return aLong;
+    }
+
+    public Long $2NANOS(String name, Long defaultValue) {
+        Long aLong = UnitUtil.$2NANOS(this.getString(name));
+        if (aLong == null || aLong.longValue() == 0)
+            return defaultValue;
+        return aLong;
+    }
+
     public String getString2(String name) {
         Object value = this.get(name);
         return value == null ? "" : value.toString();
@@ -452,6 +566,19 @@ public class DataMap extends JSONObject implements Serializable, Cloneable {
     public Boolean getBoolean(String key) {
         return super.getBoolean(key);
     }
+
+    /**
+     * Returns the {@link Boolean} of the associated keys in this {@link DataMap}.
+     *
+     * @param key the key whose associated value is to be returned
+     * @return {@link Boolean} or default vaule
+     * @throws JSONException Unsupported type conversion to {@link Boolean}
+     */
+    public Boolean getBoolean(String key,Boolean defaultValue) {
+        Boolean aBoolean = super.getBoolean(key);
+        return aBoolean == null? defaultValue : aBoolean;
+    }
+
 
     /**
      * Returns a boolean value of the associated key in this object.
@@ -1540,6 +1667,18 @@ public class DataMap extends JSONObject implements Serializable, Cloneable {
         return this.getDataMap(name);
     }
 
+    /**
+     *  当无值时 返回一个空的Map
+     * @param name key
+     * @author YYJ
+     * @version 1.0.0
+     * @description      */
+    public DataMap getNotNUllData(String name) {
+        DataMap dataMap = this.getDataMap(name);
+        if (dataMap == null)
+            dataMap = new DataMap(0);
+        return dataMap;
+    }
 
     public String toString() {
         return JSON.toJSONString(this);

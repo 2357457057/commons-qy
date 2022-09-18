@@ -95,14 +95,14 @@ public class ClazzUtil {
                         while (jarEntries.hasMoreElements()) {
                             JarEntry jarEntry = jarEntries.nextElement();
                             String jarEntryName = jarEntry.getName();
-                            if (jarEntryName.endsWith(".class")&&jarEntryName.contains(packageUrl)) {
+                            if (jarEntryName.endsWith(".class") && jarEntryName.contains(packageUrl)) {
                                 String className = jarEntryName.substring(0, Math.max(jarEntryName.lastIndexOf("."), 0)).replaceAll("/", ".");
                                 try {
                                     Class<?> cls = Class.forName(className);
                                     if (cls.isAnnotationPresent(annotationClass)) {
                                         classList.add(cls);
                                     }
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
 

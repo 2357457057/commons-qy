@@ -1,6 +1,7 @@
 package top.yqingyu.common.nio$server.event$http.compoment;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
+import com.alibaba.fastjson2.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ import static top.yqingyu.common.utils.ArrayUtil.*;
  * @createTime 2022年09月14日 18:34:00
  */
 
-class DoRequest implements Callable<Object>{
+class DoRequest implements Callable<Object> {
 
     private final LinkedBlockingQueue<Object> QUEUE;
 
@@ -65,10 +66,10 @@ class DoRequest implements Callable<Object>{
 
             //进行response
             createResponse(request, response, false);
+            log.debug(JSON.toJSONString(httpAction));
         } finally {
             //处理完毕需要需丢掉SINGLE中的记录
-            int i = socketChannel.hashCode();
-            log.info("{}出 cost {} MICROS", i, LocalDateTimeUtil.between(now, LocalDateTime.now(), ChronoUnit.MICROS));
+            log.debug("{}出 cost {} MICROS", socketChannel.hashCode(), LocalDateTimeUtil.between(now, LocalDateTime.now(), ChronoUnit.MICROS));
         }
         return null;
     }

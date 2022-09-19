@@ -1,5 +1,6 @@
 package top.yqingyu.common.nio$server.event$http.compoment;
 
+import cn.hutool.core.date.LocalDateTimeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,9 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
@@ -74,6 +77,7 @@ class DoResponse implements Callable<Object> {
 
         HttpEventEntity httpEventEntity;
         SocketChannel socketChannel = null;
+        LocalDateTime now = LocalDateTime.now();
         try {
             do {
                 httpEventEntity = (HttpEventEntity) QUEUE.take();
@@ -106,6 +110,7 @@ class DoResponse implements Callable<Object> {
 
                 doResponse(resp, socketChannel);
             } while (httpEventEntity.isNotEnd());
+            log.debug("{} cost {} MICROS", socketChannel.hashCode(), LocalDateTimeUtil.between(now, LocalDateTime.now(), ChronoUnit.MICROS));
         }catch (NullPointerException e){
             socketChannel.shutdownInput();
             socketChannel.shutdownOutput();

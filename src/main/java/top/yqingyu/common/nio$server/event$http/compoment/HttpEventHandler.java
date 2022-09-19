@@ -120,14 +120,14 @@ public class HttpEventHandler extends EventHandler {
     @Override
     public void read(Selector selector, SocketChannel socketChannel) throws Exception {
         socketChannel.register(selector, SelectionKey.OP_WRITE);
-        POOL.submit(new DoRequest(socketChannel, QUEUE));
+        READ_POOL.submit(new DoRequest(socketChannel, QUEUE));
     }
 
 
     @Override
     public void write(Selector selector, SocketChannel socketChannel) throws Exception {
         //selector 会是同一个，但是SocketChannel不一定
-        POOL.submit(new DoResponse(OPERATE_RECORDER, QUEUE, selector));
+        WRITE_POOL.submit(new DoResponse(OPERATE_RECORDER, QUEUE, selector));
     }
 
 

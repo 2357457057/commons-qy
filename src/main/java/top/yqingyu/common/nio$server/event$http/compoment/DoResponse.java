@@ -23,6 +23,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -80,7 +81,7 @@ class DoResponse implements Callable<Object> {
         LocalDateTime now = LocalDateTime.now();
         try {
             do {
-                httpEventEntity = (HttpEventEntity) QUEUE.take();
+                httpEventEntity = (HttpEventEntity) QUEUE.poll(3, TimeUnit.SECONDS);
 
                 socketChannel = httpEventEntity.getSocketChannel();
 

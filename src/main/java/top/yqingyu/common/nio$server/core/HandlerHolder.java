@@ -69,6 +69,7 @@ public class HandlerHolder {
      * 再下一个亦是如此，因此为避免cpu过度空转，设阈值为
      * {@value HandlerHolder#MULTIPLE_SPIN} * handler size
      * 超阈值抛出异常
+     *
      * @return 返回下一个 EVENT_HANDLER
      * @author YYJ
      */
@@ -94,7 +95,8 @@ public class HandlerHolder {
             String name = Thread.currentThread().getName();
             thread.setDaemon(true);
             thread.setName(name + "-Handler" + IDX.get());
-            eventHandler.POOL = ThreadUtil.createQyFixedThreadPool(perHandlerPoolSize, new ThreadUtil.QyCurrentPoolNameFactory().QyThreadFactory(thread.getName(), "th"));
+            eventHandler.READ_POOL = ThreadUtil.createQyFixedThreadPool((int) Math.ceil(perHandlerPoolSize * 0.4), new ThreadUtil.QyCurrentPoolNameFactory().QyThreadFactory(thread.getName(), "R"));
+            eventHandler.WRITE_POOL = ThreadUtil.createQyFixedThreadPool((int) Math.ceil(perHandlerPoolSize * 0.6), new ThreadUtil.QyCurrentPoolNameFactory().QyThreadFactory(thread.getName(), "W"));
             thread.start();
             log.debug("create handler");
         }

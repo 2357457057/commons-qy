@@ -25,9 +25,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class EventHandler implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(EventHandler.class);
     private Selector selector;
-    protected ThreadPoolExecutor POOL;
+    protected ThreadPoolExecutor READ_POOL;
+    protected ThreadPoolExecutor WRITE_POOL;
 
-    protected final OperatingRecorder<Integer> OPERATE_RECORDER = new OperatingRecorder<>(512);
+    protected final OperatingRecorder<Integer> OPERATE_RECORDER = new OperatingRecorder<>(4096);
 
     protected final ConcurrentHashMap<Integer, SocketChannel> SocketChannels = new ConcurrentHashMap<>();
 
@@ -85,7 +86,7 @@ public abstract class EventHandler implements Runnable {
                 }
 
             } catch (ExceedingRepetitionLimitException e) {
-                log.warn("发现疑似空循环");
+                log.warn("发现疑似空循环 {}",e.getMessage());
                 try {
                     rebuildSelector();
                 } catch (IOException ex) {

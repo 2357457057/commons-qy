@@ -6,7 +6,7 @@ import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author YYJ
@@ -19,30 +19,30 @@ public class OperatingRecorder<E> extends AbstractSet<E> implements Serializable
 
     @Serial
     private static final long serialVersionUID = 7997886765361607471L;
-    private final Integer RepeatedUpperLimit;
-    private final ConcurrentHashMap<E, AtomicInteger> map;
+    private final Long RepeatedUpperLimit;
+    private final ConcurrentHashMap<E, AtomicLong> map;
 
-    public OperatingRecorder(Integer repeatedUpperLimit) {
+    public OperatingRecorder(Long repeatedUpperLimit) {
         RepeatedUpperLimit = repeatedUpperLimit;
         this.map = new ConcurrentHashMap<>();
     }
 
-    public OperatingRecorder(Integer repeatedUpperLimit, int initialCapacity) {
+    public OperatingRecorder(Long repeatedUpperLimit, int initialCapacity) {
         RepeatedUpperLimit = repeatedUpperLimit;
         this.map = new ConcurrentHashMap<>(initialCapacity);
     }
 
-    public OperatingRecorder(Integer repeatedUpperLimit, int initialCapacity, float loadFactor) {
+    public OperatingRecorder(Long repeatedUpperLimit, int initialCapacity, float loadFactor) {
         RepeatedUpperLimit = repeatedUpperLimit;
         this.map = new ConcurrentHashMap<>(initialCapacity, loadFactor);
     }
 
-    public OperatingRecorder(Integer repeatedUpperLimit, int initialCapacity, float loadFactor, int concurrencyLevel) {
+    public OperatingRecorder(Long repeatedUpperLimit, int initialCapacity, float loadFactor, int concurrencyLevel) {
         RepeatedUpperLimit = repeatedUpperLimit;
         this.map = new ConcurrentHashMap<>(initialCapacity, loadFactor, concurrencyLevel);
     }
 
-    public OperatingRecorder(Iterable<E> iter, Integer repeatedUpperLimit) {
+    public OperatingRecorder(Iterable<E> iter, Long repeatedUpperLimit) {
         RepeatedUpperLimit = repeatedUpperLimit;
         if (iter instanceof Collection<E> collection) {
             this.map = new ConcurrentHashMap<>((int) ((float) collection.size() / 0.75F));
@@ -73,14 +73,14 @@ public class OperatingRecorder<E> extends AbstractSet<E> implements Serializable
     }
 
     public boolean add(E e) {
-        AtomicInteger b = this.map.get(e);
+        AtomicLong b = this.map.get(e);
         if (b != null) {
             if (b.getAndIncrement() > RepeatedUpperLimit) {
                 throw new ExceedingRepetitionLimitException("该值重复达上限" + b.get());
             }
             return false;
         } else {
-            this.map.put(e, new AtomicInteger());
+            this.map.put(e, new AtomicLong());
             return true;
         }
     }

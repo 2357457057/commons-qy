@@ -28,7 +28,7 @@ public abstract class EventHandler implements Runnable {
     protected ThreadPoolExecutor READ_POOL;
     protected ThreadPoolExecutor WRITE_POOL;
 
-    protected final OperatingRecorder<Integer> OPERATE_RECORDER = new OperatingRecorder<>(4096);
+    protected final OperatingRecorder<Integer> OPERATE_RECORDER = new OperatingRecorder<>(4096L * 4096 * 4096);
 
     protected final ConcurrentHashMap<Integer, SocketChannel> SocketChannels = new ConcurrentHashMap<>();
 
@@ -86,7 +86,7 @@ public abstract class EventHandler implements Runnable {
                 }
 
             } catch (ExceedingRepetitionLimitException e) {
-                log.warn("发现疑似空循环 {}",e.getMessage());
+                log.warn("发现疑似空循环 {}", e.getMessage());
                 try {
                     rebuildSelector();
                 } catch (IOException ex) {

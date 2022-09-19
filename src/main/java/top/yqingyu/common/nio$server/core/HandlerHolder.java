@@ -82,7 +82,7 @@ public class HandlerHolder {
                 throw new RuntimeException("超出最大自旋值");
             }
             //直到找到未在重建的EventHandler
-        } while (!eventHandler.IS_REBUILDING.getAcquire());
+        } while (eventHandler.IS_REBUILDING.getAcquire());
 
         return eventHandler;
     }

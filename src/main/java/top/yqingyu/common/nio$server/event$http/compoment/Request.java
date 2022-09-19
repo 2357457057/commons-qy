@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
  * @description
  * @createTime 2022年09月09日 22:02:00
  */
-public class Request {
+public class Request implements HttpAction{
 
 
     private HttpMethod method;

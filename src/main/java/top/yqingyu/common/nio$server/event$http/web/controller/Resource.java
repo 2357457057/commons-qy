@@ -24,7 +24,7 @@ public class Resource {
         StringBuilder sb = new StringBuilder();
         LocationMapping.FILE_RESOURCE_MAPPING.forEach((k, v) -> {
             sb.append("<a href = '");
-            if (YamlUtil.isWindows()) {
+            if (YamlUtil.isWindows() && k.indexOf("/") != 0) {
                 sb.append("/");
             }
             sb.append(k.replaceAll("\\\\", "/")).append("'>").append(k).append("</a>").append("<br>");

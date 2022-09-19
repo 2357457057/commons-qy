@@ -30,6 +30,7 @@ public class HttpServerStarter {
 
     public static void start(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
+        banner();
         CreateServer
                 .createDefault(SERVER_NAME)
                 .implEvent(HttpEventHandler.class)
@@ -37,5 +38,28 @@ public class HttpServerStarter {
                 .defaultFixRouter(HttpEventHandler.handlerNumber,HttpEventHandler.perHandlerWorker)
                 .listenPort(HttpEventHandler.port)
                 .start();
+    }
+
+    static void banner() {
+        System.out.println("""
+
+                HTTP Server Starting...
+                             *                 *                  *              *        \s
+                                                                          *             * \s
+                                            *            *                             ___\s
+                      *               *                                          |     | |\s
+                            *              _________##                 *        / \\    | |\s
+                                          @\\\\\\\\\\\\\\\\\\##    *     |              |--o|===|-|\s
+                      *                  @@@\\\\\\\\\\\\\\\\##\\       \\|/|/            |---|   |C|\s
+                                        @@ @@\\\\\\\\\\\\\\\\\\\\\\    \\|\\\\|//|/     *   /     \\  |N|\s
+                                 *     @@@@@@@\\\\\\\\\\\\\\\\\\\\\\    \\|\\|/|/         |  C    | |S|\s
+                                      @@@@@@@@@----------|    \\\\|//          |  H    |=|A|\s
+                           __         @@ @@@ @@__________|     \\|/           |  N    | | |\s
+                      ____|_@|_       @@@@@@@@@__________|     \\|/           |_______| |_|\s
+                    =|__ _____ |=     @@@@ .@@@__________|      |             |@| |@|  | |\s
+                    ____0_____0__\\|/__@@@@__@@@__________|_\\|/__|___\\|/__\\|/___________|_|_
+                                                                                              \s
+                                                                                 -- by Qy Severus\s
+                """);
     }
 }

@@ -107,9 +107,6 @@ public class LocationMapping {
         String[] urls = url.split("[?]");
         url = urls[0];
 
-        if (url.indexOf("/") == 0 && YamlUtil.isWindows()) {
-            url = url.replaceFirst("/", "");
-        }
 
         String s = FILE_RESOURCE_MAPPING.get(url);
 

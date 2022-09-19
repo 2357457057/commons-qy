@@ -27,6 +27,8 @@ public class HandlerHolder {
     private final ArrayList<EventHandler> list;
     private final int size;
     private final int perHandlerPoolSize;
+
+    private  long workerKeepaliveTime;
     private final AtomicInteger IDX = new AtomicInteger();
 
     public final HashSet<EventHandler> RUNNER = new HashSet<>();

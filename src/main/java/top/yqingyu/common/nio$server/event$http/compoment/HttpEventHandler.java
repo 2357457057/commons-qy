@@ -6,16 +6,15 @@ import org.slf4j.LoggerFactory;
 import top.yqingyu.common.nio$server.core.EventHandler;
 import top.yqingyu.common.qydata.DataList;
 import top.yqingyu.common.qydata.DataMap;
-import top.yqingyu.common.utils.IoUtil;
 import top.yqingyu.common.utils.UnitUtil;
 import top.yqingyu.common.utils.YamlUtil;
 
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.StandardCharsets;
 
-import static top.yqingyu.common.nio$server.event$http.compoment.SuperRoute.*;
+import static top.yqingyu.common.nio$server.event$http.compoment.DoRequest.*;
+import static top.yqingyu.common.nio$server.event$http.compoment.DoResponse.*;
 
 /**
  * @author YYJ
@@ -33,6 +32,7 @@ public class HttpEventHandler extends EventHandler {
     public static int port;
     public static int handlerNumber;
     public static int perHandlerWorker;
+    private static final Logger log = LoggerFactory.getLogger(HttpEventHandler.class);
 
     public HttpEventHandler(Selector selector) {
         super(selector);
@@ -76,7 +76,7 @@ public class HttpEventHandler extends EventHandler {
                 if (open_controller) {
                     DataList scan_packages = server.getDataList("controller-package");
                     if (scan_packages == null || scan_packages.size() == 0) {
-                        LocationMapping.loadingBeanResource("top.yqingyu.common.web.controller");
+                        LocationMapping.loadingBeanResource("top.yqingyu.common.nio$server.event$http.web.controller");
                     } else {
                         for (int i = 0; i < scan_packages.size(); i++) {
                             LocationMapping.loadingBeanResource(scan_packages.getString(i));
@@ -111,29 +111,23 @@ public class HttpEventHandler extends EventHandler {
             }
 
             DataMap session = cfg.getNotNUllData("session");
-            SESSION_TIME_OUT = session.$2S("session-timeout", UnitUtil.$2S("7D"));
+            SESSION_TIME_OUT = session.$2S("session-timeout", UnitUtil.$2S("7DAY"));
 
         }
     }
 
-    private static final Logger log = LoggerFactory.getLogger(HttpEventHandler.class);
 
     @Override
-    @SuppressWarnings("unchecked")
     public void read(Selector selector, SocketChannel socketChannel) throws Exception {
-        POOL.submit(new SuperRoute(socketChannel, SINGLE_OPS));
+        socketChannel.register(selector, SelectionKey.OP_WRITE);
+        POOL.submit(new DoRequest(socketChannel, QUEUE));
     }
 
 
     @Override
     public void write(Selector selector, SocketChannel socketChannel) throws Exception {
-
-        IoUtil.writeBytes(socketChannel, ("HTTP/1.1 200 OK\r\n" +
-                "Content-Type:application/json\r\n" +
-                "\r\n" +
-                "{}").getBytes(StandardCharsets.UTF_8));
-        socketChannel.register(selector, SelectionKey.OP_READ);
-        socketChannel.close();
+        //selector 会是同一个，但是SocketChannel不一定
+        POOL.submit(new DoResponse(SINGLE_OPS, QUEUE, selector));
     }
 
 

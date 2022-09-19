@@ -26,7 +26,7 @@ public abstract class EventHandler implements Runnable {
     protected ThreadPoolExecutor POOL;
 
     protected final ConcurrentHashSet<Integer> SINGLE_OPS = new ConcurrentHashSet<>();
-    protected final LinkedBlockingQueue QUEUE = new LinkedBlockingQueue();
+    protected final LinkedBlockingQueue<Object> QUEUE = new LinkedBlockingQueue<>();
 
 
     public EventHandler(Selector selector) {
@@ -65,11 +65,10 @@ public abstract class EventHandler implements Runnable {
                     SocketChannel channel = (SocketChannel) selectionKey.channel();
                     int i = channel.hashCode();
                     //发现多线程时同一个selectKey会空读轮询 此处添加hash简单排除，以防处理异常
-                    if (selectionKey.isValid() && SINGLE_OPS.add(i)) {
-                        log.debug("{}入", i);
+                    if (selectionKey.isValid()) {
                         if (selectionKey.isReadable()) {
                             read(selector, channel);
-                        } else if (selectionKey.isWritable()) {
+                        } else if (selectionKey.isWritable() && SINGLE_OPS.add(i)) {
                             write(selector, channel);
                         }
                     }

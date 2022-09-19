@@ -299,8 +299,11 @@ public class YamlUtil {
                     String path = poll.getPath();
                     String key = path.replace(rootPath, "");
 
-                    if (isWindows())
+                    if (isWindows()) {
                         key = key.replaceAll("\\\\", "/");
+                        if (key.indexOf("/") != 0)
+                            key = "/" + key;
+                    }
 
                     map.put(key, path);
                 }

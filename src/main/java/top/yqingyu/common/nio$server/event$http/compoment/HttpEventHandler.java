@@ -127,7 +127,7 @@ public class HttpEventHandler extends EventHandler {
     @Override
     public void write(Selector selector, SocketChannel socketChannel) throws Exception {
         //selector 会是同一个，但是SocketChannel不一定
-        POOL.submit(new DoResponse(SINGLE_OPS, QUEUE, selector));
+        POOL.submit(new DoResponse(OPERATE_RECORDER, QUEUE, selector));
     }
 
 

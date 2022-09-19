@@ -11,6 +11,7 @@ import java.nio.channels.Selector;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author YYJ
@@ -26,16 +27,20 @@ public class HandlerHolder {
 
     private final ArrayList<EventHandler> list;
     private final int size;
+
+    private final int MAX_SPIN_COUNT;
+    private static final int MULTIPLE_SPIN = 512;
     private final int perHandlerPoolSize;
 
-    private  long workerKeepaliveTime;
-    private final AtomicInteger IDX = new AtomicInteger();
+    private long workerKeepaliveTime;
+    private final AtomicLong IDX = new AtomicLong();
 
     public final HashSet<EventHandler> RUNNER = new HashSet<>();
 
 
     private HandlerHolder(int size, int perHandlerPoolSize, Class<? extends EventHandler> clazz) throws IOException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         this.size = size;
+        MAX_SPIN_COUNT = size * MULTIPLE_SPIN;
         this.perHandlerPoolSize = perHandlerPoolSize;
         this.list = new ArrayList<>(size);
         Constructor<? extends EventHandler> constructor = clazz.getConstructor(Selector.class);
@@ -58,8 +63,28 @@ public class HandlerHolder {
         return new HandlerHolder(size, perHandlerPoolSize, clazz);
     }
 
+    /**
+     * 值得注意的是
+     * 若当前Handler正在重建，将会引用下一个Handler
+     * 再下一个亦是如此，因此为避免cpu过度空转，设阈值为
+     * {@value HandlerHolder#MULTIPLE_SPIN} * handler size
+     * 超阈值抛出异常
+     * @return 返回下一个 EVENT_HANDLER
+     * @author YYJ
+     */
     public EventHandler nextHandler() {
-        return list.get(IDX.getAndIncrement() % size);
+        AtomicInteger count = new AtomicInteger();
+
+        EventHandler eventHandler;
+        do {
+            eventHandler = list.get((int) (IDX.getAndIncrement() % size));
+            if (count.getAndIncrement() > MAX_SPIN_COUNT) {
+                throw new RuntimeException("超出最大自旋值");
+            }
+            //直到找到未在重建的EventHandler
+        } while (!eventHandler.IS_REBUILDING.getAcquire());
+
+        return eventHandler;
     }
 
 

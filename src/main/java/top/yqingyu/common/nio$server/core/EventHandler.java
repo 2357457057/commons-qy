@@ -1,16 +1,18 @@
 package top.yqingyu.common.nio$server.core;
 
-import cn.hutool.core.collection.ConcurrentHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author YYJ
@@ -25,7 +27,15 @@ public abstract class EventHandler implements Runnable {
     private Selector selector;
     protected ThreadPoolExecutor POOL;
 
-    protected final ConcurrentHashSet<Integer> SINGLE_OPS = new ConcurrentHashSet<>();
+    protected final OperatingRecorder<Integer> OPERATE_RECORDER = new OperatingRecorder<>(512);
+
+    protected final ConcurrentHashMap<Integer, SocketChannel> SocketChannels = new ConcurrentHashMap<>();
+
+    /**
+     * 是否正在重建当前 selector
+     */
+    protected final AtomicBoolean IS_REBUILDING = new AtomicBoolean(false);
+
     protected final LinkedBlockingQueue<Object> QUEUE = new LinkedBlockingQueue<>();
 
 
@@ -63,17 +73,24 @@ public abstract class EventHandler implements Runnable {
                     SelectionKey selectionKey = iterator.next();
                     iterator.remove();
                     SocketChannel channel = (SocketChannel) selectionKey.channel();
+
                     int i = channel.hashCode();
-                    //发现多线程时同一个selectKey会空读轮询 此处添加hash简单排除，以防处理异常
-                    if (selectionKey.isValid()) {
-                        if (selectionKey.isReadable()) {
-                            read(selector, channel);
-                        } else if (selectionKey.isWritable() && SINGLE_OPS.add(i)) {
-                            write(selector, channel);
-                        }
+
+                    if (selectionKey.isReadable()) {
+                        read(selector, channel);
+                        //发现多线程时同一个selectKey会空读轮询 此处添加hash简单排除，以防处理异常
+                    } else if (selectionKey.isWritable() && OPERATE_RECORDER.add(i)) {
+                        write(selector, channel);
                     }
                 }
 
+            } catch (ExceedingRepetitionLimitException e) {
+                log.warn("发现疑似空循环");
+                try {
+                    rebuildSelector();
+                } catch (IOException ex) {
+                    log.error("新Selector构建失败 ", ex);
+                }
             } catch (Exception e) {
                 log.error("服务异常", e);
             }
@@ -86,4 +103,23 @@ public abstract class EventHandler implements Runnable {
     public abstract void write(Selector selector, SocketChannel socketChannel) throws Exception;
 
     public abstract void assess(Selector selector, SocketChannel socketChannel) throws Exception;
+
+
+    private void rebuildSelector() throws IOException {
+        IS_REBUILDING.setRelease(true);
+
+        OPERATE_RECORDER.clear();
+
+        this.selector = Selector.open();
+        SocketChannels.forEach((I, S) -> {
+            try {
+                if (S.isOpen()) S.register(this.selector, SelectionKey.OP_READ);
+                else SocketChannels.remove(I);
+            } catch (Exception e) {
+                log.error("selector 重建异常", e);
+            }
+        });
+        IS_REBUILDING.setRelease(false);
+        log.info("Selector重构完成");
+    }
 }

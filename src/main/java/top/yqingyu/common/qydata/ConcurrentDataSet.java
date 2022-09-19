@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @SuppressWarnings("all")
 public class ConcurrentDataSet<E> extends AbstractSet<E> implements Serializable {
     @Serial
-    private static final long serialVersionUID = 7997886765361607470L;
+    private static final long serialVersionUID = 7997886765361607472L;
     private static final Boolean PRESENT = true;
     private final ConcurrentHashMap<E, Boolean> map;
 
@@ -39,20 +39,15 @@ public class ConcurrentDataSet<E> extends AbstractSet<E> implements Serializable
     }
 
     public ConcurrentDataSet(Iterable<E> iter) {
-        if (iter instanceof Collection) {
-            Collection<E> collection = (Collection) iter;
-            this.map = new ConcurrentHashMap((int) ((float) collection.size() / 0.75F));
+        if (iter instanceof Collection<E> collection) {
+            this.map = new ConcurrentHashMap<>((int) ((float) collection.size() / 0.75F));
             this.addAll(collection);
         } else {
-            this.map = new ConcurrentHashMap();
-            Iterator var4 = iter.iterator();
-
-            while (var4.hasNext()) {
-                E e = (E) var4.next();
+            this.map = new ConcurrentHashMap<>();
+            for (E e : iter) {
                 this.add(e);
             }
         }
-
     }
 
     public Iterator<E> iterator() {

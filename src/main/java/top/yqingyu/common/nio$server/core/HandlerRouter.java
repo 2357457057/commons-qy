@@ -49,13 +49,17 @@ public class HandlerRouter {
     public void route() {
 
         try {
-            EventHandler eventHandler = handlerHolder.nextHandler();
-            Selector nextSelector = eventHandler.getSelector();
+
             SocketChannel socketChannel = serverSocketChannel.accept();
             socketChannel.configureBlocking(false);
+
+            EventHandler nextHandler = handlerHolder.nextHandler();
+            Selector nextSelector = nextHandler.getSelector();
+            nextHandler.SocketChannels.put(socketChannel.hashCode(),socketChannel);
+
             socketChannel.register(nextSelector, SelectionKey.OP_READ);
             //启动处理器
-            handlerHolder.startHandle(eventHandler);
+            handlerHolder.startHandle(nextHandler);
             nextSelector.wakeup();
         } catch (Exception e) {
             log.error("router error", e);

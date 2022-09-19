@@ -1,9 +1,9 @@
 package top.yqingyu.common.nio$server.event$http.compoment;
 
-import cn.hutool.core.collection.ConcurrentHashSet;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.yqingyu.common.nio$server.core.OperatingRecorder;
 import top.yqingyu.common.qydata.ConcurrentDataMap;
 import top.yqingyu.common.utils.GzipUtil;
 import top.yqingyu.common.utils.IoUtil;
@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 class DoResponse implements Callable<Object> {
 
-    private final ConcurrentHashSet<Integer> SINGLE_OPS;
+    private final OperatingRecorder<Integer> OPERATE_RECORDER;
     private final LinkedBlockingQueue<Object> QUEUE;
     private final Selector selector;
 
@@ -58,8 +58,8 @@ class DoResponse implements Callable<Object> {
 
     private static final Logger log = LoggerFactory.getLogger(DoResponse.class);
 
-    public DoResponse(ConcurrentHashSet<Integer> single_ops, LinkedBlockingQueue<Object> QUEUE, Selector selector) {
-        SINGLE_OPS = single_ops;
+    public DoResponse(OperatingRecorder<Integer> single_ops, LinkedBlockingQueue<Object> QUEUE, Selector selector) {
+        OPERATE_RECORDER = single_ops;
         this.QUEUE = QUEUE;
         this.selector = selector;
     }
@@ -118,7 +118,7 @@ class DoResponse implements Callable<Object> {
         }finally {
             @SuppressWarnings("all")
             int i = socketChannel.hashCode();
-            SINGLE_OPS.remove(i);
+            OPERATE_RECORDER.remove(i);
             socketChannel.register(selector, SelectionKey.OP_READ);
         }
         return null;

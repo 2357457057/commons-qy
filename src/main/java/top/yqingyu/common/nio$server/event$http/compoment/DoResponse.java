@@ -195,7 +195,7 @@ class DoResponse implements Callable<Object> {
         if (requestCtTyp != null)
             charset = requestCtTyp.getCharset() == null ? StandardCharsets.UTF_8 : requestCtTyp.getCharset();
         else charset = StandardCharsets.UTF_8;
-        if (!"304".equals(response.getStatue_code()) || (response.getStrBody() != null ^ response.gainFileBody() == null)) {
+        if (!"304|100".contains(response.getStatue_code()) || (response.getStrBody() != null ^ response.gainFileBody() == null)) {
             if (request.canCompress()) {
                 String strBody = response.getStrBody();
                 if (StringUtils.isNotBlank(strBody)) {

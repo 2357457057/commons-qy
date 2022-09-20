@@ -189,7 +189,7 @@ public class IoUtil {
 
     }
 
-    public static boolean writeBytes(SocketChannel socketChannel, byte[] bytes) throws Exception {
+    public static void writeBytes(SocketChannel socketChannel, byte[] bytes) throws Exception {
         ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length);
         byteBuffer.put(bytes);
         byteBuffer.flip();
@@ -197,16 +197,22 @@ public class IoUtil {
         do {
             int i = socketChannel.write(byteBuffer);
             l += i;
-            if (i == 0) return false;
         } while (l != bytes.length);
-        return true;
     }
 
-    public static void writeBytes(SocketChannel socketChannel, byte[] bytes, int length) throws Exception {
-        ByteBuffer byteBuffer = ByteBuffer.allocate(length);
-        byteBuffer.put(bytes);
-        byteBuffer.flip();
-        socketChannel.write(byteBuffer);
+    public static boolean writeBytes(SocketChannel socketChannel, byte[] bytes, long timeout) throws Exception {
+        FutureTask<Boolean> futureTask = new FutureTask<>(() -> {
+            ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length);
+            byteBuffer.put(bytes);
+            byteBuffer.flip();
+            long l = 0;
+            do {
+                l += socketChannel.write(byteBuffer);
+            } while (l != bytes.length);
+            return true;
+        });
+        new Thread(futureTask).start();
+        return futureTask.get(timeout, TimeUnit.MINUTES);
     }
 
     public static void writeBytes(Socket socket, byte[] bytes) throws Exception {

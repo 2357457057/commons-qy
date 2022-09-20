@@ -235,7 +235,7 @@ class DoResponse implements Callable<Object> {
             bytes = response.toString().getBytes();
 
         //Header
-        if (!IoUtil.writeBytes(socketChannel, bytes)) {
+        if (!IoUtil.writeBytes(socketChannel, bytes,2000)) {
             socketChannel.close();
             return;
         }
@@ -253,7 +253,7 @@ class DoResponse implements Callable<Object> {
                 } while (l != size);
                 channel.close();
             } else {
-                if (!IoUtil.writeBytes(socketChannel, response.gainBodyBytes())) {
+                if (!IoUtil.writeBytes(socketChannel, response.gainBodyBytes(),2000)) {
                     socketChannel.close();
                     return;
                 }

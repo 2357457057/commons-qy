@@ -28,7 +28,7 @@ public class HttpServerStarter {
         SERVER_NAME = temp;
     }
 
-    public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public static void start(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
         banner();
         CreateServer

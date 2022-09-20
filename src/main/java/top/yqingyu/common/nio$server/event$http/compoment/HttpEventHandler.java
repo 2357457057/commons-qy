@@ -4,6 +4,7 @@ package top.yqingyu.common.nio$server.event$http.compoment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.nio$server.core.EventHandler;
+import top.yqingyu.common.nio$server.core.ExceedingRepetitionLimitException;
 import top.yqingyu.common.qydata.DataList;
 import top.yqingyu.common.qydata.DataMap;
 import top.yqingyu.common.utils.UnitUtil;
@@ -128,6 +129,11 @@ public class HttpEventHandler extends EventHandler {
 
     @Override
     public void write(Selector selector, SocketChannel socketChannel) throws Exception {
+        try {
+            OPERATE_RECORDER2.add2(socketChannel.hashCode());
+        } catch (ExceedingRepetitionLimitException e) {
+            socketChannel.close();
+        }
     }
 
 

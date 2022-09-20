@@ -189,14 +189,17 @@ public class IoUtil {
 
     }
 
-    public static void writeBytes(SocketChannel socketChannel, byte[] bytes) throws Exception {
+    public static boolean writeBytes(SocketChannel socketChannel, byte[] bytes) throws Exception {
         ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length);
         byteBuffer.put(bytes);
         byteBuffer.flip();
         long l = 0;
         do {
-            l += socketChannel.write(byteBuffer);
+            int i = socketChannel.write(byteBuffer);
+            l += i;
+            if (i == 0) return false;
         } while (l != bytes.length);
+        return true;
     }
 
     public static void writeBytes(SocketChannel socketChannel, byte[] bytes, int length) throws Exception {

@@ -235,7 +235,10 @@ class DoResponse implements Callable<Object> {
             bytes = response.toString().getBytes();
 
         //Header
-        IoUtil.writeBytes(socketChannel, bytes);
+        if (!IoUtil.writeBytes(socketChannel, bytes)) {
+            socketChannel.close();
+            return;
+        }
         //body
         if (!"304|100".contains(response.getStatue_code()) || (response.getStrBody() != null ^ response.gainFileBody() == null)) {
             byte[] buf = new byte[(int) DEFAULT_SEND_BUF_LENGTH];
@@ -250,7 +253,10 @@ class DoResponse implements Callable<Object> {
                 } while (l != size);
                 channel.close();
             } else {
-                IoUtil.writeBytes(socketChannel, response.gainBodyBytes());
+                if (!IoUtil.writeBytes(socketChannel, response.gainBodyBytes())) {
+                    socketChannel.close();
+                    return;
+                }
             }
         }
 

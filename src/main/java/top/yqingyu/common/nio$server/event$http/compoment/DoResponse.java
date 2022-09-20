@@ -4,7 +4,6 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.yqingyu.common.nio$server.core.OperatingRecorder;
 import top.yqingyu.common.qydata.ConcurrentDataMap;
 import top.yqingyu.common.utils.GzipUtil;
 import top.yqingyu.common.utils.IoUtil;
@@ -23,7 +22,6 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -36,7 +34,6 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 class DoResponse implements Callable<Object> {
 
-    private final OperatingRecorder<Integer> OPERATE_RECORDER;
     private final LinkedBlockingQueue<Object> QUEUE;
     private final Selector selector;
 
@@ -62,8 +59,7 @@ class DoResponse implements Callable<Object> {
 
     private static final Logger log = LoggerFactory.getLogger(DoResponse.class);
 
-    public DoResponse(OperatingRecorder<Integer> single_ops, LinkedBlockingQueue<Object> QUEUE, Selector selector) {
-        OPERATE_RECORDER = single_ops;
+    public DoResponse( LinkedBlockingQueue<Object> QUEUE, Selector selector) {
         this.QUEUE = QUEUE;
         this.selector = selector;
     }
@@ -81,7 +77,7 @@ class DoResponse implements Callable<Object> {
         LocalDateTime now = LocalDateTime.now();
         try {
             do {
-                httpEventEntity = (HttpEventEntity) QUEUE.poll(3, TimeUnit.SECONDS);
+                httpEventEntity = (HttpEventEntity) QUEUE.take();
 
                 socketChannel = httpEventEntity.getSocketChannel();
 
@@ -111,6 +107,7 @@ class DoResponse implements Callable<Object> {
 
                 doResponse(resp, socketChannel);
             } while (httpEventEntity.isNotEnd());
+            socketChannel.register(selector,SelectionKey.OP_READ);
             log.debug("{} cost {} MICROS", socketChannel.hashCode(), LocalDateTimeUtil.between(now, LocalDateTime.now(), ChronoUnit.MICROS));
         }catch (NullPointerException e){
             socketChannel.shutdownInput();
@@ -121,11 +118,6 @@ class DoResponse implements Callable<Object> {
             socketChannel.shutdownInput();
             socketChannel.shutdownOutput();
             socketChannel.close();
-        }finally {
-            @SuppressWarnings("all")
-            int i = socketChannel.hashCode();
-            OPERATE_RECORDER.remove(i);
-            socketChannel.register(selector, SelectionKey.OP_READ);
         }
         return null;
     }

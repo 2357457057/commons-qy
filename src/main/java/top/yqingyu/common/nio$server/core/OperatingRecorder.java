@@ -72,16 +72,18 @@ public class OperatingRecorder<E> extends AbstractSet<E> implements Serializable
         return this.map.containsKey(o);
     }
 
-    public boolean add(E e) {
+
+    public AtomicLong add2(E e) {
         AtomicLong b = this.map.get(e);
         if (b != null) {
             if (b.getAndIncrement() > RepeatedUpperLimit) {
                 throw new ExceedingRepetitionLimitException("该值重复达上限" + b.get());
             }
-            return false;
+            return b;
         } else {
-            this.map.put(e, new AtomicLong());
-            return true;
+            AtomicLong atomicLong = new AtomicLong();
+            this.map.put(e, atomicLong);
+            return atomicLong;
         }
     }
 

@@ -18,13 +18,13 @@ import java.nio.channels.SocketChannel;
  */
 public class DemoEventHandler extends EventHandler {
 
-    public DemoEventHandler() {
+    public DemoEventHandler() throws IOException {
         super();
     }
 
     private static final Logger log = LoggerFactory.getLogger(DemoEventHandler.class);
 
-    public DemoEventHandler(Selector selector) {
+    public DemoEventHandler(Selector selector) throws IOException {
         super(selector);
     }
 

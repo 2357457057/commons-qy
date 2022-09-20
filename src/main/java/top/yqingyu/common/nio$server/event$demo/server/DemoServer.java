@@ -1,10 +1,12 @@
 package top.yqingyu.common.nio$server.event$demo.server;
 
-import top.yqingyu.common.nio$server.CreateServer;
-import top.yqingyu.common.nio$server.event$demo.event.DemoEventHandler;
+import cn.hutool.core.date.LocalDateTimeUtil;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.channels.Selector;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * @author YYJ
@@ -15,11 +17,13 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class DemoServer {
     public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        CreateServer
-                .createDefault(45321, "demo")
-                .implEvent(DemoEventHandler.class)
-                .defaultFixRouter(4, 2)
-                .listenPort(0)
-                .start();
+        LocalDateTime now = LocalDateTime.now();
+
+        for (int i = 0; i < 100; i++) {
+            Selector open = Selector.open();
+            open.selectNow();
+        }
+
+        System.out.println(LocalDateTimeUtil.between(now,LocalDateTime.now(), ChronoUnit.MILLIS));
     }
 }

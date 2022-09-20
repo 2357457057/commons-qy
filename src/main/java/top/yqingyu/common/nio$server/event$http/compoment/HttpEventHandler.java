@@ -9,6 +9,7 @@ import top.yqingyu.common.qydata.DataMap;
 import top.yqingyu.common.utils.UnitUtil;
 import top.yqingyu.common.utils.YamlUtil;
 
+import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
@@ -25,7 +26,7 @@ import static top.yqingyu.common.nio$server.event$http.compoment.DoResponse.*;
  */
 
 public class HttpEventHandler extends EventHandler {
-    public HttpEventHandler() {
+    public HttpEventHandler() throws IOException {
         super();
     }
 
@@ -34,7 +35,7 @@ public class HttpEventHandler extends EventHandler {
     public static int perHandlerWorker;
     private static final Logger log = LoggerFactory.getLogger(HttpEventHandler.class);
 
-    public HttpEventHandler(Selector selector) {
+    public HttpEventHandler(Selector selector) throws IOException {
         super(selector);
     }
 
@@ -121,13 +122,12 @@ public class HttpEventHandler extends EventHandler {
     public void read(Selector selector, SocketChannel socketChannel) throws Exception {
         socketChannel.register(selector, SelectionKey.OP_WRITE);
         READ_POOL.submit(new DoRequest(socketChannel, QUEUE));
+        WRITE_POOL.submit(new DoResponse(QUEUE, selector));
     }
 
 
     @Override
     public void write(Selector selector, SocketChannel socketChannel) throws Exception {
-        //selector 会是同一个，但是SocketChannel不一定
-        WRITE_POOL.submit(new DoResponse(OPERATE_RECORDER, QUEUE, selector));
     }
 
 

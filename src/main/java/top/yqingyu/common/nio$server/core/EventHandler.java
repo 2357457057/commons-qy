@@ -28,7 +28,7 @@ public abstract class EventHandler implements Runnable {
     protected ThreadPoolExecutor READ_POOL;
     protected ThreadPoolExecutor WRITE_POOL;
 
-    protected final OperatingRecorder<Integer> OPERATE_RECORDER = new OperatingRecorder<>(4096L * 4096 * 4096);
+    protected static final OperatingRecorder<Integer> OPERATE_RECORDER = new OperatingRecorder<>(1024L * 1024);
 
     protected final ConcurrentHashMap<Integer, SocketChannel> SocketChannels = new ConcurrentHashMap<>();
 
@@ -40,11 +40,11 @@ public abstract class EventHandler implements Runnable {
     protected final LinkedBlockingQueue<Object> QUEUE = new LinkedBlockingQueue<>();
 
 
-    public EventHandler(Selector selector) {
+    public EventHandler(Selector selector) throws IOException {
         this.selector = selector;
     }
 
-    public EventHandler() {
+    public EventHandler() throws IOException {
     }
 
     /**
@@ -69,24 +69,24 @@ public abstract class EventHandler implements Runnable {
                 Set<SelectionKey> keys = selector.selectedKeys();
                 Iterator<SelectionKey> iterator = keys.iterator();
 
-                while (iterator.hasNext()) {
+                if (keys.size() == 0)
+                    OPERATE_RECORDER.add2(selector.hashCode());
 
+                while (iterator.hasNext()) {
                     SelectionKey selectionKey = iterator.next();
                     iterator.remove();
                     SocketChannel channel = (SocketChannel) selectionKey.channel();
 
-                    int i = channel.hashCode();
 
                     if (selectionKey.isReadable()) {
                         read(selector, channel);
-                        //发现多线程时同一个selectKey会空读轮询 此处添加hash简单排除，以防处理异常
-                    } else if (selectionKey.isWritable() && OPERATE_RECORDER.add(i)) {
+                    } else {
                         write(selector, channel);
                     }
                 }
 
             } catch (ExceedingRepetitionLimitException e) {
-                log.warn("发现疑似空循环 {}", e.getMessage());
+                log.warn("空循环达上限 {}", e.getMessage());
                 try {
                     rebuildSelector();
                 } catch (IOException ex) {
@@ -109,7 +109,7 @@ public abstract class EventHandler implements Runnable {
     private void rebuildSelector() throws IOException {
         IS_REBUILDING.setRelease(true);
 
-        OPERATE_RECORDER.clear();
+        OPERATE_RECORDER.remove(this.selector.hashCode());
 
         this.selector = Selector.open();
         SocketChannels.forEach((I, S) -> {

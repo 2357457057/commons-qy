@@ -30,14 +30,14 @@ public class OperatingRecorder<E> extends AbstractSet<E> implements Serializable
 
     public static OperatingRecorder<Integer> createNormalRecorder(Long maxRepeat) {
         OperatingRecorder<Integer> objects = new OperatingRecorder<>();
-        objects.ackMap = new ConcurrentHashMap<>();
+        objects.map = new ConcurrentHashMap<>();
         objects.MaxRepeat = maxRepeat;
         return objects;
     }
 
     public static OperatingRecorder<Integer> createAckRecorder(Long maxRepeat) {
         OperatingRecorder<Integer> objects = new OperatingRecorder<>();
-        objects.map = new ConcurrentHashMap<>();
+        objects.ackMap = new ConcurrentHashMap<>();
         objects.MaxRepeat = maxRepeat;
         return objects;
     }

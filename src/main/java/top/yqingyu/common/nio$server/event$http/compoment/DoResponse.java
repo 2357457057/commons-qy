@@ -25,6 +25,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static top.yqingyu.common.nio$server.event$http.compoment.HttpEventHandler.SOCKET_CHANNEL_ACK;
+
 /**
  * @author YYJ
  * @version 1.0.0
@@ -59,7 +61,7 @@ class DoResponse implements Callable<Object> {
 
     private static final Logger log = LoggerFactory.getLogger(DoResponse.class);
 
-    public DoResponse( LinkedBlockingQueue<Object> QUEUE, Selector selector) {
+    public DoResponse(LinkedBlockingQueue<Object> QUEUE, Selector selector) {
         this.QUEUE = QUEUE;
         this.selector = selector;
     }
@@ -107,17 +109,20 @@ class DoResponse implements Callable<Object> {
 
                 doResponse(resp, socketChannel);
             } while (httpEventEntity.isNotEnd());
-            socketChannel.register(selector,SelectionKey.OP_READ);
+            socketChannel.register(selector, SelectionKey.OP_READ);
             log.debug("{} cost {} MICROS", socketChannel.hashCode(), LocalDateTimeUtil.between(now, LocalDateTime.now(), ChronoUnit.MICROS));
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             socketChannel.shutdownInput();
             socketChannel.shutdownOutput();
             socketChannel.close();
-        } catch (Exception e){
-            log.error("",e);
+        } catch (Exception e) {
+            log.error("", e);
             socketChannel.shutdownInput();
             socketChannel.shutdownOutput();
             socketChannel.close();
+        } finally {
+            if (socketChannel != null)
+                SOCKET_CHANNEL_ACK.ack(socketChannel.hashCode());
         }
         return null;
     }
@@ -235,9 +240,11 @@ class DoResponse implements Callable<Object> {
             bytes = response.toString().getBytes();
 
         //Header
-        if (!IoUtil.writeBytes(socketChannel, bytes,2000)) {
+        try {
+            IoUtil.writeBytes(socketChannel, bytes, 2000);
+        } catch (Exception e) {
+            log.error("", e);
             socketChannel.close();
-            return;
         }
         //body
         if (!"304|100".contains(response.getStatue_code()) || (response.getStrBody() != null ^ response.gainFileBody() == null)) {
@@ -253,9 +260,11 @@ class DoResponse implements Callable<Object> {
                 } while (l != size);
                 channel.close();
             } else {
-                if (!IoUtil.writeBytes(socketChannel, response.gainBodyBytes(),2000)) {
+                try {
+                    IoUtil.writeBytes(socketChannel, response.gainBodyBytes(), 2000);
+                } catch (Exception e) {
+                    log.error("", e);
                     socketChannel.close();
-                    return;
                 }
             }
         }

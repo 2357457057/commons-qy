@@ -3,10 +3,10 @@ package top.yqingyu.common.nio$server.core;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.AbstractSet;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author YYJ
@@ -19,42 +19,29 @@ public class OperatingRecorder<E> extends AbstractSet<E> implements Serializable
 
     @Serial
     private static final long serialVersionUID = 7997886765361607471L;
-    private final Long RepeatedUpperLimit;
-    private final ConcurrentHashMap<E, AtomicLong> map;
+    private Long MaxRepeat;
+    private ConcurrentHashMap<E, AtomicLong> map;
 
-    public OperatingRecorder(Long repeatedUpperLimit) {
-        RepeatedUpperLimit = repeatedUpperLimit;
-        this.map = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<E, ACK> ackMap;
+
+
+    private OperatingRecorder() {
     }
 
-    public OperatingRecorder(Long repeatedUpperLimit, int initialCapacity) {
-        RepeatedUpperLimit = repeatedUpperLimit;
-        this.map = new ConcurrentHashMap<>(initialCapacity);
+    public static OperatingRecorder<Integer> createNormalRecorder(Long maxRepeat) {
+        OperatingRecorder<Integer> objects = new OperatingRecorder<>();
+        objects.ackMap = new ConcurrentHashMap<>();
+        objects.MaxRepeat = maxRepeat;
+        return objects;
     }
 
-    public OperatingRecorder(Long repeatedUpperLimit, int initialCapacity, float loadFactor) {
-        RepeatedUpperLimit = repeatedUpperLimit;
-        this.map = new ConcurrentHashMap<>(initialCapacity, loadFactor);
+    public static OperatingRecorder<Integer> createAckRecorder(Long maxRepeat) {
+        OperatingRecorder<Integer> objects = new OperatingRecorder<>();
+        objects.map = new ConcurrentHashMap<>();
+        objects.MaxRepeat = maxRepeat;
+        return objects;
     }
 
-    public OperatingRecorder(Long repeatedUpperLimit, int initialCapacity, float loadFactor, int concurrencyLevel) {
-        RepeatedUpperLimit = repeatedUpperLimit;
-        this.map = new ConcurrentHashMap<>(initialCapacity, loadFactor, concurrencyLevel);
-    }
-
-    public OperatingRecorder(Iterable<E> iter, Long repeatedUpperLimit) {
-        RepeatedUpperLimit = repeatedUpperLimit;
-        if (iter instanceof Collection<E> collection) {
-            this.map = new ConcurrentHashMap<>((int) ((float) collection.size() / 0.75F));
-            this.addAll(collection);
-        } else {
-            this.map = new ConcurrentHashMap<>();
-            for (E e : iter) {
-                this.add(e);
-            }
-        }
-
-    }
 
     public Iterator<E> iterator() {
         return this.map.keySet().iterator();
@@ -72,11 +59,10 @@ public class OperatingRecorder<E> extends AbstractSet<E> implements Serializable
         return this.map.containsKey(o);
     }
 
-
     public AtomicLong add2(E e) {
         AtomicLong b = this.map.get(e);
         if (b != null) {
-            if (b.getAndIncrement() > RepeatedUpperLimit) {
+            if (b.getAndIncrement() > MaxRepeat) {
                 throw new ExceedingRepetitionLimitException("该值重复达上限" + b.get());
             }
             return b;
@@ -94,4 +80,75 @@ public class OperatingRecorder<E> extends AbstractSet<E> implements Serializable
     public void clear() {
         this.map.clear();
     }
+
+
+    public void addAck(E e) {
+        ACK ack = this.ackMap.get(e);
+        if (ack == null) {
+            this.ackMap.put(e, new ACK());
+        } else {
+            Long now = ack.getNow();
+            if (now < MaxRepeat) {
+                ack.add();
+            } else {
+                throw new ExceedingRepetitionLimitException("ACK 添加上限");
+            }
+        }
+    }
+
+    public boolean ack(E l) {
+        ACK ack = this.ackMap.get(l);
+        if (ack != null) {
+            ack.ack();
+            return true;
+        } else
+            return false;
+    }
+
+    public boolean isAckOk(E l) {
+        ACK ack = this.ackMap.get(l);
+        return ack != null && ack.isAckOk();
+    }
+
+    public void removeAck(E e) {
+        this.ackMap.remove(e);
+    }
+
+    static class ACK {
+        private final AtomicLong CEILING = new AtomicLong(1);
+        private final AtomicLong ACK = new AtomicLong(1);
+        private final ReentrantLock lock = new ReentrantLock();
+
+        private volatile boolean ackOk = false;
+
+        void add() {
+            try {
+                lock.lock();
+                CEILING.getAndIncrement();
+                ACK.getAndIncrement();
+            } finally {
+                lock.unlock();
+            }
+        }
+
+        void ack() {
+            try {
+                long get = ACK.decrementAndGet();
+                if (get <= 0) {
+                    ackOk = true;
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+
+        Long getNow() {
+            return this.CEILING.get();
+        }
+
+        boolean isAckOk() {
+            return ackOk;
+        }
+    }
+
 }

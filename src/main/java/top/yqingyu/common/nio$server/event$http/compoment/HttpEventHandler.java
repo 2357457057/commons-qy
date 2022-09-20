@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.nio$server.core.EventHandler;
 import top.yqingyu.common.nio$server.core.ExceedingRepetitionLimitException;
+import top.yqingyu.common.nio$server.core.OperatingRecorder;
 import top.yqingyu.common.qydata.DataList;
 import top.yqingyu.common.qydata.DataMap;
 import top.yqingyu.common.utils.UnitUtil;
@@ -31,6 +32,8 @@ public class HttpEventHandler extends EventHandler {
         super();
     }
 
+    private static final OperatingRecorder<Integer> SOCKET_CHANNEL_RECORD = OperatingRecorder.createNormalRecorder(1024L * 1024 * 2);
+    static final OperatingRecorder<Integer> SOCKET_CHANNEL_ACK = OperatingRecorder.createAckRecorder(3L);
     public static int port;
     public static int handlerNumber;
     public static int perHandlerWorker;
@@ -122,16 +125,28 @@ public class HttpEventHandler extends EventHandler {
     @Override
     public void read(Selector selector, SocketChannel socketChannel) throws Exception {
         socketChannel.register(selector, SelectionKey.OP_WRITE);
-        READ_POOL.submit(new DoRequest(socketChannel, QUEUE));
-        WRITE_POOL.submit(new DoResponse(QUEUE, selector));
+        int i = socketChannel.hashCode();
+        try {
+            SOCKET_CHANNEL_ACK.addAck(i);
+            READ_POOL.submit(new DoRequest(socketChannel, QUEUE));
+            WRITE_POOL.submit(new DoResponse(QUEUE, selector));
+        } catch (ExceedingRepetitionLimitException e) {
+            do {
+                Thread.sleep(1);
+            } while (!SOCKET_CHANNEL_ACK.isAckOk(i));
+            socketChannel.close();
+            SOCKET_CHANNEL_ACK.removeAck(i);
+            log.debug("{} 关闭通道", e.getMessage());
+        }
     }
 
 
     @Override
     public void write(Selector selector, SocketChannel socketChannel) throws Exception {
         try {
-            OPERATE_RECORDER2.add2(socketChannel.hashCode());
+            SOCKET_CHANNEL_RECORD.add2(socketChannel.hashCode());
         } catch (ExceedingRepetitionLimitException e) {
+            SOCKET_CHANNEL_RECORD.remove(socketChannel.hashCode());
             socketChannel.close();
         }
     }

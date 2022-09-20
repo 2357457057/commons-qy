@@ -208,10 +208,12 @@ public class IoUtil {
             long l = 0;
             do {
                 l += socketChannel.write(byteBuffer);
-            } while (l != bytes.length);
+            } while (l != bytes.length || !Thread.currentThread().isInterrupted());
             return true;
         });
-        new Thread(futureTask).start();
+        Thread thread = new Thread(futureTask);
+        thread.setDaemon(true);
+        thread.start();
         return futureTask.get(timeout, TimeUnit.MINUTES);
     }
 

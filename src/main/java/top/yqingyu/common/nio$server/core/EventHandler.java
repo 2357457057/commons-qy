@@ -28,8 +28,7 @@ public abstract class EventHandler implements Runnable {
     protected ThreadPoolExecutor READ_POOL;
     protected ThreadPoolExecutor WRITE_POOL;
 
-    protected static final OperatingRecorder<Integer> OPERATE_RECORDER = new OperatingRecorder<>(1024L * 1024);
-    protected static final OperatingRecorder<Integer> OPERATE_RECORDER2 = new OperatingRecorder<>(1024L * 1024 * 2);
+    protected static final OperatingRecorder<Integer> OPERATE_RECORDER =  OperatingRecorder.createNormalRecorder(1024L * 1024);
 
     protected final ConcurrentHashMap<Integer, SocketChannel> SocketChannels = new ConcurrentHashMap<>();
 

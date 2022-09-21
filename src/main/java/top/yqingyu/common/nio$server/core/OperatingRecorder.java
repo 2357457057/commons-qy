@@ -133,6 +133,7 @@ public class OperatingRecorder<E> extends AbstractSet<E> implements Serializable
 
         void ack() {
             try {
+                lock.lock();
                 long get = ACK.decrementAndGet();
                 if (get <= 0) {
                     ackOk = true;

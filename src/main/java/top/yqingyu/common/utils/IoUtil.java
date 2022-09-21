@@ -208,13 +208,13 @@ public class IoUtil {
             long l = 0;
             do {
                 l += socketChannel.write(byteBuffer);
-            } while (l != bytes.length || !Thread.currentThread().isInterrupted());
+            } while (l != bytes.length);
             return true;
         });
         Thread thread = new Thread(futureTask);
         thread.setDaemon(true);
         thread.start();
-        return futureTask.get(timeout, TimeUnit.MINUTES);
+        return futureTask.get(timeout, TimeUnit.MILLISECONDS);
     }
 
     public static void writeBytes(Socket socket, byte[] bytes) throws Exception {

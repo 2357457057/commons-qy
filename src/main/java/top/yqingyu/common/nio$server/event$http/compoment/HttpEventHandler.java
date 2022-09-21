@@ -129,14 +129,16 @@ public class HttpEventHandler extends EventHandler {
         try {
             SOCKET_CHANNEL_ACK.addAck(i);
             READ_POOL.submit(new DoRequest(socketChannel, QUEUE));
-            WRITE_POOL.submit(new DoResponse(QUEUE, selector));
+//            WRITE_POOL.submit(new DoResponse(QUEUE, selector));
+            DoResponse doResponse = new DoResponse(QUEUE, selector);
+            doResponse.call();
         } catch (ExceedingRepetitionLimitException e) {
             do {
                 Thread.sleep(1);
             } while (!SOCKET_CHANNEL_ACK.isAckOk(i));
             socketChannel.close();
             SOCKET_CHANNEL_ACK.removeAck(i);
-            log.debug("{} 关闭通道", e.getMessage());
+            log.debug("单通道请求达上限关闭通道");
         }
     }
 
@@ -148,6 +150,7 @@ public class HttpEventHandler extends EventHandler {
         } catch (ExceedingRepetitionLimitException e) {
             SOCKET_CHANNEL_RECORD.remove(socketChannel.hashCode());
             socketChannel.close();
+            log.debug("{} 关闭通道", e.getMessage());
         }
     }
 

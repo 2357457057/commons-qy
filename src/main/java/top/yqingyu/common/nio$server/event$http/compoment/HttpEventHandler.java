@@ -150,7 +150,6 @@ public class HttpEventHandler extends EventHandler {
         } catch (ExceedingRepetitionLimitException e) {
             SOCKET_CHANNEL_RECORD.remove(socketChannel.hashCode());
             socketChannel.close();
-            log.debug("{} 关闭通道", e.getMessage());
         }
     }
 

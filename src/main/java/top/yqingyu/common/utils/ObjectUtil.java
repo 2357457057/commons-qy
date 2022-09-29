@@ -8,12 +8,12 @@ import java.util.*;
 /**
  * @author YYJ
  * @version 1.0.0
- * @ClassName top.yqingyu.common.utils.ObjectUtils
+ * @ClassName top.yqingyu.common.utils.ObjectUtil
  * @description
  * @createTime 2022年09月16日 03:33:00
  */
 @SuppressWarnings("all")
-public abstract class ObjectUtils {
+public abstract class ObjectUtil {
 
     private static final int INITIAL_HASH = 7;
     private static final int MULTIPLIER = 31;
@@ -100,7 +100,7 @@ public abstract class ObjectUtils {
      * @param obj the object to check
      * @return {@code true} if the object is {@code null} or <em>empty</em>
      * @see Optional#isPresent()
-     * @see ObjectUtils#isEmpty(Object[])
+     * @see ObjectUtil#isEmpty(Object[])
      * @since 4.2
      */
     public static boolean isEmpty(Object obj) {

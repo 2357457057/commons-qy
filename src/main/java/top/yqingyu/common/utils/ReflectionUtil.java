@@ -12,12 +12,12 @@ import java.util.Map;
 /**
  * @author YYJ
  * @version 1.0.0
- * @ClassName top.yqingyu.common.utils.ReflectionUtils
+ * @ClassName top.yqingyu.common.utils.ReflectionUtil
  * @description
  * @createTime 2022年09月16日 03:42:00
  */
 @SuppressWarnings("all")
-public abstract class ReflectionUtils {
+public abstract class ReflectionUtil {
 
     /**
      * Pre-built {@link MethodFilter} that matches all non-bridge non-synthetic methods

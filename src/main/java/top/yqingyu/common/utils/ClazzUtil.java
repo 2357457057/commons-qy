@@ -819,7 +819,7 @@ public class ClazzUtil {
      * @see java.util.AbstractCollection#toString()
      */
     public static String classNamesToString(Collection<Class<?>> classes) {
-        if (CollectionUtils.isEmpty(classes)) {
+        if (CollectionUtil.isEmpty(classes)) {
             return "[]";
         }
         StringJoiner stringJoiner = new StringJoiner(", ", "[", "]");
@@ -831,7 +831,7 @@ public class ClazzUtil {
 
 
     public static Class<?>[] toClassArray(Collection<Class<?>> collection) {
-        return (!CollectionUtils.isEmpty(collection) ? collection.toArray(EMPTY_CLASS_ARRAY) : EMPTY_CLASS_ARRAY);
+        return (!CollectionUtil.isEmpty(collection) ? collection.toArray(EMPTY_CLASS_ARRAY) : EMPTY_CLASS_ARRAY);
     }
 
     /**
@@ -1433,7 +1433,7 @@ public class ClazzUtil {
                     }
                 } else {
                     Method specificMethod =
-                            ReflectionUtils.findMethod(targetClass, method.getName(), method.getParameterTypes());
+                            ReflectionUtil.findMethod(targetClass, method.getName(), method.getParameterTypes());
                     return (specificMethod != null ? specificMethod : method);
                 }
             } catch (SecurityException ex) {

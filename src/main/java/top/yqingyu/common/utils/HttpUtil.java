@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class HttpUtils {
+public class HttpUtil {
 
     /**
      * get

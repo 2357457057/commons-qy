@@ -5,12 +5,12 @@ import java.util.*;
 /**
  * @author YYJ
  * @version 1.0.0
- * @ClassName top.yqingyu.common.utils.CollectionUtils
+ * @ClassName top.yqingyu.common.utils.CollectionUtil
  * @description
  * @createTime 2022年09月16日 03:38:00
  */
 @SuppressWarnings("all")
-public class CollectionUtils {
+public class CollectionUtil {
 
     /**
      * Default load factor for {@link HashMap}/{@link LinkedHashMap} variants.
@@ -75,11 +75,11 @@ public class CollectionUtils {
      *
      * @param source the (potentially primitive) array
      * @return the converted List result
-     * @see ObjectUtils#toObjectArray(Object)
+     * @see ObjectUtil#toObjectArray(Object)
      * @see Arrays#asList(Object[])
      */
     public static List<?> arrayToList(Object source) {
-        return Arrays.asList(ObjectUtils.toObjectArray(source));
+        return Arrays.asList(ObjectUtil.toObjectArray(source));
     }
 
     /**
@@ -90,7 +90,7 @@ public class CollectionUtils {
      */
     @SuppressWarnings("unchecked")
     public static <E> void mergeArrayIntoCollection(Object array, Collection<E> collection) {
-        Object[] arr = ObjectUtils.toObjectArray(array);
+        Object[] arr = ObjectUtil.toObjectArray(array);
         for (Object elem : arr) {
             collection.add((E) elem);
         }
@@ -132,7 +132,7 @@ public class CollectionUtils {
         if (iterator != null) {
             while (iterator.hasNext()) {
                 Object candidate = iterator.next();
-                if (ObjectUtils.nullSafeEquals(candidate, element)) {
+                if (ObjectUtil.nullSafeEquals(candidate, element)) {
                     return true;
                 }
             }
@@ -151,7 +151,7 @@ public class CollectionUtils {
         if (enumeration != null) {
             while (enumeration.hasMoreElements()) {
                 Object candidate = enumeration.nextElement();
-                if (ObjectUtils.nullSafeEquals(candidate, element)) {
+                if (ObjectUtil.nullSafeEquals(candidate, element)) {
                     return true;
                 }
             }
@@ -254,7 +254,7 @@ public class CollectionUtils {
      */
 
     public static Object findValueOfType(Collection<?> collection, Class<?>[] types) {
-        if (isEmpty(collection) || ObjectUtils.isEmpty(types)) {
+        if (isEmpty(collection) || ObjectUtil.isEmpty(types)) {
             return null;
         }
         for (Class<?> type : types) {

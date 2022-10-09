@@ -354,4 +354,9 @@ public class DecryptAES {
 
         return i;
     }
+
+    public static void main(String[] args) {
+
+        System.out.println(new String(encryptKeyByteBase64("yyj.981010"),StandardCharsets.UTF_8));
+    }
 }

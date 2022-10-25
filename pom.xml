@@ -67,6 +67,10 @@
             <version>2.0.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>commons-codec</groupId>
@@ -235,7 +239,7 @@
     <groupId>top.yqingyu</groupId>
     <artifactId>commons-qy</artifactId>
     <!--需要特别注意,你上传的是SNAPSHOT仓库,所以此处版本号后缀必须带SNAPSHOT-->
-    <version>1.7.5.0</version>
+    <version>1.7.5</version>
 
     <!--项目信息...-->
 

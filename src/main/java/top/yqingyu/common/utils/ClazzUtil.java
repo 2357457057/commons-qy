@@ -1,7 +1,6 @@
 package top.yqingyu.common.utils;
 
 import cn.hutool.core.lang.Assert;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.qydata.ConcurrentReferenceHashMap;
@@ -151,7 +150,7 @@ public class ClazzUtil {
 
     private static String getClassName(String packageName, String fileName) {
         String className = fileName.substring(0, Math.max(fileName.lastIndexOf("."), 0));
-        if (StringUtils.isNotEmpty(packageName)) {
+        if (StringUtil.isNotEmpty(packageName)) {
             className = packageName + "." + className;
         }
         return className;
@@ -159,7 +158,7 @@ public class ClazzUtil {
 
     private static String getSubPackagePath(String packagePath, String filePath) {
         String subPackagePath = filePath;
-        if (StringUtils.isNotEmpty(packagePath)) {
+        if (StringUtil.isNotEmpty(packagePath)) {
             subPackagePath = packagePath + "/" + subPackagePath;
         }
         return subPackagePath;
@@ -167,7 +166,7 @@ public class ClazzUtil {
 
     private static String getSubPackageName(String packageName, String filePath) {
         String subPackageName = filePath;
-        if (StringUtils.isNotEmpty(packageName)) {
+        if (StringUtil.isNotEmpty(packageName)) {
             subPackageName = packageName + "." + subPackageName;
         }
         return subPackageName;

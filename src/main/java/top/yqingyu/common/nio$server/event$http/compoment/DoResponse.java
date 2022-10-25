@@ -4,6 +4,7 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.yqingyu.common.nio$server.core.ExceedingRepetitionLimitException;
 import top.yqingyu.common.qydata.ConcurrentDataMap;
 import top.yqingyu.common.utils.GzipUtil;
 import top.yqingyu.common.utils.IoUtil;
@@ -20,6 +21,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
@@ -43,6 +46,24 @@ class DoResponse implements Callable<Object> {
     static long DEFAULT_SEND_BUF_LENGTH;
 
     static boolean FILE_COMPRESS_ON;
+
+    static ArrayList<ContentType> UN_DO_COMPRESS_FILE = new ArrayList<>(Arrays.asList(
+            ContentType.APPLICATION_OCTET_STREAM,
+            ContentType.IMAGE_JPEG,
+            ContentType.IMAGE_PNG,
+            ContentType.IMAGE_GIF,
+            ContentType.IMAGE_WEBP,
+            ContentType.IMAGE_BMP,
+            ContentType.IMAGE_SVG,
+            ContentType.IMAGE_X_ICON,
+            ContentType.IMAGE_TIFF,
+            ContentType.VIDEO_AVI,
+            ContentType.VIDEO_MP4,
+            ContentType.VIDEO_MPEG4,
+            ContentType.VIDEO_WMV,
+            ContentType.VIDEO_WEBM,
+            ContentType.AUDIO_MP3
+    ));
 
     //最大压缩源文件大小 128MB
     static long MAX_SINGLE_FILE_COMPRESS_SIZE;
@@ -104,7 +125,7 @@ class DoResponse implements Callable<Object> {
                 initResponse(request, resp);
 
                 //压缩
-                if (FILE_COMPRESS_ON)
+                if (FILE_COMPRESS_ON && !UN_DO_COMPRESS_FILE.contains(resp.get().gainHeaderContentType()))
                     compress(request, resp);
 
                 doResponse(resp, socketChannel);
@@ -121,8 +142,21 @@ class DoResponse implements Callable<Object> {
             socketChannel.shutdownOutput();
             socketChannel.close();
         } finally {
-            if (socketChannel != null)
-                SOCKET_CHANNEL_ACK.ack(socketChannel.hashCode());
+            if (socketChannel != null){
+                int i = socketChannel.hashCode();
+                try {
+
+                    SOCKET_CHANNEL_ACK.addAck(i);
+                    SOCKET_CHANNEL_ACK.ack(socketChannel.hashCode());
+
+                } catch (ExceedingRepetitionLimitException e) {
+                    if (SOCKET_CHANNEL_ACK.isAckOk(i)) {
+                        socketChannel.close();
+                        SOCKET_CHANNEL_ACK.removeAck(i);
+                        log.debug("单通道请求达上限关闭通道");
+                    }
+                }
+            }
         }
         return null;
     }

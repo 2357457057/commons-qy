@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.nio$server.core.OperatingRecorder
- * @description 为解决Epoll 问题而生
+ * @description 计数器，确认计数器
  * @createTime 2022年09月20日 00:30:00
  */
 public class OperatingRecorder<E> extends AbstractSet<E> implements Serializable {
@@ -38,7 +38,7 @@ public class OperatingRecorder<E> extends AbstractSet<E> implements Serializable
     public static OperatingRecorder<Integer> createAckRecorder(Long maxRepeat) {
         OperatingRecorder<Integer> objects = new OperatingRecorder<>();
         objects.ackMap = new ConcurrentHashMap<>();
-        objects.MaxRepeat = maxRepeat;
+        objects.MaxRepeat = maxRepeat - 1;
         return objects;
     }
 

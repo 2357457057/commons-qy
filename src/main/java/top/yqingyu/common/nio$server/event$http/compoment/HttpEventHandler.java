@@ -126,21 +126,12 @@ public class HttpEventHandler extends EventHandler {
     public void read(Selector selector, SocketChannel socketChannel) throws Exception {
         socketChannel.register(selector, SelectionKey.OP_WRITE);
         int i = socketChannel.hashCode();
-        try {
-            SOCKET_CHANNEL_ACK.addAck(i);
 //            READ_POOL.submit(new DoRequest(socketChannel, QUEUE));
 //            WRITE_POOL.submit(new DoResponse(QUEUE, selector));
             DoRequest doRequest = new DoRequest(socketChannel, QUEUE);
             doRequest.call();
             DoResponse doResponse = new DoResponse(QUEUE, selector);
             doResponse.call();
-        } catch (ExceedingRepetitionLimitException e) {
-            if (SOCKET_CHANNEL_ACK.isAckOk(i)) {
-                socketChannel.close();
-                SOCKET_CHANNEL_ACK.removeAck(i);
-                log.debug("单通道请求达上限关闭通道");
-            }
-        }
     }
 
 

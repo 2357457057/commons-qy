@@ -44,7 +44,7 @@ public class StringUtil {
                     break;
                 i++;
             }
-            str = StringUtils.substring(str, 0, i);
+            str = StringUtil.substring(str, 0, i);
         }
         return str;
     }
@@ -165,10 +165,10 @@ public class StringUtil {
      * <p>Note: this method returns {@code true} for a {@code CharSequence}
      * that purely consists of whitespace.
      * <p><pre class="code">
-     * StringUtils.hasLength(null) = false
-     * StringUtils.hasLength("") = false
-     * StringUtils.hasLength(" ") = true
-     * StringUtils.hasLength("Hello") = true
+     * StringUtil.hasLength(null) = false
+     * StringUtil.hasLength("") = false
+     * StringUtil.hasLength(" ") = true
+     * StringUtil.hasLength("Hello") = true
      * </pre>
      *
      * @param str the {@code CharSequence} to check (may be {@code null})
@@ -200,11 +200,11 @@ public class StringUtil {
      * {@code CharSequence} is not {@code null}, its length is greater than
      * 0, and it contains at least one non-whitespace character.
      * <p><pre class="code">
-     * StringUtils.hasText(null) = false
-     * StringUtils.hasText("") = false
-     * StringUtils.hasText(" ") = false
-     * StringUtils.hasText("12345") = true
-     * StringUtils.hasText(" 12345 ") = true
+     * StringUtil.hasText(null) = false
+     * StringUtil.hasText("") = false
+     * StringUtil.hasText(" ") = false
+     * StringUtil.hasText("12345") = true
+     * StringUtil.hasText(" 12345 ") = true
      * </pre>
      *
      * @param str the {@code CharSequence} to check (may be {@code null})
@@ -1413,13 +1413,13 @@ public class StringUtil {
      * </ul>
      *
      * <pre>
-     * StringUtils.abbreviate(null, *)      = null
-     * StringUtils.abbreviate("", 4)        = ""
-     * StringUtils.abbreviate("abcdefg", 6) = "abc..."
-     * StringUtils.abbreviate("abcdefg", 7) = "abcdefg"
-     * StringUtils.abbreviate("abcdefg", 8) = "abcdefg"
-     * StringUtils.abbreviate("abcdefg", 4) = "a..."
-     * StringUtils.abbreviate("abcdefg", 3) = IllegalArgumentException
+     * StringUtil.abbreviate(null, *)      = null
+     * StringUtil.abbreviate("", 4)        = ""
+     * StringUtil.abbreviate("abcdefg", 6) = "abc..."
+     * StringUtil.abbreviate("abcdefg", 7) = "abcdefg"
+     * StringUtil.abbreviate("abcdefg", 8) = "abcdefg"
+     * StringUtil.abbreviate("abcdefg", 4) = "a..."
+     * StringUtil.abbreviate("abcdefg", 3) = IllegalArgumentException
      * </pre>
      *
      * @param str      the String to check, may be null
@@ -1445,19 +1445,19 @@ public class StringUtil {
      * {@code maxWidth}.</p>
      *
      * <pre>
-     * StringUtils.abbreviate(null, *, *)                = null
-     * StringUtils.abbreviate("", 0, 4)                  = ""
-     * StringUtils.abbreviate("abcdefghijklmno", -1, 10) = "abcdefg..."
-     * StringUtils.abbreviate("abcdefghijklmno", 0, 10)  = "abcdefg..."
-     * StringUtils.abbreviate("abcdefghijklmno", 1, 10)  = "abcdefg..."
-     * StringUtils.abbreviate("abcdefghijklmno", 4, 10)  = "abcdefg..."
-     * StringUtils.abbreviate("abcdefghijklmno", 5, 10)  = "...fghi..."
-     * StringUtils.abbreviate("abcdefghijklmno", 6, 10)  = "...ghij..."
-     * StringUtils.abbreviate("abcdefghijklmno", 8, 10)  = "...ijklmno"
-     * StringUtils.abbreviate("abcdefghijklmno", 10, 10) = "...ijklmno"
-     * StringUtils.abbreviate("abcdefghijklmno", 12, 10) = "...ijklmno"
-     * StringUtils.abbreviate("abcdefghij", 0, 3)        = IllegalArgumentException
-     * StringUtils.abbreviate("abcdefghij", 5, 6)        = IllegalArgumentException
+     * StringUtil.abbreviate(null, *, *)                = null
+     * StringUtil.abbreviate("", 0, 4)                  = ""
+     * StringUtil.abbreviate("abcdefghijklmno", -1, 10) = "abcdefg..."
+     * StringUtil.abbreviate("abcdefghijklmno", 0, 10)  = "abcdefg..."
+     * StringUtil.abbreviate("abcdefghijklmno", 1, 10)  = "abcdefg..."
+     * StringUtil.abbreviate("abcdefghijklmno", 4, 10)  = "abcdefg..."
+     * StringUtil.abbreviate("abcdefghijklmno", 5, 10)  = "...fghi..."
+     * StringUtil.abbreviate("abcdefghijklmno", 6, 10)  = "...ghij..."
+     * StringUtil.abbreviate("abcdefghijklmno", 8, 10)  = "...ijklmno"
+     * StringUtil.abbreviate("abcdefghijklmno", 10, 10) = "...ijklmno"
+     * StringUtil.abbreviate("abcdefghijklmno", 12, 10) = "...ijklmno"
+     * StringUtil.abbreviate("abcdefghij", 0, 3)        = IllegalArgumentException
+     * StringUtil.abbreviate("abcdefghij", 5, 6)        = IllegalArgumentException
      * </pre>
      *
      * @param str      the String to check, may be null
@@ -1488,16 +1488,16 @@ public class StringUtil {
      * </ul>
      *
      * <pre>
-     * StringUtils.abbreviate(null, "...", *)      = null
-     * StringUtils.abbreviate("abcdefg", null, *)  = "abcdefg"
-     * StringUtils.abbreviate("", "...", 4)        = ""
-     * StringUtils.abbreviate("abcdefg", ".", 5)   = "abcd."
-     * StringUtils.abbreviate("abcdefg", ".", 7)   = "abcdefg"
-     * StringUtils.abbreviate("abcdefg", ".", 8)   = "abcdefg"
-     * StringUtils.abbreviate("abcdefg", "..", 4)  = "ab.."
-     * StringUtils.abbreviate("abcdefg", "..", 3)  = "a.."
-     * StringUtils.abbreviate("abcdefg", "..", 2)  = IllegalArgumentException
-     * StringUtils.abbreviate("abcdefg", "...", 3) = IllegalArgumentException
+     * StringUtil.abbreviate(null, "...", *)      = null
+     * StringUtil.abbreviate("abcdefg", null, *)  = "abcdefg"
+     * StringUtil.abbreviate("", "...", 4)        = ""
+     * StringUtil.abbreviate("abcdefg", ".", 5)   = "abcd."
+     * StringUtil.abbreviate("abcdefg", ".", 7)   = "abcdefg"
+     * StringUtil.abbreviate("abcdefg", ".", 8)   = "abcdefg"
+     * StringUtil.abbreviate("abcdefg", "..", 4)  = "ab.."
+     * StringUtil.abbreviate("abcdefg", "..", 3)  = "a.."
+     * StringUtil.abbreviate("abcdefg", "..", 2)  = IllegalArgumentException
+     * StringUtil.abbreviate("abcdefg", "...", 3) = IllegalArgumentException
      * </pre>
      *
      * @param str          the String to check, may be null
@@ -1524,20 +1524,20 @@ public class StringUtil {
      * <p>In no case will it return a String of length greater than {@code maxWidth}.</p>
      *
      * <pre>
-     * StringUtils.abbreviate(null, null, *, *)                 = null
-     * StringUtils.abbreviate("abcdefghijklmno", null, *, *)    = "abcdefghijklmno"
-     * StringUtils.abbreviate("", "...", 0, 4)                  = ""
-     * StringUtils.abbreviate("abcdefghijklmno", "---", -1, 10) = "abcdefg---"
-     * StringUtils.abbreviate("abcdefghijklmno", ",", 0, 10)    = "abcdefghi,"
-     * StringUtils.abbreviate("abcdefghijklmno", ",", 1, 10)    = "abcdefghi,"
-     * StringUtils.abbreviate("abcdefghijklmno", ",", 2, 10)    = "abcdefghi,"
-     * StringUtils.abbreviate("abcdefghijklmno", "::", 4, 10)   = "::efghij::"
-     * StringUtils.abbreviate("abcdefghijklmno", "...", 6, 10)  = "...ghij..."
-     * StringUtils.abbreviate("abcdefghijklmno", "*", 9, 10)    = "*ghijklmno"
-     * StringUtils.abbreviate("abcdefghijklmno", "'", 10, 10)   = "'ghijklmno"
-     * StringUtils.abbreviate("abcdefghijklmno", "!", 12, 10)   = "!ghijklmno"
-     * StringUtils.abbreviate("abcdefghij", "abra", 0, 4)       = IllegalArgumentException
-     * StringUtils.abbreviate("abcdefghij", "...", 5, 6)        = IllegalArgumentException
+     * StringUtil.abbreviate(null, null, *, *)                 = null
+     * StringUtil.abbreviate("abcdefghijklmno", null, *, *)    = "abcdefghijklmno"
+     * StringUtil.abbreviate("", "...", 0, 4)                  = ""
+     * StringUtil.abbreviate("abcdefghijklmno", "---", -1, 10) = "abcdefg---"
+     * StringUtil.abbreviate("abcdefghijklmno", ",", 0, 10)    = "abcdefghi,"
+     * StringUtil.abbreviate("abcdefghijklmno", ",", 1, 10)    = "abcdefghi,"
+     * StringUtil.abbreviate("abcdefghijklmno", ",", 2, 10)    = "abcdefghi,"
+     * StringUtil.abbreviate("abcdefghijklmno", "::", 4, 10)   = "::efghij::"
+     * StringUtil.abbreviate("abcdefghijklmno", "...", 6, 10)  = "...ghij..."
+     * StringUtil.abbreviate("abcdefghijklmno", "*", 9, 10)    = "*ghijklmno"
+     * StringUtil.abbreviate("abcdefghijklmno", "'", 10, 10)   = "'ghijklmno"
+     * StringUtil.abbreviate("abcdefghijklmno", "!", 12, 10)   = "!ghijklmno"
+     * StringUtil.abbreviate("abcdefghij", "abra", 0, 4)       = IllegalArgumentException
+     * StringUtil.abbreviate("abcdefghij", "...", 5, 6)        = IllegalArgumentException
      * </pre>
      *
      * @param str          the String to check, may be null
@@ -1599,11 +1599,11 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.abbreviateMiddle(null, null, 0)      = null
-     * StringUtils.abbreviateMiddle("abc", null, 0)      = "abc"
-     * StringUtils.abbreviateMiddle("abc", ".", 0)      = "abc"
-     * StringUtils.abbreviateMiddle("abc", ".", 3)      = "abc"
-     * StringUtils.abbreviateMiddle("abcdef", ".", 4)     = "ab.f"
+     * StringUtil.abbreviateMiddle(null, null, 0)      = null
+     * StringUtil.abbreviateMiddle("abc", null, 0)      = "abc"
+     * StringUtil.abbreviateMiddle("abc", ".", 0)      = "abc"
+     * StringUtil.abbreviateMiddle("abc", ".", 3)      = "abc"
+     * StringUtil.abbreviateMiddle("abcdef", ".", 4)     = "ab.f"
      * </pre>
      *
      * @param str    the String to abbreviate, may be null
@@ -1655,25 +1655,25 @@ public class StringUtil {
      * already end with any of the suffixes.
      *
      * <pre>
-     * StringUtils.appendIfMissing(null, null) = null
-     * StringUtils.appendIfMissing("abc", null) = "abc"
-     * StringUtils.appendIfMissing("", "xyz") = "xyz"
-     * StringUtils.appendIfMissing("abc", "xyz") = "abcxyz"
-     * StringUtils.appendIfMissing("abcxyz", "xyz") = "abcxyz"
-     * StringUtils.appendIfMissing("abcXYZ", "xyz") = "abcXYZxyz"
+     * StringUtil.appendIfMissing(null, null) = null
+     * StringUtil.appendIfMissing("abc", null) = "abc"
+     * StringUtil.appendIfMissing("", "xyz") = "xyz"
+     * StringUtil.appendIfMissing("abc", "xyz") = "abcxyz"
+     * StringUtil.appendIfMissing("abcxyz", "xyz") = "abcxyz"
+     * StringUtil.appendIfMissing("abcXYZ", "xyz") = "abcXYZxyz"
      * </pre>
      * <p>With additional suffixes,</p>
      * <pre>
-     * StringUtils.appendIfMissing(null, null, null) = null
-     * StringUtils.appendIfMissing("abc", null, null) = "abc"
-     * StringUtils.appendIfMissing("", "xyz", null) = "xyz"
-     * StringUtils.appendIfMissing("abc", "xyz", new CharSequence[]{null}) = "abcxyz"
-     * StringUtils.appendIfMissing("abc", "xyz", "") = "abc"
-     * StringUtils.appendIfMissing("abc", "xyz", "mno") = "abcxyz"
-     * StringUtils.appendIfMissing("abcxyz", "xyz", "mno") = "abcxyz"
-     * StringUtils.appendIfMissing("abcmno", "xyz", "mno") = "abcmno"
-     * StringUtils.appendIfMissing("abcXYZ", "xyz", "mno") = "abcXYZxyz"
-     * StringUtils.appendIfMissing("abcMNO", "xyz", "mno") = "abcMNOxyz"
+     * StringUtil.appendIfMissing(null, null, null) = null
+     * StringUtil.appendIfMissing("abc", null, null) = "abc"
+     * StringUtil.appendIfMissing("", "xyz", null) = "xyz"
+     * StringUtil.appendIfMissing("abc", "xyz", new CharSequence[]{null}) = "abcxyz"
+     * StringUtil.appendIfMissing("abc", "xyz", "") = "abc"
+     * StringUtil.appendIfMissing("abc", "xyz", "mno") = "abcxyz"
+     * StringUtil.appendIfMissing("abcxyz", "xyz", "mno") = "abcxyz"
+     * StringUtil.appendIfMissing("abcmno", "xyz", "mno") = "abcmno"
+     * StringUtil.appendIfMissing("abcXYZ", "xyz", "mno") = "abcXYZxyz"
+     * StringUtil.appendIfMissing("abcMNO", "xyz", "mno") = "abcMNOxyz"
      * </pre>
      *
      * @param str      The string.
@@ -1691,25 +1691,25 @@ public class StringUtil {
      * already end, case insensitive, with any of the suffixes.
      *
      * <pre>
-     * StringUtils.appendIfMissingIgnoreCase(null, null) = null
-     * StringUtils.appendIfMissingIgnoreCase("abc", null) = "abc"
-     * StringUtils.appendIfMissingIgnoreCase("", "xyz") = "xyz"
-     * StringUtils.appendIfMissingIgnoreCase("abc", "xyz") = "abcxyz"
-     * StringUtils.appendIfMissingIgnoreCase("abcxyz", "xyz") = "abcxyz"
-     * StringUtils.appendIfMissingIgnoreCase("abcXYZ", "xyz") = "abcXYZ"
+     * StringUtil.appendIfMissingIgnoreCase(null, null) = null
+     * StringUtil.appendIfMissingIgnoreCase("abc", null) = "abc"
+     * StringUtil.appendIfMissingIgnoreCase("", "xyz") = "xyz"
+     * StringUtil.appendIfMissingIgnoreCase("abc", "xyz") = "abcxyz"
+     * StringUtil.appendIfMissingIgnoreCase("abcxyz", "xyz") = "abcxyz"
+     * StringUtil.appendIfMissingIgnoreCase("abcXYZ", "xyz") = "abcXYZ"
      * </pre>
      * <p>With additional suffixes,</p>
      * <pre>
-     * StringUtils.appendIfMissingIgnoreCase(null, null, null) = null
-     * StringUtils.appendIfMissingIgnoreCase("abc", null, null) = "abc"
-     * StringUtils.appendIfMissingIgnoreCase("", "xyz", null) = "xyz"
-     * StringUtils.appendIfMissingIgnoreCase("abc", "xyz", new CharSequence[]{null}) = "abcxyz"
-     * StringUtils.appendIfMissingIgnoreCase("abc", "xyz", "") = "abc"
-     * StringUtils.appendIfMissingIgnoreCase("abc", "xyz", "mno") = "abcxyz"
-     * StringUtils.appendIfMissingIgnoreCase("abcxyz", "xyz", "mno") = "abcxyz"
-     * StringUtils.appendIfMissingIgnoreCase("abcmno", "xyz", "mno") = "abcmno"
-     * StringUtils.appendIfMissingIgnoreCase("abcXYZ", "xyz", "mno") = "abcXYZ"
-     * StringUtils.appendIfMissingIgnoreCase("abcMNO", "xyz", "mno") = "abcMNO"
+     * StringUtil.appendIfMissingIgnoreCase(null, null, null) = null
+     * StringUtil.appendIfMissingIgnoreCase("abc", null, null) = "abc"
+     * StringUtil.appendIfMissingIgnoreCase("", "xyz", null) = "xyz"
+     * StringUtil.appendIfMissingIgnoreCase("abc", "xyz", new CharSequence[]{null}) = "abcxyz"
+     * StringUtil.appendIfMissingIgnoreCase("abc", "xyz", "") = "abc"
+     * StringUtil.appendIfMissingIgnoreCase("abc", "xyz", "mno") = "abcxyz"
+     * StringUtil.appendIfMissingIgnoreCase("abcxyz", "xyz", "mno") = "abcxyz"
+     * StringUtil.appendIfMissingIgnoreCase("abcmno", "xyz", "mno") = "abcmno"
+     * StringUtil.appendIfMissingIgnoreCase("abcXYZ", "xyz", "mno") = "abcXYZ"
+     * StringUtil.appendIfMissingIgnoreCase("abcMNO", "xyz", "mno") = "abcMNO"
      * </pre>
      *
      * @param str      The string.
@@ -1730,11 +1730,11 @@ public class StringUtil {
      * A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
-     * StringUtils.capitalize(null)  = null
-     * StringUtils.capitalize("")    = ""
-     * StringUtils.capitalize("cat") = "Cat"
-     * StringUtils.capitalize("cAt") = "CAt"
-     * StringUtils.capitalize("'cat'") = "'cat'"
+     * StringUtil.capitalize(null)  = null
+     * StringUtil.capitalize("")    = ""
+     * StringUtil.capitalize("cat") = "Cat"
+     * StringUtil.capitalize("cAt") = "CAt"
+     * StringUtil.capitalize("'cat'") = "'cat'"
      * </pre>
      *
      * @param str the String to capitalize, may be null
@@ -1778,12 +1778,12 @@ public class StringUtil {
      * <p>Equivalent to {@code center(str, size, " ")}.</p>
      *
      * <pre>
-     * StringUtils.center(null, *)   = null
-     * StringUtils.center("", 4)     = "    "
-     * StringUtils.center("ab", -1)  = "ab"
-     * StringUtils.center("ab", 4)   = " ab "
-     * StringUtils.center("abcd", 2) = "abcd"
-     * StringUtils.center("a", 4)    = " a  "
+     * StringUtil.center(null, *)   = null
+     * StringUtil.center("", 4)     = "    "
+     * StringUtil.center("ab", -1)  = "ab"
+     * StringUtil.center("ab", 4)   = " ab "
+     * StringUtil.center("abcd", 2) = "abcd"
+     * StringUtil.center("a", 4)    = " a  "
      * </pre>
      *
      * @param str  the String to center, may be null
@@ -1803,13 +1803,13 @@ public class StringUtil {
      * A negative size is treated as zero.</p>
      *
      * <pre>
-     * StringUtils.center(null, *, *)     = null
-     * StringUtils.center("", 4, ' ')     = "    "
-     * StringUtils.center("ab", -1, ' ')  = "ab"
-     * StringUtils.center("ab", 4, ' ')   = " ab "
-     * StringUtils.center("abcd", 2, ' ') = "abcd"
-     * StringUtils.center("a", 4, ' ')    = " a  "
-     * StringUtils.center("a", 4, 'y')    = "yayy"
+     * StringUtil.center(null, *, *)     = null
+     * StringUtil.center("", 4, ' ')     = "    "
+     * StringUtil.center("ab", -1, ' ')  = "ab"
+     * StringUtil.center("ab", 4, ' ')   = " ab "
+     * StringUtil.center("abcd", 2, ' ') = "abcd"
+     * StringUtil.center("a", 4, ' ')    = " a  "
+     * StringUtil.center("a", 4, 'y')    = "yayy"
      * </pre>
      *
      * @param str     the String to center, may be null
@@ -1841,15 +1841,15 @@ public class StringUtil {
      * A negative size is treated as zero.</p>
      *
      * <pre>
-     * StringUtils.center(null, *, *)     = null
-     * StringUtils.center("", 4, " ")     = "    "
-     * StringUtils.center("ab", -1, " ")  = "ab"
-     * StringUtils.center("ab", 4, " ")   = " ab "
-     * StringUtils.center("abcd", 2, " ") = "abcd"
-     * StringUtils.center("a", 4, " ")    = " a  "
-     * StringUtils.center("a", 4, "yz")   = "yayz"
-     * StringUtils.center("abc", 7, null) = "  abc  "
-     * StringUtils.center("abc", 7, "")   = "  abc  "
+     * StringUtil.center(null, *, *)     = null
+     * StringUtil.center("", 4, " ")     = "    "
+     * StringUtil.center("ab", -1, " ")  = "ab"
+     * StringUtil.center("ab", 4, " ")   = " ab "
+     * StringUtil.center("abcd", 2, " ") = "abcd"
+     * StringUtil.center("a", 4, " ")    = " a  "
+     * StringUtil.center("a", 4, "yz")   = "yayz"
+     * StringUtil.center("abc", 7, null) = "  abc  "
+     * StringUtil.center("abc", 7, "")   = "  abc  "
      * </pre>
      *
      * @param str    the String to center, may be null
@@ -1884,17 +1884,17 @@ public class StringUtil {
      * It now more closely matches Perl chomp.</p>
      *
      * <pre>
-     * StringUtils.chomp(null)          = null
-     * StringUtils.chomp("")            = ""
-     * StringUtils.chomp("abc \r")      = "abc "
-     * StringUtils.chomp("abc\n")       = "abc"
-     * StringUtils.chomp("abc\r\n")     = "abc"
-     * StringUtils.chomp("abc\r\n\r\n") = "abc\r\n"
-     * StringUtils.chomp("abc\n\r")     = "abc\n"
-     * StringUtils.chomp("abc\n\rabc")  = "abc\n\rabc"
-     * StringUtils.chomp("\r")          = ""
-     * StringUtils.chomp("\n")          = ""
-     * StringUtils.chomp("\r\n")        = ""
+     * StringUtil.chomp(null)          = null
+     * StringUtil.chomp("")            = ""
+     * StringUtil.chomp("abc \r")      = "abc "
+     * StringUtil.chomp("abc\n")       = "abc"
+     * StringUtil.chomp("abc\r\n")     = "abc"
+     * StringUtil.chomp("abc\r\n\r\n") = "abc\r\n"
+     * StringUtil.chomp("abc\n\r")     = "abc\n"
+     * StringUtil.chomp("abc\n\rabc")  = "abc\n\rabc"
+     * StringUtil.chomp("\r")          = ""
+     * StringUtil.chomp("\n")          = ""
+     * StringUtil.chomp("\r\n")        = ""
      * </pre>
      *
      * @param str the String to chomp a newline from, may be null
@@ -1936,22 +1936,22 @@ public class StringUtil {
      * This method uses {@link String#endsWith(String)}.</p>
      *
      * <pre>
-     * StringUtils.chomp(null, *)         = null
-     * StringUtils.chomp("", *)           = ""
-     * StringUtils.chomp("foobar", "bar") = "foo"
-     * StringUtils.chomp("foobar", "baz") = "foobar"
-     * StringUtils.chomp("foo", "foo")    = ""
-     * StringUtils.chomp("foo ", "foo")   = "foo "
-     * StringUtils.chomp(" foo", "foo")   = " "
-     * StringUtils.chomp("foo", "foooo")  = "foo"
-     * StringUtils.chomp("foo", "")       = "foo"
-     * StringUtils.chomp("foo", null)     = "foo"
+     * StringUtil.chomp(null, *)         = null
+     * StringUtil.chomp("", *)           = ""
+     * StringUtil.chomp("foobar", "bar") = "foo"
+     * StringUtil.chomp("foobar", "baz") = "foobar"
+     * StringUtil.chomp("foo", "foo")    = ""
+     * StringUtil.chomp("foo ", "foo")   = "foo "
+     * StringUtil.chomp(" foo", "foo")   = " "
+     * StringUtil.chomp("foo", "foooo")  = "foo"
+     * StringUtil.chomp("foo", "")       = "foo"
+     * StringUtil.chomp("foo", null)     = "foo"
      * </pre>
      *
      * @param str       the String to chomp from, may be null
      * @param separator separator String, may be null
      * @return String without trailing separator, {@code null} if null String input
-     * @deprecated This feature will be removed in Lang 4.0, use {@link StringUtils#removeEnd(String, String)} instead
+     * @deprecated This feature will be removed in Lang 4.0, use {@link StringUtil#removeEnd(String, String)} instead
      */
     @Deprecated
     public static String chomp(final String str, final String separator) {
@@ -1965,17 +1965,17 @@ public class StringUtil {
      * of them.</p>
      *
      * <pre>
-     * StringUtils.chop(null)          = null
-     * StringUtils.chop("")            = ""
-     * StringUtils.chop("abc \r")      = "abc "
-     * StringUtils.chop("abc\n")       = "abc"
-     * StringUtils.chop("abc\r\n")     = "abc"
-     * StringUtils.chop("abc")         = "ab"
-     * StringUtils.chop("abc\nabc")    = "abc\nab"
-     * StringUtils.chop("a")           = ""
-     * StringUtils.chop("\r")          = ""
-     * StringUtils.chop("\n")          = ""
-     * StringUtils.chop("\r\n")        = ""
+     * StringUtil.chop(null)          = null
+     * StringUtil.chop("")            = ""
+     * StringUtil.chop("abc \r")      = "abc "
+     * StringUtil.chop("abc\n")       = "abc"
+     * StringUtil.chop("abc\r\n")     = "abc"
+     * StringUtil.chop("abc")         = "ab"
+     * StringUtil.chop("abc\nabc")    = "abc\nab"
+     * StringUtil.chop("a")           = ""
+     * StringUtil.chop("\r")          = ""
+     * StringUtil.chop("\n")          = ""
+     * StringUtil.chop("\r\n")        = ""
      * </pre>
      *
      * @param str the String to chop last character from, may be null
@@ -2013,14 +2013,14 @@ public class StringUtil {
      * Two {@code null} references are considered equal.</p>
      *
      * <pre>
-     * StringUtils.compare(null, null)   = 0
-     * StringUtils.compare(null , "a")   &lt; 0
-     * StringUtils.compare("a", null)    &gt; 0
-     * StringUtils.compare("abc", "abc") = 0
-     * StringUtils.compare("a", "b")     &lt; 0
-     * StringUtils.compare("b", "a")     &gt; 0
-     * StringUtils.compare("a", "B")     &gt; 0
-     * StringUtils.compare("ab", "abc")  &lt; 0
+     * StringUtil.compare(null, null)   = 0
+     * StringUtil.compare(null , "a")   &lt; 0
+     * StringUtil.compare("a", null)    &gt; 0
+     * StringUtil.compare("abc", "abc") = 0
+     * StringUtil.compare("a", "b")     &lt; 0
+     * StringUtil.compare("b", "a")     &gt; 0
+     * StringUtil.compare("a", "B")     &gt; 0
+     * StringUtil.compare("ab", "abc")  &lt; 0
      * </pre>
      *
      * @param str1 the String to compare from
@@ -2049,16 +2049,16 @@ public class StringUtil {
      * Two {@code null} references are considered equal.</p>
      *
      * <pre>
-     * StringUtils.compare(null, null, *)     = 0
-     * StringUtils.compare(null , "a", true)  &lt; 0
-     * StringUtils.compare(null , "a", false) &gt; 0
-     * StringUtils.compare("a", null, true)   &gt; 0
-     * StringUtils.compare("a", null, false)  &lt; 0
-     * StringUtils.compare("abc", "abc", *)   = 0
-     * StringUtils.compare("a", "b", *)       &lt; 0
-     * StringUtils.compare("b", "a", *)       &gt; 0
-     * StringUtils.compare("a", "B", *)       &gt; 0
-     * StringUtils.compare("ab", "abc", *)    &lt; 0
+     * StringUtil.compare(null, null, *)     = 0
+     * StringUtil.compare(null , "a", true)  &lt; 0
+     * StringUtil.compare(null , "a", false) &gt; 0
+     * StringUtil.compare("a", null, true)   &gt; 0
+     * StringUtil.compare("a", null, false)  &lt; 0
+     * StringUtil.compare("abc", "abc", *)   = 0
+     * StringUtil.compare("a", "b", *)       &lt; 0
+     * StringUtil.compare("b", "a", *)       &gt; 0
+     * StringUtil.compare("a", "B", *)       &gt; 0
+     * StringUtil.compare("ab", "abc", *)    &lt; 0
      * </pre>
      *
      * @param str1       the String to compare from
@@ -2098,16 +2098,16 @@ public class StringUtil {
      * Comparison is case insensitive.</p>
      *
      * <pre>
-     * StringUtils.compareIgnoreCase(null, null)   = 0
-     * StringUtils.compareIgnoreCase(null , "a")   &lt; 0
-     * StringUtils.compareIgnoreCase("a", null)    &gt; 0
-     * StringUtils.compareIgnoreCase("abc", "abc") = 0
-     * StringUtils.compareIgnoreCase("abc", "ABC") = 0
-     * StringUtils.compareIgnoreCase("a", "b")     &lt; 0
-     * StringUtils.compareIgnoreCase("b", "a")     &gt; 0
-     * StringUtils.compareIgnoreCase("a", "B")     &lt; 0
-     * StringUtils.compareIgnoreCase("A", "b")     &lt; 0
-     * StringUtils.compareIgnoreCase("ab", "ABC")  &lt; 0
+     * StringUtil.compareIgnoreCase(null, null)   = 0
+     * StringUtil.compareIgnoreCase(null , "a")   &lt; 0
+     * StringUtil.compareIgnoreCase("a", null)    &gt; 0
+     * StringUtil.compareIgnoreCase("abc", "abc") = 0
+     * StringUtil.compareIgnoreCase("abc", "ABC") = 0
+     * StringUtil.compareIgnoreCase("a", "b")     &lt; 0
+     * StringUtil.compareIgnoreCase("b", "a")     &gt; 0
+     * StringUtil.compareIgnoreCase("a", "B")     &lt; 0
+     * StringUtil.compareIgnoreCase("A", "b")     &lt; 0
+     * StringUtil.compareIgnoreCase("ab", "ABC")  &lt; 0
      * </pre>
      *
      * @param str1 the String to compare from
@@ -2139,18 +2139,18 @@ public class StringUtil {
      * Comparison is case insensitive.</p>
      *
      * <pre>
-     * StringUtils.compareIgnoreCase(null, null, *)     = 0
-     * StringUtils.compareIgnoreCase(null , "a", true)  &lt; 0
-     * StringUtils.compareIgnoreCase(null , "a", false) &gt; 0
-     * StringUtils.compareIgnoreCase("a", null, true)   &gt; 0
-     * StringUtils.compareIgnoreCase("a", null, false)  &lt; 0
-     * StringUtils.compareIgnoreCase("abc", "abc", *)   = 0
-     * StringUtils.compareIgnoreCase("abc", "ABC", *)   = 0
-     * StringUtils.compareIgnoreCase("a", "b", *)       &lt; 0
-     * StringUtils.compareIgnoreCase("b", "a", *)       &gt; 0
-     * StringUtils.compareIgnoreCase("a", "B", *)       &lt; 0
-     * StringUtils.compareIgnoreCase("A", "b", *)       &lt; 0
-     * StringUtils.compareIgnoreCase("ab", "abc", *)    &lt; 0
+     * StringUtil.compareIgnoreCase(null, null, *)     = 0
+     * StringUtil.compareIgnoreCase(null , "a", true)  &lt; 0
+     * StringUtil.compareIgnoreCase(null , "a", false) &gt; 0
+     * StringUtil.compareIgnoreCase("a", null, true)   &gt; 0
+     * StringUtil.compareIgnoreCase("a", null, false)  &lt; 0
+     * StringUtil.compareIgnoreCase("abc", "abc", *)   = 0
+     * StringUtil.compareIgnoreCase("abc", "ABC", *)   = 0
+     * StringUtil.compareIgnoreCase("a", "b", *)       &lt; 0
+     * StringUtil.compareIgnoreCase("b", "a", *)       &gt; 0
+     * StringUtil.compareIgnoreCase("a", "B", *)       &lt; 0
+     * StringUtil.compareIgnoreCase("A", "b", *)       &lt; 0
+     * StringUtil.compareIgnoreCase("ab", "abc", *)    &lt; 0
      * </pre>
      *
      * @param str1       the String to compare from
@@ -2181,12 +2181,12 @@ public class StringUtil {
      * <p>A {@code null} CharSequence will return {@code false}.</p>
      *
      * <pre>
-     * StringUtils.contains(null, *)     = false
-     * StringUtils.contains(*, null)     = false
-     * StringUtils.contains("", "")      = true
-     * StringUtils.contains("abc", "")   = true
-     * StringUtils.contains("abc", "a")  = true
-     * StringUtils.contains("abc", "z")  = false
+     * StringUtil.contains(null, *)     = false
+     * StringUtil.contains(*, null)     = false
+     * StringUtil.contains("", "")      = true
+     * StringUtil.contains("abc", "")   = true
+     * StringUtil.contains("abc", "a")  = true
+     * StringUtil.contains("abc", "z")  = false
      * </pre>
      *
      * @param seq       the CharSequence to check, may be null
@@ -2210,10 +2210,10 @@ public class StringUtil {
      * <p>A {@code null} or empty ("") CharSequence will return {@code false}.</p>
      *
      * <pre>
-     * StringUtils.contains(null, *)    = false
-     * StringUtils.contains("", *)      = false
-     * StringUtils.contains("abc", 'a') = true
-     * StringUtils.contains("abc", 'z') = false
+     * StringUtil.contains(null, *)    = false
+     * StringUtil.contains("", *)      = false
+     * StringUtil.contains("abc", 'a') = true
+     * StringUtil.contains("abc", 'z') = false
      * </pre>
      *
      * @param seq        the CharSequence to check, may be null
@@ -2238,14 +2238,14 @@ public class StringUtil {
      * A {@code null} or zero length search array will return {@code false}.</p>
      *
      * <pre>
-     * StringUtils.containsAny(null, *)                  = false
-     * StringUtils.containsAny("", *)                    = false
-     * StringUtils.containsAny(*, null)                  = false
-     * StringUtils.containsAny(*, [])                    = false
-     * StringUtils.containsAny("zzabyycdxx", ['z', 'a']) = true
-     * StringUtils.containsAny("zzabyycdxx", ['b', 'y']) = true
-     * StringUtils.containsAny("zzabyycdxx", ['z', 'y']) = true
-     * StringUtils.containsAny("aba", ['z'])             = false
+     * StringUtil.containsAny(null, *)                  = false
+     * StringUtil.containsAny("", *)                    = false
+     * StringUtil.containsAny(*, null)                  = false
+     * StringUtil.containsAny(*, [])                    = false
+     * StringUtil.containsAny("zzabyycdxx", ['z', 'a']) = true
+     * StringUtil.containsAny("zzabyycdxx", ['b', 'y']) = true
+     * StringUtil.containsAny("zzabyycdxx", ['z', 'y']) = true
+     * StringUtil.containsAny("aba", ['z'])             = false
      * </pre>
      *
      * @param cs          the CharSequence to check, may be null
@@ -2296,16 +2296,16 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.containsAny(null, *)               = false
-     * StringUtils.containsAny("", *)                 = false
-     * StringUtils.containsAny(*, null)               = false
-     * StringUtils.containsAny(*, "")                 = false
-     * StringUtils.containsAny("zzabyycdxx", "za")    = true
-     * StringUtils.containsAny("zzabyycdxx", "by")    = true
-     * StringUtils.containsAny("zzabyycdxx", "zy")    = true
-     * StringUtils.containsAny("zzabyycdxx", "\tx")   = true
-     * StringUtils.containsAny("zzabyycdxx", "$.#yF") = true
-     * StringUtils.containsAny("aba", "z")            = false
+     * StringUtil.containsAny(null, *)               = false
+     * StringUtil.containsAny("", *)                 = false
+     * StringUtil.containsAny(*, null)               = false
+     * StringUtil.containsAny(*, "")                 = false
+     * StringUtil.containsAny("zzabyycdxx", "za")    = true
+     * StringUtil.containsAny("zzabyycdxx", "by")    = true
+     * StringUtil.containsAny("zzabyycdxx", "zy")    = true
+     * StringUtil.containsAny("zzabyycdxx", "\tx")   = true
+     * StringUtil.containsAny("zzabyycdxx", "$.#yF") = true
+     * StringUtil.containsAny("aba", "z")            = false
      * </pre>
      *
      * @param cs          the CharSequence to check, may be null
@@ -2332,13 +2332,13 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.containsAny(null, *)            = false
-     * StringUtils.containsAny("", *)              = false
-     * StringUtils.containsAny(*, null)            = false
-     * StringUtils.containsAny(*, [])              = false
-     * StringUtils.containsAny("abcd", "ab", null) = true
-     * StringUtils.containsAny("abcd", "ab", "cd") = true
-     * StringUtils.containsAny("abc", "d", "abc")  = true
+     * StringUtil.containsAny(null, *)            = false
+     * StringUtil.containsAny("", *)              = false
+     * StringUtil.containsAny(*, null)            = false
+     * StringUtil.containsAny(*, [])              = false
+     * StringUtil.containsAny("abcd", "ab", null) = true
+     * StringUtil.containsAny("abcd", "ab", "cd") = true
+     * StringUtil.containsAny("abc", "d", "abc")  = true
      * </pre>
      *
      * @param cs                  The CharSequence to check, may be null
@@ -2348,7 +2348,7 @@ public class StringUtil {
      * @since 3.4
      */
     public static boolean containsAny(final CharSequence cs, final CharSequence... searchCharSequences) {
-        return containsAny(StringUtils::contains, cs, searchCharSequences);
+        return containsAny(StringUtil::contains, cs, searchCharSequences);
     }
 
     /**
@@ -2391,15 +2391,15 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.containsAny(null, *)            = false
-     * StringUtils.containsAny("", *)              = false
-     * StringUtils.containsAny(*, null)            = false
-     * StringUtils.containsAny(*, [])              = false
-     * StringUtils.containsAny("abcd", "ab", null) = true
-     * StringUtils.containsAny("abcd", "ab", "cd") = true
-     * StringUtils.containsAny("abc", "d", "abc")  = true
-     * StringUtils.containsAny("abc", "D", "ABC")  = true
-     * StringUtils.containsAny("ABC", "d", "abc")  = true
+     * StringUtil.containsAny(null, *)            = false
+     * StringUtil.containsAny("", *)              = false
+     * StringUtil.containsAny(*, null)            = false
+     * StringUtil.containsAny(*, [])              = false
+     * StringUtil.containsAny("abcd", "ab", null) = true
+     * StringUtil.containsAny("abcd", "ab", "cd") = true
+     * StringUtil.containsAny("abc", "d", "abc")  = true
+     * StringUtil.containsAny("abc", "D", "ABC")  = true
+     * StringUtil.containsAny("ABC", "d", "abc")  = true
      * </pre>
      *
      * @param cs                  The CharSequence to check, may be null
@@ -2409,7 +2409,7 @@ public class StringUtil {
      * @since 3.12.0
      */
     public static boolean containsAnyIgnoreCase(final CharSequence cs, final CharSequence... searchCharSequences) {
-        return containsAny(StringUtils::containsIgnoreCase, cs, searchCharSequences);
+        return containsAny(StringUtil::containsIgnoreCase, cs, searchCharSequences);
     }
 
     /**
@@ -2420,14 +2420,14 @@ public class StringUtil {
      * <p>A {@code null} CharSequence will return {@code false}.</p>
      *
      * <pre>
-     * StringUtils.containsIgnoreCase(null, *) = false
-     * StringUtils.containsIgnoreCase(*, null) = false
-     * StringUtils.containsIgnoreCase("", "") = true
-     * StringUtils.containsIgnoreCase("abc", "") = true
-     * StringUtils.containsIgnoreCase("abc", "a") = true
-     * StringUtils.containsIgnoreCase("abc", "z") = false
-     * StringUtils.containsIgnoreCase("abc", "A") = true
-     * StringUtils.containsIgnoreCase("abc", "Z") = false
+     * StringUtil.containsIgnoreCase(null, *) = false
+     * StringUtil.containsIgnoreCase(*, null) = false
+     * StringUtil.containsIgnoreCase("", "") = true
+     * StringUtil.containsIgnoreCase("abc", "") = true
+     * StringUtil.containsIgnoreCase("abc", "a") = true
+     * StringUtil.containsIgnoreCase("abc", "z") = false
+     * StringUtil.containsIgnoreCase("abc", "A") = true
+     * StringUtil.containsIgnoreCase("abc", "Z") = false
      * </pre>
      *
      * @param str       the CharSequence to check, may be null
@@ -2458,13 +2458,13 @@ public class StringUtil {
      * An empty CharSequence (length()=0) always returns true.</p>
      *
      * <pre>
-     * StringUtils.containsNone(null, *)       = true
-     * StringUtils.containsNone(*, null)       = true
-     * StringUtils.containsNone("", *)         = true
-     * StringUtils.containsNone("ab", '')      = true
-     * StringUtils.containsNone("abab", 'xyz') = true
-     * StringUtils.containsNone("ab1", 'xyz')  = true
-     * StringUtils.containsNone("abz", 'xyz')  = false
+     * StringUtil.containsNone(null, *)       = true
+     * StringUtil.containsNone(*, null)       = true
+     * StringUtil.containsNone("", *)         = true
+     * StringUtil.containsNone("ab", '')      = true
+     * StringUtil.containsNone("abab", 'xyz') = true
+     * StringUtil.containsNone("ab1", 'xyz')  = true
+     * StringUtil.containsNone("abz", 'xyz')  = false
      * </pre>
      *
      * @param cs          the CharSequence to check, may be null
@@ -2511,13 +2511,13 @@ public class StringUtil {
      * An empty String ("") always returns true.</p>
      *
      * <pre>
-     * StringUtils.containsNone(null, *)       = true
-     * StringUtils.containsNone(*, null)       = true
-     * StringUtils.containsNone("", *)         = true
-     * StringUtils.containsNone("ab", "")      = true
-     * StringUtils.containsNone("abab", "xyz") = true
-     * StringUtils.containsNone("ab1", "xyz")  = true
-     * StringUtils.containsNone("abz", "xyz")  = false
+     * StringUtil.containsNone(null, *)       = true
+     * StringUtil.containsNone(*, null)       = true
+     * StringUtil.containsNone("", *)         = true
+     * StringUtil.containsNone("ab", "")      = true
+     * StringUtil.containsNone("abab", "xyz") = true
+     * StringUtil.containsNone("ab1", "xyz")  = true
+     * StringUtil.containsNone("abz", "xyz")  = false
      * </pre>
      *
      * @param cs           the CharSequence to check, may be null
@@ -2541,13 +2541,13 @@ public class StringUtil {
      * An empty CharSequence (length()=0) always returns {@code true}.</p>
      *
      * <pre>
-     * StringUtils.containsOnly(null, *)       = false
-     * StringUtils.containsOnly(*, null)       = false
-     * StringUtils.containsOnly("", *)         = true
-     * StringUtils.containsOnly("ab", '')      = false
-     * StringUtils.containsOnly("abab", 'abc') = true
-     * StringUtils.containsOnly("ab1", 'abc')  = false
-     * StringUtils.containsOnly("abz", 'abc')  = false
+     * StringUtil.containsOnly(null, *)       = false
+     * StringUtil.containsOnly(*, null)       = false
+     * StringUtil.containsOnly("", *)         = true
+     * StringUtil.containsOnly("ab", '')      = false
+     * StringUtil.containsOnly("abab", 'abc') = true
+     * StringUtil.containsOnly("ab1", 'abc')  = false
+     * StringUtil.containsOnly("abz", 'abc')  = false
      * </pre>
      *
      * @param cs    the String to check, may be null
@@ -2577,13 +2577,13 @@ public class StringUtil {
      * An empty String (length()=0) always returns {@code true}.</p>
      *
      * <pre>
-     * StringUtils.containsOnly(null, *)       = false
-     * StringUtils.containsOnly(*, null)       = false
-     * StringUtils.containsOnly("", *)         = true
-     * StringUtils.containsOnly("ab", "")      = false
-     * StringUtils.containsOnly("abab", "abc") = true
-     * StringUtils.containsOnly("ab1", "abc")  = false
-     * StringUtils.containsOnly("abz", "abc")  = false
+     * StringUtil.containsOnly(null, *)       = false
+     * StringUtil.containsOnly(*, null)       = false
+     * StringUtil.containsOnly("", *)         = true
+     * StringUtil.containsOnly("ab", "")      = false
+     * StringUtil.containsOnly("abab", "abc") = true
+     * StringUtil.containsOnly("ab1", "abc")  = false
+     * StringUtil.containsOnly("abz", "abc")  = false
      * </pre>
      *
      * @param cs         the CharSequence to check, may be null
@@ -2609,7 +2609,7 @@ public class StringUtil {
      * contains at least 1 (breaking) whitespace character
      * @since 3.0
      */
-    // From org.springframework.util.StringUtils, under Apache License 2.0
+    // From org.springframework.util.StringUtil, under Apache License 2.0
     public static boolean containsWhitespace(final CharSequence seq) {
         if (isEmpty(seq)) {
             return false;
@@ -2639,12 +2639,12 @@ public class StringUtil {
      * <p>A {@code null} or empty ("") String input returns {@code 0}.</p>
      *
      * <pre>
-     * StringUtils.countMatches(null, *)       = 0
-     * StringUtils.countMatches("", *)         = 0
-     * StringUtils.countMatches("abba", 0)  = 0
-     * StringUtils.countMatches("abba", 'a')   = 2
-     * StringUtils.countMatches("abba", 'b')  = 2
-     * StringUtils.countMatches("abba", 'x') = 0
+     * StringUtil.countMatches(null, *)       = 0
+     * StringUtil.countMatches("", *)         = 0
+     * StringUtil.countMatches("abba", 0)  = 0
+     * StringUtil.countMatches("abba", 'a')   = 2
+     * StringUtil.countMatches("abba", 'b')  = 2
+     * StringUtil.countMatches("abba", 'x') = 0
      * </pre>
      *
      * @param str the CharSequence to check, may be null
@@ -2673,14 +2673,14 @@ public class StringUtil {
      * <p>A {@code null} or empty ("") String input returns {@code 0}.</p>
      *
      * <pre>
-     * StringUtils.countMatches(null, *)       = 0
-     * StringUtils.countMatches("", *)         = 0
-     * StringUtils.countMatches("abba", null)  = 0
-     * StringUtils.countMatches("abba", "")    = 0
-     * StringUtils.countMatches("abba", "a")   = 2
-     * StringUtils.countMatches("abba", "ab")  = 1
-     * StringUtils.countMatches("abba", "xxx") = 0
-     * StringUtils.countMatches("ababa", "aba") = 1
+     * StringUtil.countMatches(null, *)       = 0
+     * StringUtil.countMatches("", *)         = 0
+     * StringUtil.countMatches("abba", null)  = 0
+     * StringUtil.countMatches("abba", "")    = 0
+     * StringUtil.countMatches("abba", "a")   = 2
+     * StringUtil.countMatches("abba", "ab")  = 1
+     * StringUtil.countMatches("abba", "xxx") = 0
+     * StringUtil.countMatches("ababa", "aba") = 1
      * </pre>
      *
      * @param str the CharSequence to check, may be null
@@ -2708,11 +2708,11 @@ public class StringUtil {
      * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.</p>
      *
      * <pre>
-     * StringUtils.defaultIfBlank(null, "NULL")  = "NULL"
-     * StringUtils.defaultIfBlank("", "NULL")    = "NULL"
-     * StringUtils.defaultIfBlank(" ", "NULL")   = "NULL"
-     * StringUtils.defaultIfBlank("bat", "NULL") = "bat"
-     * StringUtils.defaultIfBlank("", null)      = null
+     * StringUtil.defaultIfBlank(null, "NULL")  = "NULL"
+     * StringUtil.defaultIfBlank("", "NULL")    = "NULL"
+     * StringUtil.defaultIfBlank(" ", "NULL")   = "NULL"
+     * StringUtil.defaultIfBlank("bat", "NULL") = "bat"
+     * StringUtil.defaultIfBlank("", null)      = null
      * </pre>
      *
      * @param <T>        the specific kind of CharSequence
@@ -2720,7 +2720,7 @@ public class StringUtil {
      * @param defaultStr the default CharSequence to return
      *                   if the input is whitespace, empty ("") or {@code null}, may be null
      * @return the passed in CharSequence, or the default
-     * @see StringUtils#defaultString(String, String)
+     * @see StringUtil#defaultString(String, String)
      */
     public static <T extends CharSequence> T defaultIfBlank(final T str, final T defaultStr) {
         return isBlank(str) ? defaultStr : str;
@@ -2731,11 +2731,11 @@ public class StringUtil {
      * empty or {@code null}, the value of {@code defaultStr}.</p>
      *
      * <pre>
-     * StringUtils.defaultIfEmpty(null, "NULL")  = "NULL"
-     * StringUtils.defaultIfEmpty("", "NULL")    = "NULL"
-     * StringUtils.defaultIfEmpty(" ", "NULL")   = " "
-     * StringUtils.defaultIfEmpty("bat", "NULL") = "bat"
-     * StringUtils.defaultIfEmpty("", null)      = null
+     * StringUtil.defaultIfEmpty(null, "NULL")  = "NULL"
+     * StringUtil.defaultIfEmpty("", "NULL")    = "NULL"
+     * StringUtil.defaultIfEmpty(" ", "NULL")   = " "
+     * StringUtil.defaultIfEmpty("bat", "NULL") = "bat"
+     * StringUtil.defaultIfEmpty("", null)      = null
      * </pre>
      *
      * @param <T>        the specific kind of CharSequence
@@ -2743,7 +2743,7 @@ public class StringUtil {
      * @param defaultStr the default CharSequence to return
      *                   if the input is empty ("") or {@code null}, may be null
      * @return the passed in CharSequence, or the default
-     * @see StringUtils#defaultString(String, String)
+     * @see StringUtil#defaultString(String, String)
      */
     public static <T extends CharSequence> T defaultIfEmpty(final T str, final T defaultStr) {
         return isEmpty(str) ? defaultStr : str;
@@ -2754,9 +2754,9 @@ public class StringUtil {
      * or if the String is {@code null}, an empty String ("").</p>
      *
      * <pre>
-     * StringUtils.defaultString(null)  = ""
-     * StringUtils.defaultString("")    = ""
-     * StringUtils.defaultString("bat") = "bat"
+     * StringUtil.defaultString(null)  = ""
+     * StringUtil.defaultString("")    = ""
+     * StringUtil.defaultString("bat") = "bat"
      * </pre>
      *
      * @param str the String to check, may be null
@@ -2774,9 +2774,9 @@ public class StringUtil {
      * {@code null}, the value of {@code defaultStr}.</p>
      *
      * <pre>
-     * StringUtils.defaultString(null, "NULL")  = "NULL"
-     * StringUtils.defaultString("", "NULL")    = ""
-     * StringUtils.defaultString("bat", "NULL") = "bat"
+     * StringUtil.defaultString(null, "NULL")  = "NULL"
+     * StringUtil.defaultString("", "NULL")    = ""
+     * StringUtil.defaultString("bat", "NULL") = "bat"
      * </pre>
      *
      * @param str        the String to check, may be null
@@ -2795,10 +2795,10 @@ public class StringUtil {
      * {@link Character#isWhitespace(char)}.</p>
      *
      * <pre>
-     * StringUtils.deleteWhitespace(null)         = null
-     * StringUtils.deleteWhitespace("")           = ""
-     * StringUtils.deleteWhitespace("abc")        = "abc"
-     * StringUtils.deleteWhitespace("   ab  c  ") = "abc"
+     * StringUtil.deleteWhitespace(null)         = null
+     * StringUtil.deleteWhitespace("")           = ""
+     * StringUtil.deleteWhitespace("abc")        = "abc"
+     * StringUtil.deleteWhitespace("   ab  c  ") = "abc"
      * </pre>
      *
      * @param str the String to delete whitespace from, may be null
@@ -2835,15 +2835,15 @@ public class StringUtil {
      * {@code difference("i am a machine", "i am a robot") -> "robot"}.</p>
      *
      * <pre>
-     * StringUtils.difference(null, null) = null
-     * StringUtils.difference("", "") = ""
-     * StringUtils.difference("", "abc") = "abc"
-     * StringUtils.difference("abc", "") = ""
-     * StringUtils.difference("abc", "abc") = ""
-     * StringUtils.difference("abc", "ab") = ""
-     * StringUtils.difference("ab", "abxyz") = "xyz"
-     * StringUtils.difference("abcde", "abxyz") = "xyz"
-     * StringUtils.difference("abcde", "xyz") = "xyz"
+     * StringUtil.difference(null, null) = null
+     * StringUtil.difference("", "") = ""
+     * StringUtil.difference("", "abc") = "abc"
+     * StringUtil.difference("abc", "") = ""
+     * StringUtil.difference("abc", "abc") = ""
+     * StringUtil.difference("abc", "ab") = ""
+     * StringUtil.difference("ab", "abxyz") = "xyz"
+     * StringUtil.difference("abcde", "abxyz") = "xyz"
+     * StringUtil.difference("abcde", "xyz") = "xyz"
      * </pre>
      *
      * @param str1 the first String, may be null
@@ -2874,13 +2874,13 @@ public class StringUtil {
      * references are considered to be equal. The comparison is case sensitive.</p>
      *
      * <pre>
-     * StringUtils.endsWith(null, null)      = true
-     * StringUtils.endsWith(null, "def")     = false
-     * StringUtils.endsWith("abcdef", null)  = false
-     * StringUtils.endsWith("abcdef", "def") = true
-     * StringUtils.endsWith("ABCDEF", "def") = false
-     * StringUtils.endsWith("ABCDEF", "cde") = false
-     * StringUtils.endsWith("ABCDEF", "")    = true
+     * StringUtil.endsWith(null, null)      = true
+     * StringUtil.endsWith(null, "def")     = false
+     * StringUtil.endsWith("abcdef", null)  = false
+     * StringUtil.endsWith("abcdef", "def") = true
+     * StringUtil.endsWith("ABCDEF", "def") = false
+     * StringUtil.endsWith("ABCDEF", "cde") = false
+     * StringUtil.endsWith("ABCDEF", "")    = true
      * </pre>
      *
      * @param str    the CharSequence to check, may be null
@@ -2921,21 +2921,21 @@ public class StringUtil {
      * <p>Check if a CharSequence ends with any of the provided case-sensitive suffixes.</p>
      *
      * <pre>
-     * StringUtils.endsWithAny(null, null)      = false
-     * StringUtils.endsWithAny(null, new String[] {"abc"})  = false
-     * StringUtils.endsWithAny("abcxyz", null)     = false
-     * StringUtils.endsWithAny("abcxyz", new String[] {""}) = true
-     * StringUtils.endsWithAny("abcxyz", new String[] {"xyz"}) = true
-     * StringUtils.endsWithAny("abcxyz", new String[] {null, "xyz", "abc"}) = true
-     * StringUtils.endsWithAny("abcXYZ", "def", "XYZ") = true
-     * StringUtils.endsWithAny("abcXYZ", "def", "xyz") = false
+     * StringUtil.endsWithAny(null, null)      = false
+     * StringUtil.endsWithAny(null, new String[] {"abc"})  = false
+     * StringUtil.endsWithAny("abcxyz", null)     = false
+     * StringUtil.endsWithAny("abcxyz", new String[] {""}) = true
+     * StringUtil.endsWithAny("abcxyz", new String[] {"xyz"}) = true
+     * StringUtil.endsWithAny("abcxyz", new String[] {null, "xyz", "abc"}) = true
+     * StringUtil.endsWithAny("abcXYZ", "def", "XYZ") = true
+     * StringUtil.endsWithAny("abcXYZ", "def", "xyz") = false
      * </pre>
      *
      * @param sequence      the CharSequence to check, may be null
      * @param searchStrings the case-sensitive CharSequences to find, may be empty or contain {@code null}
      * @return {@code true} if the input {@code sequence} is {@code null} AND no {@code searchStrings} are provided, or
      * the input {@code sequence} ends in any of the provided case-sensitive {@code searchStrings}.
-     * @see StringUtils#endsWith(CharSequence, CharSequence)
+     * @see StringUtil#endsWith(CharSequence, CharSequence)
      * @since 3.0
      */
     public static boolean endsWithAny(final CharSequence sequence, final CharSequence... searchStrings) {
@@ -2957,12 +2957,12 @@ public class StringUtil {
      * references are considered to be equal. The comparison is case insensitive.</p>
      *
      * <pre>
-     * StringUtils.endsWithIgnoreCase(null, null)      = true
-     * StringUtils.endsWithIgnoreCase(null, "def")     = false
-     * StringUtils.endsWithIgnoreCase("abcdef", null)  = false
-     * StringUtils.endsWithIgnoreCase("abcdef", "def") = true
-     * StringUtils.endsWithIgnoreCase("ABCDEF", "def") = true
-     * StringUtils.endsWithIgnoreCase("ABCDEF", "cde") = false
+     * StringUtil.endsWithIgnoreCase(null, null)      = true
+     * StringUtil.endsWithIgnoreCase(null, "def")     = false
+     * StringUtil.endsWithIgnoreCase("abcdef", null)  = false
+     * StringUtil.endsWithIgnoreCase("abcdef", "def") = true
+     * StringUtil.endsWithIgnoreCase("ABCDEF", "def") = true
+     * StringUtil.endsWithIgnoreCase("ABCDEF", "cde") = false
      * </pre>
      *
      * @param str    the CharSequence to check, may be null
@@ -2985,11 +2985,11 @@ public class StringUtil {
      * references are considered to be equal. The comparison is <strong>case sensitive</strong>.</p>
      *
      * <pre>
-     * StringUtils.equals(null, null)   = true
-     * StringUtils.equals(null, "abc")  = false
-     * StringUtils.equals("abc", null)  = false
-     * StringUtils.equals("abc", "abc") = true
-     * StringUtils.equals("abc", "ABC") = false
+     * StringUtil.equals(null, null)   = true
+     * StringUtil.equals(null, "abc")  = false
+     * StringUtil.equals("abc", null)  = false
+     * StringUtil.equals("abc", "abc") = true
+     * StringUtil.equals("abc", "ABC") = false
      * </pre>
      *
      * @param cs1 the first CharSequence, may be {@code null}
@@ -3027,12 +3027,12 @@ public class StringUtil {
      * returning {@code true} if the {@code string} is equal to any of the {@code searchStrings}.</p>
      *
      * <pre>
-     * StringUtils.equalsAny(null, (CharSequence[]) null) = false
-     * StringUtils.equalsAny(null, null, null)    = true
-     * StringUtils.equalsAny(null, "abc", "def")  = false
-     * StringUtils.equalsAny("abc", null, "def")  = false
-     * StringUtils.equalsAny("abc", "abc", "def") = true
-     * StringUtils.equalsAny("abc", "ABC", "DEF") = false
+     * StringUtil.equalsAny(null, (CharSequence[]) null) = false
+     * StringUtil.equalsAny(null, null, null)    = true
+     * StringUtil.equalsAny(null, "abc", "def")  = false
+     * StringUtil.equalsAny("abc", null, "def")  = false
+     * StringUtil.equalsAny("abc", "abc", "def") = true
+     * StringUtil.equalsAny("abc", "ABC", "DEF") = false
      * </pre>
      *
      * @param string        to compare, may be {@code null}.
@@ -3057,12 +3057,12 @@ public class StringUtil {
      * returning {@code true} if the {@code string} is equal to any of the {@code searchStrings}, ignoring case.</p>
      *
      * <pre>
-     * StringUtils.equalsAnyIgnoreCase(null, (CharSequence[]) null) = false
-     * StringUtils.equalsAnyIgnoreCase(null, null, null)    = true
-     * StringUtils.equalsAnyIgnoreCase(null, "abc", "def")  = false
-     * StringUtils.equalsAnyIgnoreCase("abc", null, "def")  = false
-     * StringUtils.equalsAnyIgnoreCase("abc", "abc", "def") = true
-     * StringUtils.equalsAnyIgnoreCase("abc", "ABC", "DEF") = true
+     * StringUtil.equalsAnyIgnoreCase(null, (CharSequence[]) null) = false
+     * StringUtil.equalsAnyIgnoreCase(null, null, null)    = true
+     * StringUtil.equalsAnyIgnoreCase(null, "abc", "def")  = false
+     * StringUtil.equalsAnyIgnoreCase("abc", null, "def")  = false
+     * StringUtil.equalsAnyIgnoreCase("abc", "abc", "def") = true
+     * StringUtil.equalsAnyIgnoreCase("abc", "ABC", "DEF") = true
      * </pre>
      *
      * @param string        to compare, may be {@code null}.
@@ -3090,11 +3090,11 @@ public class StringUtil {
      * references are considered equal. The comparison is <strong>case insensitive</strong>.</p>
      *
      * <pre>
-     * StringUtils.equalsIgnoreCase(null, null)   = true
-     * StringUtils.equalsIgnoreCase(null, "abc")  = false
-     * StringUtils.equalsIgnoreCase("abc", null)  = false
-     * StringUtils.equalsIgnoreCase("abc", "abc") = true
-     * StringUtils.equalsIgnoreCase("abc", "ABC") = true
+     * StringUtil.equalsIgnoreCase(null, null)   = true
+     * StringUtil.equalsIgnoreCase(null, "abc")  = false
+     * StringUtil.equalsIgnoreCase("abc", null)  = false
+     * StringUtil.equalsIgnoreCase("abc", "abc") = true
+     * StringUtil.equalsIgnoreCase("abc", "ABC") = true
      * </pre>
      *
      * @param cs1 the first CharSequence, may be {@code null}
@@ -3126,13 +3126,13 @@ public class StringUtil {
      * or empty then {@code null} is returned.</p>
      *
      * <pre>
-     * StringUtils.firstNonBlank(null, null, null)     = null
-     * StringUtils.firstNonBlank(null, "", " ")        = null
-     * StringUtils.firstNonBlank("abc")                = "abc"
-     * StringUtils.firstNonBlank(null, "xyz")          = "xyz"
-     * StringUtils.firstNonBlank(null, "", " ", "xyz") = "xyz"
-     * StringUtils.firstNonBlank(null, "xyz", "abc")   = "xyz"
-     * StringUtils.firstNonBlank()                     = null
+     * StringUtil.firstNonBlank(null, null, null)     = null
+     * StringUtil.firstNonBlank(null, "", " ")        = null
+     * StringUtil.firstNonBlank("abc")                = "abc"
+     * StringUtil.firstNonBlank(null, "xyz")          = "xyz"
+     * StringUtil.firstNonBlank(null, "", " ", "xyz") = "xyz"
+     * StringUtil.firstNonBlank(null, "xyz", "abc")   = "xyz"
+     * StringUtil.firstNonBlank()                     = null
      * </pre>
      *
      * @param <T>    the specific kind of CharSequence
@@ -3160,14 +3160,14 @@ public class StringUtil {
      * or empty then {@code null} is returned.</p>
      *
      * <pre>
-     * StringUtils.firstNonEmpty(null, null, null)   = null
-     * StringUtils.firstNonEmpty(null, null, "")     = null
-     * StringUtils.firstNonEmpty(null, "", " ")      = " "
-     * StringUtils.firstNonEmpty("abc")              = "abc"
-     * StringUtils.firstNonEmpty(null, "xyz")        = "xyz"
-     * StringUtils.firstNonEmpty("", "xyz")          = "xyz"
-     * StringUtils.firstNonEmpty(null, "xyz", "abc") = "xyz"
-     * StringUtils.firstNonEmpty()                   = null
+     * StringUtil.firstNonEmpty(null, null, null)   = null
+     * StringUtil.firstNonEmpty(null, null, "")     = null
+     * StringUtil.firstNonEmpty(null, "", " ")      = " "
+     * StringUtil.firstNonEmpty("abc")              = "abc"
+     * StringUtil.firstNonEmpty(null, "xyz")        = "xyz"
+     * StringUtil.firstNonEmpty("", "xyz")          = "xyz"
+     * StringUtil.firstNonEmpty(null, "xyz", "abc") = "xyz"
+     * StringUtil.firstNonEmpty()                   = null
      * </pre>
      *
      * @param <T>    the specific kind of CharSequence
@@ -3223,23 +3223,23 @@ public class StringUtil {
      * {@code getCommonPrefix(new String[] {"i am a machine", "i am a robot"}) -&gt; "i am a "}</p>
      *
      * <pre>
-     * StringUtils.getCommonPrefix(null) = ""
-     * StringUtils.getCommonPrefix(new String[] {}) = ""
-     * StringUtils.getCommonPrefix(new String[] {"abc"}) = "abc"
-     * StringUtils.getCommonPrefix(new String[] {null, null}) = ""
-     * StringUtils.getCommonPrefix(new String[] {"", ""}) = ""
-     * StringUtils.getCommonPrefix(new String[] {"", null}) = ""
-     * StringUtils.getCommonPrefix(new String[] {"abc", null, null}) = ""
-     * StringUtils.getCommonPrefix(new String[] {null, null, "abc"}) = ""
-     * StringUtils.getCommonPrefix(new String[] {"", "abc"}) = ""
-     * StringUtils.getCommonPrefix(new String[] {"abc", ""}) = ""
-     * StringUtils.getCommonPrefix(new String[] {"abc", "abc"}) = "abc"
-     * StringUtils.getCommonPrefix(new String[] {"abc", "a"}) = "a"
-     * StringUtils.getCommonPrefix(new String[] {"ab", "abxyz"}) = "ab"
-     * StringUtils.getCommonPrefix(new String[] {"abcde", "abxyz"}) = "ab"
-     * StringUtils.getCommonPrefix(new String[] {"abcde", "xyz"}) = ""
-     * StringUtils.getCommonPrefix(new String[] {"xyz", "abcde"}) = ""
-     * StringUtils.getCommonPrefix(new String[] {"i am a machine", "i am a robot"}) = "i am a "
+     * StringUtil.getCommonPrefix(null) = ""
+     * StringUtil.getCommonPrefix(new String[] {}) = ""
+     * StringUtil.getCommonPrefix(new String[] {"abc"}) = "abc"
+     * StringUtil.getCommonPrefix(new String[] {null, null}) = ""
+     * StringUtil.getCommonPrefix(new String[] {"", ""}) = ""
+     * StringUtil.getCommonPrefix(new String[] {"", null}) = ""
+     * StringUtil.getCommonPrefix(new String[] {"abc", null, null}) = ""
+     * StringUtil.getCommonPrefix(new String[] {null, null, "abc"}) = ""
+     * StringUtil.getCommonPrefix(new String[] {"", "abc"}) = ""
+     * StringUtil.getCommonPrefix(new String[] {"abc", ""}) = ""
+     * StringUtil.getCommonPrefix(new String[] {"abc", "abc"}) = "abc"
+     * StringUtil.getCommonPrefix(new String[] {"abc", "a"}) = "a"
+     * StringUtil.getCommonPrefix(new String[] {"ab", "abxyz"}) = "ab"
+     * StringUtil.getCommonPrefix(new String[] {"abcde", "abxyz"}) = "ab"
+     * StringUtil.getCommonPrefix(new String[] {"abcde", "xyz"}) = ""
+     * StringUtil.getCommonPrefix(new String[] {"xyz", "abcde"}) = ""
+     * StringUtil.getCommonPrefix(new String[] {"i am a machine", "i am a robot"}) = "i am a "
      * </pre>
      *
      * @param strs array of String objects, entries may be null
@@ -3275,13 +3275,13 @@ public class StringUtil {
      * <p>An empty ("") String will be returned if no digits found in {@code str}.</p>
      *
      * <pre>
-     * StringUtils.getDigits(null)  = null
-     * StringUtils.getDigits("")    = ""
-     * StringUtils.getDigits("abc") = ""
-     * StringUtils.getDigits("1000$") = "1000"
-     * StringUtils.getDigits("1123~45") = "112345"
-     * StringUtils.getDigits("(541) 754-3010") = "5417543010"
-     * StringUtils.getDigits("\u0967\u0968\u0969") = "\u0967\u0968\u0969"
+     * StringUtil.getDigits(null)  = null
+     * StringUtil.getDigits("")    = ""
+     * StringUtil.getDigits("abc") = ""
+     * StringUtil.getDigits("1000$") = "1000"
+     * StringUtil.getDigits("1123~45") = "112345"
+     * StringUtil.getDigits("(541) 754-3010") = "5417543010"
+     * StringUtil.getDigits("\u0967\u0968\u0969") = "\u0967\u0968\u0969"
      * </pre>
      *
      * @param str the String to extract digits from, may be null
@@ -3313,14 +3313,14 @@ public class StringUtil {
      * matches yield two bonus points. A higher score indicates a higher similarity.</p>
      *
      * <pre>
-     * StringUtils.getFuzzyDistance(null, null, null)                                    = IllegalArgumentException
-     * StringUtils.getFuzzyDistance("", "", Locale.ENGLISH)                              = 0
-     * StringUtils.getFuzzyDistance("Workshop", "b", Locale.ENGLISH)                     = 0
-     * StringUtils.getFuzzyDistance("Room", "o", Locale.ENGLISH)                         = 1
-     * StringUtils.getFuzzyDistance("Workshop", "w", Locale.ENGLISH)                     = 1
-     * StringUtils.getFuzzyDistance("Workshop", "ws", Locale.ENGLISH)                    = 2
-     * StringUtils.getFuzzyDistance("Workshop", "wo", Locale.ENGLISH)                    = 4
-     * StringUtils.getFuzzyDistance("Apache Software Foundation", "asf", Locale.ENGLISH) = 3
+     * StringUtil.getFuzzyDistance(null, null, null)                                    = IllegalArgumentException
+     * StringUtil.getFuzzyDistance("", "", Locale.ENGLISH)                              = 0
+     * StringUtil.getFuzzyDistance("Workshop", "b", Locale.ENGLISH)                     = 0
+     * StringUtil.getFuzzyDistance("Room", "o", Locale.ENGLISH)                         = 1
+     * StringUtil.getFuzzyDistance("Workshop", "w", Locale.ENGLISH)                     = 1
+     * StringUtil.getFuzzyDistance("Workshop", "ws", Locale.ENGLISH)                    = 2
+     * StringUtil.getFuzzyDistance("Workshop", "wo", Locale.ENGLISH)                    = 4
+     * StringUtil.getFuzzyDistance("Apache Software Foundation", "asf", Locale.ENGLISH) = 3
      * </pre>
      *
      * @param term   a full term that should be matched against, must not be null
@@ -3398,12 +3398,12 @@ public class StringUtil {
      *
      * <pre>
      * {@code
-     * StringUtils.getIfBlank(null, () -> "NULL")   = "NULL"
-     * StringUtils.getIfBlank("", () -> "NULL")     = "NULL"
-     * StringUtils.getIfBlank(" ", () -> "NULL")    = "NULL"
-     * StringUtils.getIfBlank("bat", () -> "NULL")  = "bat"
-     * StringUtils.getIfBlank("", () -> null)       = null
-     * StringUtils.getIfBlank("", null)             = null
+     * StringUtil.getIfBlank(null, () -> "NULL")   = "NULL"
+     * StringUtil.getIfBlank("", () -> "NULL")     = "NULL"
+     * StringUtil.getIfBlank(" ", () -> "NULL")    = "NULL"
+     * StringUtil.getIfBlank("bat", () -> "NULL")  = "bat"
+     * StringUtil.getIfBlank("", () -> null)       = null
+     * StringUtil.getIfBlank("", null)             = null
      * }</pre>
      *
      * @param <T>             the specific kind of CharSequence
@@ -3411,7 +3411,7 @@ public class StringUtil {
      * @param defaultSupplier the supplier of default CharSequence to return
      *                        if the input is whitespace, empty ("") or {@code null}, may be null
      * @return the passed in CharSequence, or the default
-     * @see StringUtils#defaultString(String, String)
+     * @see StringUtil#defaultString(String, String)
      * @since 3.10
      */
     public static <T extends CharSequence> T getIfBlank(final T str, final Supplier<T> defaultSupplier) {
@@ -3426,12 +3426,12 @@ public class StringUtil {
      *
      * <pre>
      * {@code
-     * StringUtils.getIfEmpty(null, () -> "NULL")    = "NULL"
-     * StringUtils.getIfEmpty("", () -> "NULL")      = "NULL"
-     * StringUtils.getIfEmpty(" ", () -> "NULL")     = " "
-     * StringUtils.getIfEmpty("bat", () -> "NULL")   = "bat"
-     * StringUtils.getIfEmpty("", () -> null)        = null
-     * StringUtils.getIfEmpty("", null)              = null
+     * StringUtil.getIfEmpty(null, () -> "NULL")    = "NULL"
+     * StringUtil.getIfEmpty("", () -> "NULL")      = "NULL"
+     * StringUtil.getIfEmpty(" ", () -> "NULL")     = " "
+     * StringUtil.getIfEmpty("bat", () -> "NULL")   = "bat"
+     * StringUtil.getIfEmpty("", () -> null)        = null
+     * StringUtil.getIfEmpty("", null)              = null
      * }
      * </pre>
      *
@@ -3440,7 +3440,7 @@ public class StringUtil {
      * @param defaultSupplier the supplier of default CharSequence to return
      *                        if the input is empty ("") or {@code null}, may be null
      * @return the passed in CharSequence, or the default
-     * @see StringUtils#defaultString(String, String)
+     * @see StringUtil#defaultString(String, String)
      * @since 3.10
      */
     public static <T extends CharSequence> T getIfEmpty(final T str, final Supplier<T> defaultSupplier) {
@@ -3457,20 +3457,20 @@ public class StringUtil {
      * from <a href="http://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance">http://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance</a>.</p>
      *
      * <pre>
-     * StringUtils.getJaroWinklerDistance(null, null)          = IllegalArgumentException
-     * StringUtils.getJaroWinklerDistance("", "")              = 0.0
-     * StringUtils.getJaroWinklerDistance("", "a")             = 0.0
-     * StringUtils.getJaroWinklerDistance("aaapppp", "")       = 0.0
-     * StringUtils.getJaroWinklerDistance("frog", "fog")       = 0.93
-     * StringUtils.getJaroWinklerDistance("fly", "ant")        = 0.0
-     * StringUtils.getJaroWinklerDistance("elephant", "hippo") = 0.44
-     * StringUtils.getJaroWinklerDistance("hippo", "elephant") = 0.44
-     * StringUtils.getJaroWinklerDistance("hippo", "zzzzzzzz") = 0.0
-     * StringUtils.getJaroWinklerDistance("hello", "hallo")    = 0.88
-     * StringUtils.getJaroWinklerDistance("ABC Corporation", "ABC Corp") = 0.93
-     * StringUtils.getJaroWinklerDistance("D N H Enterprises Inc", "D &amp; H Enterprises, Inc.") = 0.95
-     * StringUtils.getJaroWinklerDistance("My Gym Children's Fitness Center", "My Gym. Childrens Fitness") = 0.92
-     * StringUtils.getJaroWinklerDistance("PENNSYLVANIA", "PENNCISYLVNIA") = 0.88
+     * StringUtil.getJaroWinklerDistance(null, null)          = IllegalArgumentException
+     * StringUtil.getJaroWinklerDistance("", "")              = 0.0
+     * StringUtil.getJaroWinklerDistance("", "a")             = 0.0
+     * StringUtil.getJaroWinklerDistance("aaapppp", "")       = 0.0
+     * StringUtil.getJaroWinklerDistance("frog", "fog")       = 0.93
+     * StringUtil.getJaroWinklerDistance("fly", "ant")        = 0.0
+     * StringUtil.getJaroWinklerDistance("elephant", "hippo") = 0.44
+     * StringUtil.getJaroWinklerDistance("hippo", "elephant") = 0.44
+     * StringUtil.getJaroWinklerDistance("hippo", "zzzzzzzz") = 0.0
+     * StringUtil.getJaroWinklerDistance("hello", "hallo")    = 0.88
+     * StringUtil.getJaroWinklerDistance("ABC Corporation", "ABC Corp") = 0.93
+     * StringUtil.getJaroWinklerDistance("D N H Enterprises Inc", "D &amp; H Enterprises, Inc.") = 0.95
+     * StringUtil.getJaroWinklerDistance("My Gym Children's Fitness Center", "My Gym. Childrens Fitness") = 0.92
+     * StringUtil.getJaroWinklerDistance("PENNSYLVANIA", "PENNCISYLVNIA") = 0.88
      * </pre>
      *
      * @param first  the first String, must not be null
@@ -3512,17 +3512,17 @@ public class StringUtil {
      * http://blog.softwx.net/2014/12/optimizing-levenshtein-algorithm-in-c.html</a> for details.</p>
      *
      * <pre>
-     * StringUtils.getLevenshteinDistance(null, *)             = IllegalArgumentException
-     * StringUtils.getLevenshteinDistance(*, null)             = IllegalArgumentException
-     * StringUtils.getLevenshteinDistance("", "")              = 0
-     * StringUtils.getLevenshteinDistance("", "a")             = 1
-     * StringUtils.getLevenshteinDistance("aaapppp", "")       = 7
-     * StringUtils.getLevenshteinDistance("frog", "fog")       = 1
-     * StringUtils.getLevenshteinDistance("fly", "ant")        = 3
-     * StringUtils.getLevenshteinDistance("elephant", "hippo") = 7
-     * StringUtils.getLevenshteinDistance("hippo", "elephant") = 7
-     * StringUtils.getLevenshteinDistance("hippo", "zzzzzzzz") = 8
-     * StringUtils.getLevenshteinDistance("hello", "hallo")    = 1
+     * StringUtil.getLevenshteinDistance(null, *)             = IllegalArgumentException
+     * StringUtil.getLevenshteinDistance(*, null)             = IllegalArgumentException
+     * StringUtil.getLevenshteinDistance("", "")              = 0
+     * StringUtil.getLevenshteinDistance("", "a")             = 1
+     * StringUtil.getLevenshteinDistance("aaapppp", "")       = 7
+     * StringUtil.getLevenshteinDistance("frog", "fog")       = 1
+     * StringUtil.getLevenshteinDistance("fly", "ant")        = 3
+     * StringUtil.getLevenshteinDistance("elephant", "hippo") = 7
+     * StringUtil.getLevenshteinDistance("hippo", "elephant") = 7
+     * StringUtil.getLevenshteinDistance("hippo", "zzzzzzzz") = 8
+     * StringUtil.getLevenshteinDistance("hello", "hallo")    = 1
      * </pre>
      *
      * @param s the first String, must not be null
@@ -3603,17 +3603,17 @@ public class StringUtil {
      * <a href="http://www.merriampark.com/ld.htm">http://www.merriampark.com/ld.htm</a></p>
      *
      * <pre>
-     * StringUtils.getLevenshteinDistance(null, *, *)             = IllegalArgumentException
-     * StringUtils.getLevenshteinDistance(*, null, *)             = IllegalArgumentException
-     * StringUtils.getLevenshteinDistance(*, *, -1)               = IllegalArgumentException
-     * StringUtils.getLevenshteinDistance("", "", 0)              = 0
-     * StringUtils.getLevenshteinDistance("aaapppp", "", 8)       = 7
-     * StringUtils.getLevenshteinDistance("aaapppp", "", 7)       = 7
-     * StringUtils.getLevenshteinDistance("aaapppp", "", 6))      = -1
-     * StringUtils.getLevenshteinDistance("elephant", "hippo", 7) = 7
-     * StringUtils.getLevenshteinDistance("elephant", "hippo", 6) = -1
-     * StringUtils.getLevenshteinDistance("hippo", "elephant", 7) = 7
-     * StringUtils.getLevenshteinDistance("hippo", "elephant", 6) = -1
+     * StringUtil.getLevenshteinDistance(null, *, *)             = IllegalArgumentException
+     * StringUtil.getLevenshteinDistance(*, null, *)             = IllegalArgumentException
+     * StringUtil.getLevenshteinDistance(*, *, -1)               = IllegalArgumentException
+     * StringUtil.getLevenshteinDistance("", "", 0)              = 0
+     * StringUtil.getLevenshteinDistance("aaapppp", "", 8)       = 7
+     * StringUtil.getLevenshteinDistance("aaapppp", "", 7)       = 7
+     * StringUtil.getLevenshteinDistance("aaapppp", "", 6))      = -1
+     * StringUtil.getLevenshteinDistance("elephant", "hippo", 7) = 7
+     * StringUtil.getLevenshteinDistance("elephant", "hippo", 6) = -1
+     * StringUtil.getLevenshteinDistance("hippo", "elephant", 7) = 7
+     * StringUtil.getLevenshteinDistance("hippo", "elephant", 6) = -1
      * </pre>
      *
      * @param s         the first String, must not be null
@@ -3765,14 +3765,14 @@ public class StringUtil {
      * <p>A {@code null} CharSequence will return {@code -1}.</p>
      *
      * <pre>
-     * StringUtils.indexOf(null, *)          = -1
-     * StringUtils.indexOf(*, null)          = -1
-     * StringUtils.indexOf("", "")           = 0
-     * StringUtils.indexOf("", *)            = -1 (except when * = "")
-     * StringUtils.indexOf("aabaabaa", "a")  = 0
-     * StringUtils.indexOf("aabaabaa", "b")  = 2
-     * StringUtils.indexOf("aabaabaa", "ab") = 1
-     * StringUtils.indexOf("aabaabaa", "")   = 0
+     * StringUtil.indexOf(null, *)          = -1
+     * StringUtil.indexOf(*, null)          = -1
+     * StringUtil.indexOf("", "")           = 0
+     * StringUtil.indexOf("", *)            = -1 (except when * = "")
+     * StringUtil.indexOf("aabaabaa", "a")  = 0
+     * StringUtil.indexOf("aabaabaa", "b")  = 2
+     * StringUtil.indexOf("aabaabaa", "ab") = 1
+     * StringUtil.indexOf("aabaabaa", "")   = 0
      * </pre>
      *
      * @param seq       the CharSequence to check, may be null
@@ -3800,18 +3800,18 @@ public class StringUtil {
      * an empty search CharSequence.</p>
      *
      * <pre>
-     * StringUtils.indexOf(null, *, *)          = -1
-     * StringUtils.indexOf(*, null, *)          = -1
-     * StringUtils.indexOf("", "", 0)           = 0
-     * StringUtils.indexOf("", *, 0)            = -1 (except when * = "")
-     * StringUtils.indexOf("aabaabaa", "a", 0)  = 0
-     * StringUtils.indexOf("aabaabaa", "b", 0)  = 2
-     * StringUtils.indexOf("aabaabaa", "ab", 0) = 1
-     * StringUtils.indexOf("aabaabaa", "b", 3)  = 5
-     * StringUtils.indexOf("aabaabaa", "b", 9)  = -1
-     * StringUtils.indexOf("aabaabaa", "b", -1) = 2
-     * StringUtils.indexOf("aabaabaa", "", 2)   = 2
-     * StringUtils.indexOf("abc", "", 9)        = 3
+     * StringUtil.indexOf(null, *, *)          = -1
+     * StringUtil.indexOf(*, null, *)          = -1
+     * StringUtil.indexOf("", "", 0)           = 0
+     * StringUtil.indexOf("", *, 0)            = -1 (except when * = "")
+     * StringUtil.indexOf("aabaabaa", "a", 0)  = 0
+     * StringUtil.indexOf("aabaabaa", "b", 0)  = 2
+     * StringUtil.indexOf("aabaabaa", "ab", 0) = 1
+     * StringUtil.indexOf("aabaabaa", "b", 3)  = 5
+     * StringUtil.indexOf("aabaabaa", "b", 9)  = -1
+     * StringUtil.indexOf("aabaabaa", "b", -1) = 2
+     * StringUtil.indexOf("aabaabaa", "", 2)   = 2
+     * StringUtil.indexOf("abc", "", 9)        = 3
      * </pre>
      *
      * @param seq       the CharSequence to check, may be null
@@ -3852,10 +3852,10 @@ public class StringUtil {
      * return {@code INDEX_NOT_FOUND (-1)}.</p>
      *
      * <pre>
-     * StringUtils.indexOf(null, *)         = -1
-     * StringUtils.indexOf("", *)           = -1
-     * StringUtils.indexOf("aabaabaa", 'a') = 0
-     * StringUtils.indexOf("aabaabaa", 'b') = 2
+     * StringUtil.indexOf(null, *)         = -1
+     * StringUtil.indexOf("", *)           = -1
+     * StringUtil.indexOf("aabaabaa", 'a') = 0
+     * StringUtil.indexOf("aabaabaa", 'b') = 2
      * </pre>
      *
      * @param seq        the CharSequence to check, may be null
@@ -3908,12 +3908,12 @@ public class StringUtil {
      * (Unicode code units).
      *
      * <pre>
-     * StringUtils.indexOf(null, *, *)          = -1
-     * StringUtils.indexOf("", *, *)            = -1
-     * StringUtils.indexOf("aabaabaa", 'b', 0)  = 2
-     * StringUtils.indexOf("aabaabaa", 'b', 3)  = 5
-     * StringUtils.indexOf("aabaabaa", 'b', 9)  = -1
-     * StringUtils.indexOf("aabaabaa", 'b', -1) = 2
+     * StringUtil.indexOf(null, *, *)          = -1
+     * StringUtil.indexOf("", *, *)            = -1
+     * StringUtil.indexOf("aabaabaa", 'b', 0)  = 2
+     * StringUtil.indexOf("aabaabaa", 'b', 3)  = 5
+     * StringUtil.indexOf("aabaabaa", 'b', 9)  = -1
+     * StringUtil.indexOf("aabaabaa", 'b', -1) = 2
      * </pre>
      *
      * @param seq        the CharSequence to check, may be null
@@ -3940,13 +3940,13 @@ public class StringUtil {
      * A {@code null} or zero length search array will return {@code -1}.</p>
      *
      * <pre>
-     * StringUtils.indexOfAny(null, *)                  = -1
-     * StringUtils.indexOfAny("", *)                    = -1
-     * StringUtils.indexOfAny(*, null)                  = -1
-     * StringUtils.indexOfAny(*, [])                    = -1
-     * StringUtils.indexOfAny("zzabyycdxx", ['z', 'a']) = 0
-     * StringUtils.indexOfAny("zzabyycdxx", ['b', 'y']) = 3
-     * StringUtils.indexOfAny("aba", ['z'])             = -1
+     * StringUtil.indexOfAny(null, *)                  = -1
+     * StringUtil.indexOfAny("", *)                    = -1
+     * StringUtil.indexOfAny(*, null)                  = -1
+     * StringUtil.indexOfAny(*, [])                    = -1
+     * StringUtil.indexOfAny("zzabyycdxx", ['z', 'a']) = 0
+     * StringUtil.indexOfAny("zzabyycdxx", ['b', 'y']) = 3
+     * StringUtil.indexOfAny("aba", ['z'])             = -1
      * </pre>
      *
      * @param cs          the CharSequence to check, may be null
@@ -3991,16 +3991,16 @@ public class StringUtil {
      * null. This method uses {@link String#indexOf(String)} if possible.</p>
      *
      * <pre>
-     * StringUtils.indexOfAny(null, *)                      = -1
-     * StringUtils.indexOfAny(*, null)                      = -1
-     * StringUtils.indexOfAny(*, [])                        = -1
-     * StringUtils.indexOfAny("zzabyycdxx", ["ab", "cd"])   = 2
-     * StringUtils.indexOfAny("zzabyycdxx", ["cd", "ab"])   = 2
-     * StringUtils.indexOfAny("zzabyycdxx", ["mn", "op"])   = -1
-     * StringUtils.indexOfAny("zzabyycdxx", ["zab", "aby"]) = 1
-     * StringUtils.indexOfAny("zzabyycdxx", [""])           = 0
-     * StringUtils.indexOfAny("", [""])                     = 0
-     * StringUtils.indexOfAny("", ["a"])                    = -1
+     * StringUtil.indexOfAny(null, *)                      = -1
+     * StringUtil.indexOfAny(*, null)                      = -1
+     * StringUtil.indexOfAny(*, [])                        = -1
+     * StringUtil.indexOfAny("zzabyycdxx", ["ab", "cd"])   = 2
+     * StringUtil.indexOfAny("zzabyycdxx", ["cd", "ab"])   = 2
+     * StringUtil.indexOfAny("zzabyycdxx", ["mn", "op"])   = -1
+     * StringUtil.indexOfAny("zzabyycdxx", ["zab", "aby"]) = 1
+     * StringUtil.indexOfAny("zzabyycdxx", [""])           = 0
+     * StringUtil.indexOfAny("", [""])                     = 0
+     * StringUtil.indexOfAny("", ["a"])                    = -1
      * </pre>
      *
      * @param str        the CharSequence to check, may be null
@@ -4042,13 +4042,13 @@ public class StringUtil {
      * A {@code null} search string will return {@code -1}.</p>
      *
      * <pre>
-     * StringUtils.indexOfAny(null, *)            = -1
-     * StringUtils.indexOfAny("", *)              = -1
-     * StringUtils.indexOfAny(*, null)            = -1
-     * StringUtils.indexOfAny(*, "")              = -1
-     * StringUtils.indexOfAny("zzabyycdxx", "za") = 0
-     * StringUtils.indexOfAny("zzabyycdxx", "by") = 3
-     * StringUtils.indexOfAny("aba", "z")         = -1
+     * StringUtil.indexOfAny(null, *)            = -1
+     * StringUtil.indexOfAny("", *)              = -1
+     * StringUtil.indexOfAny(*, null)            = -1
+     * StringUtil.indexOfAny(*, "")              = -1
+     * StringUtil.indexOfAny("zzabyycdxx", "za") = 0
+     * StringUtil.indexOfAny("zzabyycdxx", "by") = 3
+     * StringUtil.indexOfAny("aba", "z")         = -1
      * </pre>
      *
      * @param cs          the CharSequence to check, may be null
@@ -4072,13 +4072,13 @@ public class StringUtil {
      * A {@code null} or zero length search array will return {@code -1}.</p>
      *
      * <pre>
-     * StringUtils.indexOfAnyBut(null, *)                              = -1
-     * StringUtils.indexOfAnyBut("", *)                                = -1
-     * StringUtils.indexOfAnyBut(*, null)                              = -1
-     * StringUtils.indexOfAnyBut(*, [])                                = -1
-     * StringUtils.indexOfAnyBut("zzabyycdxx", new char[] {'z', 'a'} ) = 3
-     * StringUtils.indexOfAnyBut("aba", new char[] {'z'} )             = 0
-     * StringUtils.indexOfAnyBut("aba", new char[] {'a', 'b'} )        = -1
+     * StringUtil.indexOfAnyBut(null, *)                              = -1
+     * StringUtil.indexOfAnyBut("", *)                                = -1
+     * StringUtil.indexOfAnyBut(*, null)                              = -1
+     * StringUtil.indexOfAnyBut(*, [])                                = -1
+     * StringUtil.indexOfAnyBut("zzabyycdxx", new char[] {'z', 'a'} ) = 3
+     * StringUtil.indexOfAnyBut("aba", new char[] {'z'} )             = 0
+     * StringUtil.indexOfAnyBut("aba", new char[] {'a', 'b'} )        = -1
      *
      * </pre>
      *
@@ -4123,13 +4123,13 @@ public class StringUtil {
      * A {@code null} or empty search string will return {@code -1}.</p>
      *
      * <pre>
-     * StringUtils.indexOfAnyBut(null, *)            = -1
-     * StringUtils.indexOfAnyBut("", *)              = -1
-     * StringUtils.indexOfAnyBut(*, null)            = -1
-     * StringUtils.indexOfAnyBut(*, "")              = -1
-     * StringUtils.indexOfAnyBut("zzabyycdxx", "za") = 3
-     * StringUtils.indexOfAnyBut("zzabyycdxx", "")   = -1
-     * StringUtils.indexOfAnyBut("aba", "ab")        = -1
+     * StringUtil.indexOfAnyBut(null, *)            = -1
+     * StringUtil.indexOfAnyBut("", *)              = -1
+     * StringUtil.indexOfAnyBut(*, null)            = -1
+     * StringUtil.indexOfAnyBut(*, "")              = -1
+     * StringUtil.indexOfAnyBut("zzabyycdxx", "za") = 3
+     * StringUtil.indexOfAnyBut("zzabyycdxx", "")   = -1
+     * StringUtil.indexOfAnyBut("aba", "ab")        = -1
      * </pre>
      *
      * @param seq         the CharSequence to check, may be null
@@ -4166,23 +4166,23 @@ public class StringUtil {
      * {@code indexOfDifference(new String[] {"i am a machine", "i am a robot"}) -> 7}</p>
      *
      * <pre>
-     * StringUtils.indexOfDifference(null) = -1
-     * StringUtils.indexOfDifference(new String[] {}) = -1
-     * StringUtils.indexOfDifference(new String[] {"abc"}) = -1
-     * StringUtils.indexOfDifference(new String[] {null, null}) = -1
-     * StringUtils.indexOfDifference(new String[] {"", ""}) = -1
-     * StringUtils.indexOfDifference(new String[] {"", null}) = 0
-     * StringUtils.indexOfDifference(new String[] {"abc", null, null}) = 0
-     * StringUtils.indexOfDifference(new String[] {null, null, "abc"}) = 0
-     * StringUtils.indexOfDifference(new String[] {"", "abc"}) = 0
-     * StringUtils.indexOfDifference(new String[] {"abc", ""}) = 0
-     * StringUtils.indexOfDifference(new String[] {"abc", "abc"}) = -1
-     * StringUtils.indexOfDifference(new String[] {"abc", "a"}) = 1
-     * StringUtils.indexOfDifference(new String[] {"ab", "abxyz"}) = 2
-     * StringUtils.indexOfDifference(new String[] {"abcde", "abxyz"}) = 2
-     * StringUtils.indexOfDifference(new String[] {"abcde", "xyz"}) = 0
-     * StringUtils.indexOfDifference(new String[] {"xyz", "abcde"}) = 0
-     * StringUtils.indexOfDifference(new String[] {"i am a machine", "i am a robot"}) = 7
+     * StringUtil.indexOfDifference(null) = -1
+     * StringUtil.indexOfDifference(new String[] {}) = -1
+     * StringUtil.indexOfDifference(new String[] {"abc"}) = -1
+     * StringUtil.indexOfDifference(new String[] {null, null}) = -1
+     * StringUtil.indexOfDifference(new String[] {"", ""}) = -1
+     * StringUtil.indexOfDifference(new String[] {"", null}) = 0
+     * StringUtil.indexOfDifference(new String[] {"abc", null, null}) = 0
+     * StringUtil.indexOfDifference(new String[] {null, null, "abc"}) = 0
+     * StringUtil.indexOfDifference(new String[] {"", "abc"}) = 0
+     * StringUtil.indexOfDifference(new String[] {"abc", ""}) = 0
+     * StringUtil.indexOfDifference(new String[] {"abc", "abc"}) = -1
+     * StringUtil.indexOfDifference(new String[] {"abc", "a"}) = 1
+     * StringUtil.indexOfDifference(new String[] {"ab", "abxyz"}) = 2
+     * StringUtil.indexOfDifference(new String[] {"abcde", "abxyz"}) = 2
+     * StringUtil.indexOfDifference(new String[] {"abcde", "xyz"}) = 0
+     * StringUtil.indexOfDifference(new String[] {"xyz", "abcde"}) = 0
+     * StringUtil.indexOfDifference(new String[] {"i am a machine", "i am a robot"}) = 7
      * </pre>
      *
      * @param css array of CharSequences, entries may be null
@@ -4256,14 +4256,14 @@ public class StringUtil {
      * {@code indexOfDifference("i am a machine", "i am a robot") -> 7}</p>
      *
      * <pre>
-     * StringUtils.indexOfDifference(null, null) = -1
-     * StringUtils.indexOfDifference("", "") = -1
-     * StringUtils.indexOfDifference("", "abc") = 0
-     * StringUtils.indexOfDifference("abc", "") = 0
-     * StringUtils.indexOfDifference("abc", "abc") = -1
-     * StringUtils.indexOfDifference("ab", "abxyz") = 2
-     * StringUtils.indexOfDifference("abcde", "abxyz") = 2
-     * StringUtils.indexOfDifference("abcde", "xyz") = 0
+     * StringUtil.indexOfDifference(null, null) = -1
+     * StringUtil.indexOfDifference("", "") = -1
+     * StringUtil.indexOfDifference("", "abc") = 0
+     * StringUtil.indexOfDifference("abc", "") = 0
+     * StringUtil.indexOfDifference("abc", "abc") = -1
+     * StringUtil.indexOfDifference("ab", "abxyz") = 2
+     * StringUtil.indexOfDifference("abcde", "abxyz") = 2
+     * StringUtil.indexOfDifference("abcde", "xyz") = 0
      * </pre>
      *
      * @param cs1 the first CharSequence, may be null
@@ -4302,12 +4302,12 @@ public class StringUtil {
      * an empty search CharSequence.</p>
      *
      * <pre>
-     * StringUtils.indexOfIgnoreCase(null, *)          = -1
-     * StringUtils.indexOfIgnoreCase(*, null)          = -1
-     * StringUtils.indexOfIgnoreCase("", "")           = 0
-     * StringUtils.indexOfIgnoreCase("aabaabaa", "a")  = 0
-     * StringUtils.indexOfIgnoreCase("aabaabaa", "b")  = 2
-     * StringUtils.indexOfIgnoreCase("aabaabaa", "ab") = 1
+     * StringUtil.indexOfIgnoreCase(null, *)          = -1
+     * StringUtil.indexOfIgnoreCase(*, null)          = -1
+     * StringUtil.indexOfIgnoreCase("", "")           = 0
+     * StringUtil.indexOfIgnoreCase("aabaabaa", "a")  = 0
+     * StringUtil.indexOfIgnoreCase("aabaabaa", "b")  = 2
+     * StringUtil.indexOfIgnoreCase("aabaabaa", "ab") = 1
      * </pre>
      *
      * @param str       the CharSequence to check, may be null
@@ -4332,17 +4332,17 @@ public class StringUtil {
      * an empty search CharSequence.</p>
      *
      * <pre>
-     * StringUtils.indexOfIgnoreCase(null, *, *)          = -1
-     * StringUtils.indexOfIgnoreCase(*, null, *)          = -1
-     * StringUtils.indexOfIgnoreCase("", "", 0)           = 0
-     * StringUtils.indexOfIgnoreCase("aabaabaa", "A", 0)  = 0
-     * StringUtils.indexOfIgnoreCase("aabaabaa", "B", 0)  = 2
-     * StringUtils.indexOfIgnoreCase("aabaabaa", "AB", 0) = 1
-     * StringUtils.indexOfIgnoreCase("aabaabaa", "B", 3)  = 5
-     * StringUtils.indexOfIgnoreCase("aabaabaa", "B", 9)  = -1
-     * StringUtils.indexOfIgnoreCase("aabaabaa", "B", -1) = 2
-     * StringUtils.indexOfIgnoreCase("aabaabaa", "", 2)   = 2
-     * StringUtils.indexOfIgnoreCase("abc", "", 9)        = -1
+     * StringUtil.indexOfIgnoreCase(null, *, *)          = -1
+     * StringUtil.indexOfIgnoreCase(*, null, *)          = -1
+     * StringUtil.indexOfIgnoreCase("", "", 0)           = 0
+     * StringUtil.indexOfIgnoreCase("aabaabaa", "A", 0)  = 0
+     * StringUtil.indexOfIgnoreCase("aabaabaa", "B", 0)  = 2
+     * StringUtil.indexOfIgnoreCase("aabaabaa", "AB", 0) = 1
+     * StringUtil.indexOfIgnoreCase("aabaabaa", "B", 3)  = 5
+     * StringUtil.indexOfIgnoreCase("aabaabaa", "B", 9)  = -1
+     * StringUtil.indexOfIgnoreCase("aabaabaa", "B", -1) = 2
+     * StringUtil.indexOfIgnoreCase("aabaabaa", "", 2)   = 2
+     * StringUtil.indexOfIgnoreCase("abc", "", 9)        = -1
      * </pre>
      *
      * @param str       the CharSequence to check, may be null
@@ -4381,15 +4381,15 @@ public class StringUtil {
      * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.</p>
      *
      * <pre>
-     * StringUtils.isAllBlank(null)             = true
-     * StringUtils.isAllBlank(null, "foo")      = false
-     * StringUtils.isAllBlank(null, null)       = true
-     * StringUtils.isAllBlank("", "bar")        = false
-     * StringUtils.isAllBlank("bob", "")        = false
-     * StringUtils.isAllBlank("  bob  ", null)  = false
-     * StringUtils.isAllBlank(" ", "bar")       = false
-     * StringUtils.isAllBlank("foo", "bar")     = false
-     * StringUtils.isAllBlank(new String[] {})  = true
+     * StringUtil.isAllBlank(null)             = true
+     * StringUtil.isAllBlank(null, "foo")      = false
+     * StringUtil.isAllBlank(null, null)       = true
+     * StringUtil.isAllBlank("", "bar")        = false
+     * StringUtil.isAllBlank("bob", "")        = false
+     * StringUtil.isAllBlank("  bob  ", null)  = false
+     * StringUtil.isAllBlank(" ", "bar")       = false
+     * StringUtil.isAllBlank("foo", "bar")     = false
+     * StringUtil.isAllBlank(new String[] {})  = true
      * </pre>
      *
      * @param css the CharSequences to check, may be null or empty
@@ -4412,15 +4412,15 @@ public class StringUtil {
      * <p>Checks if all of the CharSequences are empty ("") or null.</p>
      *
      * <pre>
-     * StringUtils.isAllEmpty(null)             = true
-     * StringUtils.isAllEmpty(null, "")         = true
-     * StringUtils.isAllEmpty(new String[] {})  = true
-     * StringUtils.isAllEmpty(null, "foo")      = false
-     * StringUtils.isAllEmpty("", "bar")        = false
-     * StringUtils.isAllEmpty("bob", "")        = false
-     * StringUtils.isAllEmpty("  bob  ", null)  = false
-     * StringUtils.isAllEmpty(" ", "bar")       = false
-     * StringUtils.isAllEmpty("foo", "bar")     = false
+     * StringUtil.isAllEmpty(null)             = true
+     * StringUtil.isAllEmpty(null, "")         = true
+     * StringUtil.isAllEmpty(new String[] {})  = true
+     * StringUtil.isAllEmpty(null, "foo")      = false
+     * StringUtil.isAllEmpty("", "bar")        = false
+     * StringUtil.isAllEmpty("bob", "")        = false
+     * StringUtil.isAllEmpty("  bob  ", null)  = false
+     * StringUtil.isAllEmpty(" ", "bar")       = false
+     * StringUtil.isAllEmpty("foo", "bar")     = false
      * </pre>
      *
      * @param css the CharSequences to check, may be null or empty
@@ -4446,14 +4446,14 @@ public class StringUtil {
      * An empty CharSequence (length()=0) will return {@code false}.</p>
      *
      * <pre>
-     * StringUtils.isAllLowerCase(null)   = false
-     * StringUtils.isAllLowerCase("")     = false
-     * StringUtils.isAllLowerCase("  ")   = false
-     * StringUtils.isAllLowerCase("abc")  = true
-     * StringUtils.isAllLowerCase("abC")  = false
-     * StringUtils.isAllLowerCase("ab c") = false
-     * StringUtils.isAllLowerCase("ab1c") = false
-     * StringUtils.isAllLowerCase("ab/c") = false
+     * StringUtil.isAllLowerCase(null)   = false
+     * StringUtil.isAllLowerCase("")     = false
+     * StringUtil.isAllLowerCase("  ")   = false
+     * StringUtil.isAllLowerCase("abc")  = true
+     * StringUtil.isAllLowerCase("abC")  = false
+     * StringUtil.isAllLowerCase("ab c") = false
+     * StringUtil.isAllLowerCase("ab1c") = false
+     * StringUtil.isAllLowerCase("ab/c") = false
      * </pre>
      *
      * @param cs the CharSequence to check, may be null
@@ -4481,14 +4481,14 @@ public class StringUtil {
      * An empty String (length()=0) will return {@code false}.</p>
      *
      * <pre>
-     * StringUtils.isAllUpperCase(null)   = false
-     * StringUtils.isAllUpperCase("")     = false
-     * StringUtils.isAllUpperCase("  ")   = false
-     * StringUtils.isAllUpperCase("ABC")  = true
-     * StringUtils.isAllUpperCase("aBC")  = false
-     * StringUtils.isAllUpperCase("A C")  = false
-     * StringUtils.isAllUpperCase("A1C")  = false
-     * StringUtils.isAllUpperCase("A/C")  = false
+     * StringUtil.isAllUpperCase(null)   = false
+     * StringUtil.isAllUpperCase("")     = false
+     * StringUtil.isAllUpperCase("  ")   = false
+     * StringUtil.isAllUpperCase("ABC")  = true
+     * StringUtil.isAllUpperCase("aBC")  = false
+     * StringUtil.isAllUpperCase("A C")  = false
+     * StringUtil.isAllUpperCase("A1C")  = false
+     * StringUtil.isAllUpperCase("A/C")  = false
      * </pre>
      *
      * @param cs the CharSequence to check, may be null
@@ -4516,12 +4516,12 @@ public class StringUtil {
      * An empty CharSequence (length()=0) will return {@code false}.</p>
      *
      * <pre>
-     * StringUtils.isAlpha(null)   = false
-     * StringUtils.isAlpha("")     = false
-     * StringUtils.isAlpha("  ")   = false
-     * StringUtils.isAlpha("abc")  = true
-     * StringUtils.isAlpha("ab2c") = false
-     * StringUtils.isAlpha("ab-c") = false
+     * StringUtil.isAlpha(null)   = false
+     * StringUtil.isAlpha("")     = false
+     * StringUtil.isAlpha("  ")   = false
+     * StringUtil.isAlpha("abc")  = true
+     * StringUtil.isAlpha("ab2c") = false
+     * StringUtil.isAlpha("ab-c") = false
      * </pre>
      *
      * @param cs the CharSequence to check, may be null
@@ -4549,13 +4549,13 @@ public class StringUtil {
      * An empty CharSequence (length()=0) will return {@code false}.</p>
      *
      * <pre>
-     * StringUtils.isAlphanumeric(null)   = false
-     * StringUtils.isAlphanumeric("")     = false
-     * StringUtils.isAlphanumeric("  ")   = false
-     * StringUtils.isAlphanumeric("abc")  = true
-     * StringUtils.isAlphanumeric("ab c") = false
-     * StringUtils.isAlphanumeric("ab2c") = true
-     * StringUtils.isAlphanumeric("ab-c") = false
+     * StringUtil.isAlphanumeric(null)   = false
+     * StringUtil.isAlphanumeric("")     = false
+     * StringUtil.isAlphanumeric("  ")   = false
+     * StringUtil.isAlphanumeric("abc")  = true
+     * StringUtil.isAlphanumeric("ab c") = false
+     * StringUtil.isAlphanumeric("ab2c") = true
+     * StringUtil.isAlphanumeric("ab-c") = false
      * </pre>
      *
      * @param cs the CharSequence to check, may be null
@@ -4585,13 +4585,13 @@ public class StringUtil {
      * An empty CharSequence (length()=0) will return {@code true}.</p>
      *
      * <pre>
-     * StringUtils.isAlphanumericSpace(null)   = false
-     * StringUtils.isAlphanumericSpace("")     = true
-     * StringUtils.isAlphanumericSpace("  ")   = true
-     * StringUtils.isAlphanumericSpace("abc")  = true
-     * StringUtils.isAlphanumericSpace("ab c") = true
-     * StringUtils.isAlphanumericSpace("ab2c") = true
-     * StringUtils.isAlphanumericSpace("ab-c") = false
+     * StringUtil.isAlphanumericSpace(null)   = false
+     * StringUtil.isAlphanumericSpace("")     = true
+     * StringUtil.isAlphanumericSpace("  ")   = true
+     * StringUtil.isAlphanumericSpace("abc")  = true
+     * StringUtil.isAlphanumericSpace("ab c") = true
+     * StringUtil.isAlphanumericSpace("ab2c") = true
+     * StringUtil.isAlphanumericSpace("ab-c") = false
      * </pre>
      *
      * @param cs the CharSequence to check, may be null
@@ -4621,13 +4621,13 @@ public class StringUtil {
      * An empty CharSequence (length()=0) will return {@code true}.</p>
      *
      * <pre>
-     * StringUtils.isAlphaSpace(null)   = false
-     * StringUtils.isAlphaSpace("")     = true
-     * StringUtils.isAlphaSpace("  ")   = true
-     * StringUtils.isAlphaSpace("abc")  = true
-     * StringUtils.isAlphaSpace("ab c") = true
-     * StringUtils.isAlphaSpace("ab2c") = false
-     * StringUtils.isAlphaSpace("ab-c") = false
+     * StringUtil.isAlphaSpace(null)   = false
+     * StringUtil.isAlphaSpace("")     = true
+     * StringUtil.isAlphaSpace("  ")   = true
+     * StringUtil.isAlphaSpace("abc")  = true
+     * StringUtil.isAlphaSpace("ab c") = true
+     * StringUtil.isAlphaSpace("ab2c") = false
+     * StringUtil.isAlphaSpace("ab-c") = false
      * </pre>
      *
      * @param cs the CharSequence to check, may be null
@@ -4655,17 +4655,17 @@ public class StringUtil {
      * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.</p>
      *
      * <pre>
-     * StringUtils.isAnyBlank((String) null)    = true
-     * StringUtils.isAnyBlank((String[]) null)  = false
-     * StringUtils.isAnyBlank(null, "foo")      = true
-     * StringUtils.isAnyBlank(null, null)       = true
-     * StringUtils.isAnyBlank("", "bar")        = true
-     * StringUtils.isAnyBlank("bob", "")        = true
-     * StringUtils.isAnyBlank("  bob  ", null)  = true
-     * StringUtils.isAnyBlank(" ", "bar")       = true
-     * StringUtils.isAnyBlank(new String[] {})  = false
-     * StringUtils.isAnyBlank(new String[]{""}) = true
-     * StringUtils.isAnyBlank("foo", "bar")     = false
+     * StringUtil.isAnyBlank((String) null)    = true
+     * StringUtil.isAnyBlank((String[]) null)  = false
+     * StringUtil.isAnyBlank(null, "foo")      = true
+     * StringUtil.isAnyBlank(null, null)       = true
+     * StringUtil.isAnyBlank("", "bar")        = true
+     * StringUtil.isAnyBlank("bob", "")        = true
+     * StringUtil.isAnyBlank("  bob  ", null)  = true
+     * StringUtil.isAnyBlank(" ", "bar")       = true
+     * StringUtil.isAnyBlank(new String[] {})  = false
+     * StringUtil.isAnyBlank(new String[]{""}) = true
+     * StringUtil.isAnyBlank("foo", "bar")     = false
      * </pre>
      *
      * @param css the CharSequences to check, may be null or empty
@@ -4688,16 +4688,16 @@ public class StringUtil {
      * <p>Checks if any of the CharSequences are empty ("") or null.</p>
      *
      * <pre>
-     * StringUtils.isAnyEmpty((String) null)    = true
-     * StringUtils.isAnyEmpty((String[]) null)  = false
-     * StringUtils.isAnyEmpty(null, "foo")      = true
-     * StringUtils.isAnyEmpty("", "bar")        = true
-     * StringUtils.isAnyEmpty("bob", "")        = true
-     * StringUtils.isAnyEmpty("  bob  ", null)  = true
-     * StringUtils.isAnyEmpty(" ", "bar")       = false
-     * StringUtils.isAnyEmpty("foo", "bar")     = false
-     * StringUtils.isAnyEmpty(new String[]{})   = false
-     * StringUtils.isAnyEmpty(new String[]{""}) = true
+     * StringUtil.isAnyEmpty((String) null)    = true
+     * StringUtil.isAnyEmpty((String[]) null)  = false
+     * StringUtil.isAnyEmpty(null, "foo")      = true
+     * StringUtil.isAnyEmpty("", "bar")        = true
+     * StringUtil.isAnyEmpty("bob", "")        = true
+     * StringUtil.isAnyEmpty("  bob  ", null)  = true
+     * StringUtil.isAnyEmpty(" ", "bar")       = false
+     * StringUtil.isAnyEmpty("foo", "bar")     = false
+     * StringUtil.isAnyEmpty(new String[]{})   = false
+     * StringUtil.isAnyEmpty(new String[]{""}) = true
      * </pre>
      *
      * @param css the CharSequences to check, may be null or empty
@@ -4723,17 +4723,17 @@ public class StringUtil {
      * An empty CharSequence (length()=0) will return {@code true}.</p>
      *
      * <pre>
-     * StringUtils.isAsciiPrintable(null)     = false
-     * StringUtils.isAsciiPrintable("")       = true
-     * StringUtils.isAsciiPrintable(" ")      = true
-     * StringUtils.isAsciiPrintable("Ceki")   = true
-     * StringUtils.isAsciiPrintable("ab2c")   = true
-     * StringUtils.isAsciiPrintable("!ab-c~") = true
-     * StringUtils.isAsciiPrintable("\u0020") = true
-     * StringUtils.isAsciiPrintable("\u0021") = true
-     * StringUtils.isAsciiPrintable("\u007e") = true
-     * StringUtils.isAsciiPrintable("\u007f") = false
-     * StringUtils.isAsciiPrintable("Ceki G\u00fclc\u00fc") = false
+     * StringUtil.isAsciiPrintable(null)     = false
+     * StringUtil.isAsciiPrintable("")       = true
+     * StringUtil.isAsciiPrintable(" ")      = true
+     * StringUtil.isAsciiPrintable("Ceki")   = true
+     * StringUtil.isAsciiPrintable("ab2c")   = true
+     * StringUtil.isAsciiPrintable("!ab-c~") = true
+     * StringUtil.isAsciiPrintable("\u0020") = true
+     * StringUtil.isAsciiPrintable("\u0021") = true
+     * StringUtil.isAsciiPrintable("\u007e") = true
+     * StringUtil.isAsciiPrintable("\u007f") = false
+     * StringUtil.isAsciiPrintable("Ceki G\u00fclc\u00fc") = false
      * </pre>
      *
      * @param cs the CharSequence to check, may be null
@@ -4761,11 +4761,11 @@ public class StringUtil {
      * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.</p>
      *
      * <pre>
-     * StringUtils.isBlank(null)      = true
-     * StringUtils.isBlank("")        = true
-     * StringUtils.isBlank(" ")       = true
-     * StringUtils.isBlank("bob")     = false
-     * StringUtils.isBlank("  bob  ") = false
+     * StringUtil.isBlank(null)      = true
+     * StringUtil.isBlank("")        = true
+     * StringUtil.isBlank(" ")       = true
+     * StringUtil.isBlank("bob")     = false
+     * StringUtil.isBlank("  bob  ") = false
      * </pre>
      *
      * @param cs the CharSequence to check, may be null
@@ -4790,11 +4790,11 @@ public class StringUtil {
      * <p>Checks if a CharSequence is empty ("") or null.</p>
      *
      * <pre>
-     * StringUtils.isEmpty(null)      = true
-     * StringUtils.isEmpty("")        = true
-     * StringUtils.isEmpty(" ")       = false
-     * StringUtils.isEmpty("bob")     = false
-     * StringUtils.isEmpty("  bob  ") = false
+     * StringUtil.isEmpty(null)      = true
+     * StringUtil.isEmpty("")        = true
+     * StringUtil.isEmpty(" ")       = false
+     * StringUtil.isEmpty("bob")     = false
+     * StringUtil.isEmpty("  bob  ") = false
      * </pre>
      *
      * <p>NOTE: This method changed in Lang version 2.0.
@@ -4816,15 +4816,15 @@ public class StringUtil {
      * {@code false}.</p>
      *
      * <pre>
-     * StringUtils.isMixedCase(null)    = false
-     * StringUtils.isMixedCase("")      = false
-     * StringUtils.isMixedCase("ABC")   = false
-     * StringUtils.isMixedCase("abc")   = false
-     * StringUtils.isMixedCase("aBc")   = true
-     * StringUtils.isMixedCase("A c")   = true
-     * StringUtils.isMixedCase("A1c")   = true
-     * StringUtils.isMixedCase("a/C")   = true
-     * StringUtils.isMixedCase("aC\t")  = true
+     * StringUtil.isMixedCase(null)    = false
+     * StringUtil.isMixedCase("")      = false
+     * StringUtil.isMixedCase("ABC")   = false
+     * StringUtil.isMixedCase("abc")   = false
+     * StringUtil.isMixedCase("aBc")   = true
+     * StringUtil.isMixedCase("A c")   = true
+     * StringUtil.isMixedCase("A1c")   = true
+     * StringUtil.isMixedCase("a/C")   = true
+     * StringUtil.isMixedCase("aC\t")  = true
      * </pre>
      *
      * @param cs the CharSequence to check, may be null
@@ -4856,17 +4856,17 @@ public class StringUtil {
      * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.</p>
      *
      * <pre>
-     * StringUtils.isNoneBlank((String) null)    = false
-     * StringUtils.isNoneBlank((String[]) null)  = true
-     * StringUtils.isNoneBlank(null, "foo")      = false
-     * StringUtils.isNoneBlank(null, null)       = false
-     * StringUtils.isNoneBlank("", "bar")        = false
-     * StringUtils.isNoneBlank("bob", "")        = false
-     * StringUtils.isNoneBlank("  bob  ", null)  = false
-     * StringUtils.isNoneBlank(" ", "bar")       = false
-     * StringUtils.isNoneBlank(new String[] {})  = true
-     * StringUtils.isNoneBlank(new String[]{""}) = false
-     * StringUtils.isNoneBlank("foo", "bar")     = true
+     * StringUtil.isNoneBlank((String) null)    = false
+     * StringUtil.isNoneBlank((String[]) null)  = true
+     * StringUtil.isNoneBlank(null, "foo")      = false
+     * StringUtil.isNoneBlank(null, null)       = false
+     * StringUtil.isNoneBlank("", "bar")        = false
+     * StringUtil.isNoneBlank("bob", "")        = false
+     * StringUtil.isNoneBlank("  bob  ", null)  = false
+     * StringUtil.isNoneBlank(" ", "bar")       = false
+     * StringUtil.isNoneBlank(new String[] {})  = true
+     * StringUtil.isNoneBlank(new String[]{""}) = false
+     * StringUtil.isNoneBlank("foo", "bar")     = true
      * </pre>
      *
      * @param css the CharSequences to check, may be null or empty
@@ -4881,16 +4881,16 @@ public class StringUtil {
      * <p>Checks if none of the CharSequences are empty ("") or null.</p>
      *
      * <pre>
-     * StringUtils.isNoneEmpty((String) null)    = false
-     * StringUtils.isNoneEmpty((String[]) null)  = true
-     * StringUtils.isNoneEmpty(null, "foo")      = false
-     * StringUtils.isNoneEmpty("", "bar")        = false
-     * StringUtils.isNoneEmpty("bob", "")        = false
-     * StringUtils.isNoneEmpty("  bob  ", null)  = false
-     * StringUtils.isNoneEmpty(new String[] {})  = true
-     * StringUtils.isNoneEmpty(new String[]{""}) = false
-     * StringUtils.isNoneEmpty(" ", "bar")       = true
-     * StringUtils.isNoneEmpty("foo", "bar")     = true
+     * StringUtil.isNoneEmpty((String) null)    = false
+     * StringUtil.isNoneEmpty((String[]) null)  = true
+     * StringUtil.isNoneEmpty(null, "foo")      = false
+     * StringUtil.isNoneEmpty("", "bar")        = false
+     * StringUtil.isNoneEmpty("bob", "")        = false
+     * StringUtil.isNoneEmpty("  bob  ", null)  = false
+     * StringUtil.isNoneEmpty(new String[] {})  = true
+     * StringUtil.isNoneEmpty(new String[]{""}) = false
+     * StringUtil.isNoneEmpty(" ", "bar")       = true
+     * StringUtil.isNoneEmpty("foo", "bar")     = true
      * </pre>
      *
      * @param css the CharSequences to check, may be null or empty
@@ -4907,11 +4907,11 @@ public class StringUtil {
      * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.</p>
      *
      * <pre>
-     * StringUtils.isNotBlank(null)      = false
-     * StringUtils.isNotBlank("")        = false
-     * StringUtils.isNotBlank(" ")       = false
-     * StringUtils.isNotBlank("bob")     = true
-     * StringUtils.isNotBlank("  bob  ") = true
+     * StringUtil.isNotBlank(null)      = false
+     * StringUtil.isNotBlank("")        = false
+     * StringUtil.isNotBlank(" ")       = false
+     * StringUtil.isNotBlank("bob")     = true
+     * StringUtil.isNotBlank("  bob  ") = true
      * </pre>
      *
      * @param cs the CharSequence to check, may be null
@@ -4928,11 +4928,11 @@ public class StringUtil {
      * <p>Checks if a CharSequence is not empty ("") and not null.</p>
      *
      * <pre>
-     * StringUtils.isNotEmpty(null)      = false
-     * StringUtils.isNotEmpty("")        = false
-     * StringUtils.isNotEmpty(" ")       = true
-     * StringUtils.isNotEmpty("bob")     = true
-     * StringUtils.isNotEmpty("  bob  ") = true
+     * StringUtil.isNotEmpty(null)      = false
+     * StringUtil.isNotEmpty("")        = false
+     * StringUtil.isNotEmpty(" ")       = true
+     * StringUtil.isNotEmpty("bob")     = true
+     * StringUtil.isNotEmpty("  bob  ") = true
      * </pre>
      *
      * @param cs the CharSequence to check, may be null
@@ -4956,17 +4956,17 @@ public class StringUtil {
      * for int or long respectively.</p>
      *
      * <pre>
-     * StringUtils.isNumeric(null)   = false
-     * StringUtils.isNumeric("")     = false
-     * StringUtils.isNumeric("  ")   = false
-     * StringUtils.isNumeric("123")  = true
-     * StringUtils.isNumeric("\u0967\u0968\u0969")  = true
-     * StringUtils.isNumeric("12 3") = false
-     * StringUtils.isNumeric("ab2c") = false
-     * StringUtils.isNumeric("12-3") = false
-     * StringUtils.isNumeric("12.3") = false
-     * StringUtils.isNumeric("-123") = false
-     * StringUtils.isNumeric("+123") = false
+     * StringUtil.isNumeric(null)   = false
+     * StringUtil.isNumeric("")     = false
+     * StringUtil.isNumeric("  ")   = false
+     * StringUtil.isNumeric("123")  = true
+     * StringUtil.isNumeric("\u0967\u0968\u0969")  = true
+     * StringUtil.isNumeric("12 3") = false
+     * StringUtil.isNumeric("ab2c") = false
+     * StringUtil.isNumeric("12-3") = false
+     * StringUtil.isNumeric("12.3") = false
+     * StringUtil.isNumeric("-123") = false
+     * StringUtil.isNumeric("+123") = false
      * </pre>
      *
      * @param cs the CharSequence to check, may be null
@@ -4996,16 +4996,16 @@ public class StringUtil {
      * An empty CharSequence (length()=0) will return {@code true}.</p>
      *
      * <pre>
-     * StringUtils.isNumericSpace(null)   = false
-     * StringUtils.isNumericSpace("")     = true
-     * StringUtils.isNumericSpace("  ")   = true
-     * StringUtils.isNumericSpace("123")  = true
-     * StringUtils.isNumericSpace("12 3") = true
-     * StringUtils.isNumericSpace("\u0967\u0968\u0969")  = true
-     * StringUtils.isNumericSpace("\u0967\u0968 \u0969")  = true
-     * StringUtils.isNumericSpace("ab2c") = false
-     * StringUtils.isNumericSpace("12-3") = false
-     * StringUtils.isNumericSpace("12.3") = false
+     * StringUtil.isNumericSpace(null)   = false
+     * StringUtil.isNumericSpace("")     = true
+     * StringUtil.isNumericSpace("  ")   = true
+     * StringUtil.isNumericSpace("123")  = true
+     * StringUtil.isNumericSpace("12 3") = true
+     * StringUtil.isNumericSpace("\u0967\u0968\u0969")  = true
+     * StringUtil.isNumericSpace("\u0967\u0968 \u0969")  = true
+     * StringUtil.isNumericSpace("ab2c") = false
+     * StringUtil.isNumericSpace("12-3") = false
+     * StringUtil.isNumericSpace("12.3") = false
      * </pre>
      *
      * @param cs the CharSequence to check, may be null
@@ -5036,12 +5036,12 @@ public class StringUtil {
      * An empty CharSequence (length()=0) will return {@code true}.</p>
      *
      * <pre>
-     * StringUtils.isWhitespace(null)   = false
-     * StringUtils.isWhitespace("")     = true
-     * StringUtils.isWhitespace("  ")   = true
-     * StringUtils.isWhitespace("abc")  = false
-     * StringUtils.isWhitespace("ab2c") = false
-     * StringUtils.isWhitespace("ab-c") = false
+     * StringUtil.isWhitespace(null)   = false
+     * StringUtil.isWhitespace("")     = true
+     * StringUtil.isWhitespace("  ")   = true
+     * StringUtil.isWhitespace("abc")  = false
+     * StringUtil.isWhitespace("ab2c") = false
+     * StringUtil.isWhitespace("ab-c") = false
      * </pre>
      *
      * @param cs the CharSequence to check, may be null
@@ -5073,10 +5073,10 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.join(null, *)              = null
-     * StringUtils.join([], *)                = ""
-     * StringUtils.join([null], *)            = ""
-     * StringUtils.join([false, false], ';')  = "false;false"
+     * StringUtil.join(null, *)              = null
+     * StringUtil.join([], *)                = ""
+     * StringUtil.join([null], *)            = ""
+     * StringUtil.join([false, false], ';')  = "false;false"
      * </pre>
      *
      * @param array     the array of values to join together, may be null
@@ -5102,10 +5102,10 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.join(null, *)                   = null
-     * StringUtils.join([], *)                     = ""
-     * StringUtils.join([null], *)                 = ""
-     * StringUtils.join([true, false, true], ';')  = "true;false;true"
+     * StringUtil.join(null, *)                   = null
+     * StringUtil.join([], *)                     = ""
+     * StringUtil.join([null], *)                 = ""
+     * StringUtil.join([true, false, true], ';')  = "true;false;true"
      * </pre>
      *
      * @param array      the array of values to join together, may be null
@@ -5142,11 +5142,11 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join([1, 2, 3], ';')  = "1;2;3"
-     * StringUtils.join([1, 2, 3], null) = "123"
+     * StringUtil.join(null, *)               = null
+     * StringUtil.join([], *)                 = ""
+     * StringUtil.join([null], *)             = ""
+     * StringUtil.join([1, 2, 3], ';')  = "1;2;3"
+     * StringUtil.join([1, 2, 3], null) = "123"
      * </pre>
      *
      * @param array     the array of values to join together, may be null
@@ -5172,11 +5172,11 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join([1, 2, 3], ';')  = "1;2;3"
-     * StringUtils.join([1, 2, 3], null) = "123"
+     * StringUtil.join(null, *)               = null
+     * StringUtil.join([], *)                 = ""
+     * StringUtil.join([null], *)             = ""
+     * StringUtil.join([1, 2, 3], ';')  = "1;2;3"
+     * StringUtil.join([1, 2, 3], null) = "123"
      * </pre>
      *
      * @param array      the array of values to join together, may be null
@@ -5213,11 +5213,11 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join([1, 2, 3], ';')  = "1;2;3"
-     * StringUtils.join([1, 2, 3], null) = "123"
+     * StringUtil.join(null, *)               = null
+     * StringUtil.join([], *)                 = ""
+     * StringUtil.join([null], *)             = ""
+     * StringUtil.join([1, 2, 3], ';')  = "1;2;3"
+     * StringUtil.join([1, 2, 3], null) = "123"
      * </pre>
      *
      * @param array     the array of values to join together, may be null
@@ -5243,11 +5243,11 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join([1, 2, 3], ';')  = "1;2;3"
-     * StringUtils.join([1, 2, 3], null) = "123"
+     * StringUtil.join(null, *)               = null
+     * StringUtil.join([], *)                 = ""
+     * StringUtil.join([null], *)             = ""
+     * StringUtil.join([1, 2, 3], ';')  = "1;2;3"
+     * StringUtil.join([1, 2, 3], null) = "123"
      * </pre>
      *
      * @param array      the array of values to join together, may be null
@@ -5284,11 +5284,11 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join([1, 2, 3], ';')  = "1;2;3"
-     * StringUtils.join([1, 2, 3], null) = "123"
+     * StringUtil.join(null, *)               = null
+     * StringUtil.join([], *)                 = ""
+     * StringUtil.join([null], *)             = ""
+     * StringUtil.join([1, 2, 3], ';')  = "1;2;3"
+     * StringUtil.join([1, 2, 3], null) = "123"
      * </pre>
      *
      * @param array     the array of values to join together, may be null
@@ -5314,11 +5314,11 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join([1, 2, 3], ';')  = "1;2;3"
-     * StringUtils.join([1, 2, 3], null) = "123"
+     * StringUtil.join(null, *)               = null
+     * StringUtil.join([], *)                 = ""
+     * StringUtil.join([null], *)             = ""
+     * StringUtil.join([1, 2, 3], ';')  = "1;2;3"
+     * StringUtil.join([1, 2, 3], null) = "123"
      * </pre>
      *
      * @param array      the array of values to join together, may be null
@@ -5355,11 +5355,11 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join([1, 2, 3], ';')  = "1;2;3"
-     * StringUtils.join([1, 2, 3], null) = "123"
+     * StringUtil.join(null, *)               = null
+     * StringUtil.join([], *)                 = ""
+     * StringUtil.join([null], *)             = ""
+     * StringUtil.join([1, 2, 3], ';')  = "1;2;3"
+     * StringUtil.join([1, 2, 3], null) = "123"
      * </pre>
      *
      * @param array     the array of values to join together, may be null
@@ -5385,11 +5385,11 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join([1, 2, 3], ';')  = "1;2;3"
-     * StringUtils.join([1, 2, 3], null) = "123"
+     * StringUtil.join(null, *)               = null
+     * StringUtil.join([], *)                 = ""
+     * StringUtil.join([null], *)             = ""
+     * StringUtil.join([1, 2, 3], ';')  = "1;2;3"
+     * StringUtil.join([1, 2, 3], null) = "123"
      * </pre>
      *
      * @param array      the array of values to join together, may be null
@@ -5426,11 +5426,11 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join([1, 2, 3], ';')  = "1;2;3"
-     * StringUtils.join([1, 2, 3], null) = "123"
+     * StringUtil.join(null, *)               = null
+     * StringUtil.join([], *)                 = ""
+     * StringUtil.join([null], *)             = ""
+     * StringUtil.join([1, 2, 3], ';')  = "1;2;3"
+     * StringUtil.join([1, 2, 3], null) = "123"
      * </pre>
      *
      * @param array     the array of values to join together, may be null
@@ -5456,11 +5456,11 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join([1, 2, 3], ';')  = "1;2;3"
-     * StringUtils.join([1, 2, 3], null) = "123"
+     * StringUtil.join(null, *)               = null
+     * StringUtil.join([], *)                 = ""
+     * StringUtil.join([null], *)             = ""
+     * StringUtil.join([1, 2, 3], ';')  = "1;2;3"
+     * StringUtil.join([1, 2, 3], null) = "123"
      * </pre>
      *
      * @param array      the array of values to join together, may be null
@@ -5627,12 +5627,12 @@ public class StringUtil {
      * empty strings.</p>
      *
      * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join(["a", "b", "c"], ';')  = "a;b;c"
-     * StringUtils.join(["a", "b", "c"], null) = "abc"
-     * StringUtils.join([null, "", "a"], ';')  = ";;a"
+     * StringUtil.join(null, *)               = null
+     * StringUtil.join([], *)                 = ""
+     * StringUtil.join([null], *)             = ""
+     * StringUtil.join(["a", "b", "c"], ';')  = "a;b;c"
+     * StringUtil.join(["a", "b", "c"], null) = "abc"
+     * StringUtil.join([null, "", "a"], ';')  = ";;a"
      * </pre>
      *
      * @param list       the {@code List} of values to join together, may be null
@@ -5665,12 +5665,12 @@ public class StringUtil {
      * empty strings.</p>
      *
      * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join(["a", "b", "c"], ';')  = "a;b;c"
-     * StringUtils.join(["a", "b", "c"], null) = "abc"
-     * StringUtils.join([null, "", "a"], ';')  = ";;a"
+     * StringUtil.join(null, *)               = null
+     * StringUtil.join([], *)                 = ""
+     * StringUtil.join([null], *)             = ""
+     * StringUtil.join(["a", "b", "c"], ';')  = "a;b;c"
+     * StringUtil.join(["a", "b", "c"], null) = "abc"
+     * StringUtil.join([null, "", "a"], ';')  = ";;a"
      * </pre>
      *
      * @param list       the {@code List} of values to join together, may be null
@@ -5706,11 +5706,11 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join([1, 2, 3], ';')  = "1;2;3"
-     * StringUtils.join([1, 2, 3], null) = "123"
+     * StringUtil.join(null, *)               = null
+     * StringUtil.join([], *)                 = ""
+     * StringUtil.join([null], *)             = ""
+     * StringUtil.join([1, 2, 3], ';')  = "1;2;3"
+     * StringUtil.join([1, 2, 3], null) = "123"
      * </pre>
      *
      * @param array     the array of values to join together, may be null
@@ -5736,11 +5736,11 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join([1, 2, 3], ';')  = "1;2;3"
-     * StringUtils.join([1, 2, 3], null) = "123"
+     * StringUtil.join(null, *)               = null
+     * StringUtil.join([], *)                 = ""
+     * StringUtil.join([null], *)             = ""
+     * StringUtil.join([1, 2, 3], ';')  = "1;2;3"
+     * StringUtil.join([1, 2, 3], null) = "123"
      * </pre>
      *
      * @param array      the array of values to join together, may be null
@@ -5775,12 +5775,12 @@ public class StringUtil {
      * empty strings.</p>
      *
      * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join(["a", "b", "c"], ';')  = "a;b;c"
-     * StringUtils.join(["a", "b", "c"], null) = "abc"
-     * StringUtils.join([null, "", "a"], ';')  = ";;a"
+     * StringUtil.join(null, *)               = null
+     * StringUtil.join([], *)                 = ""
+     * StringUtil.join([null], *)             = ""
+     * StringUtil.join(["a", "b", "c"], ';')  = "a;b;c"
+     * StringUtil.join(["a", "b", "c"], null) = "abc"
+     * StringUtil.join([null, "", "a"], ';')  = ";;a"
      * </pre>
      *
      * @param array     the array of values to join together, may be null
@@ -5804,12 +5804,12 @@ public class StringUtil {
      * empty strings.</p>
      *
      * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join(["a", "b", "c"], ';')  = "a;b;c"
-     * StringUtils.join(["a", "b", "c"], null) = "abc"
-     * StringUtils.join([null, "", "a"], ';')  = ";;a"
+     * StringUtil.join(null, *)               = null
+     * StringUtil.join([], *)                 = ""
+     * StringUtil.join([null], *)             = ""
+     * StringUtil.join(["a", "b", "c"], ';')  = "a;b;c"
+     * StringUtil.join(["a", "b", "c"], null) = "abc"
+     * StringUtil.join([null, "", "a"], ';')  = ";;a"
      * </pre>
      *
      * @param array      the array of values to join together, may be null
@@ -5845,13 +5845,13 @@ public class StringUtil {
      * empty strings.</p>
      *
      * <pre>
-     * StringUtils.join(null, *)                = null
-     * StringUtils.join([], *)                  = ""
-     * StringUtils.join([null], *)              = ""
-     * StringUtils.join(["a", "b", "c"], "--")  = "a--b--c"
-     * StringUtils.join(["a", "b", "c"], null)  = "abc"
-     * StringUtils.join(["a", "b", "c"], "")    = "abc"
-     * StringUtils.join([null, "", "a"], ',')   = ",,a"
+     * StringUtil.join(null, *)                = null
+     * StringUtil.join([], *)                  = ""
+     * StringUtil.join([null], *)              = ""
+     * StringUtil.join(["a", "b", "c"], "--")  = "a--b--c"
+     * StringUtil.join(["a", "b", "c"], null)  = "abc"
+     * StringUtil.join(["a", "b", "c"], "")    = "abc"
+     * StringUtil.join([null, "", "a"], ',')   = ",,a"
      * </pre>
      *
      * @param array     the array of values to join together, may be null
@@ -5875,16 +5875,16 @@ public class StringUtil {
      * empty strings.</p>
      *
      * <pre>
-     * StringUtils.join(null, *, *, *)                = null
-     * StringUtils.join([], *, *, *)                  = ""
-     * StringUtils.join([null], *, *, *)              = ""
-     * StringUtils.join(["a", "b", "c"], "--", 0, 3)  = "a--b--c"
-     * StringUtils.join(["a", "b", "c"], "--", 1, 3)  = "b--c"
-     * StringUtils.join(["a", "b", "c"], "--", 2, 3)  = "c"
-     * StringUtils.join(["a", "b", "c"], "--", 2, 2)  = ""
-     * StringUtils.join(["a", "b", "c"], null, 0, 3)  = "abc"
-     * StringUtils.join(["a", "b", "c"], "", 0, 3)    = "abc"
-     * StringUtils.join([null, "", "a"], ',', 0, 3)   = ",,a"
+     * StringUtil.join(null, *, *, *)                = null
+     * StringUtil.join([], *, *, *)                  = ""
+     * StringUtil.join([null], *, *, *)              = ""
+     * StringUtil.join(["a", "b", "c"], "--", 0, 3)  = "a--b--c"
+     * StringUtil.join(["a", "b", "c"], "--", 1, 3)  = "b--c"
+     * StringUtil.join(["a", "b", "c"], "--", 2, 3)  = "c"
+     * StringUtil.join(["a", "b", "c"], "--", 2, 2)  = ""
+     * StringUtil.join(["a", "b", "c"], null, 0, 3)  = "abc"
+     * StringUtil.join(["a", "b", "c"], "", 0, 3)    = "abc"
+     * StringUtil.join([null, "", "a"], ',', 0, 3)   = ",,a"
      * </pre>
      *
      * @param array      the array of values to join together, may be null
@@ -5925,11 +5925,11 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join([1, 2, 3], ';')  = "1;2;3"
-     * StringUtils.join([1, 2, 3], null) = "123"
+     * StringUtil.join(null, *)               = null
+     * StringUtil.join([], *)                 = ""
+     * StringUtil.join([null], *)             = ""
+     * StringUtil.join([1, 2, 3], ';')  = "1;2;3"
+     * StringUtil.join([1, 2, 3], null) = "123"
      * </pre>
      *
      * @param array     the array of values to join together, may be null
@@ -5955,11 +5955,11 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.join(null, *)               = null
-     * StringUtils.join([], *)                 = ""
-     * StringUtils.join([null], *)             = ""
-     * StringUtils.join([1, 2, 3], ';')  = "1;2;3"
-     * StringUtils.join([1, 2, 3], null) = "123"
+     * StringUtil.join(null, *)               = null
+     * StringUtil.join([], *)                 = ""
+     * StringUtil.join([null], *)             = ""
+     * StringUtil.join([1, 2, 3], ';')  = "1;2;3"
+     * StringUtil.join([1, 2, 3], null) = "123"
      * </pre>
      *
      * @param array      the array of values to join together, may be null
@@ -5994,11 +5994,11 @@ public class StringUtil {
      * empty strings.</p>
      *
      * <pre>
-     * StringUtils.join(null)            = null
-     * StringUtils.join([])              = ""
-     * StringUtils.join([null])          = ""
-     * StringUtils.join(["a", "b", "c"]) = "abc"
-     * StringUtils.join([null, "", "a"]) = "a"
+     * StringUtil.join(null)            = null
+     * StringUtil.join([])              = ""
+     * StringUtil.join([null])          = ""
+     * StringUtil.join(["a", "b", "c"]) = "abc"
+     * StringUtil.join([null, "", "a"]) = "a"
      * </pre>
      *
      * @param <T>      the specific type of values to join together
@@ -6020,10 +6020,10 @@ public class StringUtil {
      * {@code null} elements and separator are treated as empty Strings ("").</p>
      *
      * <pre>
-     * StringUtils.joinWith(",", {"a", "b"})        = "a,b"
-     * StringUtils.joinWith(",", {"a", "b",""})     = "a,b,"
-     * StringUtils.joinWith(",", {"a", null, "b"})  = "a,,b"
-     * StringUtils.joinWith(null, {"a", "b"})       = "ab"
+     * StringUtil.joinWith(",", {"a", "b"})        = "a,b"
+     * StringUtil.joinWith(",", {"a", "b",""})     = "a,b,"
+     * StringUtil.joinWith(",", {"a", null, "b"})  = "a,,b"
+     * StringUtil.joinWith(null, {"a", "b"})       = "ab"
      * </pre>
      *
      * @param delimiter the separator character to use, null treated as ""
@@ -6046,13 +6046,13 @@ public class StringUtil {
      * <p>A {@code null} CharSequence will return {@code -1}.</p>
      *
      * <pre>
-     * StringUtils.lastIndexOf(null, *)          = -1
-     * StringUtils.lastIndexOf(*, null)          = -1
-     * StringUtils.lastIndexOf("", "")           = 0
-     * StringUtils.lastIndexOf("aabaabaa", "a")  = 7
-     * StringUtils.lastIndexOf("aabaabaa", "b")  = 5
-     * StringUtils.lastIndexOf("aabaabaa", "ab") = 4
-     * StringUtils.lastIndexOf("aabaabaa", "")   = 8
+     * StringUtil.lastIndexOf(null, *)          = -1
+     * StringUtil.lastIndexOf(*, null)          = -1
+     * StringUtil.lastIndexOf("", "")           = 0
+     * StringUtil.lastIndexOf("aabaabaa", "a")  = 7
+     * StringUtil.lastIndexOf("aabaabaa", "b")  = 5
+     * StringUtil.lastIndexOf("aabaabaa", "ab") = 4
+     * StringUtil.lastIndexOf("aabaabaa", "")   = 8
      * </pre>
      *
      * @param seq       the CharSequence to check, may be null
@@ -6082,18 +6082,18 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.lastIndexOf(null, *, *)          = -1
-     * StringUtils.lastIndexOf(*, null, *)          = -1
-     * StringUtils.lastIndexOf("aabaabaa", "a", 8)  = 7
-     * StringUtils.lastIndexOf("aabaabaa", "b", 8)  = 5
-     * StringUtils.lastIndexOf("aabaabaa", "ab", 8) = 4
-     * StringUtils.lastIndexOf("aabaabaa", "b", 9)  = 5
-     * StringUtils.lastIndexOf("aabaabaa", "b", -1) = -1
-     * StringUtils.lastIndexOf("aabaabaa", "a", 0)  = 0
-     * StringUtils.lastIndexOf("aabaabaa", "b", 0)  = -1
-     * StringUtils.lastIndexOf("aabaabaa", "b", 1)  = -1
-     * StringUtils.lastIndexOf("aabaabaa", "b", 2)  = 2
-     * StringUtils.lastIndexOf("aabaabaa", "ba", 2)  = 2
+     * StringUtil.lastIndexOf(null, *, *)          = -1
+     * StringUtil.lastIndexOf(*, null, *)          = -1
+     * StringUtil.lastIndexOf("aabaabaa", "a", 8)  = 7
+     * StringUtil.lastIndexOf("aabaabaa", "b", 8)  = 5
+     * StringUtil.lastIndexOf("aabaabaa", "ab", 8) = 4
+     * StringUtil.lastIndexOf("aabaabaa", "b", 9)  = 5
+     * StringUtil.lastIndexOf("aabaabaa", "b", -1) = -1
+     * StringUtil.lastIndexOf("aabaabaa", "a", 0)  = 0
+     * StringUtil.lastIndexOf("aabaabaa", "b", 0)  = -1
+     * StringUtil.lastIndexOf("aabaabaa", "b", 1)  = -1
+     * StringUtil.lastIndexOf("aabaabaa", "b", 2)  = 2
+     * StringUtil.lastIndexOf("aabaabaa", "ba", 2)  = 2
      * </pre>
      *
      * @param seq       the CharSequence to check, may be null
@@ -6128,10 +6128,10 @@ public class StringUtil {
      * starting at the last character.
      *
      * <pre>
-     * StringUtils.lastIndexOf(null, *)         = -1
-     * StringUtils.lastIndexOf("", *)           = -1
-     * StringUtils.lastIndexOf("aabaabaa", 'a') = 7
-     * StringUtils.lastIndexOf("aabaabaa", 'b') = 5
+     * StringUtil.lastIndexOf(null, *)         = -1
+     * StringUtil.lastIndexOf("", *)           = -1
+     * StringUtil.lastIndexOf("aabaabaa", 'a') = 7
+     * StringUtil.lastIndexOf("aabaabaa", 'b') = 5
      * </pre>
      *
      * @param seq        the {@code CharSequence} to check, may be null
@@ -6175,14 +6175,14 @@ public class StringUtil {
      * (Unicode code units).
      *
      * <pre>
-     * StringUtils.lastIndexOf(null, *, *)          = -1
-     * StringUtils.lastIndexOf("", *,  *)           = -1
-     * StringUtils.lastIndexOf("aabaabaa", 'b', 8)  = 5
-     * StringUtils.lastIndexOf("aabaabaa", 'b', 4)  = 2
-     * StringUtils.lastIndexOf("aabaabaa", 'b', 0)  = -1
-     * StringUtils.lastIndexOf("aabaabaa", 'b', 9)  = 5
-     * StringUtils.lastIndexOf("aabaabaa", 'b', -1) = -1
-     * StringUtils.lastIndexOf("aabaabaa", 'a', 0)  = 0
+     * StringUtil.lastIndexOf(null, *, *)          = -1
+     * StringUtil.lastIndexOf("", *,  *)           = -1
+     * StringUtil.lastIndexOf("aabaabaa", 'b', 8)  = 5
+     * StringUtil.lastIndexOf("aabaabaa", 'b', 4)  = 2
+     * StringUtil.lastIndexOf("aabaabaa", 'b', 0)  = -1
+     * StringUtil.lastIndexOf("aabaabaa", 'b', 9)  = 5
+     * StringUtil.lastIndexOf("aabaabaa", 'b', -1) = -1
+     * StringUtil.lastIndexOf("aabaabaa", 'a', 0)  = 0
      * </pre>
      *
      * @param seq        the CharSequence to check, may be null
@@ -6210,15 +6210,15 @@ public class StringUtil {
      * if {@code str} is not null. This method uses {@link String#indexOf(String)} if possible</p>
      *
      * <pre>
-     * StringUtils.lastIndexOfAny(null, *)                    = -1
-     * StringUtils.lastIndexOfAny(*, null)                    = -1
-     * StringUtils.lastIndexOfAny(*, [])                      = -1
-     * StringUtils.lastIndexOfAny(*, [null])                  = -1
-     * StringUtils.lastIndexOfAny("zzabyycdxx", ["ab", "cd"]) = 6
-     * StringUtils.lastIndexOfAny("zzabyycdxx", ["cd", "ab"]) = 6
-     * StringUtils.lastIndexOfAny("zzabyycdxx", ["mn", "op"]) = -1
-     * StringUtils.lastIndexOfAny("zzabyycdxx", ["mn", "op"]) = -1
-     * StringUtils.lastIndexOfAny("zzabyycdxx", ["mn", ""])   = 10
+     * StringUtil.lastIndexOfAny(null, *)                    = -1
+     * StringUtil.lastIndexOfAny(*, null)                    = -1
+     * StringUtil.lastIndexOfAny(*, [])                      = -1
+     * StringUtil.lastIndexOfAny(*, [null])                  = -1
+     * StringUtil.lastIndexOfAny("zzabyycdxx", ["ab", "cd"]) = 6
+     * StringUtil.lastIndexOfAny("zzabyycdxx", ["cd", "ab"]) = 6
+     * StringUtil.lastIndexOfAny("zzabyycdxx", ["mn", "op"]) = -1
+     * StringUtil.lastIndexOfAny("zzabyycdxx", ["mn", "op"]) = -1
+     * StringUtil.lastIndexOfAny("zzabyycdxx", ["mn", ""])   = 10
      * </pre>
      *
      * @param str        the CharSequence to check, may be null
@@ -6253,11 +6253,11 @@ public class StringUtil {
      * A start position greater than the string length searches the whole string.</p>
      *
      * <pre>
-     * StringUtils.lastIndexOfIgnoreCase(null, *)          = -1
-     * StringUtils.lastIndexOfIgnoreCase(*, null)          = -1
-     * StringUtils.lastIndexOfIgnoreCase("aabaabaa", "A")  = 7
-     * StringUtils.lastIndexOfIgnoreCase("aabaabaa", "B")  = 5
-     * StringUtils.lastIndexOfIgnoreCase("aabaabaa", "AB") = 4
+     * StringUtil.lastIndexOfIgnoreCase(null, *)          = -1
+     * StringUtil.lastIndexOfIgnoreCase(*, null)          = -1
+     * StringUtil.lastIndexOfIgnoreCase("aabaabaa", "A")  = 7
+     * StringUtil.lastIndexOfIgnoreCase("aabaabaa", "B")  = 5
+     * StringUtil.lastIndexOfIgnoreCase("aabaabaa", "AB") = 4
      * </pre>
      *
      * @param str       the CharSequence to check, may be null
@@ -6287,15 +6287,15 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.lastIndexOfIgnoreCase(null, *, *)          = -1
-     * StringUtils.lastIndexOfIgnoreCase(*, null, *)          = -1
-     * StringUtils.lastIndexOfIgnoreCase("aabaabaa", "A", 8)  = 7
-     * StringUtils.lastIndexOfIgnoreCase("aabaabaa", "B", 8)  = 5
-     * StringUtils.lastIndexOfIgnoreCase("aabaabaa", "AB", 8) = 4
-     * StringUtils.lastIndexOfIgnoreCase("aabaabaa", "B", 9)  = 5
-     * StringUtils.lastIndexOfIgnoreCase("aabaabaa", "B", -1) = -1
-     * StringUtils.lastIndexOfIgnoreCase("aabaabaa", "A", 0)  = 0
-     * StringUtils.lastIndexOfIgnoreCase("aabaabaa", "B", 0)  = -1
+     * StringUtil.lastIndexOfIgnoreCase(null, *, *)          = -1
+     * StringUtil.lastIndexOfIgnoreCase(*, null, *)          = -1
+     * StringUtil.lastIndexOfIgnoreCase("aabaabaa", "A", 8)  = 7
+     * StringUtil.lastIndexOfIgnoreCase("aabaabaa", "B", 8)  = 5
+     * StringUtil.lastIndexOfIgnoreCase("aabaabaa", "AB", 8) = 4
+     * StringUtil.lastIndexOfIgnoreCase("aabaabaa", "B", 9)  = 5
+     * StringUtil.lastIndexOfIgnoreCase("aabaabaa", "B", -1) = -1
+     * StringUtil.lastIndexOfIgnoreCase("aabaabaa", "A", 0)  = 0
+     * StringUtil.lastIndexOfIgnoreCase("aabaabaa", "B", 0)  = -1
      * </pre>
      *
      * @param str       the CharSequence to check, may be null
@@ -6337,17 +6337,17 @@ public class StringUtil {
      * <p>A {@code null} String will return {@code -1}.</p>
      *
      * <pre>
-     * StringUtils.lastOrdinalIndexOf(null, *, *)          = -1
-     * StringUtils.lastOrdinalIndexOf(*, null, *)          = -1
-     * StringUtils.lastOrdinalIndexOf("", "", *)           = 0
-     * StringUtils.lastOrdinalIndexOf("aabaabaa", "a", 1)  = 7
-     * StringUtils.lastOrdinalIndexOf("aabaabaa", "a", 2)  = 6
-     * StringUtils.lastOrdinalIndexOf("aabaabaa", "b", 1)  = 5
-     * StringUtils.lastOrdinalIndexOf("aabaabaa", "b", 2)  = 2
-     * StringUtils.lastOrdinalIndexOf("aabaabaa", "ab", 1) = 4
-     * StringUtils.lastOrdinalIndexOf("aabaabaa", "ab", 2) = 1
-     * StringUtils.lastOrdinalIndexOf("aabaabaa", "", 1)   = 8
-     * StringUtils.lastOrdinalIndexOf("aabaabaa", "", 2)   = 8
+     * StringUtil.lastOrdinalIndexOf(null, *, *)          = -1
+     * StringUtil.lastOrdinalIndexOf(*, null, *)          = -1
+     * StringUtil.lastOrdinalIndexOf("", "", *)           = 0
+     * StringUtil.lastOrdinalIndexOf("aabaabaa", "a", 1)  = 7
+     * StringUtil.lastOrdinalIndexOf("aabaabaa", "a", 2)  = 6
+     * StringUtil.lastOrdinalIndexOf("aabaabaa", "b", 1)  = 5
+     * StringUtil.lastOrdinalIndexOf("aabaabaa", "b", 2)  = 2
+     * StringUtil.lastOrdinalIndexOf("aabaabaa", "ab", 1) = 4
+     * StringUtil.lastOrdinalIndexOf("aabaabaa", "ab", 2) = 1
+     * StringUtil.lastOrdinalIndexOf("aabaabaa", "", 1)   = 8
+     * StringUtil.lastOrdinalIndexOf("aabaabaa", "", 2)   = 8
      * </pre>
      *
      * <p>Note that 'tail(CharSequence str, int n)' may be implemented as: </p>
@@ -6376,12 +6376,12 @@ public class StringUtil {
      * an exception. An empty String is returned if len is negative.</p>
      *
      * <pre>
-     * StringUtils.left(null, *)    = null
-     * StringUtils.left(*, -ve)     = ""
-     * StringUtils.left("", *)      = ""
-     * StringUtils.left("abc", 0)   = ""
-     * StringUtils.left("abc", 2)   = "ab"
-     * StringUtils.left("abc", 4)   = "abc"
+     * StringUtil.left(null, *)    = null
+     * StringUtil.left(*, -ve)     = ""
+     * StringUtil.left("", *)      = ""
+     * StringUtil.left("abc", 0)   = ""
+     * StringUtil.left("abc", 2)   = "ab"
+     * StringUtil.left("abc", 4)   = "abc"
      * </pre>
      *
      * @param str the String to get the leftmost characters from, may be null
@@ -6407,12 +6407,12 @@ public class StringUtil {
      * <p>The String is padded to the size of {@code size}.</p>
      *
      * <pre>
-     * StringUtils.leftPad(null, *)   = null
-     * StringUtils.leftPad("", 3)     = "   "
-     * StringUtils.leftPad("bat", 3)  = "bat"
-     * StringUtils.leftPad("bat", 5)  = "  bat"
-     * StringUtils.leftPad("bat", 1)  = "bat"
-     * StringUtils.leftPad("bat", -1) = "bat"
+     * StringUtil.leftPad(null, *)   = null
+     * StringUtil.leftPad("", 3)     = "   "
+     * StringUtil.leftPad("bat", 3)  = "bat"
+     * StringUtil.leftPad("bat", 5)  = "  bat"
+     * StringUtil.leftPad("bat", 1)  = "bat"
+     * StringUtil.leftPad("bat", -1) = "bat"
      * </pre>
      *
      * @param str  the String to pad out, may be null
@@ -6430,12 +6430,12 @@ public class StringUtil {
      * <p>Pad to a size of {@code size}.</p>
      *
      * <pre>
-     * StringUtils.leftPad(null, *, *)     = null
-     * StringUtils.leftPad("", 3, 'z')     = "zzz"
-     * StringUtils.leftPad("bat", 3, 'z')  = "bat"
-     * StringUtils.leftPad("bat", 5, 'z')  = "zzbat"
-     * StringUtils.leftPad("bat", 1, 'z')  = "bat"
-     * StringUtils.leftPad("bat", -1, 'z') = "bat"
+     * StringUtil.leftPad(null, *, *)     = null
+     * StringUtil.leftPad("", 3, 'z')     = "zzz"
+     * StringUtil.leftPad("bat", 3, 'z')  = "bat"
+     * StringUtil.leftPad("bat", 5, 'z')  = "zzbat"
+     * StringUtil.leftPad("bat", 1, 'z')  = "bat"
+     * StringUtil.leftPad("bat", -1, 'z') = "bat"
      * </pre>
      *
      * @param str     the String to pad out, may be null
@@ -6465,15 +6465,15 @@ public class StringUtil {
      * <p>Pad to a size of {@code size}.</p>
      *
      * <pre>
-     * StringUtils.leftPad(null, *, *)      = null
-     * StringUtils.leftPad("", 3, "z")      = "zzz"
-     * StringUtils.leftPad("bat", 3, "yz")  = "bat"
-     * StringUtils.leftPad("bat", 5, "yz")  = "yzbat"
-     * StringUtils.leftPad("bat", 8, "yz")  = "yzyzybat"
-     * StringUtils.leftPad("bat", 1, "yz")  = "bat"
-     * StringUtils.leftPad("bat", -1, "yz") = "bat"
-     * StringUtils.leftPad("bat", 5, null)  = "  bat"
-     * StringUtils.leftPad("bat", 5, "")    = "  bat"
+     * StringUtil.leftPad(null, *, *)      = null
+     * StringUtil.leftPad("", 3, "z")      = "zzz"
+     * StringUtil.leftPad("bat", 3, "yz")  = "bat"
+     * StringUtil.leftPad("bat", 5, "yz")  = "yzbat"
+     * StringUtil.leftPad("bat", 8, "yz")  = "yzyzybat"
+     * StringUtil.leftPad("bat", 1, "yz")  = "bat"
+     * StringUtil.leftPad("bat", -1, "yz") = "bat"
+     * StringUtil.leftPad("bat", 5, null)  = "  bat"
+     * StringUtil.leftPad("bat", 5, "")    = "  bat"
      * </pre>
      *
      * @param str    the String to pad out, may be null
@@ -6533,9 +6533,9 @@ public class StringUtil {
      * <p>A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
-     * StringUtils.lowerCase(null)  = null
-     * StringUtils.lowerCase("")    = ""
-     * StringUtils.lowerCase("aBc") = "abc"
+     * StringUtil.lowerCase(null)  = null
+     * StringUtil.lowerCase("")    = ""
+     * StringUtil.lowerCase("aBc") = "abc"
      * </pre>
      *
      * <p><strong>Note:</strong> As described in the documentation for {@link String#toLowerCase()},
@@ -6559,9 +6559,9 @@ public class StringUtil {
      * <p>A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
-     * StringUtils.lowerCase(null, Locale.ENGLISH)  = null
-     * StringUtils.lowerCase("", Locale.ENGLISH)    = ""
-     * StringUtils.lowerCase("aBc", Locale.ENGLISH) = "abc"
+     * StringUtil.lowerCase(null, Locale.ENGLISH)  = null
+     * StringUtil.lowerCase("", Locale.ENGLISH)    = ""
+     * StringUtil.lowerCase("aBc", Locale.ENGLISH) = "abc"
      * </pre>
      *
      * @param str    the String to lower case, may be null
@@ -6643,14 +6643,14 @@ public class StringUtil {
      * length of {@code str}.</p>
      *
      * <pre>
-     * StringUtils.mid(null, *, *)    = null
-     * StringUtils.mid(*, *, -ve)     = ""
-     * StringUtils.mid("", 0, *)      = ""
-     * StringUtils.mid("abc", 0, 2)   = "ab"
-     * StringUtils.mid("abc", 0, 4)   = "abc"
-     * StringUtils.mid("abc", 2, 4)   = "c"
-     * StringUtils.mid("abc", 4, 2)   = ""
-     * StringUtils.mid("abc", -2, 2)  = "ab"
+     * StringUtil.mid(null, *, *)    = null
+     * StringUtil.mid(*, *, -ve)     = ""
+     * StringUtil.mid("", 0, *)      = ""
+     * StringUtil.mid("abc", 0, 2)   = "ab"
+     * StringUtil.mid("abc", 0, 4)   = "abc"
+     * StringUtil.mid("abc", 2, 4)   = "c"
+     * StringUtil.mid("abc", 4, 2)   = ""
+     * StringUtil.mid("abc", -2, 2)  = "ab"
      * </pre>
      *
      * @param str the String to get the characters from, may be null
@@ -6760,29 +6760,29 @@ public class StringUtil {
      * <p>A {@code null} CharSequence will return {@code -1}.</p>
      *
      * <pre>
-     * StringUtils.ordinalIndexOf(null, *, *)          = -1
-     * StringUtils.ordinalIndexOf(*, null, *)          = -1
-     * StringUtils.ordinalIndexOf("", "", *)           = 0
-     * StringUtils.ordinalIndexOf("aabaabaa", "a", 1)  = 0
-     * StringUtils.ordinalIndexOf("aabaabaa", "a", 2)  = 1
-     * StringUtils.ordinalIndexOf("aabaabaa", "b", 1)  = 2
-     * StringUtils.ordinalIndexOf("aabaabaa", "b", 2)  = 5
-     * StringUtils.ordinalIndexOf("aabaabaa", "ab", 1) = 1
-     * StringUtils.ordinalIndexOf("aabaabaa", "ab", 2) = 4
-     * StringUtils.ordinalIndexOf("aabaabaa", "", 1)   = 0
-     * StringUtils.ordinalIndexOf("aabaabaa", "", 2)   = 0
+     * StringUtil.ordinalIndexOf(null, *, *)          = -1
+     * StringUtil.ordinalIndexOf(*, null, *)          = -1
+     * StringUtil.ordinalIndexOf("", "", *)           = 0
+     * StringUtil.ordinalIndexOf("aabaabaa", "a", 1)  = 0
+     * StringUtil.ordinalIndexOf("aabaabaa", "a", 2)  = 1
+     * StringUtil.ordinalIndexOf("aabaabaa", "b", 1)  = 2
+     * StringUtil.ordinalIndexOf("aabaabaa", "b", 2)  = 5
+     * StringUtil.ordinalIndexOf("aabaabaa", "ab", 1) = 1
+     * StringUtil.ordinalIndexOf("aabaabaa", "ab", 2) = 4
+     * StringUtil.ordinalIndexOf("aabaabaa", "", 1)   = 0
+     * StringUtil.ordinalIndexOf("aabaabaa", "", 2)   = 0
      * </pre>
      *
      * <p>Matches may overlap:</p>
      * <pre>
-     * StringUtils.ordinalIndexOf("ababab", "aba", 1)   = 0
-     * StringUtils.ordinalIndexOf("ababab", "aba", 2)   = 2
-     * StringUtils.ordinalIndexOf("ababab", "aba", 3)   = -1
+     * StringUtil.ordinalIndexOf("ababab", "aba", 1)   = 0
+     * StringUtil.ordinalIndexOf("ababab", "aba", 2)   = 2
+     * StringUtil.ordinalIndexOf("ababab", "aba", 3)   = -1
      *
-     * StringUtils.ordinalIndexOf("abababab", "abab", 1) = 0
-     * StringUtils.ordinalIndexOf("abababab", "abab", 2) = 2
-     * StringUtils.ordinalIndexOf("abababab", "abab", 3) = 4
-     * StringUtils.ordinalIndexOf("abababab", "abab", 4) = -1
+     * StringUtil.ordinalIndexOf("abababab", "abab", 1) = 0
+     * StringUtil.ordinalIndexOf("abababab", "abab", 2) = 2
+     * StringUtil.ordinalIndexOf("abababab", "abab", 3) = 4
+     * StringUtil.ordinalIndexOf("abababab", "abab", 4) = -1
      * </pre>
      *
      * <p>Note that 'head(CharSequence str, int n)' may be implemented as: </p>
@@ -6852,17 +6852,17 @@ public class StringUtil {
      * The start index is always the smaller of the two indices.</p>
      *
      * <pre>
-     * StringUtils.overlay(null, *, *, *)            = null
-     * StringUtils.overlay("", "abc", 0, 0)          = "abc"
-     * StringUtils.overlay("abcdef", null, 2, 4)     = "abef"
-     * StringUtils.overlay("abcdef", "", 2, 4)       = "abef"
-     * StringUtils.overlay("abcdef", "", 4, 2)       = "abef"
-     * StringUtils.overlay("abcdef", "zzzz", 2, 4)   = "abzzzzef"
-     * StringUtils.overlay("abcdef", "zzzz", 4, 2)   = "abzzzzef"
-     * StringUtils.overlay("abcdef", "zzzz", -1, 4)  = "zzzzef"
-     * StringUtils.overlay("abcdef", "zzzz", 2, 8)   = "abzzzz"
-     * StringUtils.overlay("abcdef", "zzzz", -2, -3) = "zzzzabcdef"
-     * StringUtils.overlay("abcdef", "zzzz", 8, 10)  = "abcdefzzzz"
+     * StringUtil.overlay(null, *, *, *)            = null
+     * StringUtil.overlay("", "abc", 0, 0)          = "abc"
+     * StringUtil.overlay("abcdef", null, 2, 4)     = "abef"
+     * StringUtil.overlay("abcdef", "", 2, 4)       = "abef"
+     * StringUtil.overlay("abcdef", "", 4, 2)       = "abef"
+     * StringUtil.overlay("abcdef", "zzzz", 2, 4)   = "abzzzzef"
+     * StringUtil.overlay("abcdef", "zzzz", 4, 2)   = "abzzzzef"
+     * StringUtil.overlay("abcdef", "zzzz", -1, 4)  = "zzzzef"
+     * StringUtil.overlay("abcdef", "zzzz", 2, 8)   = "abzzzz"
+     * StringUtil.overlay("abcdef", "zzzz", -2, -3) = "zzzzabcdef"
+     * StringUtil.overlay("abcdef", "zzzz", 8, 10)  = "abcdefzzzz"
      * </pre>
      *
      * @param str     the String to do overlaying in, may be null
@@ -6931,25 +6931,25 @@ public class StringUtil {
      * already start with any of the prefixes.
      *
      * <pre>
-     * StringUtils.prependIfMissing(null, null) = null
-     * StringUtils.prependIfMissing("abc", null) = "abc"
-     * StringUtils.prependIfMissing("", "xyz") = "xyz"
-     * StringUtils.prependIfMissing("abc", "xyz") = "xyzabc"
-     * StringUtils.prependIfMissing("xyzabc", "xyz") = "xyzabc"
-     * StringUtils.prependIfMissing("XYZabc", "xyz") = "xyzXYZabc"
+     * StringUtil.prependIfMissing(null, null) = null
+     * StringUtil.prependIfMissing("abc", null) = "abc"
+     * StringUtil.prependIfMissing("", "xyz") = "xyz"
+     * StringUtil.prependIfMissing("abc", "xyz") = "xyzabc"
+     * StringUtil.prependIfMissing("xyzabc", "xyz") = "xyzabc"
+     * StringUtil.prependIfMissing("XYZabc", "xyz") = "xyzXYZabc"
      * </pre>
      * <p>With additional prefixes,</p>
      * <pre>
-     * StringUtils.prependIfMissing(null, null, null) = null
-     * StringUtils.prependIfMissing("abc", null, null) = "abc"
-     * StringUtils.prependIfMissing("", "xyz", null) = "xyz"
-     * StringUtils.prependIfMissing("abc", "xyz", new CharSequence[]{null}) = "xyzabc"
-     * StringUtils.prependIfMissing("abc", "xyz", "") = "abc"
-     * StringUtils.prependIfMissing("abc", "xyz", "mno") = "xyzabc"
-     * StringUtils.prependIfMissing("xyzabc", "xyz", "mno") = "xyzabc"
-     * StringUtils.prependIfMissing("mnoabc", "xyz", "mno") = "mnoabc"
-     * StringUtils.prependIfMissing("XYZabc", "xyz", "mno") = "xyzXYZabc"
-     * StringUtils.prependIfMissing("MNOabc", "xyz", "mno") = "xyzMNOabc"
+     * StringUtil.prependIfMissing(null, null, null) = null
+     * StringUtil.prependIfMissing("abc", null, null) = "abc"
+     * StringUtil.prependIfMissing("", "xyz", null) = "xyz"
+     * StringUtil.prependIfMissing("abc", "xyz", new CharSequence[]{null}) = "xyzabc"
+     * StringUtil.prependIfMissing("abc", "xyz", "") = "abc"
+     * StringUtil.prependIfMissing("abc", "xyz", "mno") = "xyzabc"
+     * StringUtil.prependIfMissing("xyzabc", "xyz", "mno") = "xyzabc"
+     * StringUtil.prependIfMissing("mnoabc", "xyz", "mno") = "mnoabc"
+     * StringUtil.prependIfMissing("XYZabc", "xyz", "mno") = "xyzXYZabc"
+     * StringUtil.prependIfMissing("MNOabc", "xyz", "mno") = "xyzMNOabc"
      * </pre>
      *
      * @param str      The string.
@@ -6967,25 +6967,25 @@ public class StringUtil {
      * already start, case insensitive, with any of the prefixes.
      *
      * <pre>
-     * StringUtils.prependIfMissingIgnoreCase(null, null) = null
-     * StringUtils.prependIfMissingIgnoreCase("abc", null) = "abc"
-     * StringUtils.prependIfMissingIgnoreCase("", "xyz") = "xyz"
-     * StringUtils.prependIfMissingIgnoreCase("abc", "xyz") = "xyzabc"
-     * StringUtils.prependIfMissingIgnoreCase("xyzabc", "xyz") = "xyzabc"
-     * StringUtils.prependIfMissingIgnoreCase("XYZabc", "xyz") = "XYZabc"
+     * StringUtil.prependIfMissingIgnoreCase(null, null) = null
+     * StringUtil.prependIfMissingIgnoreCase("abc", null) = "abc"
+     * StringUtil.prependIfMissingIgnoreCase("", "xyz") = "xyz"
+     * StringUtil.prependIfMissingIgnoreCase("abc", "xyz") = "xyzabc"
+     * StringUtil.prependIfMissingIgnoreCase("xyzabc", "xyz") = "xyzabc"
+     * StringUtil.prependIfMissingIgnoreCase("XYZabc", "xyz") = "XYZabc"
      * </pre>
      * <p>With additional prefixes,</p>
      * <pre>
-     * StringUtils.prependIfMissingIgnoreCase(null, null, null) = null
-     * StringUtils.prependIfMissingIgnoreCase("abc", null, null) = "abc"
-     * StringUtils.prependIfMissingIgnoreCase("", "xyz", null) = "xyz"
-     * StringUtils.prependIfMissingIgnoreCase("abc", "xyz", new CharSequence[]{null}) = "xyzabc"
-     * StringUtils.prependIfMissingIgnoreCase("abc", "xyz", "") = "abc"
-     * StringUtils.prependIfMissingIgnoreCase("abc", "xyz", "mno") = "xyzabc"
-     * StringUtils.prependIfMissingIgnoreCase("xyzabc", "xyz", "mno") = "xyzabc"
-     * StringUtils.prependIfMissingIgnoreCase("mnoabc", "xyz", "mno") = "mnoabc"
-     * StringUtils.prependIfMissingIgnoreCase("XYZabc", "xyz", "mno") = "XYZabc"
-     * StringUtils.prependIfMissingIgnoreCase("MNOabc", "xyz", "mno") = "MNOabc"
+     * StringUtil.prependIfMissingIgnoreCase(null, null, null) = null
+     * StringUtil.prependIfMissingIgnoreCase("abc", null, null) = "abc"
+     * StringUtil.prependIfMissingIgnoreCase("", "xyz", null) = "xyz"
+     * StringUtil.prependIfMissingIgnoreCase("abc", "xyz", new CharSequence[]{null}) = "xyzabc"
+     * StringUtil.prependIfMissingIgnoreCase("abc", "xyz", "") = "abc"
+     * StringUtil.prependIfMissingIgnoreCase("abc", "xyz", "mno") = "xyzabc"
+     * StringUtil.prependIfMissingIgnoreCase("xyzabc", "xyz", "mno") = "xyzabc"
+     * StringUtil.prependIfMissingIgnoreCase("mnoabc", "xyz", "mno") = "mnoabc"
+     * StringUtil.prependIfMissingIgnoreCase("XYZabc", "xyz", "mno") = "XYZabc"
+     * StringUtil.prependIfMissingIgnoreCase("MNOabc", "xyz", "mno") = "MNOabc"
      * </pre>
      *
      * @param str      The string.
@@ -7005,10 +7005,10 @@ public class StringUtil {
      * An empty ("") source string will return the empty string.</p>
      *
      * <pre>
-     * StringUtils.remove(null, *)       = null
-     * StringUtils.remove("", *)         = ""
-     * StringUtils.remove("queued", 'u') = "qeed"
-     * StringUtils.remove("queued", 'z') = "queued"
+     * StringUtil.remove(null, *)       = null
+     * StringUtil.remove("", *)         = ""
+     * StringUtil.remove("queued", 'u') = "qeed"
+     * StringUtil.remove("queued", 'z') = "queued"
      * </pre>
      *
      * @param str    the source String to search, may be null
@@ -7040,12 +7040,12 @@ public class StringUtil {
      * An empty ("") remove string will return the source string.</p>
      *
      * <pre>
-     * StringUtils.remove(null, *)        = null
-     * StringUtils.remove("", *)          = ""
-     * StringUtils.remove(*, null)        = *
-     * StringUtils.remove(*, "")          = *
-     * StringUtils.remove("queued", "ue") = "qd"
-     * StringUtils.remove("queued", "zz") = "queued"
+     * StringUtil.remove(null, *)        = null
+     * StringUtil.remove("", *)          = ""
+     * StringUtil.remove(*, null)        = *
+     * StringUtil.remove(*, "")          = *
+     * StringUtil.remove("queued", "ue") = "qd"
+     * StringUtil.remove("queued", "zz") = "queued"
      * </pre>
      *
      * @param str    the source String to search, may be null
@@ -7066,8 +7066,8 @@ public class StringUtil {
      * <p>
      * This method is a {@code null} safe equivalent to:
      * <ul>
-     *  <li>{@code text.replaceAll(regex, StringUtils.EMPTY)}</li>
-     *  <li>{@code Pattern.compile(regex).matcher(text).replaceAll(StringUtils.EMPTY)}</li>
+     *  <li>{@code text.replaceAll(regex, StringUtil.EMPTY)}</li>
+     *  <li>{@code Pattern.compile(regex).matcher(text).replaceAll(StringUtil.EMPTY)}</li>
      * </ul>
      *
      * <p>A {@code null} reference passed to this method is a no-op.</p>
@@ -7078,15 +7078,15 @@ public class StringUtil {
      * DOTALL is also known as single-line mode in Perl.</p>
      *
      * <pre>
-     * StringUtils.removeAll(null, *)      = null
-     * StringUtils.removeAll("any", (String) null)  = "any"
-     * StringUtils.removeAll("any", "")    = "any"
-     * StringUtils.removeAll("any", ".*")  = ""
-     * StringUtils.removeAll("any", ".+")  = ""
-     * StringUtils.removeAll("abc", ".?")  = ""
-     * StringUtils.removeAll("A&lt;__&gt;\n&lt;__&gt;B", "&lt;.*&gt;")      = "A\nB"
-     * StringUtils.removeAll("A&lt;__&gt;\n&lt;__&gt;B", "(?s)&lt;.*&gt;")  = "AB"
-     * StringUtils.removeAll("ABCabc123abc", "[a-z]")     = "ABC123"
+     * StringUtil.removeAll(null, *)      = null
+     * StringUtil.removeAll("any", (String) null)  = "any"
+     * StringUtil.removeAll("any", "")    = "any"
+     * StringUtil.removeAll("any", ".*")  = ""
+     * StringUtil.removeAll("any", ".+")  = ""
+     * StringUtil.removeAll("abc", ".?")  = ""
+     * StringUtil.removeAll("A&lt;__&gt;\n&lt;__&gt;B", "&lt;.*&gt;")      = "A\nB"
+     * StringUtil.removeAll("A&lt;__&gt;\n&lt;__&gt;B", "(?s)&lt;.*&gt;")  = "AB"
+     * StringUtil.removeAll("ABCabc123abc", "[a-z]")     = "ABC123"
      * </pre>
      *
      * @param text  text to remove from, may be null
@@ -7116,13 +7116,13 @@ public class StringUtil {
      * A {@code null} search string will return the source string.</p>
      *
      * <pre>
-     * StringUtils.removeEnd(null, *)      = null
-     * StringUtils.removeEnd("", *)        = ""
-     * StringUtils.removeEnd(*, null)      = *
-     * StringUtils.removeEnd("www.domain.com", ".com.")  = "www.domain.com"
-     * StringUtils.removeEnd("www.domain.com", ".com")   = "www.domain"
-     * StringUtils.removeEnd("www.domain.com", "domain") = "www.domain.com"
-     * StringUtils.removeEnd("abc", "")    = "abc"
+     * StringUtil.removeEnd(null, *)      = null
+     * StringUtil.removeEnd("", *)        = ""
+     * StringUtil.removeEnd(*, null)      = *
+     * StringUtil.removeEnd("www.domain.com", ".com.")  = "www.domain.com"
+     * StringUtil.removeEnd("www.domain.com", ".com")   = "www.domain"
+     * StringUtil.removeEnd("www.domain.com", "domain") = "www.domain.com"
+     * StringUtil.removeEnd("abc", "")    = "abc"
      * </pre>
      *
      * @param str    the source String to search, may be null
@@ -7150,15 +7150,15 @@ public class StringUtil {
      * A {@code null} search string will return the source string.</p>
      *
      * <pre>
-     * StringUtils.removeEndIgnoreCase(null, *)      = null
-     * StringUtils.removeEndIgnoreCase("", *)        = ""
-     * StringUtils.removeEndIgnoreCase(*, null)      = *
-     * StringUtils.removeEndIgnoreCase("www.domain.com", ".com.")  = "www.domain.com"
-     * StringUtils.removeEndIgnoreCase("www.domain.com", ".com")   = "www.domain"
-     * StringUtils.removeEndIgnoreCase("www.domain.com", "domain") = "www.domain.com"
-     * StringUtils.removeEndIgnoreCase("abc", "")    = "abc"
-     * StringUtils.removeEndIgnoreCase("www.domain.com", ".COM") = "www.domain")
-     * StringUtils.removeEndIgnoreCase("www.domain.COM", ".com") = "www.domain")
+     * StringUtil.removeEndIgnoreCase(null, *)      = null
+     * StringUtil.removeEndIgnoreCase("", *)        = ""
+     * StringUtil.removeEndIgnoreCase(*, null)      = *
+     * StringUtil.removeEndIgnoreCase("www.domain.com", ".com.")  = "www.domain.com"
+     * StringUtil.removeEndIgnoreCase("www.domain.com", ".com")   = "www.domain"
+     * StringUtil.removeEndIgnoreCase("www.domain.com", "domain") = "www.domain.com"
+     * StringUtil.removeEndIgnoreCase("abc", "")    = "abc"
+     * StringUtil.removeEndIgnoreCase("www.domain.com", ".COM") = "www.domain")
+     * StringUtil.removeEndIgnoreCase("www.domain.COM", ".com") = "www.domain")
      * </pre>
      *
      * @param str    the source String to search, may be null
@@ -7182,8 +7182,8 @@ public class StringUtil {
      * <p>
      * This method is a {@code null} safe equivalent to:
      * <ul>
-     *  <li>{@code text.replaceFirst(regex, StringUtils.EMPTY)}</li>
-     *  <li>{@code Pattern.compile(regex).matcher(text).replaceFirst(StringUtils.EMPTY)}</li>
+     *  <li>{@code text.replaceFirst(regex, StringUtil.EMPTY)}</li>
+     *  <li>{@code Pattern.compile(regex).matcher(text).replaceFirst(StringUtil.EMPTY)}</li>
      * </ul>
      *
      * <p>A {@code null} reference passed to this method is a no-op.</p>
@@ -7193,16 +7193,16 @@ public class StringUtil {
      * DOTALL is also known as single-line mode in Perl.</p>
      *
      * <pre>
-     * StringUtils.removeFirst(null, *)      = null
-     * StringUtils.removeFirst("any", (String) null)  = "any"
-     * StringUtils.removeFirst("any", "")    = "any"
-     * StringUtils.removeFirst("any", ".*")  = ""
-     * StringUtils.removeFirst("any", ".+")  = ""
-     * StringUtils.removeFirst("abc", ".?")  = "bc"
-     * StringUtils.removeFirst("A&lt;__&gt;\n&lt;__&gt;B", "&lt;.*&gt;")      = "A\n&lt;__&gt;B"
-     * StringUtils.removeFirst("A&lt;__&gt;\n&lt;__&gt;B", "(?s)&lt;.*&gt;")  = "AB"
-     * StringUtils.removeFirst("ABCabc123", "[a-z]")          = "ABCbc123"
-     * StringUtils.removeFirst("ABCabc123abc", "[a-z]+")      = "ABC123abc"
+     * StringUtil.removeFirst(null, *)      = null
+     * StringUtil.removeFirst("any", (String) null)  = "any"
+     * StringUtil.removeFirst("any", "")    = "any"
+     * StringUtil.removeFirst("any", ".*")  = ""
+     * StringUtil.removeFirst("any", ".+")  = ""
+     * StringUtil.removeFirst("abc", ".?")  = "bc"
+     * StringUtil.removeFirst("A&lt;__&gt;\n&lt;__&gt;B", "&lt;.*&gt;")      = "A\n&lt;__&gt;B"
+     * StringUtil.removeFirst("A&lt;__&gt;\n&lt;__&gt;B", "(?s)&lt;.*&gt;")  = "AB"
+     * StringUtil.removeFirst("ABCabc123", "[a-z]")          = "ABCbc123"
+     * StringUtil.removeFirst("ABCabc123abc", "[a-z]+")      = "ABC123abc"
      * </pre>
      *
      * @param text  text to remove from, may be null
@@ -7236,14 +7236,14 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.removeIgnoreCase(null, *)        = null
-     * StringUtils.removeIgnoreCase("", *)          = ""
-     * StringUtils.removeIgnoreCase(*, null)        = *
-     * StringUtils.removeIgnoreCase(*, "")          = *
-     * StringUtils.removeIgnoreCase("queued", "ue") = "qd"
-     * StringUtils.removeIgnoreCase("queued", "zz") = "queued"
-     * StringUtils.removeIgnoreCase("quEUed", "UE") = "qd"
-     * StringUtils.removeIgnoreCase("queued", "zZ") = "queued"
+     * StringUtil.removeIgnoreCase(null, *)        = null
+     * StringUtil.removeIgnoreCase("", *)          = ""
+     * StringUtil.removeIgnoreCase(*, null)        = *
+     * StringUtil.removeIgnoreCase(*, "")          = *
+     * StringUtil.removeIgnoreCase("queued", "ue") = "qd"
+     * StringUtil.removeIgnoreCase("queued", "zz") = "queued"
+     * StringUtil.removeIgnoreCase("quEUed", "UE") = "qd"
+     * StringUtil.removeIgnoreCase("queued", "zZ") = "queued"
      * </pre>
      *
      * @param str    the source String to search, may be null
@@ -7263,17 +7263,17 @@ public class StringUtil {
      * <p>
      * This call is a {@code null} safe equivalent to:
      * <ul>
-     * <li>{@code source.replaceAll(&quot;(?s)&quot; + regex, StringUtils.EMPTY)}</li>
-     * <li>{@code Pattern.compile(regex, Pattern.DOTALL).matcher(source).replaceAll(StringUtils.EMPTY)}</li>
+     * <li>{@code source.replaceAll(&quot;(?s)&quot; + regex, StringUtil.EMPTY)}</li>
+     * <li>{@code Pattern.compile(regex, Pattern.DOTALL).matcher(source).replaceAll(StringUtil.EMPTY)}</li>
      * </ul>
      *
      * <p>A {@code null} reference passed to this method is a no-op.</p>
      *
      * <pre>
-     * StringUtils.removePattern(null, *)       = null
-     * StringUtils.removePattern("any", (String) null)   = "any"
-     * StringUtils.removePattern("A&lt;__&gt;\n&lt;__&gt;B", "&lt;.*&gt;")  = "AB"
-     * StringUtils.removePattern("ABCabc123", "[a-z]")    = "ABC123"
+     * StringUtil.removePattern(null, *)       = null
+     * StringUtil.removePattern("any", (String) null)   = "any"
+     * StringUtil.removePattern("A&lt;__&gt;\n&lt;__&gt;B", "&lt;.*&gt;")  = "AB"
+     * StringUtil.removePattern("ABCabc123", "[a-z]")    = "ABC123"
      * </pre>
      *
      * @param source the source string
@@ -7300,13 +7300,13 @@ public class StringUtil {
      * A {@code null} search string will return the source string.</p>
      *
      * <pre>
-     * StringUtils.removeStart(null, *)      = null
-     * StringUtils.removeStart("", *)        = ""
-     * StringUtils.removeStart(*, null)      = *
-     * StringUtils.removeStart("www.domain.com", "www.")   = "domain.com"
-     * StringUtils.removeStart("domain.com", "www.")       = "domain.com"
-     * StringUtils.removeStart("www.domain.com", "domain") = "www.domain.com"
-     * StringUtils.removeStart("abc", "")    = "abc"
+     * StringUtil.removeStart(null, *)      = null
+     * StringUtil.removeStart("", *)        = ""
+     * StringUtil.removeStart(*, null)      = *
+     * StringUtil.removeStart("www.domain.com", "www.")   = "domain.com"
+     * StringUtil.removeStart("domain.com", "www.")       = "domain.com"
+     * StringUtil.removeStart("www.domain.com", "domain") = "www.domain.com"
+     * StringUtil.removeStart("abc", "")    = "abc"
      * </pre>
      *
      * @param str    the source String to search, may be null
@@ -7334,14 +7334,14 @@ public class StringUtil {
      * A {@code null} search string will return the source string.</p>
      *
      * <pre>
-     * StringUtils.removeStartIgnoreCase(null, *)      = null
-     * StringUtils.removeStartIgnoreCase("", *)        = ""
-     * StringUtils.removeStartIgnoreCase(*, null)      = *
-     * StringUtils.removeStartIgnoreCase("www.domain.com", "www.")   = "domain.com"
-     * StringUtils.removeStartIgnoreCase("www.domain.com", "WWW.")   = "domain.com"
-     * StringUtils.removeStartIgnoreCase("domain.com", "www.")       = "domain.com"
-     * StringUtils.removeStartIgnoreCase("www.domain.com", "domain") = "www.domain.com"
-     * StringUtils.removeStartIgnoreCase("abc", "")    = "abc"
+     * StringUtil.removeStartIgnoreCase(null, *)      = null
+     * StringUtil.removeStartIgnoreCase("", *)        = ""
+     * StringUtil.removeStartIgnoreCase(*, null)      = *
+     * StringUtil.removeStartIgnoreCase("www.domain.com", "www.")   = "domain.com"
+     * StringUtil.removeStartIgnoreCase("www.domain.com", "WWW.")   = "domain.com"
+     * StringUtil.removeStartIgnoreCase("domain.com", "www.")       = "domain.com"
+     * StringUtil.removeStartIgnoreCase("www.domain.com", "domain") = "www.domain.com"
+     * StringUtil.removeStartIgnoreCase("abc", "")    = "abc"
      * </pre>
      *
      * @param str    the source String to search, may be null
@@ -7362,9 +7362,9 @@ public class StringUtil {
      * to a given length.</p>
      *
      * <pre>
-     * StringUtils.repeat('e', 0)  = ""
-     * StringUtils.repeat('e', 3)  = "eee"
-     * StringUtils.repeat('e', -2) = ""
+     * StringUtil.repeat('e', 0)  = ""
+     * StringUtil.repeat('e', 3)  = "eee"
+     * StringUtil.repeat('e', -2) = ""
      * </pre>
      *
      * <p>Note: this method does not support padding with
@@ -7393,12 +7393,12 @@ public class StringUtil {
      * new String.</p>
      *
      * <pre>
-     * StringUtils.repeat(null, 2) = null
-     * StringUtils.repeat("", 0)   = ""
-     * StringUtils.repeat("", 2)   = ""
-     * StringUtils.repeat("a", 3)  = "aaa"
-     * StringUtils.repeat("ab", 2) = "abab"
-     * StringUtils.repeat("a", -2) = ""
+     * StringUtil.repeat(null, 2) = null
+     * StringUtil.repeat("", 0)   = ""
+     * StringUtil.repeat("", 2)   = ""
+     * StringUtil.repeat("a", 3)  = "aaa"
+     * StringUtil.repeat("ab", 2) = "abab"
+     * StringUtil.repeat("a", -2) = ""
      * </pre>
      *
      * @param str    the String to repeat, may be null
@@ -7449,12 +7449,12 @@ public class StringUtil {
      * new String, with a String separator injected each time. </p>
      *
      * <pre>
-     * StringUtils.repeat(null, null, 2) = null
-     * StringUtils.repeat(null, "x", 2)  = null
-     * StringUtils.repeat("", null, 0)   = ""
-     * StringUtils.repeat("", "", 2)     = ""
-     * StringUtils.repeat("", "x", 3)    = "xxx"
-     * StringUtils.repeat("?", ", ", 3)  = "?, ?, ?"
+     * StringUtil.repeat(null, null, 2) = null
+     * StringUtil.repeat(null, "x", 2)  = null
+     * StringUtil.repeat("", null, 0)   = ""
+     * StringUtil.repeat("", "", 2)     = ""
+     * StringUtil.repeat("", "x", 3)    = "xxx"
+     * StringUtil.repeat("?", ", ", 3)  = "?, ?, ?"
      * </pre>
      *
      * @param str       the String to repeat, may be null
@@ -7479,14 +7479,14 @@ public class StringUtil {
      * <p>A {@code null} reference passed to this method is a no-op.</p>
      *
      * <pre>
-     * StringUtils.replace(null, *, *)        = null
-     * StringUtils.replace("", *, *)          = ""
-     * StringUtils.replace("any", null, *)    = "any"
-     * StringUtils.replace("any", *, null)    = "any"
-     * StringUtils.replace("any", "", *)      = "any"
-     * StringUtils.replace("aba", "a", null)  = "aba"
-     * StringUtils.replace("aba", "a", "")    = "b"
-     * StringUtils.replace("aba", "a", "z")   = "zbz"
+     * StringUtil.replace(null, *, *)        = null
+     * StringUtil.replace("", *, *)          = ""
+     * StringUtil.replace("any", null, *)    = "any"
+     * StringUtil.replace("any", *, null)    = "any"
+     * StringUtil.replace("any", "", *)      = "any"
+     * StringUtil.replace("aba", "a", null)  = "aba"
+     * StringUtil.replace("aba", "a", "")    = "b"
+     * StringUtil.replace("aba", "a", "z")   = "zbz"
      * </pre>
      *
      * @param text         text to search and replace in, may be null
@@ -7507,18 +7507,18 @@ public class StringUtil {
      * <p>A {@code null} reference passed to this method is a no-op.</p>
      *
      * <pre>
-     * StringUtils.replace(null, *, *, *)         = null
-     * StringUtils.replace("", *, *, *)           = ""
-     * StringUtils.replace("any", null, *, *)     = "any"
-     * StringUtils.replace("any", *, null, *)     = "any"
-     * StringUtils.replace("any", "", *, *)       = "any"
-     * StringUtils.replace("any", *, *, 0)        = "any"
-     * StringUtils.replace("abaa", "a", null, -1) = "abaa"
-     * StringUtils.replace("abaa", "a", "", -1)   = "b"
-     * StringUtils.replace("abaa", "a", "z", 0)   = "abaa"
-     * StringUtils.replace("abaa", "a", "z", 1)   = "zbaa"
-     * StringUtils.replace("abaa", "a", "z", 2)   = "zbza"
-     * StringUtils.replace("abaa", "a", "z", -1)  = "zbzz"
+     * StringUtil.replace(null, *, *, *)         = null
+     * StringUtil.replace("", *, *, *)           = ""
+     * StringUtil.replace("any", null, *, *)     = "any"
+     * StringUtil.replace("any", *, null, *)     = "any"
+     * StringUtil.replace("any", "", *, *)       = "any"
+     * StringUtil.replace("any", *, *, 0)        = "any"
+     * StringUtil.replace("abaa", "a", null, -1) = "abaa"
+     * StringUtil.replace("abaa", "a", "", -1)   = "b"
+     * StringUtil.replace("abaa", "a", "z", 0)   = "abaa"
+     * StringUtil.replace("abaa", "a", "z", 1)   = "zbaa"
+     * StringUtil.replace("abaa", "a", "z", 2)   = "zbza"
+     * StringUtil.replace("abaa", "a", "z", -1)  = "zbzz"
      * </pre>
      *
      * @param text         text to search and replace in, may be null
@@ -7540,19 +7540,19 @@ public class StringUtil {
      * <p>A {@code null} reference passed to this method is a no-op.</p>
      *
      * <pre>
-     * StringUtils.replace(null, *, *, *, false)         = null
-     * StringUtils.replace("", *, *, *, false)           = ""
-     * StringUtils.replace("any", null, *, *, false)     = "any"
-     * StringUtils.replace("any", *, null, *, false)     = "any"
-     * StringUtils.replace("any", "", *, *, false)       = "any"
-     * StringUtils.replace("any", *, *, 0, false)        = "any"
-     * StringUtils.replace("abaa", "a", null, -1, false) = "abaa"
-     * StringUtils.replace("abaa", "a", "", -1, false)   = "b"
-     * StringUtils.replace("abaa", "a", "z", 0, false)   = "abaa"
-     * StringUtils.replace("abaa", "A", "z", 1, false)   = "abaa"
-     * StringUtils.replace("abaa", "A", "z", 1, true)   = "zbaa"
-     * StringUtils.replace("abAa", "a", "z", 2, true)   = "zbza"
-     * StringUtils.replace("abAa", "a", "z", -1, true)  = "zbzz"
+     * StringUtil.replace(null, *, *, *, false)         = null
+     * StringUtil.replace("", *, *, *, false)           = ""
+     * StringUtil.replace("any", null, *, *, false)     = "any"
+     * StringUtil.replace("any", *, null, *, false)     = "any"
+     * StringUtil.replace("any", "", *, *, false)       = "any"
+     * StringUtil.replace("any", *, *, 0, false)        = "any"
+     * StringUtil.replace("abaa", "a", null, -1, false) = "abaa"
+     * StringUtil.replace("abaa", "a", "", -1, false)   = "b"
+     * StringUtil.replace("abaa", "a", "z", 0, false)   = "abaa"
+     * StringUtil.replace("abaa", "A", "z", 1, false)   = "abaa"
+     * StringUtil.replace("abaa", "A", "z", 1, true)   = "zbaa"
+     * StringUtil.replace("abAa", "a", "z", 2, true)   = "zbza"
+     * StringUtil.replace("abAa", "a", "z", -1, true)  = "zbzz"
      * </pre>
      *
      * @param text         text to search and replace in, may be null
@@ -7609,19 +7609,19 @@ public class StringUtil {
      * DOTALL is also known as single-line mode in Perl.</p>
      *
      * <pre>
-     * StringUtils.replaceAll(null, *, *)       = null
-     * StringUtils.replaceAll("any", (String) null, *)   = "any"
-     * StringUtils.replaceAll("any", *, null)   = "any"
-     * StringUtils.replaceAll("", "", "zzz")    = "zzz"
-     * StringUtils.replaceAll("", ".*", "zzz")  = "zzz"
-     * StringUtils.replaceAll("", ".+", "zzz")  = ""
-     * StringUtils.replaceAll("abc", "", "ZZ")  = "ZZaZZbZZcZZ"
-     * StringUtils.replaceAll("&lt;__&gt;\n&lt;__&gt;", "&lt;.*&gt;", "z")      = "z\nz"
-     * StringUtils.replaceAll("&lt;__&gt;\n&lt;__&gt;", "(?s)&lt;.*&gt;", "z")  = "z"
-     * StringUtils.replaceAll("ABCabc123", "[a-z]", "_")       = "ABC___123"
-     * StringUtils.replaceAll("ABCabc123", "[^A-Z0-9]+", "_")  = "ABC_123"
-     * StringUtils.replaceAll("ABCabc123", "[^A-Z0-9]+", "")   = "ABC123"
-     * StringUtils.replaceAll("Lorem ipsum  dolor   sit", "( +)([a-z]+)", "_$2")  = "Lorem_ipsum_dolor_sit"
+     * StringUtil.replaceAll(null, *, *)       = null
+     * StringUtil.replaceAll("any", (String) null, *)   = "any"
+     * StringUtil.replaceAll("any", *, null)   = "any"
+     * StringUtil.replaceAll("", "", "zzz")    = "zzz"
+     * StringUtil.replaceAll("", ".*", "zzz")  = "zzz"
+     * StringUtil.replaceAll("", ".+", "zzz")  = ""
+     * StringUtil.replaceAll("abc", "", "ZZ")  = "ZZaZZbZZcZZ"
+     * StringUtil.replaceAll("&lt;__&gt;\n&lt;__&gt;", "&lt;.*&gt;", "z")      = "z\nz"
+     * StringUtil.replaceAll("&lt;__&gt;\n&lt;__&gt;", "(?s)&lt;.*&gt;", "z")  = "z"
+     * StringUtil.replaceAll("ABCabc123", "[a-z]", "_")       = "ABC___123"
+     * StringUtil.replaceAll("ABCabc123", "[^A-Z0-9]+", "_")  = "ABC_123"
+     * StringUtil.replaceAll("ABCabc123", "[^A-Z0-9]+", "")   = "ABC123"
+     * StringUtil.replaceAll("Lorem ipsum  dolor   sit", "( +)([a-z]+)", "_$2")  = "Lorem_ipsum_dolor_sit"
      * </pre>
      *
      * @param text        text to search and replace in, may be null
@@ -7650,10 +7650,10 @@ public class StringUtil {
      * An empty ("") string input returns an empty string.</p>
      *
      * <pre>
-     * StringUtils.replaceChars(null, *, *)        = null
-     * StringUtils.replaceChars("", *, *)          = ""
-     * StringUtils.replaceChars("abcba", 'b', 'y') = "aycya"
-     * StringUtils.replaceChars("abcba", 'z', 'y') = "abcba"
+     * StringUtil.replaceChars(null, *, *)        = null
+     * StringUtil.replaceChars("", *, *)          = ""
+     * StringUtil.replaceChars("abcba", 'b', 'y') = "aycya"
+     * StringUtil.replaceChars("abcba", 'z', 'y') = "abcba"
      * </pre>
      *
      * @param str         String to replace characters in, may be null
@@ -7688,15 +7688,15 @@ public class StringUtil {
      * are ignored.</p>
      *
      * <pre>
-     * StringUtils.replaceChars(null, *, *)           = null
-     * StringUtils.replaceChars("", *, *)             = ""
-     * StringUtils.replaceChars("abc", null, *)       = "abc"
-     * StringUtils.replaceChars("abc", "", *)         = "abc"
-     * StringUtils.replaceChars("abc", "b", null)     = "ac"
-     * StringUtils.replaceChars("abc", "b", "")       = "ac"
-     * StringUtils.replaceChars("abcba", "bc", "yz")  = "ayzya"
-     * StringUtils.replaceChars("abcba", "bc", "y")   = "ayya"
-     * StringUtils.replaceChars("abcba", "bc", "yzx") = "ayzya"
+     * StringUtil.replaceChars(null, *, *)           = null
+     * StringUtil.replaceChars("", *, *)             = ""
+     * StringUtil.replaceChars("abc", null, *)       = "abc"
+     * StringUtil.replaceChars("abc", "", *)         = "abc"
+     * StringUtil.replaceChars("abc", "b", null)     = "ac"
+     * StringUtil.replaceChars("abc", "b", "")       = "ac"
+     * StringUtil.replaceChars("abcba", "bc", "yz")  = "ayzya"
+     * StringUtil.replaceChars("abcba", "bc", "y")   = "ayya"
+     * StringUtil.replaceChars("abcba", "bc", "yzx") = "ayzya"
      * </pre>
      *
      * @param str          String to replace characters in, may be null
@@ -7747,17 +7747,17 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     *  StringUtils.replaceEach(null, *, *)        = null
-     *  StringUtils.replaceEach("", *, *)          = ""
-     *  StringUtils.replaceEach("aba", null, null) = "aba"
-     *  StringUtils.replaceEach("aba", new String[0], null) = "aba"
-     *  StringUtils.replaceEach("aba", null, new String[0]) = "aba"
-     *  StringUtils.replaceEach("aba", new String[]{"a"}, null)  = "aba"
-     *  StringUtils.replaceEach("aba", new String[]{"a"}, new String[]{""})  = "b"
-     *  StringUtils.replaceEach("aba", new String[]{null}, new String[]{"a"})  = "aba"
-     *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"w", "t"})  = "wcte"
+     *  StringUtil.replaceEach(null, *, *)        = null
+     *  StringUtil.replaceEach("", *, *)          = ""
+     *  StringUtil.replaceEach("aba", null, null) = "aba"
+     *  StringUtil.replaceEach("aba", new String[0], null) = "aba"
+     *  StringUtil.replaceEach("aba", null, new String[0]) = "aba"
+     *  StringUtil.replaceEach("aba", new String[]{"a"}, null)  = "aba"
+     *  StringUtil.replaceEach("aba", new String[]{"a"}, new String[]{""})  = "b"
+     *  StringUtil.replaceEach("aba", new String[]{null}, new String[]{"a"})  = "aba"
+     *  StringUtil.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"w", "t"})  = "wcte"
      *  (example of how it does not repeat)
-     *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"})  = "dcte"
+     *  StringUtil.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"})  = "dcte"
      * </pre>
      *
      * @param text            text to search and replace in, no-op if null
@@ -7787,19 +7787,19 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     *  StringUtils.replaceEach(null, *, *, *, *) = null
-     *  StringUtils.replaceEach("", *, *, *, *) = ""
-     *  StringUtils.replaceEach("aba", null, null, *, *) = "aba"
-     *  StringUtils.replaceEach("aba", new String[0], null, *, *) = "aba"
-     *  StringUtils.replaceEach("aba", null, new String[0], *, *) = "aba"
-     *  StringUtils.replaceEach("aba", new String[]{"a"}, null, *, *) = "aba"
-     *  StringUtils.replaceEach("aba", new String[]{"a"}, new String[]{""}, *, >=0) = "b"
-     *  StringUtils.replaceEach("aba", new String[]{null}, new String[]{"a"}, *, >=0) = "aba"
-     *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"w", "t"}, *, >=0) = "wcte"
+     *  StringUtil.replaceEach(null, *, *, *, *) = null
+     *  StringUtil.replaceEach("", *, *, *, *) = ""
+     *  StringUtil.replaceEach("aba", null, null, *, *) = "aba"
+     *  StringUtil.replaceEach("aba", new String[0], null, *, *) = "aba"
+     *  StringUtil.replaceEach("aba", null, new String[0], *, *) = "aba"
+     *  StringUtil.replaceEach("aba", new String[]{"a"}, null, *, *) = "aba"
+     *  StringUtil.replaceEach("aba", new String[]{"a"}, new String[]{""}, *, >=0) = "b"
+     *  StringUtil.replaceEach("aba", new String[]{null}, new String[]{"a"}, *, >=0) = "aba"
+     *  StringUtil.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"w", "t"}, *, >=0) = "wcte"
      *  (example of how it repeats)
-     *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}, false, >=0) = "dcte"
-     *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}, true, >=2) = "tcte"
-     *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "ab"}, *, *) = IllegalStateException
+     *  StringUtil.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}, false, >=0) = "dcte"
+     *  StringUtil.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}, true, >=2) = "tcte"
+     *  StringUtil.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "ab"}, *, *) = IllegalStateException
      * </pre>
      *
      * @param text            text to search and replace in, no-op if null
@@ -7955,18 +7955,18 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     *  StringUtils.replaceEachRepeatedly(null, *, *) = null
-     *  StringUtils.replaceEachRepeatedly("", *, *) = ""
-     *  StringUtils.replaceEachRepeatedly("aba", null, null) = "aba"
-     *  StringUtils.replaceEachRepeatedly("aba", new String[0], null) = "aba"
-     *  StringUtils.replaceEachRepeatedly("aba", null, new String[0]) = "aba"
-     *  StringUtils.replaceEachRepeatedly("aba", new String[]{"a"}, null) = "aba"
-     *  StringUtils.replaceEachRepeatedly("aba", new String[]{"a"}, new String[]{""}) = "b"
-     *  StringUtils.replaceEachRepeatedly("aba", new String[]{null}, new String[]{"a"}) = "aba"
-     *  StringUtils.replaceEachRepeatedly("abcde", new String[]{"ab", "d"}, new String[]{"w", "t"}) = "wcte"
+     *  StringUtil.replaceEachRepeatedly(null, *, *) = null
+     *  StringUtil.replaceEachRepeatedly("", *, *) = ""
+     *  StringUtil.replaceEachRepeatedly("aba", null, null) = "aba"
+     *  StringUtil.replaceEachRepeatedly("aba", new String[0], null) = "aba"
+     *  StringUtil.replaceEachRepeatedly("aba", null, new String[0]) = "aba"
+     *  StringUtil.replaceEachRepeatedly("aba", new String[]{"a"}, null) = "aba"
+     *  StringUtil.replaceEachRepeatedly("aba", new String[]{"a"}, new String[]{""}) = "b"
+     *  StringUtil.replaceEachRepeatedly("aba", new String[]{null}, new String[]{"a"}) = "aba"
+     *  StringUtil.replaceEachRepeatedly("abcde", new String[]{"ab", "d"}, new String[]{"w", "t"}) = "wcte"
      *  (example of how it repeats)
-     *  StringUtils.replaceEachRepeatedly("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}) = "tcte"
-     *  StringUtils.replaceEachRepeatedly("abcde", new String[]{"ab", "d"}, new String[]{"d", "ab"}) = IllegalStateException
+     *  StringUtil.replaceEachRepeatedly("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}) = "tcte"
+     *  StringUtil.replaceEachRepeatedly("abcde", new String[]{"ab", "d"}, new String[]{"d", "ab"}) = IllegalStateException
      * </pre>
      *
      * @param text            text to search and replace in, no-op if null
@@ -8004,19 +8004,19 @@ public class StringUtil {
      * DOTALL is also known as single-line mode in Perl.</p>
      *
      * <pre>
-     * StringUtils.replaceFirst(null, *, *)       = null
-     * StringUtils.replaceFirst("any", (String) null, *)   = "any"
-     * StringUtils.replaceFirst("any", *, null)   = "any"
-     * StringUtils.replaceFirst("", "", "zzz")    = "zzz"
-     * StringUtils.replaceFirst("", ".*", "zzz")  = "zzz"
-     * StringUtils.replaceFirst("", ".+", "zzz")  = ""
-     * StringUtils.replaceFirst("abc", "", "ZZ")  = "ZZabc"
-     * StringUtils.replaceFirst("&lt;__&gt;\n&lt;__&gt;", "&lt;.*&gt;", "z")      = "z\n&lt;__&gt;"
-     * StringUtils.replaceFirst("&lt;__&gt;\n&lt;__&gt;", "(?s)&lt;.*&gt;", "z")  = "z"
-     * StringUtils.replaceFirst("ABCabc123", "[a-z]", "_")          = "ABC_bc123"
-     * StringUtils.replaceFirst("ABCabc123abc", "[^A-Z0-9]+", "_")  = "ABC_123abc"
-     * StringUtils.replaceFirst("ABCabc123abc", "[^A-Z0-9]+", "")   = "ABC123abc"
-     * StringUtils.replaceFirst("Lorem ipsum  dolor   sit", "( +)([a-z]+)", "_$2")  = "Lorem_ipsum  dolor   sit"
+     * StringUtil.replaceFirst(null, *, *)       = null
+     * StringUtil.replaceFirst("any", (String) null, *)   = "any"
+     * StringUtil.replaceFirst("any", *, null)   = "any"
+     * StringUtil.replaceFirst("", "", "zzz")    = "zzz"
+     * StringUtil.replaceFirst("", ".*", "zzz")  = "zzz"
+     * StringUtil.replaceFirst("", ".+", "zzz")  = ""
+     * StringUtil.replaceFirst("abc", "", "ZZ")  = "ZZabc"
+     * StringUtil.replaceFirst("&lt;__&gt;\n&lt;__&gt;", "&lt;.*&gt;", "z")      = "z\n&lt;__&gt;"
+     * StringUtil.replaceFirst("&lt;__&gt;\n&lt;__&gt;", "(?s)&lt;.*&gt;", "z")  = "z"
+     * StringUtil.replaceFirst("ABCabc123", "[a-z]", "_")          = "ABC_bc123"
+     * StringUtil.replaceFirst("ABCabc123abc", "[^A-Z0-9]+", "_")  = "ABC_123abc"
+     * StringUtil.replaceFirst("ABCabc123abc", "[^A-Z0-9]+", "")   = "ABC123abc"
+     * StringUtil.replaceFirst("Lorem ipsum  dolor   sit", "( +)([a-z]+)", "_$2")  = "Lorem_ipsum  dolor   sit"
      * </pre>
      *
      * @param text        text to search and replace in, may be null
@@ -8042,14 +8042,14 @@ public class StringUtil {
      * <p>A {@code null} reference passed to this method is a no-op.</p>
      *
      * <pre>
-     * StringUtils.replaceIgnoreCase(null, *, *)        = null
-     * StringUtils.replaceIgnoreCase("", *, *)          = ""
-     * StringUtils.replaceIgnoreCase("any", null, *)    = "any"
-     * StringUtils.replaceIgnoreCase("any", *, null)    = "any"
-     * StringUtils.replaceIgnoreCase("any", "", *)      = "any"
-     * StringUtils.replaceIgnoreCase("aba", "a", null)  = "aba"
-     * StringUtils.replaceIgnoreCase("abA", "A", "")    = "b"
-     * StringUtils.replaceIgnoreCase("aba", "A", "z")   = "zbz"
+     * StringUtil.replaceIgnoreCase(null, *, *)        = null
+     * StringUtil.replaceIgnoreCase("", *, *)          = ""
+     * StringUtil.replaceIgnoreCase("any", null, *)    = "any"
+     * StringUtil.replaceIgnoreCase("any", *, null)    = "any"
+     * StringUtil.replaceIgnoreCase("any", "", *)      = "any"
+     * StringUtil.replaceIgnoreCase("aba", "a", null)  = "aba"
+     * StringUtil.replaceIgnoreCase("abA", "A", "")    = "b"
+     * StringUtil.replaceIgnoreCase("aba", "A", "z")   = "zbz"
      * </pre>
      *
      * @param text         text to search and replace in, may be null
@@ -8071,18 +8071,18 @@ public class StringUtil {
      * <p>A {@code null} reference passed to this method is a no-op.</p>
      *
      * <pre>
-     * StringUtils.replaceIgnoreCase(null, *, *, *)         = null
-     * StringUtils.replaceIgnoreCase("", *, *, *)           = ""
-     * StringUtils.replaceIgnoreCase("any", null, *, *)     = "any"
-     * StringUtils.replaceIgnoreCase("any", *, null, *)     = "any"
-     * StringUtils.replaceIgnoreCase("any", "", *, *)       = "any"
-     * StringUtils.replaceIgnoreCase("any", *, *, 0)        = "any"
-     * StringUtils.replaceIgnoreCase("abaa", "a", null, -1) = "abaa"
-     * StringUtils.replaceIgnoreCase("abaa", "a", "", -1)   = "b"
-     * StringUtils.replaceIgnoreCase("abaa", "a", "z", 0)   = "abaa"
-     * StringUtils.replaceIgnoreCase("abaa", "A", "z", 1)   = "zbaa"
-     * StringUtils.replaceIgnoreCase("abAa", "a", "z", 2)   = "zbza"
-     * StringUtils.replaceIgnoreCase("abAa", "a", "z", -1)  = "zbzz"
+     * StringUtil.replaceIgnoreCase(null, *, *, *)         = null
+     * StringUtil.replaceIgnoreCase("", *, *, *)           = ""
+     * StringUtil.replaceIgnoreCase("any", null, *, *)     = "any"
+     * StringUtil.replaceIgnoreCase("any", *, null, *)     = "any"
+     * StringUtil.replaceIgnoreCase("any", "", *, *)       = "any"
+     * StringUtil.replaceIgnoreCase("any", *, *, 0)        = "any"
+     * StringUtil.replaceIgnoreCase("abaa", "a", null, -1) = "abaa"
+     * StringUtil.replaceIgnoreCase("abaa", "a", "", -1)   = "b"
+     * StringUtil.replaceIgnoreCase("abaa", "a", "z", 0)   = "abaa"
+     * StringUtil.replaceIgnoreCase("abaa", "A", "z", 1)   = "zbaa"
+     * StringUtil.replaceIgnoreCase("abAa", "a", "z", 2)   = "zbza"
+     * StringUtil.replaceIgnoreCase("abAa", "a", "z", -1)  = "zbzz"
      * </pre>
      *
      * @param text         text to search and replace in, may be null
@@ -8103,14 +8103,14 @@ public class StringUtil {
      * <p>A {@code null} reference passed to this method is a no-op.</p>
      *
      * <pre>
-     * StringUtils.replaceOnce(null, *, *)        = null
-     * StringUtils.replaceOnce("", *, *)          = ""
-     * StringUtils.replaceOnce("any", null, *)    = "any"
-     * StringUtils.replaceOnce("any", *, null)    = "any"
-     * StringUtils.replaceOnce("any", "", *)      = "any"
-     * StringUtils.replaceOnce("aba", "a", null)  = "aba"
-     * StringUtils.replaceOnce("aba", "a", "")    = "ba"
-     * StringUtils.replaceOnce("aba", "a", "z")   = "zba"
+     * StringUtil.replaceOnce(null, *, *)        = null
+     * StringUtil.replaceOnce("", *, *)          = ""
+     * StringUtil.replaceOnce("any", null, *)    = "any"
+     * StringUtil.replaceOnce("any", *, null)    = "any"
+     * StringUtil.replaceOnce("any", "", *)      = "any"
+     * StringUtil.replaceOnce("aba", "a", null)  = "aba"
+     * StringUtil.replaceOnce("aba", "a", "")    = "ba"
+     * StringUtil.replaceOnce("aba", "a", "z")   = "zba"
      * </pre>
      *
      * @param text         text to search and replace in, may be null
@@ -8130,15 +8130,15 @@ public class StringUtil {
      * <p>A {@code null} reference passed to this method is a no-op.</p>
      *
      * <pre>
-     * StringUtils.replaceOnceIgnoreCase(null, *, *)        = null
-     * StringUtils.replaceOnceIgnoreCase("", *, *)          = ""
-     * StringUtils.replaceOnceIgnoreCase("any", null, *)    = "any"
-     * StringUtils.replaceOnceIgnoreCase("any", *, null)    = "any"
-     * StringUtils.replaceOnceIgnoreCase("any", "", *)      = "any"
-     * StringUtils.replaceOnceIgnoreCase("aba", "a", null)  = "aba"
-     * StringUtils.replaceOnceIgnoreCase("aba", "a", "")    = "ba"
-     * StringUtils.replaceOnceIgnoreCase("aba", "a", "z")   = "zba"
-     * StringUtils.replaceOnceIgnoreCase("FoOFoofoo", "foo", "") = "Foofoo"
+     * StringUtil.replaceOnceIgnoreCase(null, *, *)        = null
+     * StringUtil.replaceOnceIgnoreCase("", *, *)          = ""
+     * StringUtil.replaceOnceIgnoreCase("any", null, *)    = "any"
+     * StringUtil.replaceOnceIgnoreCase("any", *, null)    = "any"
+     * StringUtil.replaceOnceIgnoreCase("any", "", *)      = "any"
+     * StringUtil.replaceOnceIgnoreCase("aba", "a", null)  = "aba"
+     * StringUtil.replaceOnceIgnoreCase("aba", "a", "")    = "ba"
+     * StringUtil.replaceOnceIgnoreCase("aba", "a", "z")   = "zba"
+     * StringUtil.replaceOnceIgnoreCase("FoOFoofoo", "foo", "") = "Foofoo"
      * </pre>
      *
      * @param text         text to search and replace in, may be null
@@ -8166,17 +8166,17 @@ public class StringUtil {
      * <p>A {@code null} reference passed to this method is a no-op.</p>
      *
      * <pre>
-     * StringUtils.replacePattern(null, *, *)       = null
-     * StringUtils.replacePattern("any", (String) null, *)   = "any"
-     * StringUtils.replacePattern("any", *, null)   = "any"
-     * StringUtils.replacePattern("", "", "zzz")    = "zzz"
-     * StringUtils.replacePattern("", ".*", "zzz")  = "zzz"
-     * StringUtils.replacePattern("", ".+", "zzz")  = ""
-     * StringUtils.replacePattern("&lt;__&gt;\n&lt;__&gt;", "&lt;.*&gt;", "z")       = "z"
-     * StringUtils.replacePattern("ABCabc123", "[a-z]", "_")       = "ABC___123"
-     * StringUtils.replacePattern("ABCabc123", "[^A-Z0-9]+", "_")  = "ABC_123"
-     * StringUtils.replacePattern("ABCabc123", "[^A-Z0-9]+", "")   = "ABC123"
-     * StringUtils.replacePattern("Lorem ipsum  dolor   sit", "( +)([a-z]+)", "_$2")  = "Lorem_ipsum_dolor_sit"
+     * StringUtil.replacePattern(null, *, *)       = null
+     * StringUtil.replacePattern("any", (String) null, *)   = "any"
+     * StringUtil.replacePattern("any", *, null)   = "any"
+     * StringUtil.replacePattern("", "", "zzz")    = "zzz"
+     * StringUtil.replacePattern("", ".*", "zzz")  = "zzz"
+     * StringUtil.replacePattern("", ".+", "zzz")  = ""
+     * StringUtil.replacePattern("&lt;__&gt;\n&lt;__&gt;", "&lt;.*&gt;", "z")       = "z"
+     * StringUtil.replacePattern("ABCabc123", "[a-z]", "_")       = "ABC___123"
+     * StringUtil.replacePattern("ABCabc123", "[^A-Z0-9]+", "_")  = "ABC_123"
+     * StringUtil.replacePattern("ABCabc123", "[^A-Z0-9]+", "")   = "ABC123"
+     * StringUtil.replacePattern("Lorem ipsum  dolor   sit", "( +)([a-z]+)", "_$2")  = "Lorem_ipsum_dolor_sit"
      * </pre>
      *
      * @param source      the source string
@@ -8201,9 +8201,9 @@ public class StringUtil {
      * <p>A {@code null} String returns {@code null}.</p>
      *
      * <pre>
-     * StringUtils.reverse(null)  = null
-     * StringUtils.reverse("")    = ""
-     * StringUtils.reverse("bat") = "tab"
+     * StringUtil.reverse(null)  = null
+     * StringUtil.reverse("")    = ""
+     * StringUtil.reverse("bat") = "tab"
      * </pre>
      *
      * @param str the String to reverse, may be null
@@ -8224,10 +8224,10 @@ public class StringUtil {
      * is {@code '.'}).</p>
      *
      * <pre>
-     * StringUtils.reverseDelimited(null, *)      = null
-     * StringUtils.reverseDelimited("", *)        = ""
-     * StringUtils.reverseDelimited("a.b.c", 'x') = "a.b.c"
-     * StringUtils.reverseDelimited("a.b.c", ".") = "c.b.a"
+     * StringUtil.reverseDelimited(null, *)      = null
+     * StringUtil.reverseDelimited("", *)        = ""
+     * StringUtil.reverseDelimited("a.b.c", 'x') = "a.b.c"
+     * StringUtil.reverseDelimited("a.b.c", ".") = "c.b.a"
      * </pre>
      *
      * @param str           the String to reverse, may be null
@@ -8254,12 +8254,12 @@ public class StringUtil {
      * an exception. An empty String is returned if len is negative.</p>
      *
      * <pre>
-     * StringUtils.right(null, *)    = null
-     * StringUtils.right(*, -ve)     = ""
-     * StringUtils.right("", *)      = ""
-     * StringUtils.right("abc", 0)   = ""
-     * StringUtils.right("abc", 2)   = "bc"
-     * StringUtils.right("abc", 4)   = "abc"
+     * StringUtil.right(null, *)    = null
+     * StringUtil.right(*, -ve)     = ""
+     * StringUtil.right("", *)      = ""
+     * StringUtil.right("abc", 0)   = ""
+     * StringUtil.right("abc", 2)   = "bc"
+     * StringUtil.right("abc", 4)   = "abc"
      * </pre>
      *
      * @param str the String to get the rightmost characters from, may be null
@@ -8285,12 +8285,12 @@ public class StringUtil {
      * <p>The String is padded to the size of {@code size}.</p>
      *
      * <pre>
-     * StringUtils.rightPad(null, *)   = null
-     * StringUtils.rightPad("", 3)     = "   "
-     * StringUtils.rightPad("bat", 3)  = "bat"
-     * StringUtils.rightPad("bat", 5)  = "bat  "
-     * StringUtils.rightPad("bat", 1)  = "bat"
-     * StringUtils.rightPad("bat", -1) = "bat"
+     * StringUtil.rightPad(null, *)   = null
+     * StringUtil.rightPad("", 3)     = "   "
+     * StringUtil.rightPad("bat", 3)  = "bat"
+     * StringUtil.rightPad("bat", 5)  = "bat  "
+     * StringUtil.rightPad("bat", 1)  = "bat"
+     * StringUtil.rightPad("bat", -1) = "bat"
      * </pre>
      *
      * @param str  the String to pad out, may be null
@@ -8308,12 +8308,12 @@ public class StringUtil {
      * <p>The String is padded to the size of {@code size}.</p>
      *
      * <pre>
-     * StringUtils.rightPad(null, *, *)     = null
-     * StringUtils.rightPad("", 3, 'z')     = "zzz"
-     * StringUtils.rightPad("bat", 3, 'z')  = "bat"
-     * StringUtils.rightPad("bat", 5, 'z')  = "batzz"
-     * StringUtils.rightPad("bat", 1, 'z')  = "bat"
-     * StringUtils.rightPad("bat", -1, 'z') = "bat"
+     * StringUtil.rightPad(null, *, *)     = null
+     * StringUtil.rightPad("", 3, 'z')     = "zzz"
+     * StringUtil.rightPad("bat", 3, 'z')  = "bat"
+     * StringUtil.rightPad("bat", 5, 'z')  = "batzz"
+     * StringUtil.rightPad("bat", 1, 'z')  = "bat"
+     * StringUtil.rightPad("bat", -1, 'z') = "bat"
      * </pre>
      *
      * @param str     the String to pad out, may be null
@@ -8343,15 +8343,15 @@ public class StringUtil {
      * <p>The String is padded to the size of {@code size}.</p>
      *
      * <pre>
-     * StringUtils.rightPad(null, *, *)      = null
-     * StringUtils.rightPad("", 3, "z")      = "zzz"
-     * StringUtils.rightPad("bat", 3, "yz")  = "bat"
-     * StringUtils.rightPad("bat", 5, "yz")  = "batyz"
-     * StringUtils.rightPad("bat", 8, "yz")  = "batyzyzy"
-     * StringUtils.rightPad("bat", 1, "yz")  = "bat"
-     * StringUtils.rightPad("bat", -1, "yz") = "bat"
-     * StringUtils.rightPad("bat", 5, null)  = "bat  "
-     * StringUtils.rightPad("bat", 5, "")    = "bat  "
+     * StringUtil.rightPad(null, *, *)      = null
+     * StringUtil.rightPad("", 3, "z")      = "zzz"
+     * StringUtil.rightPad("bat", 3, "yz")  = "bat"
+     * StringUtil.rightPad("bat", 5, "yz")  = "batyz"
+     * StringUtil.rightPad("bat", 8, "yz")  = "batyzyzy"
+     * StringUtil.rightPad("bat", 1, "yz")  = "bat"
+     * StringUtil.rightPad("bat", -1, "yz") = "bat"
+     * StringUtil.rightPad("bat", 5, null)  = "bat  "
+     * StringUtil.rightPad("bat", 5, "")    = "bat  "
      * </pre>
      *
      * @param str    the String to pad out, may be null
@@ -8399,15 +8399,15 @@ public class StringUtil {
      * </ul>
      *
      * <pre>
-     * StringUtils.rotate(null, *)        = null
-     * StringUtils.rotate("", *)          = ""
-     * StringUtils.rotate("abcdefg", 0)   = "abcdefg"
-     * StringUtils.rotate("abcdefg", 2)   = "fgabcde"
-     * StringUtils.rotate("abcdefg", -2)  = "cdefgab"
-     * StringUtils.rotate("abcdefg", 7)   = "abcdefg"
-     * StringUtils.rotate("abcdefg", -7)  = "abcdefg"
-     * StringUtils.rotate("abcdefg", 9)   = "fgabcde"
-     * StringUtils.rotate("abcdefg", -9)  = "cdefgab"
+     * StringUtil.rotate(null, *)        = null
+     * StringUtil.rotate("", *)          = ""
+     * StringUtil.rotate("abcdefg", 0)   = "abcdefg"
+     * StringUtil.rotate("abcdefg", 2)   = "fgabcde"
+     * StringUtil.rotate("abcdefg", -2)  = "cdefgab"
+     * StringUtil.rotate("abcdefg", 7)   = "abcdefg"
+     * StringUtil.rotate("abcdefg", -7)  = "abcdefg"
+     * StringUtil.rotate("abcdefg", 9)   = "fgabcde"
+     * StringUtil.rotate("abcdefg", -9)  = "cdefgab"
      * </pre>
      *
      * @param str   the String to rotate, may be null
@@ -8446,11 +8446,11 @@ public class StringUtil {
      * <p>A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
-     * StringUtils.split(null)       = null
-     * StringUtils.split("")         = []
-     * StringUtils.split("abc def")  = ["abc", "def"]
-     * StringUtils.split("abc  def") = ["abc", "def"]
-     * StringUtils.split(" abc ")    = ["abc"]
+     * StringUtil.split(null)       = null
+     * StringUtil.split("")         = []
+     * StringUtil.split("abc def")  = ["abc", "def"]
+     * StringUtil.split("abc  def") = ["abc", "def"]
+     * StringUtil.split(" abc ")    = ["abc"]
      * </pre>
      *
      * @param str the String to parse, may be null
@@ -8471,12 +8471,12 @@ public class StringUtil {
      * <p>A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
-     * StringUtils.split(null, *)         = null
-     * StringUtils.split("", *)           = []
-     * StringUtils.split("a.b.c", '.')    = ["a", "b", "c"]
-     * StringUtils.split("a..b.c", '.')   = ["a", "b", "c"]
-     * StringUtils.split("a:b:c", '.')    = ["a:b:c"]
-     * StringUtils.split("a b c", ' ')    = ["a", "b", "c"]
+     * StringUtil.split(null, *)         = null
+     * StringUtil.split("", *)           = []
+     * StringUtil.split("a.b.c", '.')    = ["a", "b", "c"]
+     * StringUtil.split("a..b.c", '.')   = ["a", "b", "c"]
+     * StringUtil.split("a:b:c", '.')    = ["a:b:c"]
+     * StringUtil.split("a b c", ' ')    = ["a", "b", "c"]
      * </pre>
      *
      * @param str           the String to parse, may be null
@@ -8500,12 +8500,12 @@ public class StringUtil {
      * A {@code null} separatorChars splits on whitespace.</p>
      *
      * <pre>
-     * StringUtils.split(null, *)         = null
-     * StringUtils.split("", *)           = []
-     * StringUtils.split("abc def", null) = ["abc", "def"]
-     * StringUtils.split("abc def", " ")  = ["abc", "def"]
-     * StringUtils.split("abc  def", " ") = ["abc", "def"]
-     * StringUtils.split("ab:cd:ef", ":") = ["ab", "cd", "ef"]
+     * StringUtil.split(null, *)         = null
+     * StringUtil.split("", *)           = []
+     * StringUtil.split("abc def", null) = ["abc", "def"]
+     * StringUtil.split("abc def", " ")  = ["abc", "def"]
+     * StringUtil.split("abc  def", " ") = ["abc", "def"]
+     * StringUtil.split("ab:cd:ef", ":") = ["ab", "cd", "ef"]
      * </pre>
      *
      * @param str            the String to parse, may be null
@@ -8532,12 +8532,12 @@ public class StringUtil {
      * returned strings (including separator characters).</p>
      *
      * <pre>
-     * StringUtils.split(null, *, *)            = null
-     * StringUtils.split("", *, *)              = []
-     * StringUtils.split("ab cd ef", null, 0)   = ["ab", "cd", "ef"]
-     * StringUtils.split("ab   cd ef", null, 0) = ["ab", "cd", "ef"]
-     * StringUtils.split("ab:cd:ef", ":", 0)    = ["ab", "cd", "ef"]
-     * StringUtils.split("ab:cd:ef", ":", 2)    = ["ab", "cd:ef"]
+     * StringUtil.split(null, *, *)            = null
+     * StringUtil.split("", *, *)              = []
+     * StringUtil.split("ab cd ef", null, 0)   = ["ab", "cd", "ef"]
+     * StringUtil.split("ab   cd ef", null, 0) = ["ab", "cd", "ef"]
+     * StringUtil.split("ab:cd:ef", ":", 0)    = ["ab", "cd", "ef"]
+     * StringUtil.split("ab:cd:ef", ":", 2)    = ["ab", "cd:ef"]
      * </pre>
      *
      * @param str            the String to parse, may be null
@@ -8556,15 +8556,15 @@ public class StringUtil {
      * {@code java.lang.Character.getType(char)}. Groups of contiguous
      * characters of the same type are returned as complete tokens.
      * <pre>
-     * StringUtils.splitByCharacterType(null)         = null
-     * StringUtils.splitByCharacterType("")           = []
-     * StringUtils.splitByCharacterType("ab de fg")   = ["ab", " ", "de", " ", "fg"]
-     * StringUtils.splitByCharacterType("ab   de fg") = ["ab", "   ", "de", " ", "fg"]
-     * StringUtils.splitByCharacterType("ab:cd:ef")   = ["ab", ":", "cd", ":", "ef"]
-     * StringUtils.splitByCharacterType("number5")    = ["number", "5"]
-     * StringUtils.splitByCharacterType("fooBar")     = ["foo", "B", "ar"]
-     * StringUtils.splitByCharacterType("foo200Bar")  = ["foo", "200", "B", "ar"]
-     * StringUtils.splitByCharacterType("ASFRules")   = ["ASFR", "ules"]
+     * StringUtil.splitByCharacterType(null)         = null
+     * StringUtil.splitByCharacterType("")           = []
+     * StringUtil.splitByCharacterType("ab de fg")   = ["ab", " ", "de", " ", "fg"]
+     * StringUtil.splitByCharacterType("ab   de fg") = ["ab", "   ", "de", " ", "fg"]
+     * StringUtil.splitByCharacterType("ab:cd:ef")   = ["ab", ":", "cd", ":", "ef"]
+     * StringUtil.splitByCharacterType("number5")    = ["number", "5"]
+     * StringUtil.splitByCharacterType("fooBar")     = ["foo", "B", "ar"]
+     * StringUtil.splitByCharacterType("foo200Bar")  = ["foo", "200", "B", "ar"]
+     * StringUtil.splitByCharacterType("ASFRules")   = ["ASFR", "ules"]
      * </pre>
      *
      * @param str the String to split, may be {@code null}
@@ -8632,15 +8632,15 @@ public class StringUtil {
      * will belong to the following token rather than to the preceding, if any,
      * {@code Character.UPPERCASE_LETTER} token.
      * <pre>
-     * StringUtils.splitByCharacterTypeCamelCase(null)         = null
-     * StringUtils.splitByCharacterTypeCamelCase("")           = []
-     * StringUtils.splitByCharacterTypeCamelCase("ab de fg")   = ["ab", " ", "de", " ", "fg"]
-     * StringUtils.splitByCharacterTypeCamelCase("ab   de fg") = ["ab", "   ", "de", " ", "fg"]
-     * StringUtils.splitByCharacterTypeCamelCase("ab:cd:ef")   = ["ab", ":", "cd", ":", "ef"]
-     * StringUtils.splitByCharacterTypeCamelCase("number5")    = ["number", "5"]
-     * StringUtils.splitByCharacterTypeCamelCase("fooBar")     = ["foo", "Bar"]
-     * StringUtils.splitByCharacterTypeCamelCase("foo200Bar")  = ["foo", "200", "Bar"]
-     * StringUtils.splitByCharacterTypeCamelCase("ASFRules")   = ["ASF", "Rules"]
+     * StringUtil.splitByCharacterTypeCamelCase(null)         = null
+     * StringUtil.splitByCharacterTypeCamelCase("")           = []
+     * StringUtil.splitByCharacterTypeCamelCase("ab de fg")   = ["ab", " ", "de", " ", "fg"]
+     * StringUtil.splitByCharacterTypeCamelCase("ab   de fg") = ["ab", "   ", "de", " ", "fg"]
+     * StringUtil.splitByCharacterTypeCamelCase("ab:cd:ef")   = ["ab", ":", "cd", ":", "ef"]
+     * StringUtil.splitByCharacterTypeCamelCase("number5")    = ["number", "5"]
+     * StringUtil.splitByCharacterTypeCamelCase("fooBar")     = ["foo", "Bar"]
+     * StringUtil.splitByCharacterTypeCamelCase("foo200Bar")  = ["foo", "200", "Bar"]
+     * StringUtil.splitByCharacterTypeCamelCase("ASFRules")   = ["ASF", "Rules"]
      * </pre>
      *
      * @param str the String to split, may be {@code null}
@@ -8661,12 +8661,12 @@ public class StringUtil {
      * A {@code null} separator splits on whitespace.</p>
      *
      * <pre>
-     * StringUtils.splitByWholeSeparator(null, *)               = null
-     * StringUtils.splitByWholeSeparator("", *)                 = []
-     * StringUtils.splitByWholeSeparator("ab de fg", null)      = ["ab", "de", "fg"]
-     * StringUtils.splitByWholeSeparator("ab   de fg", null)    = ["ab", "de", "fg"]
-     * StringUtils.splitByWholeSeparator("ab:cd:ef", ":")       = ["ab", "cd", "ef"]
-     * StringUtils.splitByWholeSeparator("ab-!-cd-!-ef", "-!-") = ["ab", "cd", "ef"]
+     * StringUtil.splitByWholeSeparator(null, *)               = null
+     * StringUtil.splitByWholeSeparator("", *)                 = []
+     * StringUtil.splitByWholeSeparator("ab de fg", null)      = ["ab", "de", "fg"]
+     * StringUtil.splitByWholeSeparator("ab   de fg", null)    = ["ab", "de", "fg"]
+     * StringUtil.splitByWholeSeparator("ab:cd:ef", ":")       = ["ab", "cd", "ef"]
+     * StringUtil.splitByWholeSeparator("ab-!-cd-!-ef", "-!-") = ["ab", "cd", "ef"]
      * </pre>
      *
      * @param str       the String to parse, may be null
@@ -8689,13 +8689,13 @@ public class StringUtil {
      * A {@code null} separator splits on whitespace.</p>
      *
      * <pre>
-     * StringUtils.splitByWholeSeparator(null, *, *)               = null
-     * StringUtils.splitByWholeSeparator("", *, *)                 = []
-     * StringUtils.splitByWholeSeparator("ab de fg", null, 0)      = ["ab", "de", "fg"]
-     * StringUtils.splitByWholeSeparator("ab   de fg", null, 0)    = ["ab", "de", "fg"]
-     * StringUtils.splitByWholeSeparator("ab:cd:ef", ":", 2)       = ["ab", "cd:ef"]
-     * StringUtils.splitByWholeSeparator("ab-!-cd-!-ef", "-!-", 5) = ["ab", "cd", "ef"]
-     * StringUtils.splitByWholeSeparator("ab-!-cd-!-ef", "-!-", 2) = ["ab", "cd-!-ef"]
+     * StringUtil.splitByWholeSeparator(null, *, *)               = null
+     * StringUtil.splitByWholeSeparator("", *, *)                 = []
+     * StringUtil.splitByWholeSeparator("ab de fg", null, 0)      = ["ab", "de", "fg"]
+     * StringUtil.splitByWholeSeparator("ab   de fg", null, 0)    = ["ab", "de", "fg"]
+     * StringUtil.splitByWholeSeparator("ab:cd:ef", ":", 2)       = ["ab", "cd:ef"]
+     * StringUtil.splitByWholeSeparator("ab-!-cd-!-ef", "-!-", 5) = ["ab", "cd", "ef"]
+     * StringUtil.splitByWholeSeparator("ab-!-cd-!-ef", "-!-", 2) = ["ab", "cd-!-ef"]
      * </pre>
      *
      * @param str       the String to parse, may be null
@@ -8720,12 +8720,12 @@ public class StringUtil {
      * A {@code null} separator splits on whitespace.</p>
      *
      * <pre>
-     * StringUtils.splitByWholeSeparatorPreserveAllTokens(null, *)               = null
-     * StringUtils.splitByWholeSeparatorPreserveAllTokens("", *)                 = []
-     * StringUtils.splitByWholeSeparatorPreserveAllTokens("ab de fg", null)      = ["ab", "de", "fg"]
-     * StringUtils.splitByWholeSeparatorPreserveAllTokens("ab   de fg", null)    = ["ab", "", "", "de", "fg"]
-     * StringUtils.splitByWholeSeparatorPreserveAllTokens("ab:cd:ef", ":")       = ["ab", "cd", "ef"]
-     * StringUtils.splitByWholeSeparatorPreserveAllTokens("ab-!-cd-!-ef", "-!-") = ["ab", "cd", "ef"]
+     * StringUtil.splitByWholeSeparatorPreserveAllTokens(null, *)               = null
+     * StringUtil.splitByWholeSeparatorPreserveAllTokens("", *)                 = []
+     * StringUtil.splitByWholeSeparatorPreserveAllTokens("ab de fg", null)      = ["ab", "de", "fg"]
+     * StringUtil.splitByWholeSeparatorPreserveAllTokens("ab   de fg", null)    = ["ab", "", "", "de", "fg"]
+     * StringUtil.splitByWholeSeparatorPreserveAllTokens("ab:cd:ef", ":")       = ["ab", "cd", "ef"]
+     * StringUtil.splitByWholeSeparatorPreserveAllTokens("ab-!-cd-!-ef", "-!-") = ["ab", "cd", "ef"]
      * </pre>
      *
      * @param str       the String to parse, may be null
@@ -8750,13 +8750,13 @@ public class StringUtil {
      * A {@code null} separator splits on whitespace.</p>
      *
      * <pre>
-     * StringUtils.splitByWholeSeparatorPreserveAllTokens(null, *, *)               = null
-     * StringUtils.splitByWholeSeparatorPreserveAllTokens("", *, *)                 = []
-     * StringUtils.splitByWholeSeparatorPreserveAllTokens("ab de fg", null, 0)      = ["ab", "de", "fg"]
-     * StringUtils.splitByWholeSeparatorPreserveAllTokens("ab   de fg", null, 0)    = ["ab", "", "", "de", "fg"]
-     * StringUtils.splitByWholeSeparatorPreserveAllTokens("ab:cd:ef", ":", 2)       = ["ab", "cd:ef"]
-     * StringUtils.splitByWholeSeparatorPreserveAllTokens("ab-!-cd-!-ef", "-!-", 5) = ["ab", "cd", "ef"]
-     * StringUtils.splitByWholeSeparatorPreserveAllTokens("ab-!-cd-!-ef", "-!-", 2) = ["ab", "cd-!-ef"]
+     * StringUtil.splitByWholeSeparatorPreserveAllTokens(null, *, *)               = null
+     * StringUtil.splitByWholeSeparatorPreserveAllTokens("", *, *)                 = []
+     * StringUtil.splitByWholeSeparatorPreserveAllTokens("ab de fg", null, 0)      = ["ab", "de", "fg"]
+     * StringUtil.splitByWholeSeparatorPreserveAllTokens("ab   de fg", null, 0)    = ["ab", "", "", "de", "fg"]
+     * StringUtil.splitByWholeSeparatorPreserveAllTokens("ab:cd:ef", ":", 2)       = ["ab", "cd:ef"]
+     * StringUtil.splitByWholeSeparatorPreserveAllTokens("ab-!-cd-!-ef", "-!-", 5) = ["ab", "cd", "ef"]
+     * StringUtil.splitByWholeSeparatorPreserveAllTokens("ab-!-cd-!-ef", "-!-", 2) = ["ab", "cd-!-ef"]
      * </pre>
      *
      * @param str       the String to parse, may be null
@@ -8864,11 +8864,11 @@ public class StringUtil {
      * <p>A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
-     * StringUtils.splitPreserveAllTokens(null)       = null
-     * StringUtils.splitPreserveAllTokens("")         = []
-     * StringUtils.splitPreserveAllTokens("abc def")  = ["abc", "def"]
-     * StringUtils.splitPreserveAllTokens("abc  def") = ["abc", "", "def"]
-     * StringUtils.splitPreserveAllTokens(" abc ")    = ["", "abc", ""]
+     * StringUtil.splitPreserveAllTokens(null)       = null
+     * StringUtil.splitPreserveAllTokens("")         = []
+     * StringUtil.splitPreserveAllTokens("abc def")  = ["abc", "def"]
+     * StringUtil.splitPreserveAllTokens("abc  def") = ["abc", "", "def"]
+     * StringUtil.splitPreserveAllTokens(" abc ")    = ["", "abc", ""]
      * </pre>
      *
      * @param str the String to parse, may be {@code null}
@@ -8891,18 +8891,18 @@ public class StringUtil {
      * <p>A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
-     * StringUtils.splitPreserveAllTokens(null, *)         = null
-     * StringUtils.splitPreserveAllTokens("", *)           = []
-     * StringUtils.splitPreserveAllTokens("a.b.c", '.')    = ["a", "b", "c"]
-     * StringUtils.splitPreserveAllTokens("a..b.c", '.')   = ["a", "", "b", "c"]
-     * StringUtils.splitPreserveAllTokens("a:b:c", '.')    = ["a:b:c"]
-     * StringUtils.splitPreserveAllTokens("a\tb\nc", null) = ["a", "b", "c"]
-     * StringUtils.splitPreserveAllTokens("a b c", ' ')    = ["a", "b", "c"]
-     * StringUtils.splitPreserveAllTokens("a b c ", ' ')   = ["a", "b", "c", ""]
-     * StringUtils.splitPreserveAllTokens("a b c  ", ' ')   = ["a", "b", "c", "", ""]
-     * StringUtils.splitPreserveAllTokens(" a b c", ' ')   = ["", a", "b", "c"]
-     * StringUtils.splitPreserveAllTokens("  a b c", ' ')  = ["", "", a", "b", "c"]
-     * StringUtils.splitPreserveAllTokens(" a b c ", ' ')  = ["", a", "b", "c", ""]
+     * StringUtil.splitPreserveAllTokens(null, *)         = null
+     * StringUtil.splitPreserveAllTokens("", *)           = []
+     * StringUtil.splitPreserveAllTokens("a.b.c", '.')    = ["a", "b", "c"]
+     * StringUtil.splitPreserveAllTokens("a..b.c", '.')   = ["a", "", "b", "c"]
+     * StringUtil.splitPreserveAllTokens("a:b:c", '.')    = ["a:b:c"]
+     * StringUtil.splitPreserveAllTokens("a\tb\nc", null) = ["a", "b", "c"]
+     * StringUtil.splitPreserveAllTokens("a b c", ' ')    = ["a", "b", "c"]
+     * StringUtil.splitPreserveAllTokens("a b c ", ' ')   = ["a", "b", "c", ""]
+     * StringUtil.splitPreserveAllTokens("a b c  ", ' ')   = ["a", "b", "c", "", ""]
+     * StringUtil.splitPreserveAllTokens(" a b c", ' ')   = ["", a", "b", "c"]
+     * StringUtil.splitPreserveAllTokens("  a b c", ' ')  = ["", "", a", "b", "c"]
+     * StringUtil.splitPreserveAllTokens(" a b c ", ' ')  = ["", a", "b", "c", ""]
      * </pre>
      *
      * @param str           the String to parse, may be {@code null}
@@ -8928,18 +8928,18 @@ public class StringUtil {
      * A {@code null} separatorChars splits on whitespace.</p>
      *
      * <pre>
-     * StringUtils.splitPreserveAllTokens(null, *)           = null
-     * StringUtils.splitPreserveAllTokens("", *)             = []
-     * StringUtils.splitPreserveAllTokens("abc def", null)   = ["abc", "def"]
-     * StringUtils.splitPreserveAllTokens("abc def", " ")    = ["abc", "def"]
-     * StringUtils.splitPreserveAllTokens("abc  def", " ")   = ["abc", "", def"]
-     * StringUtils.splitPreserveAllTokens("ab:cd:ef", ":")   = ["ab", "cd", "ef"]
-     * StringUtils.splitPreserveAllTokens("ab:cd:ef:", ":")  = ["ab", "cd", "ef", ""]
-     * StringUtils.splitPreserveAllTokens("ab:cd:ef::", ":") = ["ab", "cd", "ef", "", ""]
-     * StringUtils.splitPreserveAllTokens("ab::cd:ef", ":")  = ["ab", "", cd", "ef"]
-     * StringUtils.splitPreserveAllTokens(":cd:ef", ":")     = ["", cd", "ef"]
-     * StringUtils.splitPreserveAllTokens("::cd:ef", ":")    = ["", "", cd", "ef"]
-     * StringUtils.splitPreserveAllTokens(":cd:ef:", ":")    = ["", cd", "ef", ""]
+     * StringUtil.splitPreserveAllTokens(null, *)           = null
+     * StringUtil.splitPreserveAllTokens("", *)             = []
+     * StringUtil.splitPreserveAllTokens("abc def", null)   = ["abc", "def"]
+     * StringUtil.splitPreserveAllTokens("abc def", " ")    = ["abc", "def"]
+     * StringUtil.splitPreserveAllTokens("abc  def", " ")   = ["abc", "", def"]
+     * StringUtil.splitPreserveAllTokens("ab:cd:ef", ":")   = ["ab", "cd", "ef"]
+     * StringUtil.splitPreserveAllTokens("ab:cd:ef:", ":")  = ["ab", "cd", "ef", ""]
+     * StringUtil.splitPreserveAllTokens("ab:cd:ef::", ":") = ["ab", "cd", "ef", "", ""]
+     * StringUtil.splitPreserveAllTokens("ab::cd:ef", ":")  = ["ab", "", cd", "ef"]
+     * StringUtil.splitPreserveAllTokens(":cd:ef", ":")     = ["", cd", "ef"]
+     * StringUtil.splitPreserveAllTokens("::cd:ef", ":")    = ["", "", cd", "ef"]
+     * StringUtil.splitPreserveAllTokens(":cd:ef:", ":")    = ["", cd", "ef", ""]
      * </pre>
      *
      * @param str            the String to parse, may be {@code null}
@@ -8969,15 +8969,15 @@ public class StringUtil {
      * returned strings (including separator characters).</p>
      *
      * <pre>
-     * StringUtils.splitPreserveAllTokens(null, *, *)            = null
-     * StringUtils.splitPreserveAllTokens("", *, *)              = []
-     * StringUtils.splitPreserveAllTokens("ab de fg", null, 0)   = ["ab", "de", "fg"]
-     * StringUtils.splitPreserveAllTokens("ab   de fg", null, 0) = ["ab", "", "", "de", "fg"]
-     * StringUtils.splitPreserveAllTokens("ab:cd:ef", ":", 0)    = ["ab", "cd", "ef"]
-     * StringUtils.splitPreserveAllTokens("ab:cd:ef", ":", 2)    = ["ab", "cd:ef"]
-     * StringUtils.splitPreserveAllTokens("ab   de fg", null, 2) = ["ab", "  de fg"]
-     * StringUtils.splitPreserveAllTokens("ab   de fg", null, 3) = ["ab", "", " de fg"]
-     * StringUtils.splitPreserveAllTokens("ab   de fg", null, 4) = ["ab", "", "", "de fg"]
+     * StringUtil.splitPreserveAllTokens(null, *, *)            = null
+     * StringUtil.splitPreserveAllTokens("", *, *)              = []
+     * StringUtil.splitPreserveAllTokens("ab de fg", null, 0)   = ["ab", "de", "fg"]
+     * StringUtil.splitPreserveAllTokens("ab   de fg", null, 0) = ["ab", "", "", "de", "fg"]
+     * StringUtil.splitPreserveAllTokens("ab:cd:ef", ":", 0)    = ["ab", "cd", "ef"]
+     * StringUtil.splitPreserveAllTokens("ab:cd:ef", ":", 2)    = ["ab", "cd:ef"]
+     * StringUtil.splitPreserveAllTokens("ab   de fg", null, 2) = ["ab", "  de fg"]
+     * StringUtil.splitPreserveAllTokens("ab   de fg", null, 3) = ["ab", "", " de fg"]
+     * StringUtil.splitPreserveAllTokens("ab   de fg", null, 4) = ["ab", "", "", "de fg"]
      * </pre>
      *
      * @param str            the String to parse, may be {@code null}
@@ -9146,11 +9146,11 @@ public class StringUtil {
      * references are considered to be equal. The comparison is case sensitive.</p>
      *
      * <pre>
-     * StringUtils.startsWith(null, null)      = true
-     * StringUtils.startsWith(null, "abc")     = false
-     * StringUtils.startsWith("abcdef", null)  = false
-     * StringUtils.startsWith("abcdef", "abc") = true
-     * StringUtils.startsWith("ABCDEF", "abc") = false
+     * StringUtil.startsWith(null, null)      = true
+     * StringUtil.startsWith(null, "abc")     = false
+     * StringUtil.startsWith("abcdef", null)  = false
+     * StringUtil.startsWith("abcdef", "abc") = true
+     * StringUtil.startsWith("ABCDEF", "abc") = false
      * </pre>
      *
      * @param str    the CharSequence to check, may be null
@@ -9192,21 +9192,21 @@ public class StringUtil {
      * <p>Check if a CharSequence starts with any of the provided case-sensitive prefixes.</p>
      *
      * <pre>
-     * StringUtils.startsWithAny(null, null)      = false
-     * StringUtils.startsWithAny(null, new String[] {"abc"})  = false
-     * StringUtils.startsWithAny("abcxyz", null)     = false
-     * StringUtils.startsWithAny("abcxyz", new String[] {""}) = true
-     * StringUtils.startsWithAny("abcxyz", new String[] {"abc"}) = true
-     * StringUtils.startsWithAny("abcxyz", new String[] {null, "xyz", "abc"}) = true
-     * StringUtils.startsWithAny("abcxyz", null, "xyz", "ABCX") = false
-     * StringUtils.startsWithAny("ABCXYZ", null, "xyz", "abc") = false
+     * StringUtil.startsWithAny(null, null)      = false
+     * StringUtil.startsWithAny(null, new String[] {"abc"})  = false
+     * StringUtil.startsWithAny("abcxyz", null)     = false
+     * StringUtil.startsWithAny("abcxyz", new String[] {""}) = true
+     * StringUtil.startsWithAny("abcxyz", new String[] {"abc"}) = true
+     * StringUtil.startsWithAny("abcxyz", new String[] {null, "xyz", "abc"}) = true
+     * StringUtil.startsWithAny("abcxyz", null, "xyz", "ABCX") = false
+     * StringUtil.startsWithAny("ABCXYZ", null, "xyz", "abc") = false
      * </pre>
      *
      * @param sequence      the CharSequence to check, may be null
      * @param searchStrings the case-sensitive CharSequence prefixes, may be empty or contain {@code null}
      * @return {@code true} if the input {@code sequence} is {@code null} AND no {@code searchStrings} are provided, or
      * the input {@code sequence} begins with any of the provided case-sensitive {@code searchStrings}.
-     * @see StringUtils#startsWith(CharSequence, CharSequence)
+     * @see StringUtil#startsWith(CharSequence, CharSequence)
      * @since 2.5
      * @since 3.0 Changed signature from startsWithAny(String, String[]) to startsWithAny(CharSequence, CharSequence...)
      */
@@ -9229,11 +9229,11 @@ public class StringUtil {
      * references are considered to be equal. The comparison is case insensitive.</p>
      *
      * <pre>
-     * StringUtils.startsWithIgnoreCase(null, null)      = true
-     * StringUtils.startsWithIgnoreCase(null, "abc")     = false
-     * StringUtils.startsWithIgnoreCase("abcdef", null)  = false
-     * StringUtils.startsWithIgnoreCase("abcdef", "abc") = true
-     * StringUtils.startsWithIgnoreCase("ABCDEF", "abc") = true
+     * StringUtil.startsWithIgnoreCase(null, null)      = true
+     * StringUtil.startsWithIgnoreCase(null, "abc")     = false
+     * StringUtil.startsWithIgnoreCase("abcdef", null)  = false
+     * StringUtil.startsWithIgnoreCase("abcdef", "abc") = true
+     * StringUtil.startsWithIgnoreCase("ABCDEF", "abc") = true
      * </pre>
      *
      * @param str    the CharSequence to check, may be null
@@ -9257,14 +9257,14 @@ public class StringUtil {
      * <p>A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
-     * StringUtils.strip(null)     = null
-     * StringUtils.strip("")       = ""
-     * StringUtils.strip("   ")    = ""
-     * StringUtils.strip("abc")    = "abc"
-     * StringUtils.strip("  abc")  = "abc"
-     * StringUtils.strip("abc  ")  = "abc"
-     * StringUtils.strip(" abc ")  = "abc"
-     * StringUtils.strip(" ab c ") = "ab c"
+     * StringUtil.strip(null)     = null
+     * StringUtil.strip("")       = ""
+     * StringUtil.strip("   ")    = ""
+     * StringUtil.strip("abc")    = "abc"
+     * StringUtil.strip("  abc")  = "abc"
+     * StringUtil.strip("abc  ")  = "abc"
+     * StringUtil.strip(" abc ")  = "abc"
+     * StringUtil.strip(" ab c ") = "ab c"
      * </pre>
      *
      * @param str the String to remove whitespace from, may be null
@@ -9287,13 +9287,13 @@ public class StringUtil {
      * Alternatively use {@link #strip(String)}.</p>
      *
      * <pre>
-     * StringUtils.strip(null, *)          = null
-     * StringUtils.strip("", *)            = ""
-     * StringUtils.strip("abc", null)      = "abc"
-     * StringUtils.strip("  abc", null)    = "abc"
-     * StringUtils.strip("abc  ", null)    = "abc"
-     * StringUtils.strip(" abc ", null)    = "abc"
-     * StringUtils.strip("  abcyx", "xyz") = "  abc"
+     * StringUtil.strip(null, *)          = null
+     * StringUtil.strip("", *)            = ""
+     * StringUtil.strip("abc", null)      = "abc"
+     * StringUtil.strip("  abc", null)    = "abc"
+     * StringUtil.strip("abc  ", null)    = "abc"
+     * StringUtil.strip(" abc ", null)    = "abc"
+     * StringUtil.strip("  abcyx", "xyz") = "  abc"
      * </pre>
      *
      * @param str        the String to remove characters from, may be null
@@ -9311,10 +9311,10 @@ public class StringUtil {
      * <p>Note that ligatures will be left as is.</p>
      *
      * <pre>
-     * StringUtils.stripAccents(null)                = null
-     * StringUtils.stripAccents("")                  = ""
-     * StringUtils.stripAccents("control")           = "control"
-     * StringUtils.stripAccents("&eacute;clair")     = "eclair"
+     * StringUtil.stripAccents(null)                = null
+     * StringUtil.stripAccents("")                  = ""
+     * StringUtil.stripAccents("control")           = "control"
+     * StringUtil.stripAccents("&eacute;clair")     = "eclair"
      * </pre>
      *
      * @param input String to be stripped
@@ -9342,10 +9342,10 @@ public class StringUtil {
      * A {@code null} array entry will be ignored.</p>
      *
      * <pre>
-     * StringUtils.stripAll(null)             = null
-     * StringUtils.stripAll([])               = []
-     * StringUtils.stripAll(["abc", "  abc"]) = ["abc", "abc"]
-     * StringUtils.stripAll(["abc  ", null])  = ["abc", null]
+     * StringUtil.stripAll(null)             = null
+     * StringUtil.stripAll([])               = []
+     * StringUtil.stripAll(["abc", "  abc"]) = ["abc", "abc"]
+     * StringUtil.stripAll(["abc  ", null])  = ["abc", null]
      * </pre>
      *
      * @param strs the array to remove whitespace from, may be null
@@ -9368,12 +9368,12 @@ public class StringUtil {
      * {@link Character#isWhitespace(char)}.</p>
      *
      * <pre>
-     * StringUtils.stripAll(null, *)                = null
-     * StringUtils.stripAll([], *)                  = []
-     * StringUtils.stripAll(["abc", "  abc"], null) = ["abc", "abc"]
-     * StringUtils.stripAll(["abc  ", null], null)  = ["abc", null]
-     * StringUtils.stripAll(["abc  ", null], "yz")  = ["abc  ", null]
-     * StringUtils.stripAll(["yabcz", null], "yz")  = ["abc", null]
+     * StringUtil.stripAll(null, *)                = null
+     * StringUtil.stripAll([], *)                  = []
+     * StringUtil.stripAll(["abc", "  abc"], null) = ["abc", "abc"]
+     * StringUtil.stripAll(["abc  ", null], null)  = ["abc", null]
+     * StringUtil.stripAll(["abc  ", null], "yz")  = ["abc  ", null]
+     * StringUtil.stripAll(["yabcz", null], "yz")  = ["abc", null]
      * </pre>
      *
      * @param strs       the array to remove characters from, may be null
@@ -9402,15 +9402,15 @@ public class StringUtil {
      * stripped as defined by {@link Character#isWhitespace(char)}.</p>
      *
      * <pre>
-     * StringUtils.stripEnd(null, *)          = null
-     * StringUtils.stripEnd("", *)            = ""
-     * StringUtils.stripEnd("abc", "")        = "abc"
-     * StringUtils.stripEnd("abc", null)      = "abc"
-     * StringUtils.stripEnd("  abc", null)    = "  abc"
-     * StringUtils.stripEnd("abc  ", null)    = "abc"
-     * StringUtils.stripEnd(" abc ", null)    = " abc"
-     * StringUtils.stripEnd("  abcyx", "xyz") = "  abc"
-     * StringUtils.stripEnd("120.00", ".0")   = "12"
+     * StringUtil.stripEnd(null, *)          = null
+     * StringUtil.stripEnd("", *)            = ""
+     * StringUtil.stripEnd("abc", "")        = "abc"
+     * StringUtil.stripEnd("abc", null)      = "abc"
+     * StringUtil.stripEnd("  abc", null)    = "  abc"
+     * StringUtil.stripEnd("abc  ", null)    = "abc"
+     * StringUtil.stripEnd(" abc ", null)    = " abc"
+     * StringUtil.stripEnd("  abcyx", "xyz") = "  abc"
+     * StringUtil.stripEnd("120.00", ".0")   = "12"
      * </pre>
      *
      * @param str        the String to remove characters from, may be null
@@ -9447,14 +9447,14 @@ public class StringUtil {
      * stripped as defined by {@link Character#isWhitespace(char)}.</p>
      *
      * <pre>
-     * StringUtils.stripStart(null, *)          = null
-     * StringUtils.stripStart("", *)            = ""
-     * StringUtils.stripStart("abc", "")        = "abc"
-     * StringUtils.stripStart("abc", null)      = "abc"
-     * StringUtils.stripStart("  abc", null)    = "abc"
-     * StringUtils.stripStart("abc  ", null)    = "abc  "
-     * StringUtils.stripStart(" abc ", null)    = "abc "
-     * StringUtils.stripStart("yxabc  ", "xyz") = "abc  "
+     * StringUtil.stripStart(null, *)          = null
+     * StringUtil.stripStart("", *)            = ""
+     * StringUtil.stripStart("abc", "")        = "abc"
+     * StringUtil.stripStart("abc", null)      = "abc"
+     * StringUtil.stripStart("  abc", null)    = "abc"
+     * StringUtil.stripStart("abc  ", null)    = "abc  "
+     * StringUtil.stripStart(" abc ", null)    = "abc "
+     * StringUtil.stripStart("yxabc  ", "xyz") = "abc  "
      * </pre>
      *
      * @param str        the String to remove characters from, may be null
@@ -9489,14 +9489,14 @@ public class StringUtil {
      * Whitespace is defined by {@link Character#isWhitespace(char)}.</p>
      *
      * <pre>
-     * StringUtils.stripToEmpty(null)     = ""
-     * StringUtils.stripToEmpty("")       = ""
-     * StringUtils.stripToEmpty("   ")    = ""
-     * StringUtils.stripToEmpty("abc")    = "abc"
-     * StringUtils.stripToEmpty("  abc")  = "abc"
-     * StringUtils.stripToEmpty("abc  ")  = "abc"
-     * StringUtils.stripToEmpty(" abc ")  = "abc"
-     * StringUtils.stripToEmpty(" ab c ") = "ab c"
+     * StringUtil.stripToEmpty(null)     = ""
+     * StringUtil.stripToEmpty("")       = ""
+     * StringUtil.stripToEmpty("   ")    = ""
+     * StringUtil.stripToEmpty("abc")    = "abc"
+     * StringUtil.stripToEmpty("  abc")  = "abc"
+     * StringUtil.stripToEmpty("abc  ")  = "abc"
+     * StringUtil.stripToEmpty(" abc ")  = "abc"
+     * StringUtil.stripToEmpty(" ab c ") = "ab c"
      * </pre>
      *
      * @param str the String to be stripped, may be null
@@ -9515,14 +9515,14 @@ public class StringUtil {
      * Whitespace is defined by {@link Character#isWhitespace(char)}.</p>
      *
      * <pre>
-     * StringUtils.stripToNull(null)     = null
-     * StringUtils.stripToNull("")       = null
-     * StringUtils.stripToNull("   ")    = null
-     * StringUtils.stripToNull("abc")    = "abc"
-     * StringUtils.stripToNull("  abc")  = "abc"
-     * StringUtils.stripToNull("abc  ")  = "abc"
-     * StringUtils.stripToNull(" abc ")  = "abc"
-     * StringUtils.stripToNull(" ab c ") = "ab c"
+     * StringUtil.stripToNull(null)     = null
+     * StringUtil.stripToNull("")       = null
+     * StringUtil.stripToNull("   ")    = null
+     * StringUtil.stripToNull("abc")    = "abc"
+     * StringUtil.stripToNull("  abc")  = "abc"
+     * StringUtil.stripToNull("abc  ")  = "abc"
+     * StringUtil.stripToNull(" abc ")  = "abc"
+     * StringUtil.stripToNull(" ab c ") = "ab c"
      * </pre>
      *
      * @param str the String to be stripped, may be null
@@ -9548,13 +9548,13 @@ public class StringUtil {
      * An empty ("") String will return "".</p>
      *
      * <pre>
-     * StringUtils.substring(null, *)   = null
-     * StringUtils.substring("", *)     = ""
-     * StringUtils.substring("abc", 0)  = "abc"
-     * StringUtils.substring("abc", 2)  = "c"
-     * StringUtils.substring("abc", 4)  = ""
-     * StringUtils.substring("abc", -2) = "bc"
-     * StringUtils.substring("abc", -4) = "abc"
+     * StringUtil.substring(null, *)   = null
+     * StringUtil.substring("", *)     = ""
+     * StringUtil.substring("abc", 0)  = "abc"
+     * StringUtil.substring("abc", 2)  = "c"
+     * StringUtil.substring("abc", 4)  = ""
+     * StringUtil.substring("abc", -2) = "bc"
+     * StringUtil.substring("abc", -4) = "abc"
      * </pre>
      *
      * @param str   the String to get the substring from, may be null
@@ -9598,15 +9598,15 @@ public class StringUtil {
      * is returned.</p>
      *
      * <pre>
-     * StringUtils.substring(null, *, *)    = null
-     * StringUtils.substring("", * ,  *)    = "";
-     * StringUtils.substring("abc", 0, 2)   = "ab"
-     * StringUtils.substring("abc", 2, 0)   = ""
-     * StringUtils.substring("abc", 2, 4)   = "c"
-     * StringUtils.substring("abc", 4, 6)   = ""
-     * StringUtils.substring("abc", 2, 2)   = ""
-     * StringUtils.substring("abc", -2, -1) = "b"
-     * StringUtils.substring("abc", -4, 2)  = "ab"
+     * StringUtil.substring(null, *, *)    = null
+     * StringUtil.substring("", * ,  *)    = "";
+     * StringUtil.substring("abc", 0, 2)   = "ab"
+     * StringUtil.substring("abc", 2, 0)   = ""
+     * StringUtil.substring("abc", 2, 4)   = "c"
+     * StringUtil.substring("abc", 4, 6)   = ""
+     * StringUtil.substring("abc", 2, 2)   = ""
+     * StringUtil.substring("abc", -2, -1) = "b"
+     * StringUtil.substring("abc", -4, 2)  = "ab"
      * </pre>
      *
      * @param str   the String to get the substring from, may be null
@@ -9660,13 +9660,13 @@ public class StringUtil {
      * <p>If nothing is found, the empty string is returned.</p>
      *
      * <pre>
-     * StringUtils.substringAfter(null, *)      = null
-     * StringUtils.substringAfter("", *)        = ""
-     * StringUtils.substringAfter("abc", 'a')   = "bc"
-     * StringUtils.substringAfter("abcba", 'b') = "cba"
-     * StringUtils.substringAfter("abc", 'c')   = ""
-     * StringUtils.substringAfter("abc", 'd')   = ""
-     * StringUtils.substringAfter(" abc", 32)   = "abc"
+     * StringUtil.substringAfter(null, *)      = null
+     * StringUtil.substringAfter("", *)        = ""
+     * StringUtil.substringAfter("abc", 'a')   = "bc"
+     * StringUtil.substringAfter("abcba", 'b') = "cba"
+     * StringUtil.substringAfter("abc", 'c')   = ""
+     * StringUtil.substringAfter("abc", 'd')   = ""
+     * StringUtil.substringAfter(" abc", 32)   = "abc"
      * </pre>
      *
      * @param str       the String to get a substring from, may be null
@@ -9698,14 +9698,14 @@ public class StringUtil {
      * <p>If nothing is found, the empty string is returned.</p>
      *
      * <pre>
-     * StringUtils.substringAfter(null, *)      = null
-     * StringUtils.substringAfter("", *)        = ""
-     * StringUtils.substringAfter(*, null)      = ""
-     * StringUtils.substringAfter("abc", "a")   = "bc"
-     * StringUtils.substringAfter("abcba", "b") = "cba"
-     * StringUtils.substringAfter("abc", "c")   = ""
-     * StringUtils.substringAfter("abc", "d")   = ""
-     * StringUtils.substringAfter("abc", "")    = "abc"
+     * StringUtil.substringAfter(null, *)      = null
+     * StringUtil.substringAfter("", *)        = ""
+     * StringUtil.substringAfter(*, null)      = ""
+     * StringUtil.substringAfter("abc", "a")   = "bc"
+     * StringUtil.substringAfter("abcba", "b") = "cba"
+     * StringUtil.substringAfter("abc", "c")   = ""
+     * StringUtil.substringAfter("abc", "d")   = ""
+     * StringUtil.substringAfter("abc", "")    = "abc"
      * </pre>
      *
      * @param str       the String to get a substring from, may be null
@@ -9738,14 +9738,14 @@ public class StringUtil {
      * <p>If nothing is found, the empty string is returned.</p>
      *
      * <pre>
-     * StringUtils.substringAfterLast(null, *)      = null
-     * StringUtils.substringAfterLast("", *)        = ""
-     * StringUtils.substringAfterLast("abc", 'a')   = "bc"
-     * StringUtils.substringAfterLast(" bc", 32)    = "bc"
-     * StringUtils.substringAfterLast("abcba", 'b') = "a"
-     * StringUtils.substringAfterLast("abc", 'c')   = ""
-     * StringUtils.substringAfterLast("a", 'a')     = ""
-     * StringUtils.substringAfterLast("a", 'z')     = ""
+     * StringUtil.substringAfterLast(null, *)      = null
+     * StringUtil.substringAfterLast("", *)        = ""
+     * StringUtil.substringAfterLast("abc", 'a')   = "bc"
+     * StringUtil.substringAfterLast(" bc", 32)    = "bc"
+     * StringUtil.substringAfterLast("abcba", 'b') = "a"
+     * StringUtil.substringAfterLast("abc", 'c')   = ""
+     * StringUtil.substringAfterLast("a", 'a')     = ""
+     * StringUtil.substringAfterLast("a", 'z')     = ""
      * </pre>
      *
      * @param str       the String to get a substring from, may be null
@@ -9777,15 +9777,15 @@ public class StringUtil {
      * <p>If nothing is found, the empty string is returned.</p>
      *
      * <pre>
-     * StringUtils.substringAfterLast(null, *)      = null
-     * StringUtils.substringAfterLast("", *)        = ""
-     * StringUtils.substringAfterLast(*, "")        = ""
-     * StringUtils.substringAfterLast(*, null)      = ""
-     * StringUtils.substringAfterLast("abc", "a")   = "bc"
-     * StringUtils.substringAfterLast("abcba", "b") = "a"
-     * StringUtils.substringAfterLast("abc", "c")   = ""
-     * StringUtils.substringAfterLast("a", "a")     = ""
-     * StringUtils.substringAfterLast("a", "z")     = ""
+     * StringUtil.substringAfterLast(null, *)      = null
+     * StringUtil.substringAfterLast("", *)        = ""
+     * StringUtil.substringAfterLast(*, "")        = ""
+     * StringUtil.substringAfterLast(*, null)      = ""
+     * StringUtil.substringAfterLast("abc", "a")   = "bc"
+     * StringUtil.substringAfterLast("abcba", "b") = "a"
+     * StringUtil.substringAfterLast("abc", "c")   = ""
+     * StringUtil.substringAfterLast("a", "a")     = ""
+     * StringUtil.substringAfterLast("a", "z")     = ""
      * </pre>
      *
      * @param str       the String to get a substring from, may be null
@@ -9822,12 +9822,12 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.substringBefore(null, *)      = null
-     * StringUtils.substringBefore("", *)        = ""
-     * StringUtils.substringBefore("abc", 'a')   = ""
-     * StringUtils.substringBefore("abcba", 'b') = "a"
-     * StringUtils.substringBefore("abc", 'c')   = "ab"
-     * StringUtils.substringBefore("abc", 'd')   = "abc"
+     * StringUtil.substringBefore(null, *)      = null
+     * StringUtil.substringBefore("", *)        = ""
+     * StringUtil.substringBefore("abc", 'a')   = ""
+     * StringUtil.substringBefore("abcba", 'b') = "a"
+     * StringUtil.substringBefore("abc", 'c')   = "ab"
+     * StringUtil.substringBefore("abc", 'd')   = "abc"
      * </pre>
      *
      * @param str       the String to get a substring from, may be null
@@ -9857,14 +9857,14 @@ public class StringUtil {
      * <p>If nothing is found, the string input is returned.</p>
      *
      * <pre>
-     * StringUtils.substringBefore(null, *)      = null
-     * StringUtils.substringBefore("", *)        = ""
-     * StringUtils.substringBefore("abc", "a")   = ""
-     * StringUtils.substringBefore("abcba", "b") = "a"
-     * StringUtils.substringBefore("abc", "c")   = "ab"
-     * StringUtils.substringBefore("abc", "d")   = "abc"
-     * StringUtils.substringBefore("abc", "")    = ""
-     * StringUtils.substringBefore("abc", null)  = "abc"
+     * StringUtil.substringBefore(null, *)      = null
+     * StringUtil.substringBefore("", *)        = ""
+     * StringUtil.substringBefore("abc", "a")   = ""
+     * StringUtil.substringBefore("abcba", "b") = "a"
+     * StringUtil.substringBefore("abc", "c")   = "ab"
+     * StringUtil.substringBefore("abc", "d")   = "abc"
+     * StringUtil.substringBefore("abc", "")    = ""
+     * StringUtil.substringBefore("abc", null)  = "abc"
      * </pre>
      *
      * @param str       the String to get a substring from, may be null
@@ -9898,14 +9898,14 @@ public class StringUtil {
      * <p>If nothing is found, the string input is returned.</p>
      *
      * <pre>
-     * StringUtils.substringBeforeLast(null, *)      = null
-     * StringUtils.substringBeforeLast("", *)        = ""
-     * StringUtils.substringBeforeLast("abcba", "b") = "abc"
-     * StringUtils.substringBeforeLast("abc", "c")   = "ab"
-     * StringUtils.substringBeforeLast("a", "a")     = ""
-     * StringUtils.substringBeforeLast("a", "z")     = "a"
-     * StringUtils.substringBeforeLast("a", null)    = "a"
-     * StringUtils.substringBeforeLast("a", "")      = "a"
+     * StringUtil.substringBeforeLast(null, *)      = null
+     * StringUtil.substringBeforeLast("", *)        = ""
+     * StringUtil.substringBeforeLast("abcba", "b") = "abc"
+     * StringUtil.substringBeforeLast("abc", "c")   = "ab"
+     * StringUtil.substringBeforeLast("a", "a")     = ""
+     * StringUtil.substringBeforeLast("a", "z")     = "a"
+     * StringUtil.substringBeforeLast("a", null)    = "a"
+     * StringUtil.substringBeforeLast("a", "")      = "a"
      * </pre>
      *
      * @param str       the String to get a substring from, may be null
@@ -9933,12 +9933,12 @@ public class StringUtil {
      * A {@code null} tag returns {@code null}.</p>
      *
      * <pre>
-     * StringUtils.substringBetween(null, *)            = null
-     * StringUtils.substringBetween("", "")             = ""
-     * StringUtils.substringBetween("", "tag")          = null
-     * StringUtils.substringBetween("tagabctag", null)  = null
-     * StringUtils.substringBetween("tagabctag", "")    = ""
-     * StringUtils.substringBetween("tagabctag", "tag") = "abc"
+     * StringUtil.substringBetween(null, *)            = null
+     * StringUtil.substringBetween("", "")             = ""
+     * StringUtil.substringBetween("", "tag")          = null
+     * StringUtil.substringBetween("tagabctag", null)  = null
+     * StringUtil.substringBetween("tagabctag", "")    = ""
+     * StringUtil.substringBetween("tagabctag", "tag") = "abc"
      * </pre>
      *
      * @param str the String containing the substring, may be null
@@ -9959,16 +9959,16 @@ public class StringUtil {
      * An empty ("") open and close returns an empty string.</p>
      *
      * <pre>
-     * StringUtils.substringBetween("wx[b]yz", "[", "]") = "b"
-     * StringUtils.substringBetween(null, *, *)          = null
-     * StringUtils.substringBetween(*, null, *)          = null
-     * StringUtils.substringBetween(*, *, null)          = null
-     * StringUtils.substringBetween("", "", "")          = ""
-     * StringUtils.substringBetween("", "", "]")         = null
-     * StringUtils.substringBetween("", "[", "]")        = null
-     * StringUtils.substringBetween("yabcz", "", "")     = ""
-     * StringUtils.substringBetween("yabcz", "y", "z")   = "abc"
-     * StringUtils.substringBetween("yabczyabcz", "y", "z")   = "abc"
+     * StringUtil.substringBetween("wx[b]yz", "[", "]") = "b"
+     * StringUtil.substringBetween(null, *, *)          = null
+     * StringUtil.substringBetween(*, null, *)          = null
+     * StringUtil.substringBetween(*, *, null)          = null
+     * StringUtil.substringBetween("", "", "")          = ""
+     * StringUtil.substringBetween("", "", "]")         = null
+     * StringUtil.substringBetween("", "[", "]")        = null
+     * StringUtil.substringBetween("yabcz", "", "")     = ""
+     * StringUtil.substringBetween("yabcz", "y", "z")   = "abc"
+     * StringUtil.substringBetween("yabczyabcz", "y", "z")   = "abc"
      * </pre>
      *
      * @param str   the String containing the substring, may be null
@@ -10000,11 +10000,11 @@ public class StringUtil {
      * An empty ("") open/close returns {@code null} (no match).</p>
      *
      * <pre>
-     * StringUtils.substringsBetween("[a][b][c]", "[", "]") = ["a","b","c"]
-     * StringUtils.substringsBetween(null, *, *)            = null
-     * StringUtils.substringsBetween(*, null, *)            = null
-     * StringUtils.substringsBetween(*, *, null)            = null
-     * StringUtils.substringsBetween("", "[", "]")          = []
+     * StringUtil.substringsBetween("[a][b][c]", "[", "]") = ["a","b","c"]
+     * StringUtil.substringsBetween(null, *, *)            = null
+     * StringUtil.substringsBetween(*, null, *)            = null
+     * StringUtil.substringsBetween(*, *, null)            = null
+     * StringUtil.substringsBetween("", "[", "]")          = []
      * </pre>
      *
      * @param str   the String containing the substrings, null returns null, empty returns empty
@@ -10058,9 +10058,9 @@ public class StringUtil {
      * A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
-     * StringUtils.swapCase(null)                 = null
-     * StringUtils.swapCase("")                   = ""
-     * StringUtils.swapCase("The dog has a BONE") = "tHE DOG HAS A bone"
+     * StringUtil.swapCase(null)                 = null
+     * StringUtil.swapCase("")                   = ""
+     * StringUtil.swapCase("The dog has a BONE") = "tHE DOG HAS A bone"
      * </pre>
      *
      * <p>NOTE: This method changed in Lang version 2.0.
@@ -10103,8 +10103,8 @@ public class StringUtil {
      * a low surrogate not preceded by a high surrogate) will be returned as-is.</p>
      *
      * <pre>
-     * StringUtils.toCodePoints(null)   =  null
-     * StringUtils.toCodePoints("")     =  []  // empty array
+     * StringUtil.toCodePoints(null)   =  null
+     * StringUtil.toCodePoints("")     =  []  // empty array
      * </pre>
      *
      * @param cs the character sequence to convert
@@ -10174,7 +10174,7 @@ public class StringUtil {
      * @throws UnsupportedEncodingException If the named charset is not supported
      * @throws NullPointerException         if the input is null
      * @since 3.1
-     * @deprecated use {@link StringUtils#toEncodedString(byte[], Charset)} instead of String constants in your code
+     * @deprecated use {@link StringUtil#toEncodedString(byte[], Charset)} instead of String constants in your code
      */
     @Deprecated
     public static String toString(final byte[] bytes, final String charsetName) throws UnsupportedEncodingException {
@@ -10198,11 +10198,11 @@ public class StringUtil {
      * {@link #strip(String, String)} methods.</p>
      *
      * <pre>
-     * StringUtils.trim(null)          = null
-     * StringUtils.trim("")            = ""
-     * StringUtils.trim("     ")       = ""
-     * StringUtils.trim("abc")         = "abc"
-     * StringUtils.trim("    abc    ") = "abc"
+     * StringUtil.trim(null)          = null
+     * StringUtil.trim("")            = ""
+     * StringUtil.trim("     ")       = ""
+     * StringUtil.trim("abc")         = "abc"
+     * StringUtil.trim("    abc    ") = "abc"
      * </pre>
      *
      * @param str the String to be trimmed, may be null
@@ -10222,11 +10222,11 @@ public class StringUtil {
      * To strip whitespace use {@link #stripToEmpty(String)}.</p>
      *
      * <pre>
-     * StringUtils.trimToEmpty(null)          = ""
-     * StringUtils.trimToEmpty("")            = ""
-     * StringUtils.trimToEmpty("     ")       = ""
-     * StringUtils.trimToEmpty("abc")         = "abc"
-     * StringUtils.trimToEmpty("    abc    ") = "abc"
+     * StringUtil.trimToEmpty(null)          = ""
+     * StringUtil.trimToEmpty("")            = ""
+     * StringUtil.trimToEmpty("     ")       = ""
+     * StringUtil.trimToEmpty("abc")         = "abc"
+     * StringUtil.trimToEmpty("    abc    ") = "abc"
      * </pre>
      *
      * @param str the String to be trimmed, may be null
@@ -10247,11 +10247,11 @@ public class StringUtil {
      * To strip whitespace use {@link #stripToNull(String)}.</p>
      *
      * <pre>
-     * StringUtils.trimToNull(null)          = null
-     * StringUtils.trimToNull("")            = null
-     * StringUtils.trimToNull("     ")       = null
-     * StringUtils.trimToNull("abc")         = "abc"
-     * StringUtils.trimToNull("    abc    ") = "abc"
+     * StringUtil.trimToNull(null)          = null
+     * StringUtil.trimToNull("")            = null
+     * StringUtil.trimToNull("     ")       = null
+     * StringUtil.trimToNull("abc")         = "abc"
+     * StringUtil.trimToNull("    abc    ") = "abc"
      * </pre>
      *
      * @param str the String to be trimmed, may be null
@@ -10280,14 +10280,14 @@ public class StringUtil {
      * </ul>
      *
      * <pre>
-     * StringUtils.truncate(null, 0)       = null
-     * StringUtils.truncate(null, 2)       = null
-     * StringUtils.truncate("", 4)         = ""
-     * StringUtils.truncate("abcdefg", 4)  = "abcd"
-     * StringUtils.truncate("abcdefg", 6)  = "abcdef"
-     * StringUtils.truncate("abcdefg", 7)  = "abcdefg"
-     * StringUtils.truncate("abcdefg", 8)  = "abcdefg"
-     * StringUtils.truncate("abcdefg", -1) = throws an IllegalArgumentException
+     * StringUtil.truncate(null, 0)       = null
+     * StringUtil.truncate(null, 2)       = null
+     * StringUtil.truncate("", 4)         = ""
+     * StringUtil.truncate("abcdefg", 4)  = "abcd"
+     * StringUtil.truncate("abcdefg", 6)  = "abcdef"
+     * StringUtil.truncate("abcdefg", 7)  = "abcdefg"
+     * StringUtil.truncate("abcdefg", 8)  = "abcdefg"
+     * StringUtil.truncate("abcdefg", -1) = throws an IllegalArgumentException
      * </pre>
      *
      * @param str      the String to truncate, may be null
@@ -10321,36 +10321,36 @@ public class StringUtil {
      * </ul>
      *
      * <pre>
-     * StringUtils.truncate(null, 0, 0) = null
-     * StringUtils.truncate(null, 2, 4) = null
-     * StringUtils.truncate("", 0, 10) = ""
-     * StringUtils.truncate("", 2, 10) = ""
-     * StringUtils.truncate("abcdefghij", 0, 3) = "abc"
-     * StringUtils.truncate("abcdefghij", 5, 6) = "fghij"
-     * StringUtils.truncate("raspberry peach", 10, 15) = "peach"
-     * StringUtils.truncate("abcdefghijklmno", 0, 10) = "abcdefghij"
-     * StringUtils.truncate("abcdefghijklmno", -1, 10) = throws an IllegalArgumentException
-     * StringUtils.truncate("abcdefghijklmno", Integer.MIN_VALUE, 10) = throws an IllegalArgumentException
-     * StringUtils.truncate("abcdefghijklmno", Integer.MIN_VALUE, Integer.MAX_VALUE) = throws an IllegalArgumentException
-     * StringUtils.truncate("abcdefghijklmno", 0, Integer.MAX_VALUE) = "abcdefghijklmno"
-     * StringUtils.truncate("abcdefghijklmno", 1, 10) = "bcdefghijk"
-     * StringUtils.truncate("abcdefghijklmno", 2, 10) = "cdefghijkl"
-     * StringUtils.truncate("abcdefghijklmno", 3, 10) = "defghijklm"
-     * StringUtils.truncate("abcdefghijklmno", 4, 10) = "efghijklmn"
-     * StringUtils.truncate("abcdefghijklmno", 5, 10) = "fghijklmno"
-     * StringUtils.truncate("abcdefghijklmno", 5, 5) = "fghij"
-     * StringUtils.truncate("abcdefghijklmno", 5, 3) = "fgh"
-     * StringUtils.truncate("abcdefghijklmno", 10, 3) = "klm"
-     * StringUtils.truncate("abcdefghijklmno", 10, Integer.MAX_VALUE) = "klmno"
-     * StringUtils.truncate("abcdefghijklmno", 13, 1) = "n"
-     * StringUtils.truncate("abcdefghijklmno", 13, Integer.MAX_VALUE) = "no"
-     * StringUtils.truncate("abcdefghijklmno", 14, 1) = "o"
-     * StringUtils.truncate("abcdefghijklmno", 14, Integer.MAX_VALUE) = "o"
-     * StringUtils.truncate("abcdefghijklmno", 15, 1) = ""
-     * StringUtils.truncate("abcdefghijklmno", 15, Integer.MAX_VALUE) = ""
-     * StringUtils.truncate("abcdefghijklmno", Integer.MAX_VALUE, Integer.MAX_VALUE) = ""
-     * StringUtils.truncate("abcdefghij", 3, -1) = throws an IllegalArgumentException
-     * StringUtils.truncate("abcdefghij", -2, 4) = throws an IllegalArgumentException
+     * StringUtil.truncate(null, 0, 0) = null
+     * StringUtil.truncate(null, 2, 4) = null
+     * StringUtil.truncate("", 0, 10) = ""
+     * StringUtil.truncate("", 2, 10) = ""
+     * StringUtil.truncate("abcdefghij", 0, 3) = "abc"
+     * StringUtil.truncate("abcdefghij", 5, 6) = "fghij"
+     * StringUtil.truncate("raspberry peach", 10, 15) = "peach"
+     * StringUtil.truncate("abcdefghijklmno", 0, 10) = "abcdefghij"
+     * StringUtil.truncate("abcdefghijklmno", -1, 10) = throws an IllegalArgumentException
+     * StringUtil.truncate("abcdefghijklmno", Integer.MIN_VALUE, 10) = throws an IllegalArgumentException
+     * StringUtil.truncate("abcdefghijklmno", Integer.MIN_VALUE, Integer.MAX_VALUE) = throws an IllegalArgumentException
+     * StringUtil.truncate("abcdefghijklmno", 0, Integer.MAX_VALUE) = "abcdefghijklmno"
+     * StringUtil.truncate("abcdefghijklmno", 1, 10) = "bcdefghijk"
+     * StringUtil.truncate("abcdefghijklmno", 2, 10) = "cdefghijkl"
+     * StringUtil.truncate("abcdefghijklmno", 3, 10) = "defghijklm"
+     * StringUtil.truncate("abcdefghijklmno", 4, 10) = "efghijklmn"
+     * StringUtil.truncate("abcdefghijklmno", 5, 10) = "fghijklmno"
+     * StringUtil.truncate("abcdefghijklmno", 5, 5) = "fghij"
+     * StringUtil.truncate("abcdefghijklmno", 5, 3) = "fgh"
+     * StringUtil.truncate("abcdefghijklmno", 10, 3) = "klm"
+     * StringUtil.truncate("abcdefghijklmno", 10, Integer.MAX_VALUE) = "klmno"
+     * StringUtil.truncate("abcdefghijklmno", 13, 1) = "n"
+     * StringUtil.truncate("abcdefghijklmno", 13, Integer.MAX_VALUE) = "no"
+     * StringUtil.truncate("abcdefghijklmno", 14, 1) = "o"
+     * StringUtil.truncate("abcdefghijklmno", 14, Integer.MAX_VALUE) = "o"
+     * StringUtil.truncate("abcdefghijklmno", 15, 1) = ""
+     * StringUtil.truncate("abcdefghijklmno", 15, Integer.MAX_VALUE) = ""
+     * StringUtil.truncate("abcdefghijklmno", Integer.MAX_VALUE, Integer.MAX_VALUE) = ""
+     * StringUtil.truncate("abcdefghij", 3, -1) = throws an IllegalArgumentException
+     * StringUtil.truncate("abcdefghij", -2, 4) = throws an IllegalArgumentException
      * </pre>
      *
      * @param str      the String to truncate, may be null
@@ -10388,11 +10388,11 @@ public class StringUtil {
      * A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
-     * StringUtils.uncapitalize(null)  = null
-     * StringUtils.uncapitalize("")    = ""
-     * StringUtils.uncapitalize("cat") = "cat"
-     * StringUtils.uncapitalize("Cat") = "cat"
-     * StringUtils.uncapitalize("CAT") = "cAT"
+     * StringUtil.uncapitalize(null)  = null
+     * StringUtil.uncapitalize("")    = ""
+     * StringUtil.uncapitalize("cat") = "cat"
+     * StringUtil.uncapitalize("Cat") = "cat"
+     * StringUtil.uncapitalize("CAT") = "cAT"
      * </pre>
      *
      * @param str the String to uncapitalize, may be null
@@ -10431,16 +10431,16 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.unwrap(null, null)         = null
-     * StringUtils.unwrap(null, '\0')         = null
-     * StringUtils.unwrap(null, '1')          = null
-     * StringUtils.unwrap("a", 'a')           = "a"
-     * StringUtils.unwrap("aa", 'a')           = ""
-     * StringUtils.unwrap("\'abc\'", '\'')    = "abc"
-     * StringUtils.unwrap("AABabcBAA", 'A')   = "ABabcBA"
-     * StringUtils.unwrap("A", '#')           = "A"
-     * StringUtils.unwrap("#A", '#')          = "#A"
-     * StringUtils.unwrap("A#", '#')          = "A#"
+     * StringUtil.unwrap(null, null)         = null
+     * StringUtil.unwrap(null, '\0')         = null
+     * StringUtil.unwrap(null, '1')          = null
+     * StringUtil.unwrap("a", 'a')           = "a"
+     * StringUtil.unwrap("aa", 'a')           = ""
+     * StringUtil.unwrap("\'abc\'", '\'')    = "abc"
+     * StringUtil.unwrap("AABabcBAA", 'A')   = "ABabcBA"
+     * StringUtil.unwrap("A", '#')           = "A"
+     * StringUtil.unwrap("#A", '#')          = "#A"
+     * StringUtil.unwrap("A#", '#')          = "A#"
      * </pre>
      *
      * @param str      the String to be unwrapped, can be null
@@ -10470,17 +10470,17 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.unwrap(null, null)         = null
-     * StringUtils.unwrap(null, "")           = null
-     * StringUtils.unwrap(null, "1")          = null
-     * StringUtils.unwrap("a", "a")           = "a"
-     * StringUtils.unwrap("aa", "a")          = ""
-     * StringUtils.unwrap("\'abc\'", "\'")    = "abc"
-     * StringUtils.unwrap("\"abc\"", "\"")    = "abc"
-     * StringUtils.unwrap("AABabcBAA", "AA")  = "BabcB"
-     * StringUtils.unwrap("A", "#")           = "A"
-     * StringUtils.unwrap("#A", "#")          = "#A"
-     * StringUtils.unwrap("A#", "#")          = "A#"
+     * StringUtil.unwrap(null, null)         = null
+     * StringUtil.unwrap(null, "")           = null
+     * StringUtil.unwrap(null, "1")          = null
+     * StringUtil.unwrap("a", "a")           = "a"
+     * StringUtil.unwrap("aa", "a")          = ""
+     * StringUtil.unwrap("\'abc\'", "\'")    = "abc"
+     * StringUtil.unwrap("\"abc\"", "\"")    = "abc"
+     * StringUtil.unwrap("AABabcBAA", "AA")  = "BabcB"
+     * StringUtil.unwrap("A", "#")           = "A"
+     * StringUtil.unwrap("#A", "#")          = "#A"
+     * StringUtil.unwrap("A#", "#")          = "A#"
      * </pre>
      *
      * @param str       the String to be unwrapped, can be null
@@ -10513,9 +10513,9 @@ public class StringUtil {
      * <p>A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
-     * StringUtils.upperCase(null)  = null
-     * StringUtils.upperCase("")    = ""
-     * StringUtils.upperCase("aBc") = "ABC"
+     * StringUtil.upperCase(null)  = null
+     * StringUtil.upperCase("")    = ""
+     * StringUtil.upperCase("aBc") = "ABC"
      * </pre>
      *
      * <p><strong>Note:</strong> As described in the documentation for {@link String#toUpperCase()},
@@ -10539,9 +10539,9 @@ public class StringUtil {
      * <p>A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
-     * StringUtils.upperCase(null, Locale.ENGLISH)  = null
-     * StringUtils.upperCase("", Locale.ENGLISH)    = ""
-     * StringUtils.upperCase("aBc", Locale.ENGLISH) = "ABC"
+     * StringUtil.upperCase(null, Locale.ENGLISH)  = null
+     * StringUtil.upperCase("", Locale.ENGLISH)    = ""
+     * StringUtil.upperCase("aBc", Locale.ENGLISH) = "ABC"
      * </pre>
      *
      * @param str    the String to upper case, may be null
@@ -10574,12 +10574,12 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.wrap(null, *)        = null
-     * StringUtils.wrap("", *)          = ""
-     * StringUtils.wrap("ab", '\0')     = "ab"
-     * StringUtils.wrap("ab", 'x')      = "xabx"
-     * StringUtils.wrap("ab", '\'')     = "'ab'"
-     * StringUtils.wrap("\"ab\"", '\"') = "\"\"ab\"\""
+     * StringUtil.wrap(null, *)        = null
+     * StringUtil.wrap("", *)          = ""
+     * StringUtil.wrap("ab", '\0')     = "ab"
+     * StringUtil.wrap("ab", 'x')      = "xabx"
+     * StringUtil.wrap("ab", '\'')     = "'ab'"
+     * StringUtil.wrap("\"ab\"", '\"') = "\"\"ab\"\""
      * </pre>
      *
      * @param str      the string to be wrapped, may be {@code null}
@@ -10606,16 +10606,16 @@ public class StringUtil {
      * </p>
      *
      * <pre>
-     * StringUtils.wrap(null, *)         = null
-     * StringUtils.wrap("", *)           = ""
-     * StringUtils.wrap("ab", null)      = "ab"
-     * StringUtils.wrap("ab", "x")       = "xabx"
-     * StringUtils.wrap("ab", "\"")      = "\"ab\""
-     * StringUtils.wrap("\"ab\"", "\"")  = "\"\"ab\"\""
-     * StringUtils.wrap("ab", "'")       = "'ab'"
-     * StringUtils.wrap("'abcd'", "'")   = "''abcd''"
-     * StringUtils.wrap("\"abcd\"", "'") = "'\"abcd\"'"
-     * StringUtils.wrap("'abcd'", "\"")  = "\"'abcd'\""
+     * StringUtil.wrap(null, *)         = null
+     * StringUtil.wrap("", *)           = ""
+     * StringUtil.wrap("ab", null)      = "ab"
+     * StringUtil.wrap("ab", "x")       = "xabx"
+     * StringUtil.wrap("ab", "\"")      = "\"ab\""
+     * StringUtil.wrap("\"ab\"", "\"")  = "\"\"ab\"\""
+     * StringUtil.wrap("ab", "'")       = "'ab'"
+     * StringUtil.wrap("'abcd'", "'")   = "''abcd''"
+     * StringUtil.wrap("\"abcd\"", "'") = "'\"abcd\"'"
+     * StringUtil.wrap("'abcd'", "\"")  = "\"'abcd'\""
      * </pre>
      *
      * @param str      the String to be wrapper, may be null
@@ -10640,16 +10640,16 @@ public class StringUtil {
      * <p>A new {@code String} will not be created if {@code str} is already wrapped.</p>
      *
      * <pre>
-     * StringUtils.wrapIfMissing(null, *)        = null
-     * StringUtils.wrapIfMissing("", *)          = ""
-     * StringUtils.wrapIfMissing("ab", '\0')     = "ab"
-     * StringUtils.wrapIfMissing("ab", 'x')      = "xabx"
-     * StringUtils.wrapIfMissing("ab", '\'')     = "'ab'"
-     * StringUtils.wrapIfMissing("\"ab\"", '\"') = "\"ab\""
-     * StringUtils.wrapIfMissing("/", '/')  = "/"
-     * StringUtils.wrapIfMissing("a/b/c", '/')  = "/a/b/c/"
-     * StringUtils.wrapIfMissing("/a/b/c", '/')  = "/a/b/c/"
-     * StringUtils.wrapIfMissing("a/b/c/", '/')  = "/a/b/c/"
+     * StringUtil.wrapIfMissing(null, *)        = null
+     * StringUtil.wrapIfMissing("", *)          = ""
+     * StringUtil.wrapIfMissing("ab", '\0')     = "ab"
+     * StringUtil.wrapIfMissing("ab", 'x')      = "xabx"
+     * StringUtil.wrapIfMissing("ab", '\'')     = "'ab'"
+     * StringUtil.wrapIfMissing("\"ab\"", '\"') = "\"ab\""
+     * StringUtil.wrapIfMissing("/", '/')  = "/"
+     * StringUtil.wrapIfMissing("a/b/c", '/')  = "/a/b/c/"
+     * StringUtil.wrapIfMissing("/a/b/c", '/')  = "/a/b/c/"
+     * StringUtil.wrapIfMissing("a/b/c/", '/')  = "/a/b/c/"
      * </pre>
      *
      * @param str      the string to be wrapped, may be {@code null}
@@ -10686,20 +10686,20 @@ public class StringUtil {
      * <p>A new {@code String} will not be created if {@code str} is already wrapped.</p>
      *
      * <pre>
-     * StringUtils.wrapIfMissing(null, *)         = null
-     * StringUtils.wrapIfMissing("", *)           = ""
-     * StringUtils.wrapIfMissing("ab", null)      = "ab"
-     * StringUtils.wrapIfMissing("ab", "x")       = "xabx"
-     * StringUtils.wrapIfMissing("ab", "\"")      = "\"ab\""
-     * StringUtils.wrapIfMissing("\"ab\"", "\"")  = "\"ab\""
-     * StringUtils.wrapIfMissing("ab", "'")       = "'ab'"
-     * StringUtils.wrapIfMissing("'abcd'", "'")   = "'abcd'"
-     * StringUtils.wrapIfMissing("\"abcd\"", "'") = "'\"abcd\"'"
-     * StringUtils.wrapIfMissing("'abcd'", "\"")  = "\"'abcd'\""
-     * StringUtils.wrapIfMissing("/", "/")  = "/"
-     * StringUtils.wrapIfMissing("a/b/c", "/")  = "/a/b/c/"
-     * StringUtils.wrapIfMissing("/a/b/c", "/")  = "/a/b/c/"
-     * StringUtils.wrapIfMissing("a/b/c/", "/")  = "/a/b/c/"
+     * StringUtil.wrapIfMissing(null, *)         = null
+     * StringUtil.wrapIfMissing("", *)           = ""
+     * StringUtil.wrapIfMissing("ab", null)      = "ab"
+     * StringUtil.wrapIfMissing("ab", "x")       = "xabx"
+     * StringUtil.wrapIfMissing("ab", "\"")      = "\"ab\""
+     * StringUtil.wrapIfMissing("\"ab\"", "\"")  = "\"ab\""
+     * StringUtil.wrapIfMissing("ab", "'")       = "'ab'"
+     * StringUtil.wrapIfMissing("'abcd'", "'")   = "'abcd'"
+     * StringUtil.wrapIfMissing("\"abcd\"", "'") = "'\"abcd\"'"
+     * StringUtil.wrapIfMissing("'abcd'", "\"")  = "\"'abcd'\""
+     * StringUtil.wrapIfMissing("/", "/")  = "/"
+     * StringUtil.wrapIfMissing("a/b/c", "/")  = "/a/b/c/"
+     * StringUtil.wrapIfMissing("/a/b/c", "/")  = "/a/b/c/"
+     * StringUtil.wrapIfMissing("a/b/c/", "/")  = "/a/b/c/"
      * </pre>
      *
      * @param str      the string to be wrapped, may be {@code null}

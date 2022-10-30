@@ -15,37 +15,6 @@
         <maven.compiler.release>17</maven.compiler.release>
         <java.version>17</java.version>
 
-        <!--google-->
-        <gson.version>2.9.0</gson.version>
-        <guava.version>31.1-jre</guava.version>
-
-
-        <!--common-->
-        <commons-lang3.version>3.12.0</commons-lang3.version>
-        <commons-io.version>2.11.0</commons-io.version>
-        <commons-codec.version>1.15</commons-codec.version>
-        <commons-net.version>3.8.0</commons-net.version>
-
-        <!--alibaba-->
-        <fastjson2.version>2.0.12</fastjson2.version>
-
-        <!--http-->
-        <httpclient.version>5.2-beta1</httpclient.version>
-        <httpcore.version>5.1.4</httpcore.version>
-
-        <snakeyaml.version>1.31</snakeyaml.version>
-        <jwt.version>4.0.0</jwt.version>
-        <ftp-jsch.version>0.1.55</ftp-jsch.version>
-        <hutool.version>5.8.5</hutool.version>
-
-
-        <!--plugins-->
-        <compiler-plugin.version>3.10.1</compiler-plugin.version>
-        <resources-plugin.version>3.2.0</resources-plugin.version>
-        <jar-plugin.version>3.2.2</jar-plugin.version>
-        <assembly-plugin.version>3.4.1</assembly-plugin.version>
-        <maven-plugin.version>3.3.0</maven-plugin.version>
-
 
         <package.type>release</package.type>
         <!--        <package.type>ossrh</package.type>-->
@@ -57,40 +26,44 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.4.0</version>
+            <version>1.4.4</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.0</version>
+            <version>2.0.3</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
         </dependency>
 
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
+            <version>1.15</version>
         </dependency>
 
         <dependency>
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
+            <version>3.8.0</version>
         </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
             <artifactId>httpclient5</artifactId>
-            <version>${httpclient.version}</version>
+            <version>5.2-beta1</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-codec</groupId>
@@ -107,139 +80,50 @@
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
+            <version>4.2.1</version>
         </dependency>
 
 
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.8.6</version>
+            <version>5.8.9</version>
         </dependency>
 
 
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>
             <artifactId>fastjson2</artifactId>
-            <version>2.0.13</version>
+            <version>2.0.16</version>
         </dependency>
 
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>
             <artifactId>fastjson2-extension</artifactId>
-            <version>2.0.13</version>
+            <version>2.0.16</version>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
+            <version>1.33</version>
         </dependency>
         <dependency>
             <groupId>com.jcraft</groupId>
             <artifactId>jsch</artifactId>
+            <version>0.1.55</version>
         </dependency>
 
 
     </dependencies>
 
 
-    <dependencyManagement>
-        <dependencies>
-
-
-            <dependency>
-                <groupId>com.jcraft</groupId>
-                <artifactId>jsch</artifactId>
-                <version>${ftp-jsch.version}</version>
-            </dependency>
-
-
-            <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
-            <dependency>
-                <groupId>org.yaml</groupId>
-                <artifactId>snakeyaml</artifactId>
-                <version>${snakeyaml.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${httpclient.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpcore</artifactId>
-                <version>${httpcore.version}</version>
-            </dependency>
-
-            <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
-            <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>${commons-codec.version}</version>
-            </dependency>
-
-            <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${commons-lang3.version}</version>
-            </dependency>
-
-            <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons-io.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-net</groupId>
-                <artifactId>commons-net</artifactId>
-                <version>${commons-net.version}</version>
-            </dependency>
-
-
-            <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-all</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-
-
-            <!-- https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2-extension -->
-            <dependency>
-                <groupId>com.alibaba.fastjson2</groupId>
-                <artifactId>fastjson2-extension</artifactId>
-                <version>${fastjson2.version}</version>
-            </dependency>
-
-            <!-- https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2-extension -->
-            <dependency>
-                <groupId>com.alibaba.fastjson2</groupId>
-                <artifactId>fastjson2</artifactId>
-                <version>${fastjson2.version}</version>
-            </dependency>
-
-
-            <!--       JWT-->
-            <dependency>
-                <groupId>com.auth0</groupId>
-                <artifactId>java-jwt</artifactId>
-                <version>${jwt.version}</version>
-            </dependency>
-
-
-        </dependencies>
-
-    </dependencyManagement>
 
 
     <!--gav信息-->
     <groupId>top.yqingyu</groupId>
     <artifactId>commons-qy</artifactId>
     <!--需要特别注意,你上传的是SNAPSHOT仓库,所以此处版本号后缀必须带SNAPSHOT-->
-    <version>1.7.5</version>
+    <version>1.7.6</version>
 
     <!--项目信息...-->
 

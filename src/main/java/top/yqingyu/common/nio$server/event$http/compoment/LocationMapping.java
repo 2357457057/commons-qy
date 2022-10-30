@@ -15,6 +15,7 @@ import top.yqingyu.common.utils.YamlUtil;
 
 import java.io.File;
 import java.lang.reflect.*;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
@@ -38,6 +39,8 @@ public class LocationMapping {
 
     static final ConcurrentHashMap<String, Bean> BEAN_RESOURCE_MAPPING = new ConcurrentHashMap<>();
     static final ConcurrentHashMap<String, String> FILE_CACHING = new ConcurrentHashMap<>();
+
+    static final String FORM = "{\"body\"}";
 
     static void loadingFileResource(String rootPath) {
         HashMap<String, String> mapping = YamlUtil.getFilePathMapping(rootPath);
@@ -221,6 +224,30 @@ public class LocationMapping {
                             }
                         }
                     }
+                } else if (HttpMethod.POST.equals(request.getMethod()) && ContentType.APPLICATION_FORM_URLENCODED.isSameMimeType(requestCtTyp)) {
+                    //=======================================================================================
+                    //==    表单数据拼装 属性名拼装           ==
+                    //=======================================================================================
+                    if (parameters.length >= 1) {
+                        for (int i = 0; i < parameters.length; i++) {
+                            Type paramType = parameters[i].getParameterizedType();
+                            String typeName = paramType.getTypeName();
+                            if (Request.class.getName().equals(typeName)) {
+                                args[i] = request;
+                            } else if (Response.class.getName().equals(typeName)) {
+                                args[i] = request;
+                            } else if (ClazzUtil.canValueof(paramType)) {
+                                args[i] = new String(request.gainBody(), requestCtTyp.getCharset() == null ? StandardCharsets.UTF_8 : requestCtTyp.getCharset());
+                            } else {
+                                String body = new String(request.gainBody(), requestCtTyp.getCharset() == null ? StandardCharsets.UTF_8 : requestCtTyp.getCharset());
+                                body = body.replaceAll("&", "\",\"").replaceAll("=", "\":\"");
+                                body = URLDecoder.decode(body, requestCtTyp.getCharset() == null ? StandardCharsets.UTF_8 : requestCtTyp.getCharset());
+                                body = FORM.replace("body", body);
+                                args[i] = JSON.parseObject(body, paramType);
+                            }
+                        }
+
+                    }
                 } else if (HttpMethod.POST.equals(request.getMethod())) {
                     //=======================================================================================
                     //==   优先拼装 request/response > url名称属性&&基础属性 > baseParam(包含String) > Object   ==
@@ -248,15 +275,15 @@ public class LocationMapping {
                 Object methodReturn = invokeMethod.invoke(invokeObj, args);
                 //==                                                            ==
                 //================================================================
-
-                if (ClazzUtil.canValueof(methodReturn.getClass())) {
-                    response.setString_body((String) methodReturn)
-                            .putHeaderContentType(ContentType.TEXT_HTML);
-                } else {
-                    response
-                            .setString_body(JSON.toJSONString(methodReturn))
-                            .putHeaderContentType(ContentType.APPLICATION_JSON);
-                }
+                if (null != methodReturn)
+                    if (ClazzUtil.canValueof(methodReturn.getClass())) {
+                        response.setString_body((String) methodReturn)
+                                .putHeaderContentType(ContentType.TEXT_HTML);
+                    } else {
+                        response
+                                .setString_body(JSON.toJSONString(methodReturn))
+                                .putHeaderContentType(ContentType.APPLICATION_JSON);
+                    }
                 response
                         .setStatue_code("200")
                         .putHeaderAcceptRanges()

@@ -49,11 +49,11 @@ public class Response implements HttpAction{
         return file_body;
     }
 
-    public boolean isAssemble() {
+     boolean isAssemble() {
         return assemble;
     }
 
-    public Response setAssemble(boolean assemble) {
+     Response setAssemble(boolean assemble) {
         this.assemble = assemble;
         return this;
     }

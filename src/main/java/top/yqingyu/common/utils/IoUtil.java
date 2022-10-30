@@ -189,6 +189,17 @@ public class IoUtil {
 
     }
 
+    /***
+     *    待实现。
+     * @param socketChannel
+     * @return
+     * @author YYJ
+     * @version 1.0.0
+     * @description      */
+    public static byte[] readUntilTarget(SocketChannel socketChannel){
+        //TODO 待实现
+        return new byte[0];
+    }
     public static void writeBytes(SocketChannel socketChannel, byte[] bytes) throws Exception {
         ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length);
         byteBuffer.put(bytes);

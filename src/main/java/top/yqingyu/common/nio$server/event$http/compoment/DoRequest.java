@@ -2,6 +2,7 @@ package top.yqingyu.common.nio$server.event$http.compoment;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.alibaba.fastjson2.JSON;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Stack;
 import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -41,6 +43,7 @@ class DoRequest implements Callable<Object> {
     //最大header长度 128KB
     static long MAX_HEADER_SIZE;
 
+    static boolean ALLOW_UPDATE = false;
 
     private static final Logger log = LoggerFactory.getLogger(DoRequest.class);
 
@@ -154,7 +157,7 @@ class DoRequest implements Callable<Object> {
                         return $413_ENTITY_LARGE.putHeaderDate(ZonedDateTime.now()).setAssemble(true);
                     }
 
-                    //说明已经读完
+                    //说明已经读完或读到头了
                     if (currentLength < DEFAULT_BUF_LENGTH || all.length == currentLength) {
                         int idx = firstIndexOfTarget(all, RN_RN);
                         int efIdx = idx + RN_RN.length;
@@ -165,15 +168,51 @@ class DoRequest implements Callable<Object> {
                         } else if (efIdx == all.length) {
                             request.setParseEnd();
                         } else {
-                            byte[] body = new byte[all.length - efIdx];
+                            int currentContentLength = all.length - efIdx;
+                            String header = request.getHeader("Content-Type");
+                            ContentType parse = ContentType.parse(header);
 
-                            //去除多余的数据
-                            if (contentLength != -1) {
-                                body = new byte[(int) contentLength];
+                            //文件上传逻辑
+                            if (ContentType.MULTIPART_FORM_DATA.isSameMimeType(parse) && ALLOW_UPDATE) {
+                                String boundary = parse.getParameter("boundary");
+                                byte[] boundaryBytes = boundary.getBytes();
+                                temp = ArrayUtils.subarray(all, efIdx, all.length);
+
+                                Stack<MultipartFile> multipartFileStack = new Stack<>();
+                                while (currentContentLength < contentLength) {
+                                    //Multipart
+                                    ArrayList<byte[]> boundarys = splitByTarget(temp, boundaryBytes);
+
+                                    if (boundarys.size() > 0 || multipartFileStack.size() > 0) {
+                                        for (int i = 0; i < boundarys.size(); i++) {
+                                            if (i == 0 && multipartFileStack.peek() != null) {
+                                                multipartFileStack.peek().write(boundarys.get(0));
+                                            } else {
+                                                MultipartFile multipartFile = new MultipartFile("temp", "/tmp");
+                                                multipartFileStack.push(multipartFile);
+                                                ArrayList<byte[]> bytes = splitByTarget(boundarys.get(i), RN_RN);
+
+                                            }
+                                        }
+                                    } else {
+                                        byte[] buf = IoUtil.readBytes2(socketChannel, (int) DEFAULT_BUF_LENGTH);
+                                        temp = ArrayUtil.addAll(temp, buf);
+                                        currentContentLength += temp.length;
+                                    }
+                                }
+                            } else {
+                                long ll = contentLength - currentContentLength;
+                                //去除多余的数据
+                                if (contentLength != -1) {
+                                    temp = IoUtil.readBytes2(socketChannel, (int) ll);
+                                    byte[] body = new byte[(int) contentLength];
+                                    System.arraycopy(all, efIdx, body, 0, currentContentLength);
+                                    System.arraycopy(temp, 0, body, currentContentLength , (int) ll);
+                                    request.setBody(body);
+                                    request.setParseEnd();
+                                }
+
                             }
-                            System.arraycopy(all, efIdx, body, 0, body.length);
-                            request.setBody(body);
-                            request.setParseEnd();
                         }
 
                     }
@@ -212,5 +251,8 @@ class DoRequest implements Callable<Object> {
         }
     }
 
+    static void assembleMultipartFileHeader() {
+
+    }
 
 }

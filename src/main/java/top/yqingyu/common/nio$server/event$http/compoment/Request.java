@@ -26,6 +26,8 @@ public class Request implements HttpAction{
 
     private Session session;
 
+    private MultipartFile multipartFile;
+
     private byte[] body;
 
     private boolean parseEnd = false;

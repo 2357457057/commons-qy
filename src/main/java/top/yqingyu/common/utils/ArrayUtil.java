@@ -191,7 +191,7 @@ public class ArrayUtil {
     }
 
     /**
-     * 寻找目标数组的索引起始值
+     * 寻找目标数组在源数组中的索引起始值
      *
      * @param source 源数组
      * @param target 目标数组
@@ -209,6 +209,7 @@ public class ArrayUtil {
                 list.add(i - targetLength + 1);
                 enumerator.set(0);
             } else if (source[i] != target[tIdx]) {
+                i -= tIdx;
                 enumerator.set(0);
             }
         }

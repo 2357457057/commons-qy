@@ -46,7 +46,7 @@ public class Resource {
                 if (ks.length == length) {
                     file.put(k, ks[Math.max(length - 1, 1)]);
                 } else if (ks.length > length) {
-                    dir.put(k, ks[Math.max(length - 1, 1)]);
+                    dir.put(ks[Math.max(length - 1, 1)], k);
                 }
             }
         });
@@ -54,9 +54,10 @@ public class Resource {
         if (!"/".equals(path)) {
 
             StringBuilder pathBuilder = new StringBuilder();
+            int i = 1;
             for (String s : split) {
-		if(!"".equals(s))
-	            pathBuilder.append("/").append(s);
+                if (!"".equals(s) && i++ != length)
+                    pathBuilder.append("/").append(s);
             }
             path = pathBuilder.toString();
             sb.append("<a href = '").append("/root/file?name=yyj&path=").append(path).append("'>")
@@ -65,14 +66,14 @@ public class Resource {
                     .append("<br>");
         }
 
-        dir.forEach((k,v)->{
-            sb.append("<a href = '").append("/root/file?name=yyj&path=").append(k).append("'>")
-                    .append(v)
+        dir.forEach((k, v) -> {
+            sb.append("<a href = '").append("/root/file?name=yyj&path=").append(v).append("'>")
+                    .append(k)
                     .append("</a>")
                     .append("<br>");
         });
 
-        file.forEach((k,v)->{
+        file.forEach((k, v) -> {
             sb.append("<a href = '").append(k).append("'>")
                     .append(v)
                     .append("</a>")

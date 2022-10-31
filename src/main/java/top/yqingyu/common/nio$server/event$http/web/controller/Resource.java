@@ -4,7 +4,6 @@ import top.yqingyu.common.nio$server.event$http.annotation.QyController;
 import top.yqingyu.common.nio$server.event$http.compoment.HttpMethod;
 import top.yqingyu.common.nio$server.event$http.compoment.LocationMapping;
 import top.yqingyu.common.nio$server.event$http.exception.HttpException;
-import top.yqingyu.common.utils.YamlUtil;
 import top.yqingyu.common.utils.StringUtil;
 
 import java.util.HashMap;
@@ -23,7 +22,7 @@ public class Resource {
     public String showResource(String name, String path) {
         if (!"yyj".equals(name))
             throw new HttpException.MethodNotSupposedException("我C");
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("<table width=\"60%\" border=\"1\" style=\"text-align:left;border-collapse: collapse;\" cellspacing=\"0\">");
 
         if (StringUtil.isBlank(path))
             path = "/";
@@ -37,16 +36,18 @@ public class Resource {
         HashMap<String, String> dir = new HashMap<>();
         HashMap<String, String> file = new HashMap<>();
 
+        String finalPath = path;
         LocationMapping.FILE_RESOURCE_MAPPING.forEach((k, v) -> {
             if (k.indexOf("/") != 0) {
                 k = "/" + k;
             }
             if (k.matches(regx)) {
                 String[] ks = k.split("/");
-                if (ks.length == length) {
-                    file.put(k, ks[Math.max(length - 1, 1)]);
-                } else if (ks.length > length) {
-                    dir.put(ks[Math.max(length - 1, 1)], k);
+                if (ks.length - 1 == length) {
+                    file.put(k, ks[Math.min(length, ks.length - 1)]);
+                } else if (ks.length - 1 > length) {
+                    String value = ("/".equals(finalPath) ? "/" : finalPath + "/") + ks[Math.min(length, ks.length - 1)];
+                    dir.put(ks[Math.min(length, ks.length - 1)], value);
                 }
             }
         });
@@ -56,29 +57,54 @@ public class Resource {
             StringBuilder pathBuilder = new StringBuilder();
             int i = 1;
             for (String s : split) {
-                if (!"".equals(s) && i++ != length)
+                if (!"".equals(s) && i++ != length - 1)
                     pathBuilder.append("/").append(s);
             }
             path = pathBuilder.toString();
-            sb.append("<a href = '").append("/root/file?name=yyj&path=").append(path).append("'>")
+
+            sb.append("<tr>")
+                    .append("<th colspan='2'>")
+                    .append("<a href = '").append("/root/file?name=yyj&path=").append(path).append("'>")
                     .append("..")
                     .append("</a>")
-                    .append("<br>");
+                    .append("</th>")
+                    .append("</tr>")
+            ;
         }
 
         dir.forEach((k, v) -> {
-            sb.append("<a href = '").append("/root/file?name=yyj&path=").append(v).append("'>")
+            sb
+                    .append("<th>")
+                    .append("<a href = '").append("/root/file?name=yyj&path=").append(v).append("'>")
                     .append(k)
                     .append("</a>")
-                    .append("<br>");
+                    .append("</th>")
+
+                    .append("<th>")
+                    .append(" DIRS")
+                    .append("</th>")
+
+                    .append("</tr>");
         });
 
         file.forEach((k, v) -> {
-            sb.append("<a href = '").append(k).append("'>")
+            sb.append("<tr>")
+
+                    .append("<th>")
+                    .append("<a href = '").append(k).append("'>")
                     .append(v)
                     .append("</a>")
-                    .append("<br>");
+                    .append("</th>")
+
+                    .append("<th>")
+                    .append("FILE")
+                    .append("</th>")
+
+                    .append("</tr>");
         });
+
+        sb.append("</table>");
+
 
 
         return sb.toString();

@@ -1,4 +1,4 @@
 #! /bin/sh
-cd /data/mycode/httpserver/
+cd /data/mycode/commonsqy/
 export GPG_TTY=$(tty)
 mvn clean install

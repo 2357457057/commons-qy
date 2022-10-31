@@ -60,6 +60,7 @@ public class ExecuteCommand {
                 byte[] bytes = futureTask.get(5, TimeUnit.SECONDS);
                 exec.destroy();
                 String s = new String(bytes, Charset.forName(System.getProperty("sun.jnu.encoding")));
+		s = s.replaceAll("[\n]","<br>");
 
                 log.info("execute\n\r {}", s);
 

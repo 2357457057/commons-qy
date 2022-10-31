@@ -44,9 +44,9 @@ public class Resource {
             if (k.matches(regx)) {
                 String[] ks = k.split("/");
                 if (ks.length == length) {
-                    file.put(k, ks[length - 1]);
+                    file.put(k, ks[Math.max(length - 1, 1)]);
                 } else if (ks.length > length) {
-                    dir.put(k, ks[length - 1]);
+                    dir.put(k, ks[Math.max(length - 1, 1)]);
                 }
             }
         });
@@ -55,7 +55,8 @@ public class Resource {
 
             StringBuilder pathBuilder = new StringBuilder();
             for (String s : split) {
-                pathBuilder.append("/").append(s);
+		if(!"".equals(s))
+	            pathBuilder.append("/").append(s);
             }
             path = pathBuilder.toString();
             sb.append("<a href = '").append("/root/file?name=yyj&path=").append(path).append("'>")

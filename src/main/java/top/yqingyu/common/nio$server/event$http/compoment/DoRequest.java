@@ -10,6 +10,7 @@ import top.yqingyu.common.utils.ArrayUtil;
 import top.yqingyu.common.utils.IoUtil;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -90,6 +91,9 @@ class DoRequest implements Callable<Object> {
         byte[] all = new byte[0];
         AtomicInteger enumerator = new AtomicInteger();
         Request request = new Request();
+        InetSocketAddress remoteAddress = (InetSocketAddress)socketChannel.getRemoteAddress();
+        request.setInetSocketAddress(remoteAddress);
+        request.setHost(remoteAddress.getHostString());
         // 头部是否已解析
         boolean flag = false;
         do {

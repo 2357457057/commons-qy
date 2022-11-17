@@ -3,6 +3,7 @@ package top.yqingyu.common.nio$server.event$http.compoment;
 import com.alibaba.fastjson2.JSON;
 import top.yqingyu.common.qydata.DataMap;
 
+import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
@@ -19,6 +20,10 @@ public class Request implements HttpAction{
     private HttpMethod method;
     private HttpVersion httpVersion;
     private String url;
+
+    private String host;
+
+    private InetSocketAddress inetSocketAddress;
 
     private final DataMap urlParam = new DataMap();
     private final DataMap header = new DataMap();
@@ -156,6 +161,21 @@ public class Request implements HttpAction{
 
     public boolean isParseEnd() {
         return parseEnd;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+    public InetSocketAddress getInetSocketAddress() {
+        return inetSocketAddress;
+    }
+
+    public void setInetSocketAddress(InetSocketAddress inetSocketAddress) {
+        this.inetSocketAddress = inetSocketAddress;
     }
 
     @Override

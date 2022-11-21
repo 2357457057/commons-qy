@@ -64,13 +64,17 @@ class DoRequest implements Callable<Object> {
 
             if (httpAction instanceof Request) {
                 request = (Request) httpAction;
-                //未找到本地资源
-            } else if (httpAction instanceof Response)
+                log.debug(JSON.toJSONString(request));
+                //未找到本地资源/一些异常情况,在parse过程中产生响应对象
+            } else if (httpAction instanceof Response){
                 response = (Response) httpAction;
+                log.debug(JSON.toJSONString(response));
+            }else {
+                log.debug(JSON.toJSONString(httpAction));
+            }
 
             //进行response
             createResponse(request, response, false);
-            log.debug(JSON.toJSONString(httpAction));
         } finally {
             //处理完毕需要需丢掉SINGLE中的记录
             log.debug("{}出 cost {} MICROS", socketChannel.hashCode(), LocalDateTimeUtil.between(now, LocalDateTime.now(), ChronoUnit.MICROS));

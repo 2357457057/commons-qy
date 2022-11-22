@@ -56,26 +56,24 @@ class DoRequest implements Callable<Object> {
     @Override
     public Object call() throws Exception {
         LocalDateTime now = LocalDateTime.now();
+        HttpAction httpAction = null;
         try {
-            HttpAction httpAction = parseRequest();
+            httpAction = parseRequest();
 
             Request request = null;
             Response response = null;
 
             if (httpAction instanceof Request) {
                 request = (Request) httpAction;
-                log.debug(JSON.toJSONString(request));
                 //未找到本地资源/一些异常情况,在parse过程中产生响应对象
-            } else if (httpAction instanceof Response){
+            } else if (httpAction instanceof Response) {
                 response = (Response) httpAction;
-                log.debug(JSON.toJSONString(response));
-            }else {
-                log.debug(JSON.toJSONString(httpAction));
             }
 
             //进行response
             createResponse(request, response, false);
         } finally {
+            log.debug(JSON.toJSONString(httpAction));
             //处理完毕需要需丢掉SINGLE中的记录
             log.debug("{}出 cost {} MICROS", socketChannel.hashCode(), LocalDateTimeUtil.between(now, LocalDateTime.now(), ChronoUnit.MICROS));
         }
@@ -95,7 +93,7 @@ class DoRequest implements Callable<Object> {
         byte[] all = new byte[0];
         AtomicInteger enumerator = new AtomicInteger();
         Request request = new Request();
-        InetSocketAddress remoteAddress = (InetSocketAddress)socketChannel.getRemoteAddress();
+        InetSocketAddress remoteAddress = (InetSocketAddress) socketChannel.getRemoteAddress();
         request.setInetSocketAddress(remoteAddress);
         request.setHost(remoteAddress.getHostString());
         // 头部是否已解析
@@ -215,7 +213,7 @@ class DoRequest implements Callable<Object> {
                                     temp = IoUtil.readBytes2(socketChannel, (int) ll);
                                     byte[] body = new byte[(int) contentLength];
                                     System.arraycopy(all, efIdx, body, 0, currentContentLength);
-                                    System.arraycopy(temp, 0, body, currentContentLength , (int) ll);
+                                    System.arraycopy(temp, 0, body, currentContentLength, (int) ll);
                                     request.setBody(body);
                                     request.setParseEnd();
                                 }

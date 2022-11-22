@@ -33,7 +33,7 @@ import static top.yqingyu.common.nio$server.event$http.compoment.HttpEventHandle
 /**
  * @author YYJ
  * @version 1.0.0
- * @ClassName top.yqingyu.common.nio$server.event$http.compoment.DoResponse
+ * @ClassName top.yqingyu.common.nio$server.event$http.component.DoResponse
  * @description
  * @createTime 2022年09月19日 15:19:00
  */
@@ -179,7 +179,7 @@ class DoResponse implements Callable<Object> {
         //接口
         if (!response.isAssemble()) {
             //session相关逻辑
-            Session session = null;
+            Session session;
             String sessionID = request.getCookie(Session.name);
             if (Session.SESSION_CONTAINER.containsKey(sessionID))
                 session = Session.SESSION_CONTAINER.get(sessionID);
@@ -286,13 +286,13 @@ class DoResponse implements Callable<Object> {
             int length;
             File file_body = response.getFile_body();
             if (file_body != null && !response.isCompress()) {
-                FileChannel channel = new FileInputStream(response.getFile_body()).getChannel();
+                FileChannel fileChannel = new FileInputStream(response.getFile_body()).getChannel();
                 long l = 0;
-                long size = channel.size();
+                long size = fileChannel.size();
                 do {
-                    l += channel.transferTo(l, DEFAULT_SEND_BUF_LENGTH, socketChannel);
+                    l += fileChannel.transferTo(l, DEFAULT_SEND_BUF_LENGTH, socketChannel);
                 } while (l != size);
-                channel.close();
+                fileChannel.close();
             } else {
                 try {
                     IoUtil.writeBytes(socketChannel, response.gainBodyBytes(), 2000);

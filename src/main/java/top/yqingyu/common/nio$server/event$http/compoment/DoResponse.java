@@ -4,7 +4,6 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.yqingyu.common.nio$server.core.ExceedingRepetitionLimitException;
 import top.yqingyu.common.qydata.ConcurrentDataMap;
 import top.yqingyu.common.utils.GzipUtil;
 import top.yqingyu.common.utils.IoUtil;
@@ -27,8 +26,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static top.yqingyu.common.nio$server.event$http.compoment.HttpEventHandler.SOCKET_CHANNEL_ACK;
 
 /**
  * @author YYJ
@@ -142,21 +139,21 @@ class DoResponse implements Callable<Object> {
             socketChannel.shutdownOutput();
             socketChannel.close();
         } finally {
-            if (socketChannel != null){
-                int i = socketChannel.hashCode();
-                try {
-
-                    SOCKET_CHANNEL_ACK.addAck(i);
-                    SOCKET_CHANNEL_ACK.ack(socketChannel.hashCode());
-
-                } catch (ExceedingRepetitionLimitException e) {
-                    if (SOCKET_CHANNEL_ACK.isAckOk(i)) {
-                        socketChannel.close();
-                        SOCKET_CHANNEL_ACK.removeAck(i);
-                        log.debug("单通道请求达上限关闭通道");
-                    }
-                }
-            }
+//            if (socketChannel != null){
+//                int i = socketChannel.hashCode();
+//                try {
+//
+//                    SOCKET_CHANNEL_ACK.addAck(i);
+//                    SOCKET_CHANNEL_ACK.ack(socketChannel.hashCode());
+//
+//                } catch (ExceedingRepetitionLimitException e) {
+//                    if (SOCKET_CHANNEL_ACK.isAckOk(i)) {
+//                        socketChannel.close();
+//                        SOCKET_CHANNEL_ACK.removeAck(i);
+//                        log.debug("单通道请求达上限关闭通道");
+//                    }
+//                }
+//            }
         }
         return null;
     }

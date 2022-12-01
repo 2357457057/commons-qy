@@ -33,7 +33,7 @@ public class DemoController {
         return "SessionAndCookie-Test";
     }
 
-    @QyController(path = "get", method = {HttpMethod.GET})
+    @QyController(path = "get_demo", method = {HttpMethod.GET})
     public String demo4(Request req) {
 
         Session session = req.getSession();

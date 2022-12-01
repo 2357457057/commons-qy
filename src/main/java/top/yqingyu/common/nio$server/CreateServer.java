@@ -40,6 +40,7 @@ public class CreateServer {
     private HandlerDispatcher handlerDispatcher;
 
     private CreateServer(Selector selector) {
+        log.info("Began Init Server");
         this.startTime = getTime();
         this.selector = selector;
     }

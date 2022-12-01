@@ -201,7 +201,7 @@ public class IoUtil {
         return new byte[0];
     }
     public static void writeBytes(SocketChannel socketChannel, byte[] bytes) throws Exception {
-        ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length);
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bytes.length);
         byteBuffer.put(bytes);
         byteBuffer.flip();
         long l = 0;
@@ -213,7 +213,7 @@ public class IoUtil {
 
     public static boolean writeBytes(SocketChannel socketChannel, byte[] bytes, long timeout) throws Exception {
         FutureTask<Boolean> futureTask = new FutureTask<>(() -> {
-            ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length);
+            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bytes.length);
             byteBuffer.put(bytes);
             byteBuffer.flip();
             long l = 0;

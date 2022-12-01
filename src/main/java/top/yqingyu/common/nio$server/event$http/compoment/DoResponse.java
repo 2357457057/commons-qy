@@ -4,7 +4,6 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.yqingyu.common.nio$server.core.ExceedingRepetitionLimitException;
 import top.yqingyu.common.qydata.ConcurrentDataMap;
 import top.yqingyu.common.utils.GzipUtil;
 import top.yqingyu.common.utils.IoUtil;
@@ -28,12 +27,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static top.yqingyu.common.nio$server.event$http.compoment.HttpEventHandler.SOCKET_CHANNEL_ACK;
-
 /**
  * @author YYJ
  * @version 1.0.0
- * @ClassName top.yqingyu.common.nio$server.event$http.compoment.DoResponse
+ * @ClassName top.yqingyu.common.nio$server.event$http.component.DoResponse
  * @description
  * @createTime 2022年09月19日 15:19:00
  */
@@ -142,21 +139,21 @@ class DoResponse implements Callable<Object> {
             socketChannel.shutdownOutput();
             socketChannel.close();
         } finally {
-            if (socketChannel != null){
-                int i = socketChannel.hashCode();
-                try {
-
-                    SOCKET_CHANNEL_ACK.addAck(i);
-                    SOCKET_CHANNEL_ACK.ack(socketChannel.hashCode());
-
-                } catch (ExceedingRepetitionLimitException e) {
-                    if (SOCKET_CHANNEL_ACK.isAckOk(i)) {
-                        socketChannel.close();
-                        SOCKET_CHANNEL_ACK.removeAck(i);
-                        log.debug("单通道请求达上限关闭通道");
-                    }
-                }
-            }
+//            if (socketChannel != null){
+//                int i = socketChannel.hashCode();
+//                try {
+//
+//                    SOCKET_CHANNEL_ACK.addAck(i);
+//                    SOCKET_CHANNEL_ACK.ack(socketChannel.hashCode());
+//
+//                } catch (ExceedingRepetitionLimitException e) {
+//                    if (SOCKET_CHANNEL_ACK.isAckOk(i)) {
+//                        socketChannel.close();
+//                        SOCKET_CHANNEL_ACK.removeAck(i);
+//                        log.debug("单通道请求达上限关闭通道");
+//                    }
+//                }
+//            }
         }
         return null;
     }
@@ -179,7 +176,7 @@ class DoResponse implements Callable<Object> {
         //接口
         if (!response.isAssemble()) {
             //session相关逻辑
-            Session session = null;
+            Session session;
             String sessionID = request.getCookie(Session.name);
             if (Session.SESSION_CONTAINER.containsKey(sessionID))
                 session = Session.SESSION_CONTAINER.get(sessionID);
@@ -286,13 +283,13 @@ class DoResponse implements Callable<Object> {
             int length;
             File file_body = response.getFile_body();
             if (file_body != null && !response.isCompress()) {
-                FileChannel channel = new FileInputStream(response.getFile_body()).getChannel();
+                FileChannel fileChannel = new FileInputStream(response.getFile_body()).getChannel();
                 long l = 0;
-                long size = channel.size();
+                long size = fileChannel.size();
                 do {
-                    l += channel.transferTo(l, DEFAULT_SEND_BUF_LENGTH, socketChannel);
+                    l += fileChannel.transferTo(l, DEFAULT_SEND_BUF_LENGTH, socketChannel);
                 } while (l != size);
-                channel.close();
+                fileChannel.close();
             } else {
                 try {
                     IoUtil.writeBytes(socketChannel, response.gainBodyBytes(), 2000);

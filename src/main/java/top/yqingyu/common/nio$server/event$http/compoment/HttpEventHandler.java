@@ -125,11 +125,11 @@ public class HttpEventHandler extends EventHandler {
     @Override
     public void read(Selector selector, SocketChannel socketChannel) throws Exception {
         socketChannel.register(selector, SelectionKey.OP_WRITE);
-        int i = socketChannel.hashCode();
-//            READ_POOL.submit(new DoRequest(socketChannel, QUEUE));
+//        int i = socketChannel.hashCode();
+            READ_POOL.submit(new DoRequest(socketChannel, QUEUE));
 //            WRITE_POOL.submit(new DoResponse(QUEUE, selector));
-            DoRequest doRequest = new DoRequest(socketChannel, QUEUE);
-            doRequest.call();
+//            DoRequest doRequest = new DoRequest(socketChannel, QUEUE);
+//            doRequest.call();
             DoResponse doResponse = new DoResponse(QUEUE, selector);
             doResponse.call();
     }

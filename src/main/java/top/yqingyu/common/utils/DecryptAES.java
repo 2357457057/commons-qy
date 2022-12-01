@@ -357,6 +357,6 @@ public class DecryptAES {
 
     public static void main(String[] args) {
 
-        System.out.println(new String(encryptKeyByteBase64("yyj.981010"),StandardCharsets.UTF_8));
+        System.out.println(new String(encryptKeyByteBase64("qydb"),StandardCharsets.UTF_8));
     }
 }

@@ -8,6 +8,7 @@ import top.yqingyu.common.utils.LocalDateTimeUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 
@@ -37,7 +38,7 @@ public class Response implements HttpAction{
     private String string_body;
     private File file_body;
 
-    private byte[] compress_body;
+    private ByteBuffer compress_body;
 
     //是否组装完毕
     private boolean assemble = false;
@@ -172,14 +173,17 @@ public class Response implements HttpAction{
         return this;
     }
 
-    void setCompress_body(byte[] compress_body) {
+    void setCompress_body(ByteBuffer compress_body) {
         this.compress_body = compress_body;
     }
 
-    byte[] gainBodyBytes() throws FileNotFoundException {
+    ByteBuffer gainBodyBytes() throws FileNotFoundException {
         if (compress)
             return compress_body;
-        return string_body.getBytes(StandardCharsets.UTF_8);
+        byte[] bytes = string_body.getBytes(StandardCharsets.UTF_8);
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bytes.length);
+        byteBuffer.put(bytes);
+        return byteBuffer;
     }
 
     File getFile_body() {

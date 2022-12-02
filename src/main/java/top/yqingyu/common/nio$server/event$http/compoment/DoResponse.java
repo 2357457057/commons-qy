@@ -11,6 +11,7 @@ import top.yqingyu.common.utils.IoUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -75,7 +76,7 @@ class DoResponse implements Callable<Object> {
 
     private final AtomicLong CurrentFileCacheSize = new AtomicLong();
 
-    private static final ConcurrentDataMap<String, byte[]> FILE_BYTE_CACHE = new ConcurrentDataMap<>();
+    private static final ConcurrentDataMap<String, ByteBuffer> FILE_BYTE_CACHE = new ConcurrentDataMap<>();
 
     private static final Logger log = LoggerFactory.getLogger(DoResponse.class);
 
@@ -229,25 +230,29 @@ class DoResponse implements Callable<Object> {
                 String strBody = response.getStrBody();
                 if (StringUtils.isNotBlank(strBody)) {
                     byte[] bytes = GzipUtil.$2CompressBytes(strBody, charset);
-                    response.setCompress_body(bytes);
+                    ByteBuffer buffer = ByteBuffer.allocateDirect(bytes.length);
+                    buffer.put(bytes);
+                    response.setCompress_body(buffer);
                     response.putHeaderContentLength(bytes.length).putHeaderCompress();
                 } else {
                     if (FILE_BYTE_CACHE.containsKey(url)) {
-                        byte[] bytes = FILE_BYTE_CACHE.get(url);
-                        response.setCompress_body(bytes);
-                        response.putHeaderContentLength(bytes.length).putHeaderCompress();
+                        ByteBuffer byteBuffer = FILE_BYTE_CACHE.get(url);
+                        response.setCompress_body(byteBuffer);
+                        response.putHeaderContentLength(byteBuffer.limit()).putHeaderCompress();
                     } else {
                         File file = response.getFile_body();
                         long length = file.length();
                         if (length < MAX_SINGLE_FILE_COMPRESS_SIZE && CurrentFileCacheSize.get() < MAX_FILE_CACHE_SIZE) {
                             byte[] bytes = GzipUtil.$2CompressBytes(response.getFile_body());
+                            ByteBuffer buffer = ByteBuffer.allocateDirect(bytes.length);
+                            buffer.put(bytes);
                             //开启压缩池
                             if (CACHE_POOL_ON) {
-                                FILE_BYTE_CACHE.put(url, bytes);
+                                FILE_BYTE_CACHE.put(url, buffer);
                                 CurrentFileCacheSize.addAndGet(bytes.length);
                             }
 
-                            response.setCompress_body(bytes);
+                            response.setCompress_body(buffer);
                             response.putHeaderContentLength(bytes.length).putHeaderCompress();
                         }
                     }

@@ -228,6 +228,22 @@ public class IoUtil {
         return futureTask.get(timeout, TimeUnit.MILLISECONDS);
     }
 
+    public static boolean writeBytes(SocketChannel socketChannel, ByteBuffer byteBuffer, long timeout) throws Exception {
+        FutureTask<Boolean> futureTask = new FutureTask<>(() -> {
+            int length = byteBuffer.limit();
+            byteBuffer.flip();
+            long l = 0;
+            do {
+                l += socketChannel.write(byteBuffer);
+            } while (l != length);
+            return true;
+        });
+        Thread thread = new Thread(futureTask);
+        thread.setDaemon(true);
+        thread.start();
+        return futureTask.get(timeout, TimeUnit.MILLISECONDS);
+    }
+
     public static void writeBytes(Socket socket, byte[] bytes) throws Exception {
         OutputStream outputStream = socket.getOutputStream();
         outputStream.write(bytes);

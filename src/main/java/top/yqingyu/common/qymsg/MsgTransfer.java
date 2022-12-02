@@ -19,7 +19,6 @@ import java.util.Hashtable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 
-import static top.yqingyu.common.utils.IoUtil.writeBytes;
 
 /**
  * @author YYJ
@@ -170,7 +169,7 @@ public class MsgTransfer {
     public static void writeQyMsg(SocketChannel socketChannel, QyMsg qyMsg) throws Exception {
         ArrayList<byte[]> assembly = AssemblyMsg.assembly(qyMsg);
         for (byte[] bytes : assembly) {
-            writeBytes(socketChannel, bytes);
+            IoUtil.writeBytes(socketChannel, bytes);
         }
     }
 
@@ -185,7 +184,7 @@ public class MsgTransfer {
     public static void writeQyMsg(Socket socket, QyMsg qyMsg) throws Exception {
         ArrayList<byte[]> assembly = AssemblyMsg.assembly(qyMsg);
         for (byte[] bytes : assembly) {
-            writeBytes(socket, bytes);
+            IoUtil.writeBytes(socket, bytes);
         }
     }
 

@@ -42,6 +42,8 @@ public class LocationMapping {
 
     static final String FORM = "{\"body\"}";
 
+    static final String[] FILE_SUFFIX = {".html", "index.html", "index.htm"};
+
     static void loadingFileResource(String rootPath) {
         HashMap<String, String> mapping = YamlUtil.getFilePathMapping(rootPath);
         FILE_RESOURCE_MAPPING.putAll(mapping);
@@ -113,28 +115,10 @@ public class LocationMapping {
 
         String s = FILE_RESOURCE_MAPPING.get(url);
 
-        if (StringUtils.isBlank(s)) {
-            s = FILE_RESOURCE_MAPPING.get(url + ".html");
-        }
+        String[] fillUrl = fillUrl(url, s, response);
 
-        if (StringUtils.isBlank(s)) {
-            s = FILE_RESOURCE_MAPPING.get(url + "index.html");
-
-        }
-
-        if (StringUtils.isBlank(s)) {
-            s = FILE_RESOURCE_MAPPING.get(url + "index.htm");
-        }
-
-        if (StringUtils.isBlank(s)) {
-            s = FILE_RESOURCE_MAPPING.get(url + "/index.html");
-            if (StringUtils.isNotBlank(s)) redirect = true;
-        }
-
-        if (StringUtils.isBlank(s)) {
-            s = FILE_RESOURCE_MAPPING.get(url + "/index.htm");
-            if (StringUtils.isNotBlank(s)) redirect = true;
-        }
+        url = fillUrl[0];
+        s = fillUrl[1];
 
         if (StringUtils.isNotBlank(s)) {
             File file = new File(s);
@@ -161,17 +145,38 @@ public class LocationMapping {
                     .putHeaderAcceptRanges()
                     .putHeaderCROS()
                     .setStatue_code(stateCode);
-            if (redirect) {
-                response
-                        .setStatue_code("301")
-                        .putHeaderRedirect("/" + url + "/index.html");
-            }
+
             if (ContentType.VIDEO_MP4.equals(contentType)) {
                 response.putHeaderContentRanges();
             }
             response.setFile_body(file);
             response.setAssemble(true);
         }
+    }
+
+    static String[] fillUrl(String url, String s, Response response) {
+
+        for (String fileSuffix : FILE_SUFFIX) {
+            if (StringUtil.isNotBlank(s))
+                return new String[]{url, s};
+            if (StringUtils.isBlank(s)) {
+                s = FILE_RESOURCE_MAPPING.get(url + fileSuffix);
+                if (StringUtil.isNotBlank(s))
+                    url += fileSuffix;
+            }
+            if (StringUtils.isBlank(s)) {
+                s = FILE_RESOURCE_MAPPING.get(url + "/" + fileSuffix);
+                if (StringUtils.isNotBlank(s)) {
+                    url = url + "/" + fileSuffix;
+                    if (url.indexOf("/") != 0)
+                        url = "/" + url;
+                    response
+                            .setStatue_code("301")
+                            .putHeaderRedirect(url);
+                }
+            }
+        }
+        return new String[]{url, s};
     }
 
     static void beanResourceMapping(Request request, Response response) {

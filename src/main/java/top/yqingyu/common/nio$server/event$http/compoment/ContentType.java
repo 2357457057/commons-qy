@@ -291,7 +291,7 @@ public class ContentType implements Serializable {
                 case "jpg", "jpeg" -> IMAGE_JPEG.setAdviceStatusCode(code);
                 case "gif" -> IMAGE_GIF.setAdviceStatusCode(code);
                 case "ico" -> IMAGE_X_ICON.setAdviceStatusCode(code);
-                case "html" -> TEXT_HTML.setAdviceStatusCode(code);
+                case "html","htm" -> TEXT_HTML.setAdviceStatusCode(code);
                 case "pdf" -> APPLICATION_PDF;
                 case "md" -> TEXT_MARKDOWN;
                 case "webp" -> IMAGE_WEBP;

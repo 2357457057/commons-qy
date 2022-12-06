@@ -300,7 +300,7 @@ public class ContentType implements Serializable {
                 case "doc", "docx", "xlsx", "xls", "ppt", "pptx",
                         "exe", "apk", "msi", "rpm",
                         "zip", "rar", "7z", "gz",
-                        "mkv", "iso", "srt" -> APPLICATION_OCTET_STREAM;
+                        "mkv", "iso", "srt", "ass", "torrent" -> APPLICATION_OCTET_STREAM;
                 case "mp3" -> AUDIO_MP3;
                 case "avi" -> VIDEO_AVI;
                 case "webm" -> VIDEO_WEBM;

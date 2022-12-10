@@ -54,6 +54,8 @@ public class HttpEventHandler extends EventHandler {
 
         DataMap yamlUtil = YamlUtil.loadYaml("server-cfg", YamlUtil.LoadType.BOTH).getCfgData();
         DataMap cfg = yamlUtil.getNotNUllData("server-cfg.yml");
+        if (cfg.size() == 0)
+            cfg = yamlUtil.getNotNUllData("server-cfg.template.yml");
         {
 
             DataMap server = cfg.getNotNUllData("server");
@@ -126,12 +128,12 @@ public class HttpEventHandler extends EventHandler {
     public void read(Selector selector, SocketChannel socketChannel) throws Exception {
         socketChannel.register(selector, SelectionKey.OP_WRITE);
 //        int i = socketChannel.hashCode();
-            READ_POOL.submit(new DoRequest(socketChannel, QUEUE));
+        READ_POOL.submit(new DoRequest(socketChannel, QUEUE));
 //            WRITE_POOL.submit(new DoResponse(QUEUE, selector));
 //            DoRequest doRequest = new DoRequest(socketChannel, QUEUE);
 //            doRequest.call();
-            DoResponse doResponse = new DoResponse(QUEUE, selector);
-            doResponse.call();
+        DoResponse doResponse = new DoResponse(QUEUE, selector);
+        doResponse.call();
     }
 
 

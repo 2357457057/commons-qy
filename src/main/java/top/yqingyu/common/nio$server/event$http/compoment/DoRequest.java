@@ -8,10 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.utils.ArrayUtil;
 import top.yqingyu.common.utils.IoUtil;
+import top.yqingyu.common.utils.StringUtil;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -44,7 +46,7 @@ class DoRequest implements Callable<Object> {
     //最大header长度 128KB
     static long MAX_HEADER_SIZE;
 
-    static boolean ALLOW_UPDATE = false;
+    static boolean ALLOW_UPDATE = true;
 
     private static final Logger log = LoggerFactory.getLogger(DoRequest.class);
 
@@ -72,6 +74,8 @@ class DoRequest implements Callable<Object> {
 
             //进行response
             createResponse(request, response, false);
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             log.debug(JSON.toJSONString(httpAction));
             //处理完毕需要需丢掉SINGLE中的记录
@@ -113,7 +117,7 @@ class DoRequest implements Callable<Object> {
             if (currentStep == 0 && temp.length < DEFAULT_BUF_LENGTH && currentLength != 0) {
                 ArrayList<byte[]> Info$header$body = ArrayUtil.splitByTarget(temp, RN_RN);
 
-                assembleHeader(request, Info$header$body.remove(0));
+                assembleHeader(request, Info$header$body.remove(0), socketChannel);
 
                 byte[] body = EMPTY_BYTE_ARRAY;
                 for (byte[] bytes : Info$header$body) {
@@ -139,7 +143,7 @@ class DoRequest implements Callable<Object> {
                     if (bytes.size() != 0) {
                         // 头部已解析
                         flag = true;
-                        assembleHeader(request, bytes.get(0));
+                        assembleHeader(request, bytes.get(0), socketChannel);
                         // 当只收到消息头，且消息头有 Content-Length 且Content-Length在一定的范围内 此时需要
                         if (bytes.size() == 1 && StringUtils.equalsIgnoreCase("0", request.getHeader().getString("Content-Length"))) {
                             Response response = $100_CONTINUE.putHeaderDate(ZonedDateTime.now());
@@ -180,32 +184,12 @@ class DoRequest implements Callable<Object> {
 
                             //文件上传逻辑
                             if (ContentType.MULTIPART_FORM_DATA.isSameMimeType(parse) && ALLOW_UPDATE) {
-                                String boundary = parse.getParameter("boundary");
-                                byte[] boundaryBytes = boundary.getBytes();
-                                temp = ArrayUtils.subarray(all, efIdx, all.length);
-
-                                Stack<MultipartFile> multipartFileStack = new Stack<>();
-                                while (currentContentLength < contentLength) {
-                                    //Multipart
-                                    ArrayList<byte[]> boundarys = splitByTarget(temp, boundaryBytes);
-
-                                    if (boundarys.size() > 0 || multipartFileStack.size() > 0) {
-                                        for (int i = 0; i < boundarys.size(); i++) {
-                                            if (i == 0 && multipartFileStack.peek() != null) {
-                                                multipartFileStack.peek().write(boundarys.get(0));
-                                            } else {
-                                                MultipartFile multipartFile = new MultipartFile("temp", "/tmp");
-                                                multipartFileStack.push(multipartFile);
-                                                ArrayList<byte[]> bytes = splitByTarget(boundarys.get(i), RN_RN);
-
-                                            }
-                                        }
-                                    } else {
-                                        byte[] buf = IoUtil.readBytes2(socketChannel, (int) DEFAULT_BUF_LENGTH);
-                                        temp = ArrayUtil.addAll(temp, buf);
-                                        currentContentLength += temp.length;
-                                    }
+                                if (!LocationMapping.MULTIPART_BEAN_RESOURCE_MAPPING.containsKey(request.getUrl().split("[?]")[0])) {
+                                    socketChannel.shutdownInput();
+                                    return $401_BAD_REQUEST.putHeaderDate(ZonedDateTime.now()).setAssemble(true);
                                 }
+                                fileUpload(request, socketChannel, parse, all, efIdx, currentContentLength, contentLength);
+
                             } else {
                                 long ll = contentLength - currentContentLength;
                                 //去除多余的数据
@@ -228,11 +212,13 @@ class DoRequest implements Callable<Object> {
         return request;
     }
 
-    static void assembleHeader(Request request, byte[] header) {
+    static void assembleHeader(Request request, byte[] header, SocketChannel socketChannel) throws IOException {
         //只剩body
         ArrayList<byte[]> info$header = ArrayUtil.splitByTarget(header, RN);
         ArrayList<byte[]> info = splitByTarget(info$header.remove(0), SPACE);
 
+        if (info.size() < 3)
+            socketChannel.close();
         request.setMethod(info.get(0));
         request.setUrl(info.get(1));
         request.setHttpVersion(info.get(2));
@@ -255,6 +241,53 @@ class DoRequest implements Callable<Object> {
             ArrayList<byte[]> headerName_value = splitByTarget(bytes, COLON_SPACE);
             request.putHeader(headerName_value.get(0), headerName_value.size() == 2 ? headerName_value.get(1) : null);
         }
+    }
+
+
+    /**
+     * 文件上传逻辑
+     *
+     * @author YYJ
+     * @version 1.0.0
+     * @description
+     */
+    static void fileUpload(Request request, SocketChannel socketChannel, ContentType parse, byte[] all, int efIdx, int currentContentLength, long contentLength) throws IOException {
+        String boundary = "--" + parse.getParameter("boundary") + "\r\n";
+        byte[] boundaryBytes = boundary.getBytes();
+        byte[] temp = ArrayUtils.subarray(all, efIdx, all.length);
+
+        Stack<MultipartFile> multipartFileStack = new Stack<>();
+        while (currentContentLength < contentLength) {
+            //Multipart
+            ArrayList<byte[]> boundarys = splitByTarget(temp, boundaryBytes);
+            if (boundarys.size() > 0 || multipartFileStack.size() > 0) {
+                for (int i = 0; i < boundarys.size(); i++) {
+                    if (i == 0 && multipartFileStack.size() > 0) {
+                        multipartFileStack.peek().write(boundarys.get(0));
+                    } else {
+                        ArrayList<byte[]> bytes = splitByTarget(boundarys.get(i), RN_RN);
+                        if (bytes.size() > 0) {
+                            byte[] multiHeaderBytes = bytes.get(0);
+                            ArrayList<byte[]> multiHeader = splitByTarget(multiHeaderBytes, RN);
+                            if (multiHeader.size() == 2) {
+                                String Content_Disposition = new String(multiHeader.get(0), StandardCharsets.UTF_8);
+                                String[] Content_Dispositions = Content_Disposition.split("filename=\"");
+                                String fileName = StringUtil.removeEnd(Content_Dispositions[1], "\"");
+                                MultipartFile multipartFile = new MultipartFile(fileName, "/tmp");
+                                multipartFileStack.push(multipartFile);
+                                if (bytes.size() == 2)
+                                    multipartFileStack.peek().write(bytes.get(1));
+                            }
+
+                        }
+                    }
+                }
+            }
+            temp = IoUtil.readBytes2(socketChannel, (int) DEFAULT_BUF_LENGTH * 2);
+            currentContentLength += temp.length;
+        }
+        request.setMultipartFile(multipartFileStack.pop().endWrite());
+        request.setParseEnd();
     }
 
     static void assembleMultipartFileHeader() {

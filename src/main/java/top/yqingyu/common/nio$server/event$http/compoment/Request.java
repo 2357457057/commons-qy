@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
  * @description
  * @createTime 2022年09月09日 22:02:00
  */
-public class Request implements HttpAction{
+public class Request implements HttpAction {
 
 
     private HttpMethod method;
@@ -123,6 +123,14 @@ public class Request implements HttpAction{
         return string.toUpperCase().contains("GZIP");
     }
 
+    MultipartFile getMultipartFile() {
+        return multipartFile;
+    }
+
+    void setMultipartFile(MultipartFile multipartFile) {
+        this.multipartFile = multipartFile;
+    }
+
     public HttpMethod getMethod() {
         return method;
     }
@@ -170,6 +178,7 @@ public class Request implements HttpAction{
     public void setHost(String host) {
         this.host = host;
     }
+
     public InetSocketAddress getInetSocketAddress() {
         return inetSocketAddress;
     }

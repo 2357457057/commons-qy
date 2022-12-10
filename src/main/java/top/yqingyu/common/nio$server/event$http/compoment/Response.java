@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import org.apache.commons.lang3.StringUtils;
 import top.yqingyu.common.qydata.ConcurrentDataSet;
 import top.yqingyu.common.qydata.DataMap;
+import top.yqingyu.common.utils.ArrayUtil;
 import top.yqingyu.common.utils.LocalDateTimeUtil;
 
 import java.io.File;
@@ -21,12 +22,13 @@ import static top.yqingyu.common.utils.LocalDateTimeUtil.HTTP_FORMATTER;
  * @description
  * @createTime 2022年09月13日 22:10:00
  */
-public class Response implements HttpAction{
+public class Response implements HttpAction {
 
     public static final Response $404_NOT_FOUND = new Response().setStatue_code("404").setHttpVersion(HttpVersion.V_1_1).setString_body("木有资源啦 ^ Ω ^").putHeaderContentType(ContentType.TEXT_PLAIN).setAssemble(true);
     public static final Response $413_ENTITY_LARGE = new Response().setStatue_code("413").setHttpVersion(HttpVersion.V_1_1).setString_body("413 Request Entity Too Large").putHeaderContentType(ContentType.TEXT_PLAIN).setAssemble(true);
     public static final Response $100_CONTINUE = new Response().setStatue_code("100").setHttpVersion(HttpVersion.V_1_1).setAssemble(true);
     public static final Response $400_BAD_REQUEST = new Response().setStatue_code("400").setHttpVersion(HttpVersion.V_1_1).setString_body("400 Bad Request").putHeaderContentType(ContentType.TEXT_PLAIN).setAssemble(true);
+    public static final Response $401_BAD_REQUEST = new Response().setStatue_code("400").setHttpVersion(HttpVersion.V_1_1).setString_body("传你妈呢？").putHeaderContentType(ContentType.TEXT_PLAIN).setAssemble(true);
 
 
     private HttpVersion httpVersion;
@@ -50,11 +52,11 @@ public class Response implements HttpAction{
         return file_body;
     }
 
-     boolean isAssemble() {
+    boolean isAssemble() {
         return assemble;
     }
 
-     Response setAssemble(boolean assemble) {
+    Response setAssemble(boolean assemble) {
         this.assemble = assemble;
         return this;
     }
@@ -180,7 +182,7 @@ public class Response implements HttpAction{
     ByteBuffer gainBodyBytes() throws FileNotFoundException {
         if (compress)
             return compress_body;
-        byte[] bytes = string_body.getBytes(StandardCharsets.UTF_8);
+        byte[] bytes = string_body == null ? ArrayUtil.EMPTY_BYTE_ARRAY : string_body.getBytes(StandardCharsets.UTF_8);
         ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bytes.length);
         byteBuffer.put(bytes);
         return byteBuffer;

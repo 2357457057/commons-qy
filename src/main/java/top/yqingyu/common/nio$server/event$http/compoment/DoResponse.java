@@ -241,19 +241,21 @@ class DoResponse implements Callable<Object> {
                         response.putHeaderContentLength(byteBuffer.limit()).putHeaderCompress();
                     } else {
                         File file = response.getFile_body();
-                        long length = file.length();
-                        if (length < MAX_SINGLE_FILE_COMPRESS_SIZE && CurrentFileCacheSize.get() < MAX_FILE_CACHE_SIZE) {
-                            byte[] bytes = GzipUtil.$2CompressBytes(response.getFile_body());
-                            ByteBuffer buffer = ByteBuffer.allocateDirect(bytes.length);
-                            buffer.put(bytes);
-                            //开启压缩池
-                            if (CACHE_POOL_ON) {
-                                FILE_BYTE_CACHE.put(url, buffer);
-                                CurrentFileCacheSize.addAndGet(bytes.length);
-                            }
+                        if (file != null) {
+                            long length = file.length();
+                            if (length < MAX_SINGLE_FILE_COMPRESS_SIZE && CurrentFileCacheSize.get() < MAX_FILE_CACHE_SIZE) {
+                                byte[] bytes = GzipUtil.$2CompressBytes(response.getFile_body());
+                                ByteBuffer buffer = ByteBuffer.allocateDirect(bytes.length);
+                                buffer.put(bytes);
+                                //开启压缩池
+                                if (CACHE_POOL_ON) {
+                                    FILE_BYTE_CACHE.put(url, buffer);
+                                    CurrentFileCacheSize.addAndGet(bytes.length);
+                                }
 
-                            response.setCompress_body(buffer);
-                            response.putHeaderContentLength(bytes.length).putHeaderCompress();
+                                response.setCompress_body(buffer);
+                                response.putHeaderContentLength(bytes.length).putHeaderCompress();
+                            }
                         }
                     }
                 }
@@ -270,7 +272,7 @@ class DoResponse implements Callable<Object> {
 
         ContentType type = response.gainHeaderContentType();
         byte[] bytes;
-        if (type.getCharset() != null)
+        if (type != null && type.getCharset() != null)
             bytes = response.toString().getBytes(type.getCharset());
         else
             bytes = response.toString().getBytes();

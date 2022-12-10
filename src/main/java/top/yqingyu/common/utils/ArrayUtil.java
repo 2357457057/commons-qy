@@ -272,10 +272,45 @@ public class ArrayUtil {
      *
      * @param source 源数组
      * @param target 目标数组
+     * @param list 下标索引位置
      * @return 拆分合集
      * @author YYJ
      * @description
      */
+    public static ArrayList<byte[]> splitByTarget(byte[] source, byte[] target,ArrayList<Integer> list) {
+        ArrayList<byte[]> bytes = new ArrayList<>();
+
+        int targetLength = target.length;
+        int sourceLength = source.length;
+        int preIdx = 0;
+        int currentIdx;
+        int currentLength;
+        int indexListLength = list.size();
+
+        for (int i = 0; i < indexListLength; i++) {
+            currentIdx = list.get(i);
+            //当前索引向前切割
+            currentLength = currentIdx - preIdx;
+            byte[] buf = new byte[currentLength];
+            System.arraycopy(source, preIdx, buf, 0, currentLength);
+            bytes.add(buf);
+            //最后一个索引向后切割
+            int srcPos = currentIdx + targetLength;
+            if (i + 1 == indexListLength && sourceLength != srcPos) {
+                currentLength = sourceLength - srcPos;
+                buf = new byte[currentLength];
+                System.arraycopy(source, srcPos, buf, 0, currentLength);
+                bytes.add(buf);
+            }
+            preIdx = currentIdx + targetLength;
+        }
+        if (indexListLength == 0){
+            bytes.add(source);
+        }
+        return bytes;
+    }
+
+
     public static ArrayList<byte[]> splitByTarget(byte[] source, byte[] target) {
         ArrayList<byte[]> bytes = new ArrayList<>();
         ArrayList<Integer> list = indexOfTarget(source, target);
@@ -304,9 +339,11 @@ public class ArrayUtil {
             }
             preIdx = currentIdx + targetLength;
         }
+        if (indexListLength == 0){
+            bytes.add(source);
+        }
         return bytes;
     }
-
 
     /**
      * <p>Adds all the elements of the given arrays into a new array.

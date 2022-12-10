@@ -3,8 +3,8 @@ server:
   handler-num: 2
   per-worker-num: 8
   worker-keep-live-time: 2H
-  open-resource: true
-  open-controller: false
+  open-resource: false
+  open-controller: true
   local-resource-path: [/var/www/html/]
   controller-package: [top.yqingyu.common.nio$server.event$http.web.controller]
 
@@ -12,7 +12,7 @@ transfer:
   request:
     parse-buffer-size: 1KB
     max-header-size: 128KB
-    max-body-size: 64MB
+    max-body-size: 200MB
   response:
     send-buf-size: 2MB
 

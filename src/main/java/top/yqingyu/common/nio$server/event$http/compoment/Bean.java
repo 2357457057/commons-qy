@@ -18,6 +18,8 @@ public class Bean {
 
     private String[] methodParamName;
 
+    private String[] methodParamType;
+
     private HttpMethod[] httpMethods;
 
     public Type getType() {
@@ -60,6 +62,14 @@ public class Bean {
         this.httpMethods = httpMethods;
     }
 
+    public String[] getMethodParamType() {
+        return methodParamType;
+    }
+
+    public void setMethodParamType(String[] methodParamType) {
+        this.methodParamType = methodParamType;
+    }
+
     @Override
     public String toString() {
         return "Bean{" +
@@ -67,6 +77,7 @@ public class Bean {
                 ", obj=" + obj +
                 ", method=" + method +
                 ", methodParamName=" + Arrays.toString(methodParamName) +
+                ", methodParamType=" + Arrays.toString(methodParamType) +
                 ", httpMethods=" + Arrays.toString(httpMethods) +
                 '}';
     }

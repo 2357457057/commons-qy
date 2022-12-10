@@ -18,10 +18,7 @@ import java.lang.reflect.*;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -38,6 +35,7 @@ public class LocationMapping {
     public static final ConcurrentHashMap<String, String> FILE_RESOURCE_MAPPING = new ConcurrentHashMap<>();
 
     static final ConcurrentHashMap<String, Bean> BEAN_RESOURCE_MAPPING = new ConcurrentHashMap<>();
+    static final ConcurrentHashMap<String, Bean> MULTIPART_BEAN_RESOURCE_MAPPING = new ConcurrentHashMap<>();
     static final ConcurrentHashMap<String, String> FILE_CACHING = new ConcurrentHashMap<>();
 
     static final String FORM = "{\"body\"}";
@@ -90,6 +88,13 @@ public class LocationMapping {
                     bean.setMethod(method);
                     String[] parameterNames = MethodParamGetter.doGetParameterNames(method);
                     bean.setMethodParamName(parameterNames);
+                    Class<?>[] parameterTypes = method.getParameterTypes();
+                    String[] parameterTypeName = new String[parameterTypes.length];
+                    for (int i = 0; i < parameterTypes.length; i++) {
+                        parameterTypeName[i] = parameterTypes[i].getName();
+                    }
+                    bean.setMethodParamName(parameterTypeName);
+
                     if (methodPath.indexOf("/") != 0) {
                         methodPath = "/" + methodPath;
                     }
@@ -99,6 +104,9 @@ public class LocationMapping {
                         path = "/" + path;
                     }
                     BEAN_RESOURCE_MAPPING.put(path, bean);
+
+                    if (parameterNames != null && Arrays.asList(parameterTypeName).contains(MultipartFile.class.getName()))
+                        MULTIPART_BEAN_RESOURCE_MAPPING.put(path, bean);
                     log.debug("add bean mapping {}  > {}", path, bean);
                 }
             }
@@ -107,7 +115,6 @@ public class LocationMapping {
 
 
     static void fileResourceMapping(Request request, Response response) {
-        boolean redirect = false;
         String url = request.getUrl();
         String[] urls = url.split("[?]");
         url = urls[0];
@@ -267,10 +274,20 @@ public class LocationMapping {
                                 args[i] = request;
                             } else if (StringUtils.isNotBlank(urlParam.getString(paramName[i])) && ClazzUtil.canValueof(paramType)) {
                                 args[i] = urlParam.getString(paramName[i]);
+                            } else if (MultipartFile.class.getName().equals(typeName)) {
+                                args[i] = request.getMultipartFile();
                             } else if (ClazzUtil.canValueof(paramType)) {
-                                args[i] = new String(request.gainBody(), requestCtTyp.getCharset() == null ? StandardCharsets.UTF_8 : requestCtTyp.getCharset());
+                                byte[] body = request.gainBody();
+                                if (body == null)
+                                    args[i] = null;
+                                else
+                                    args[i] = new String(body, requestCtTyp.getCharset() == null ? StandardCharsets.UTF_8 : requestCtTyp.getCharset());
                             } else {
-                                args[i] = JSON.parseObject(request.gainBody(), paramType);
+                                byte[] body = request.gainBody();
+                                if (body == null)
+                                    args[i] = null;
+                                else
+                                    args[i] = JSON.parseObject(request.gainBody(), paramType);
                             }
                         }
                     }
@@ -289,6 +306,9 @@ public class LocationMapping {
                                 .setString_body(JSON.toJSONString(methodReturn))
                                 .putHeaderContentType(ContentType.APPLICATION_JSON);
                     }
+                else
+                    response.putHeaderContentLength(0);
+
                 response
                         .setStatue_code("200")
                         .putHeaderAcceptRanges()

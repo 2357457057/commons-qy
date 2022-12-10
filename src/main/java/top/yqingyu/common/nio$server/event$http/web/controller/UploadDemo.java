@@ -25,10 +25,9 @@ public class UploadDemo {
                 "  </form>";
     }
 
-    @QyController(path = "upper", method = {HttpMethod.GET, HttpMethod.POST})
+    @QyController(path = "upper", method = {HttpMethod.POST})
     public void upper(MultipartFile file) throws IOException {
         System.out.println(file.getFileName());
         file.saveAs("I:/" + file.getFileName());
-        System.out.println(file);
     }
 }

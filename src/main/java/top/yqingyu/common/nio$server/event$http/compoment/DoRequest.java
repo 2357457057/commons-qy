@@ -212,13 +212,15 @@ class DoRequest implements Callable<Object> {
         return request;
     }
 
-    static void assembleHeader(Request request, byte[] header, SocketChannel socketChannel) throws IOException {
+    static void assembleHeader(Request request, byte[] header, SocketChannel socketChannel) throws Exception {
         //只剩body
         ArrayList<byte[]> info$header = ArrayUtil.splitByTarget(header, RN);
         ArrayList<byte[]> info = splitByTarget(info$header.remove(0), SPACE);
 
-        if (info.size() < 3)
+        if (info.size() < 3) {
             socketChannel.close();
+            throw new IllegalAccessException("消息头解析失败");
+        }
         request.setMethod(info.get(0));
         request.setUrl(info.get(1));
         request.setHttpVersion(info.get(2));

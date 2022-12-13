@@ -93,7 +93,7 @@ public class LocationMapping {
                     for (int i = 0; i < parameterTypes.length; i++) {
                         parameterTypeName[i] = parameterTypes[i].getName();
                     }
-                    bean.setMethodParamName(parameterTypeName);
+                    bean.setMethodParamType(parameterTypeName);
 
                     if (methodPath.indexOf("/") != 0) {
                         methodPath = "/" + methodPath;

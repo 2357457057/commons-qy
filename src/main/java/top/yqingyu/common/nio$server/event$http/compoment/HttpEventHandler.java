@@ -49,7 +49,7 @@ public class HttpEventHandler extends EventHandler {
         Thread th = new Thread(monitor);
         th.setName("Monitor" + Thread.currentThread().getName());
         th.setDaemon(true);
-        th.setDaemon(true);
+        th.start();
     }
 
     /**

@@ -6,6 +6,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.yqingyu.common.nio$server.core.RebuildSelectorException;
 import top.yqingyu.common.utils.ArrayUtil;
 import top.yqingyu.common.utils.IoUtil;
 import top.yqingyu.common.utils.StringUtil;
@@ -74,6 +75,8 @@ class DoRequest implements Callable<Object> {
 
             //进行response
             createResponse(request, response, false);
+        } catch (RebuildSelectorException e) {
+            throw e;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -219,7 +222,7 @@ class DoRequest implements Callable<Object> {
 
         if (info.size() < 3) {
             socketChannel.close();
-            throw new IllegalAccessException("消息头解析失败");
+            throw new RebuildSelectorException("消息解析异常");
         }
         request.setMethod(info.get(0));
         request.setUrl(info.get(1));

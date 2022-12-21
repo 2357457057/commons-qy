@@ -76,13 +76,16 @@ class DoResponse implements Callable<Object> {
 
     private final AtomicLong CurrentFileCacheSize = new AtomicLong();
 
-    private static final ConcurrentDataMap<String, ByteBuffer> FILE_BYTE_CACHE = new ConcurrentDataMap<>();
+    private static final ConcurrentDataMap<String, byte[]> FILE_BYTE_CACHE = new ConcurrentDataMap<>();
 
     private static final Logger log = LoggerFactory.getLogger(DoResponse.class);
 
-    public DoResponse(LinkedBlockingQueue<Object> QUEUE, Selector selector) {
+//    private final OperatingRecorder<Integer> SOCKET_CHANNEL_ACK;
+
+    public DoResponse(LinkedBlockingQueue<Object> QUEUE, Selector selector) { //, OperatingRecorder<Integer> SOCKET_CHANNEL_ACK) {
         this.QUEUE = QUEUE;
         this.selector = selector;
+//        this.SOCKET_CHANNEL_ACK = SOCKET_CHANNEL_ACK;
     }
 
     /**
@@ -147,7 +150,7 @@ class DoResponse implements Callable<Object> {
 //                    SOCKET_CHANNEL_ACK.addAck(i);
 //                    SOCKET_CHANNEL_ACK.ack(socketChannel.hashCode());
 //
-//                } catch (ExceedingRepetitionLimitException e) {
+//                } catch (RebuildSelectorException e) {
 //                    if (SOCKET_CHANNEL_ACK.isAckOk(i)) {
 //                        socketChannel.close();
 //                        SOCKET_CHANNEL_ACK.removeAck(i);
@@ -236,7 +239,9 @@ class DoResponse implements Callable<Object> {
                     response.putHeaderContentLength(bytes.length).putHeaderCompress();
                 } else {
                     if (FILE_BYTE_CACHE.containsKey(url)) {
-                        ByteBuffer byteBuffer = FILE_BYTE_CACHE.get(url);
+                        byte[] bytes = FILE_BYTE_CACHE.get(url);
+                        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bytes.length);
+                        byteBuffer.put(bytes);
                         response.setCompress_body(byteBuffer);
                         response.putHeaderContentLength(byteBuffer.limit()).putHeaderCompress();
                     } else {
@@ -249,7 +254,7 @@ class DoResponse implements Callable<Object> {
                                 buffer.put(bytes);
                                 //开启压缩池
                                 if (CACHE_POOL_ON) {
-                                    FILE_BYTE_CACHE.put(url, buffer);
+                                    FILE_BYTE_CACHE.put(url, bytes);
                                     CurrentFileCacheSize.addAndGet(bytes.length);
                                 }
 

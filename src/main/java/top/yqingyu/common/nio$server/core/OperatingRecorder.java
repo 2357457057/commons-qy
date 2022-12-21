@@ -63,7 +63,7 @@ public class OperatingRecorder<E> extends AbstractSet<E> implements Serializable
         AtomicLong b = this.map.get(e);
         if (b != null) {
             if (b.getAndIncrement() > MaxRepeat) {
-                throw new ExceedingRepetitionLimitException("该值重复达上限" + b.get());
+                throw new RebuildSelectorException("该值重复达上限" + b.get());
             }
             return b;
         } else {
@@ -91,7 +91,7 @@ public class OperatingRecorder<E> extends AbstractSet<E> implements Serializable
             if (now < MaxRepeat) {
                 ack.add();
             } else {
-                throw new ExceedingRepetitionLimitException("ACK 添加上限");
+                throw new RebuildSelectorException("ACK 添加上限");
             }
         }
     }

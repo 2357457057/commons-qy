@@ -1,13 +1,13 @@
 server:
-  port: 4732
-  handler-num: 2
+  port: 80
+  handler-num: 4
   per-worker-num: 8
   worker-keep-live-time: 2H
-  open-resource: false
+  open-resource: true
   open-controller: true
   connect-time-max: 15S
-  local-resource-path: [/var/www/html/]
-  controller-package: [top.yqingyu.common.nio$server.event$http.web.controller]
+  local-resource-path: [ D:\myservice\HTTPSERVER\webapps ]
+  controller-package: [top.yqingyu.httpserver.controller]
 
 transfer:
   request:

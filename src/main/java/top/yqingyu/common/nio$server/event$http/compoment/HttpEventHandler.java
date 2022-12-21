@@ -5,7 +5,7 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.nio$server.core.EventHandler;
-import top.yqingyu.common.nio$server.core.ExceedingRepetitionLimitException;
+import top.yqingyu.common.nio$server.core.RebuildSelectorException;
 import top.yqingyu.common.nio$server.core.OperatingRecorder;
 import top.yqingyu.common.qydata.DataList;
 import top.yqingyu.common.qydata.DataMap;
@@ -36,7 +36,7 @@ public class HttpEventHandler extends EventHandler {
     }
 
     private static final OperatingRecorder<Integer> SOCKET_CHANNEL_RECORD = OperatingRecorder.createNormalRecorder(1024L * 1024 * 2);
-    static final OperatingRecorder<Integer> SOCKET_CHANNEL_ACK = OperatingRecorder.createAckRecorder(3L);
+    static final OperatingRecorder<Integer> SOCKET_CHANNEL_ACK = OperatingRecorder.createAckRecorder(10L);
     public static int port;
     public static int handlerNumber;
     public static int perHandlerWorker;
@@ -139,12 +139,11 @@ public class HttpEventHandler extends EventHandler {
         socketChannel.register(selector, SelectionKey.OP_WRITE);
         int i = socketChannel.hashCode();
         SOCKET_CHANNELS.get(i).put("LocalDateTime", LocalDateTime.now());
-
-        READ_POOL.submit(new DoRequest(socketChannel, QUEUE));
-//            WRITE_POOL.submit(new DoResponse(QUEUE, selector));
-//            DoRequest doRequest = new DoRequest(socketChannel, QUEUE);
-//            doRequest.call();
-        DoResponse doResponse = new DoResponse(QUEUE, selector);
+//        READ_POOL.submit(new DoRequest(socketChannel, QUEUE));
+//        WRITE_POOL.submit(new DoResponse(QUEUE, selector));
+        DoRequest doRequest = new DoRequest(socketChannel, QUEUE);
+        doRequest.call();
+        DoResponse doResponse = new DoResponse(QUEUE, selector);//,SOCKET_CHANNEL_ACK);
         doResponse.call();
     }
 
@@ -153,7 +152,7 @@ public class HttpEventHandler extends EventHandler {
     public void write(Selector selector, SocketChannel socketChannel) throws Exception {
         try {
             SOCKET_CHANNEL_RECORD.add2(socketChannel.hashCode());
-        } catch (ExceedingRepetitionLimitException e) {
+        } catch (RebuildSelectorException e) {
             SOCKET_CHANNEL_RECORD.remove(socketChannel.hashCode());
             socketChannel.close();
         }
@@ -176,6 +175,7 @@ public class HttpEventHandler extends EventHandler {
                         SocketChannel socketChannel = s.get("SocketChannel", SocketChannel.class);
                         long between = LocalDateTimeUtil.between(b, a, ChronoUnit.MILLIS);
                         if (between > connectTimeMax && !socketChannel.isConnectionPending()) {
+                            SOCKET_CHANNELS.remove(i);
                             socketChannel.close();
                         }
                     } catch (Exception e) {

@@ -84,8 +84,8 @@ public abstract class EventHandler implements Runnable {
                     }
                 }
 
-            } catch (ExceedingRepetitionLimitException e) {
-                log.warn("空循环达上限 {}", e.getMessage());
+            } catch (RebuildSelectorException e) {
+                log.warn("触发rebuild {}", e.getMessage());
                 try {
                     rebuildSelector();
                 } catch (IOException ex) {

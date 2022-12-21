@@ -2,6 +2,7 @@ package top.yqingyu.common.nio$server.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.yqingyu.common.qydata.ConcurrentQyMap;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
@@ -9,7 +10,6 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -28,9 +28,9 @@ public abstract class EventHandler implements Runnable {
     protected ThreadPoolExecutor READ_POOL;
     protected ThreadPoolExecutor WRITE_POOL;
 
-    protected static final OperatingRecorder<Integer> OPERATE_RECORDER =  OperatingRecorder.createNormalRecorder(1024L * 1024);
+    protected static final OperatingRecorder<Integer> OPERATE_RECORDER = OperatingRecorder.createNormalRecorder(1024L * 1024);
 
-    protected final ConcurrentHashMap<Integer, SocketChannel> SocketChannels = new ConcurrentHashMap<>();
+    protected final ConcurrentQyMap<Integer, ConcurrentQyMap<String, Object>> SOCKET_CHANNELS = new ConcurrentQyMap<>();
 
     /**
      * 是否正在重建当前 selector
@@ -77,7 +77,6 @@ public abstract class EventHandler implements Runnable {
                     iterator.remove();
                     SocketChannel channel = (SocketChannel) selectionKey.channel();
 
-
                     if (selectionKey.isReadable()) {
                         read(selector, channel);
                     } else {
@@ -112,10 +111,11 @@ public abstract class EventHandler implements Runnable {
         OPERATE_RECORDER.remove(this.selector.hashCode());
 
         this.selector = Selector.open();
-        SocketChannels.forEach((I, S) -> {
+        SOCKET_CHANNELS.forEach((I, S) -> {
             try {
-                if (S.isOpen()) S.register(this.selector, SelectionKey.OP_READ);
-                else SocketChannels.remove(I);
+                if (S.get("SocketChannel", SocketChannel.class).isOpen() && S.get("SocketChannel", SocketChannel.class).isConnectionPending())
+                    S.get("SocketChannel", SocketChannel.class).register(this.selector, SelectionKey.OP_READ);
+                else SOCKET_CHANNELS.remove(I);
             } catch (Exception e) {
                 log.error("selector 重建异常", e);
             }

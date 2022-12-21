@@ -1,6 +1,7 @@
 package top.yqingyu.common.nio$server.event$http.compoment;
 
 
+import cn.hutool.core.date.LocalDateTimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.nio$server.core.EventHandler;
@@ -15,6 +16,8 @@ import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static top.yqingyu.common.nio$server.event$http.compoment.DoRequest.*;
 import static top.yqingyu.common.nio$server.event$http.compoment.DoResponse.*;
@@ -37,10 +40,15 @@ public class HttpEventHandler extends EventHandler {
     public static int port;
     public static int handlerNumber;
     public static int perHandlerWorker;
+    private static long connectTimeMax;
     private static final Logger log = LoggerFactory.getLogger(HttpEventHandler.class);
 
     public HttpEventHandler(Selector selector) throws IOException {
         super(selector);
+        SocketChannelMonitor monitor = new SocketChannelMonitor();
+        Thread th = new Thread(monitor);
+        th.setDaemon(true);
+        th.setDaemon(true);
     }
 
     /**
@@ -64,6 +72,7 @@ public class HttpEventHandler extends EventHandler {
                 handlerNumber = server.getIntValue("handler-num", 4);
                 perHandlerWorker = server.getIntValue("per-worker-num", 4);
                 Long workerKeepLiveTime = server.$2MILLS("worker-keep-live-time", UnitUtil.$2MILLS("2H"));
+                connectTimeMax = server.$2MILLS("connect-time-max", UnitUtil.$2MILLS("15S"));
                 boolean open_resource = server.getBooleanValue("open-resource", true);
                 boolean open_controller = server.getBooleanValue("open-controller", true);
 
@@ -127,7 +136,9 @@ public class HttpEventHandler extends EventHandler {
     @Override
     public void read(Selector selector, SocketChannel socketChannel) throws Exception {
         socketChannel.register(selector, SelectionKey.OP_WRITE);
-//        int i = socketChannel.hashCode();
+        int i = socketChannel.hashCode();
+        SOCKET_CHANNELS.get(i).put("LocalDateTime", LocalDateTime.now());
+
         READ_POOL.submit(new DoRequest(socketChannel, QUEUE));
 //            WRITE_POOL.submit(new DoResponse(QUEUE, selector));
 //            DoRequest doRequest = new DoRequest(socketChannel, QUEUE);
@@ -153,4 +164,30 @@ public class HttpEventHandler extends EventHandler {
     }
 
 
+    class SocketChannelMonitor implements Runnable {
+        @Override
+        public void run() {
+            while (true) {
+                LocalDateTime a = LocalDateTime.now();
+                SOCKET_CHANNELS.forEach((i, s) -> {
+                    try {
+                        LocalDateTime b = s.get("LocalDateTime", LocalDateTime.class);
+                        SocketChannel socketChannel = s.get("SocketChannel", SocketChannel.class);
+                        long between = LocalDateTimeUtil.between(b, a, ChronoUnit.MILLIS);
+                        if (between > connectTimeMax && !socketChannel.isConnectionPending()) {
+                            socketChannel.close();
+                        }
+                    } catch (Exception e) {
+                        log.error("断链异常", e);
+                    }
+
+                });
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    log.error("线程异常", e);
+                }
+            }
+        }
+    }
 }

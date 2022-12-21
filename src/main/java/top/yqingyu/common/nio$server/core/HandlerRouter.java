@@ -2,6 +2,7 @@ package top.yqingyu.common.nio$server.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.yqingyu.common.qydata.ConcurrentQyMap;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -9,6 +10,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.time.LocalDateTime;
 
 /**
  * @author YYJ
@@ -55,7 +57,11 @@ public class HandlerRouter {
 
             EventHandler nextHandler = handlerHolder.nextHandler();
             Selector nextSelector = nextHandler.getSelector();
-            nextHandler.SocketChannels.put(socketChannel.hashCode(),socketChannel);
+            nextHandler.SOCKET_CHANNELS.put(socketChannel.hashCode(),
+                    new ConcurrentQyMap<String, Object>()
+                            .putConsecutive("SocketChannel", socketChannel)
+                            .putConsecutive("LocalDateTime", LocalDateTime.now())
+            );
 
             socketChannel.register(nextSelector, SelectionKey.OP_READ);
             //启动处理器

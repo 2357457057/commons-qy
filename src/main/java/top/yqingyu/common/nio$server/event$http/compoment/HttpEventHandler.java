@@ -47,6 +47,7 @@ public class HttpEventHandler extends EventHandler {
         super(selector);
         SocketChannelMonitor monitor = new SocketChannelMonitor();
         Thread th = new Thread(monitor);
+        th.setName("Monitor" + Thread.currentThread().getName());
         th.setDaemon(true);
         th.setDaemon(true);
     }

@@ -1,4 +1,4 @@
-package top.yqingyu.common.cfg.nio$server.event$demo.server;
+package top.yqingyu.common.nio$server.event$demo.server;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 

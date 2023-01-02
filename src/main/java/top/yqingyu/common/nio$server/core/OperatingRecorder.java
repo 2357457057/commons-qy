@@ -1,4 +1,4 @@
-package top.yqingyu.common.cfg.nio$server.core;
+package top.yqingyu.common.nio$server.core;
 
 import java.io.Serial;
 import java.io.Serializable;

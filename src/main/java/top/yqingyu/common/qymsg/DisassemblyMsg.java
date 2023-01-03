@@ -248,7 +248,7 @@ public class DisassemblyMsg {
             String msg = s.substring(36);
             QyMsg qyMsg = new QyMsg(MsgTransfer.CHAR_2_MSG_TYPE(msg_type), MsgTransfer.CHAR_2_DATA_TYPE(data_type));
             qyMsg.setFrom(from);
-            qyMsg.putMsg(msg.getBytes(StandardCharsets.UTF_8));
+            qyMsg.putMsg(msg);
 
             return qyMsg;
         } else if (DataType.STREAM.equals(MsgTransfer.CHAR_2_DATA_TYPE(data_type))) {

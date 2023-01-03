@@ -244,8 +244,8 @@ public class DisassemblyMsg {
 
             byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
             String s = new String(bytes, StandardCharsets.UTF_8);
-            String from = s.substring(0, 32);
-            String msg = s.substring(32);
+            String from = s.substring(0, 36);
+            String msg = s.substring(36);
             QyMsg qyMsg = new QyMsg(MsgTransfer.CHAR_2_MSG_TYPE(msg_type), MsgTransfer.CHAR_2_DATA_TYPE(data_type));
             qyMsg.setFrom(from);
             qyMsg.putMsg(msg.getBytes(StandardCharsets.UTF_8));

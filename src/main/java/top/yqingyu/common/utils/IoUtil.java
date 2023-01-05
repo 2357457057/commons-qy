@@ -32,7 +32,8 @@ public class IoUtil {
     private static final Logger log = LoggerFactory.getLogger(IoUtil.class);
 
     /**
-     * description: 读取InputStream中的数据读到一定长度的 byte
+     * description: 读取InputStream中的数据读到一定长度的 byte (非绝对长度)
+     * (绝对长度)
      *
      * @author yqingyu
      * DATE 2022/4/22
@@ -63,6 +64,47 @@ public class IoUtil {
         }
     }
 
+    /**
+     * description: 读取InputStream中的数据直至读到一定长度的 byte
+     * (绝对长度)
+     * 或抛出异常
+     * @author yqingyu
+     * DATE 2022/4/22
+     */
+    public static byte[] readBytes2(InputStream in, int len) throws IORuntimeException, IOException {
+        if (null == in) {
+            return null;
+        }
+        if (len <= 0) {
+            return new byte[0];
+        }
+
+        byte[] b = new byte[len];
+        int readLength;
+        var ref = new Object() {
+            int i = 0;
+        };
+
+        for (; ref.i < len; ref.i++) {
+            int c = in.read();
+            if (c == -1) {
+                //保持此位读取 直至读完
+                ref.i -= 1;
+                continue;
+            }
+            b[ref.i] = (byte) c;
+        }
+
+        readLength = ref.i + 1;
+
+        if (readLength > 0 && readLength < len) {
+            byte[] b2 = new byte[readLength];
+            System.arraycopy(b, 0, b2, 0, readLength);
+            return b2;
+        } else {
+            return b;
+        }
+    }
 
     /**
      * description: 读取InputStream中的数据直至读到一定长度的    byte
@@ -196,10 +238,11 @@ public class IoUtil {
      * @author YYJ
      * @version 1.0.0
      * @description      */
-    public static byte[] readUntilTarget(SocketChannel socketChannel){
+    public static byte[] readUntilTarget(SocketChannel socketChannel) {
         //TODO 待实现
         return new byte[0];
     }
+
     public static void writeBytes(SocketChannel socketChannel, byte[] bytes) throws Exception {
         ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bytes.length);
         byteBuffer.put(bytes);

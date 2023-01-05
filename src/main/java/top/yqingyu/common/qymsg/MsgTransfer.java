@@ -6,6 +6,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.utils.IoUtil;
+import top.yqingyu.common.utils.StringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -135,14 +136,7 @@ public class MsgTransfer {
         byte[] buf = new byte[0];
 
         for (byte[] bytes : bytess) {
-            StringBuilder msgLength = new StringBuilder();
-            msgLength.append(Integer.toUnsignedString(bytes.length, MSG_LENGTH_RADIX));
-
-            //长度信息不足MSG_LENGTH_LENGTH位按0补充
-            while (msgLength.toString().getBytes(StandardCharsets.UTF_8).length != BODY_LENGTH_LENGTH) {
-                msgLength.insert(0, '0');
-            }
-            buf = ArrayUtils.addAll(buf, msgLength.toString().getBytes(StandardCharsets.UTF_8));
+            buf = ArrayUtils.addAll(buf, getLength(bytes).getBytes(StandardCharsets.UTF_8));
             buf = ArrayUtils.addAll(buf, bytes);
         }
         //将信息长度与信息组合
@@ -150,14 +144,8 @@ public class MsgTransfer {
     }
 
     public static String getLength(byte[] bytes) {
-        StringBuilder msgLength = new StringBuilder();
-        msgLength.append(Integer.toUnsignedString(bytes.length, MSG_LENGTH_RADIX));
-        //长度信息不足MSG_LENGTH_LENGTH位按0补充
-        while (msgLength.toString().getBytes(StandardCharsets.UTF_8).length != BODY_LENGTH_LENGTH) {
-            msgLength.insert(0, '0');
-        }
         //将信息长度与信息组合
-        return msgLength.toString();
+        return StringUtil.leftPad(Integer.toUnsignedString(bytes.length, MSG_LENGTH_RADIX), BODY_LENGTH_LENGTH, '0');
     }
 
     public static String getLength(long length) {
@@ -172,13 +160,12 @@ public class MsgTransfer {
     }
 
     /**
-     *
      * @param socketChannel xxx
-     * @param qyMsg 消息
+     * @param qyMsg         消息
      * @author YYJ
      * @version 1.0.0
      * @description 写出分片消息 或完整消息
-     * */
+     */
     public static void writeQyMsg(SocketChannel socketChannel, QyMsg qyMsg) throws Exception {
         ArrayList<byte[]> assembly = AssemblyMsg.assembly(qyMsg);
         for (byte[] bytes : assembly) {
@@ -187,13 +174,12 @@ public class MsgTransfer {
     }
 
     /**
-     *
      * @param socket xxx
-     * @param qyMsg 消息
+     * @param qyMsg  消息
      * @author YYJ
      * @version 1.0.0
      * @description 写出分片消息 或完整消息
-     * */
+     */
     public static void writeQyMsg(Socket socket, QyMsg qyMsg) throws Exception {
         ArrayList<byte[]> assembly = AssemblyMsg.assembly(qyMsg);
         for (byte[] bytes : assembly) {
@@ -202,31 +188,29 @@ public class MsgTransfer {
     }
 
     /**
-     *
-     * @param socketChannel   xxx
-     * @param queue 分片队列
-     * @param sleep 间隔时间
-     * @return  解析的消息
+     * @param socketChannel xxx
+     * @param queue         分片队列
+     * @param sleep         间隔时间
+     * @return 解析的消息
      * @author YYJ
      * @version 1.0.0
      * @description 读取消息并将分片消息写入队列
-     * */
+     */
     public static QyMsg readQyMsg(SocketChannel socketChannel, BlockingQueue<QyMsg> queue, long sleep) throws IOException, ClassNotFoundException, InterruptedException {
-        return DisassemblyMsg.disassembly(socketChannel,queue,sleep);
+        return DisassemblyMsg.disassembly(socketChannel, queue, sleep);
     }
 
     /**
-     *
-     * @param socket   xxx
-     * @param queue 分片队列
-     * @param sleep 间隔时间
-     * @return  解析的消息
+     * @param socket xxx
+     * @param queue  分片队列
+     * @param sleep  间隔时间
+     * @return 解析的消息
      * @author YYJ
      * @version 1.0.0
-     * @description  读取消息并将分片消息写入队列
-     * */
+     * @description 读取消息并将分片消息写入队列
+     */
     public static QyMsg readQyMsg(Socket socket, BlockingQueue<QyMsg> queue, long sleep) throws IOException, ClassNotFoundException, InterruptedException {
-        return DisassemblyMsg.disassembly(socket,queue, sleep);
+        return DisassemblyMsg.disassembly(socket, queue, sleep);
     }
 
 
@@ -272,8 +256,6 @@ public class MsgTransfer {
         byteBuffer.flip();
         socketChannel.write(byteBuffer);
     }
-
-
 
 
     /**

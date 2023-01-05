@@ -6,12 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.utils.ArrayUtil;
 import top.yqingyu.common.utils.IoUtil;
+import top.yqingyu.common.utils.StringUtil;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-import static top.yqingyu.common.qymsg.Dict.PARTITION_ID_LENGTH;
+import static top.yqingyu.common.qymsg.Dict.*;
+import static top.yqingyu.common.qymsg.MsgTransfer.MSG_LENGTH_RADIX;
 
 /**
  * @author YYJ
@@ -135,7 +137,6 @@ class AssemblyMsg {
             byte[] header = sb.toString().getBytes(StandardCharsets.UTF_8);
             list.add(ArrayUtil.addAll(header, body));
         } else {
-            log.debug("part msg {}", new String(body, StandardCharsets.UTF_8));
             sb.append(MsgTransfer.BOOLEAN_2_SEGMENTATION(true));
             String part_trade_id = RandomStringUtils.random(PARTITION_ID_LENGTH, MsgTransfer.DICT);
             for (int i = 1; i <= bodyList.size(); i++) {
@@ -143,10 +144,12 @@ class AssemblyMsg {
                 byte[] cBody = bodyList.get(i - 1);
                 builder.append(MsgTransfer.getLength(cBody));
                 builder.append(part_trade_id);
-                builder.append(Integer.toUnsignedString(i));
-                builder.append(Integer.toUnsignedString(bodyList.size()));
+                builder.append(StringUtil.leftPad(Integer.toUnsignedString(i, MSG_LENGTH_RADIX), NUMERATOR_LENGTH, '0'));
+                builder.append(StringUtil.leftPad(Integer.toUnsignedString(bodyList.size(), MSG_LENGTH_RADIX), DENOMINATOR_LENGTH, '0'));
                 byte[] cHeader = builder.toString().getBytes(StandardCharsets.UTF_8);
-                list.add(ArrayUtil.addAll(cHeader, cBody));
+                byte[] bytes = ArrayUtil.addAll(cHeader, cBody);
+                list.add(bytes);
+                log.debug("part msg {}", new String(bytes, StandardCharsets.UTF_8));
             }
         }
     }

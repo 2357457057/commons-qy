@@ -1,7 +1,7 @@
 //package top.yqingyu.common.cfg;
 //
 //
-//import cn.hutool.core.date.LocalDateTimeUtil;
+//import top.yqingyu.common.utils.LocalDateTimeUtil;
 //import org.apache.log4j.Level;
 //import org.apache.log4j.PatternLayout;
 //import org.apache.log4j.spi.LoggingEvent;

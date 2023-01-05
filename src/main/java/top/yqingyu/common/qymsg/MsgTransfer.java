@@ -75,12 +75,14 @@ public class MsgTransfer {
             DATA_TYPE_2_CHAR.put(DataType.JSON, '%');
             DATA_TYPE_2_CHAR.put(DataType.STRING, '&');
             DATA_TYPE_2_CHAR.put(DataType.STREAM, '#');
+            DATA_TYPE_2_CHAR.put(DataType.FILE, ']');
 
             CHAR_2_DATA_TYPE = new Hashtable<>();
             CHAR_2_DATA_TYPE.put('=', DataType.OBJECT);
             CHAR_2_DATA_TYPE.put('%', DataType.JSON);
             CHAR_2_DATA_TYPE.put('&', DataType.STRING);
             CHAR_2_DATA_TYPE.put('#', DataType.STREAM);
+            CHAR_2_DATA_TYPE.put(']', DataType.FILE);
         }
         //消息分片映射
         {
@@ -147,9 +149,20 @@ public class MsgTransfer {
         return buf;
     }
 
-    protected static String getLength(byte[] bytes) {
+    public static String getLength(byte[] bytes) {
         StringBuilder msgLength = new StringBuilder();
         msgLength.append(Integer.toUnsignedString(bytes.length, MSG_LENGTH_RADIX));
+        //长度信息不足MSG_LENGTH_LENGTH位按0补充
+        while (msgLength.toString().getBytes(StandardCharsets.UTF_8).length != BODY_LENGTH_LENGTH) {
+            msgLength.insert(0, '0');
+        }
+        //将信息长度与信息组合
+        return msgLength.toString();
+    }
+
+    public static String getLength(long length) {
+        StringBuilder msgLength = new StringBuilder();
+        msgLength.append(Integer.toUnsignedString((int) length, MSG_LENGTH_RADIX));
         //长度信息不足MSG_LENGTH_LENGTH位按0补充
         while (msgLength.toString().getBytes(StandardCharsets.UTF_8).length != BODY_LENGTH_LENGTH) {
             msgLength.insert(0, '0');

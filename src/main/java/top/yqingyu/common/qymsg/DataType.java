@@ -12,6 +12,7 @@ public enum DataType {
     OBJECT,    //序列化的对象
     JSON,
     STRING,
-    STREAM;
+    STREAM,
+    FILE;
 
 }

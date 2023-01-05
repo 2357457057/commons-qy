@@ -97,7 +97,7 @@ public class SFtpUtil {
                 this.login(ftpInfo);
             }
             try {
-                log.info("进入目录：远程地址：{} 文件名： {}",remotePath,sftpFileName );
+                log.info("进入目录: 远程地址: {} 文件名:  {}",remotePath,sftpFileName );
                 sftp.cd(remotePath);
             } catch (SftpException e) {
                 //目录不存在，则创建文件夹

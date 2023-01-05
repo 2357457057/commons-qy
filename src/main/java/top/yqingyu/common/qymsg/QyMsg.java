@@ -4,6 +4,8 @@ import top.yqingyu.common.qydata.DataMap;
 
 import java.io.Serializable;
 
+import static top.yqingyu.common.qymsg.Dict.QYMSG;
+
 /**
  * @author YYJ
  * @version 1.0.0
@@ -40,7 +42,7 @@ public class QyMsg implements Serializable, Cloneable {
     }
 
     public void putMsg(String msg) {
-        this.dataMap.put("MSG", msg);
+        this.dataMap.put(QYMSG, msg);
     }
 
     public void putMsg(Object msg) {

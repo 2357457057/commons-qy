@@ -1,7 +1,6 @@
 package top.yqingyu.common.qymsg;
 
 import com.alibaba.fastjson2.JSON;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +11,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+import static top.yqingyu.common.qymsg.Dict.PARTITION_ID_LENGTH;
+
 /**
  * @author YYJ
  * @version 1.0.0
@@ -20,7 +21,7 @@ import java.util.ArrayList;
  * @createTime 2022年09月06日 10:36:00
  */
 
- class AssemblyMsg {
+class AssemblyMsg {
     private static final Logger log = LoggerFactory.getLogger(AssemblyMsg.class);
 
     /**
@@ -34,25 +35,11 @@ import java.util.ArrayList;
         sb.append(MsgTransfer.MSG_TYPE_2_CHAR(qyMsg.getMsgType()));
         sb.append(MsgTransfer.DATA_TYPE_2_CHAR(qyMsg.getDataType()));
 
-        if (MsgType.AC.equals(qyMsg.getMsgType())) {
-
-            //认证消息组装
-            AC_Assembly(sb, qyMsg, list);
-        } else if (MsgType.HEART_BEAT.equals(qyMsg.getMsgType())) {
-
-            //心跳消息组装
-            HEART_BEAT_Assembly(sb, qyMsg, list);
-        } else if (MsgType.NORM_MSG.equals(qyMsg.getMsgType())) {
-
-            //普通消息组装
-            NORM_MSG_Assembly(sb, qyMsg, list);
-        } else if (MsgType.ERR_MSG.equals(qyMsg.getMsgType())) {
-
-            ERR_MSG_Assembly(sb, qyMsg, list);
-        } else {
-
-            //普通消息组装
-            NORM_MSG_Assembly(sb, qyMsg, list);
+        switch (qyMsg.getMsgType()) {
+            case AC -> AC_Assembly(sb, qyMsg, list);
+            case HEART_BEAT -> HEART_BEAT_Assembly(sb, qyMsg, list);
+            case ERR_MSG -> ERR_MSG_Assembly(sb, qyMsg, list);
+            default -> NORM_MSG_Assembly(sb, qyMsg, list);
         }
         //将信息长度与信息组合
         return list;
@@ -72,7 +59,7 @@ import java.util.ArrayList;
         byte[] body = JSON.toJSONBytes(qyMsg);
         sb.append(MsgTransfer.getLength(body));
         byte[] header = sb.toString().getBytes(StandardCharsets.UTF_8);
-        list.add(ArrayUtils.addAll(header, body));
+        list.add(ArrayUtil.addAll(header, body));
     }
 
     /**
@@ -83,12 +70,12 @@ import java.util.ArrayList;
      * @param list  返回的消息集合
      */
     private static void HEART_BEAT_Assembly(StringBuilder sb, QyMsg qyMsg, ArrayList<byte[]> list) {
-        sb.setCharAt(1,MsgTransfer. DATA_TYPE_2_CHAR(DataType.STRING));
+        sb.setCharAt(1, MsgTransfer.DATA_TYPE_2_CHAR(DataType.STRING));
         sb.append(MsgTransfer.BOOLEAN_2_SEGMENTATION(false));
         byte[] body = qyMsg.getFrom().getBytes(StandardCharsets.UTF_8);
         sb.append(MsgTransfer.getLength(body));
         byte[] header = sb.toString().getBytes(StandardCharsets.UTF_8);
-        list.add(ArrayUtils.addAll(header, body));
+        list.add(ArrayUtil.addAll(header, body));
     }
 
     /**
@@ -100,26 +87,19 @@ import java.util.ArrayList;
      */
     private static void NORM_MSG_Assembly(StringBuilder sb, QyMsg qyMsg, ArrayList<byte[]> list) throws IOException {
 
-        if (DataType.JSON.equals(qyMsg.getDataType())) {
+        byte[] body;
+        switch (qyMsg.getDataType()) {
+            case OBJECT -> body = IoUtil.objToSerializBytes(qyMsg);
 
-            byte[] body = JSON.toJSONString(qyMsg).getBytes(StandardCharsets.UTF_8);
-            OUT_OF_LENGTH_MSG_Assembly(body, sb, list);
-        } else if (DataType.OBJECT.equals(qyMsg.getDataType())) {
+            case STRING -> body = (qyMsg.getFrom() + MsgHelper.gainMsg(qyMsg)).getBytes(StandardCharsets.UTF_8);
 
-            byte[] body = IoUtil.objToSerializBytes(qyMsg);
-            OUT_OF_LENGTH_MSG_Assembly(body, sb, list);
-        } else if (DataType.STRING.equals(qyMsg.getDataType())) {
+            case STREAM ->
+                    body = ArrayUtil.addAll(qyMsg.getFrom().getBytes(StandardCharsets.UTF_8), (byte[]) MsgHelper.gainObjMsg(qyMsg));
+            // JSON FILE
+            default -> body = JSON.toJSONString(qyMsg).getBytes(StandardCharsets.UTF_8);
 
-            byte[] body = (qyMsg.getFrom() + MsgHelper.gainMsg(qyMsg)).getBytes(StandardCharsets.UTF_8);
-            OUT_OF_LENGTH_MSG_Assembly(body, sb, list);
-        } else if (DataType.STREAM.equals(qyMsg.getDataType())) {
-
-            byte[] bytes = qyMsg.getFrom().getBytes(StandardCharsets.UTF_8);
-            OUT_OF_LENGTH_MSG_Assembly(ArrayUtils.addAll(bytes, (byte[]) MsgHelper.gainObjMsg(qyMsg)), sb, list);
-        } else {
-            byte[] bytes = qyMsg.getFrom().getBytes(StandardCharsets.UTF_8);
-            OUT_OF_LENGTH_MSG_Assembly(ArrayUtils.addAll(bytes, (byte[]) MsgHelper.gainObjMsg(qyMsg)), sb, list);
         }
+        OUT_OF_LENGTH_MSG_Assembly(body, sb, list);
     }
 
     /**
@@ -130,14 +110,13 @@ import java.util.ArrayList;
      * @param list  返回的消息集合
      */
     private static void ERR_MSG_Assembly(StringBuilder sb, QyMsg qyMsg, ArrayList<byte[]> list) {
+        byte[] body;
         if (DataType.JSON.equals(qyMsg.getDataType())) {
-
-            byte[] body = JSON.toJSONString(qyMsg).getBytes(StandardCharsets.UTF_8);
-            OUT_OF_LENGTH_MSG_Assembly(body, sb, list);
+            body = JSON.toJSONString(qyMsg).getBytes(StandardCharsets.UTF_8);
         } else {
-            byte[] body = (qyMsg.getFrom() + MsgHelper.gainMsg(qyMsg)).getBytes(StandardCharsets.UTF_8);
-            OUT_OF_LENGTH_MSG_Assembly(body, sb, list);
+            body = (qyMsg.getFrom() + MsgHelper.gainMsg(qyMsg)).getBytes(StandardCharsets.UTF_8);
         }
+        OUT_OF_LENGTH_MSG_Assembly(body, sb, list);
     }
 
     /**
@@ -154,11 +133,11 @@ import java.util.ArrayList;
             sb.append(MsgTransfer.BOOLEAN_2_SEGMENTATION(false));
             sb.append(MsgTransfer.getLength(body));
             byte[] header = sb.toString().getBytes(StandardCharsets.UTF_8);
-            list.add(ArrayUtils.addAll(header, body));
+            list.add(ArrayUtil.addAll(header, body));
         } else {
             log.debug("part msg {}", new String(body, StandardCharsets.UTF_8));
             sb.append(MsgTransfer.BOOLEAN_2_SEGMENTATION(true));
-            String part_trade_id = RandomStringUtils.random(16, MsgTransfer.DICT);
+            String part_trade_id = RandomStringUtils.random(PARTITION_ID_LENGTH, MsgTransfer.DICT);
             for (int i = 1; i <= bodyList.size(); i++) {
                 StringBuilder builder = new StringBuilder(sb);
                 byte[] cBody = bodyList.get(i - 1);
@@ -167,7 +146,7 @@ import java.util.ArrayList;
                 builder.append(Integer.toUnsignedString(i));
                 builder.append(Integer.toUnsignedString(bodyList.size()));
                 byte[] cHeader = builder.toString().getBytes(StandardCharsets.UTF_8);
-                list.add(ArrayUtils.addAll(cHeader, cBody));
+                list.add(ArrayUtil.addAll(cHeader, cBody));
             }
         }
     }

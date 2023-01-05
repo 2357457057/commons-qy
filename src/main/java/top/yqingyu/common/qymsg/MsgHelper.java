@@ -1,26 +1,27 @@
 package top.yqingyu.common.qymsg;
 
 
-import cn.hutool.core.date.LocalDateTimeUtil;
+import cn.hutool.core.lang.UUID;
 import com.alibaba.fastjson2.JSON;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.utils.IoUtil;
+import top.yqingyu.common.utils.LocalDateTimeUtil;
 import top.yqingyu.common.utils.ThreadUtil;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
+
+import static top.yqingyu.common.qymsg.Dict.*;
 
 /**
  * @author YYJ
@@ -33,12 +34,13 @@ import java.util.concurrent.locks.ReentrantLock;
 public class MsgHelper implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(MsgHelper.class);
+
     public static String gainMsg(QyMsg msg) {
-        return msg.getDataMap().getString("MSG", "");
+        return msg.getDataMap().getString(QYMSG, "");
     }
 
     public static Object gainObjMsg(QyMsg msg) {
-        return msg.getDataMap().get("MSG");
+        return msg.getDataMap().get(QYMSG);
     }
 
     public static String gainMsgValue(QyMsg msg, String key) {
@@ -49,6 +51,46 @@ public class MsgHelper implements Runnable {
         return msg.getDataMap().get(key);
     }
 
+    //     * 文件唯一ID
+//     * 文件名
+//     * 文件总长度
+//     * 切分次数
+//     * 切分长度
+    public static List<QyMsg> buildFileMsg(File file, int transThread, String remotePath) throws CloneNotSupportedException {
+        if (!(transThread > 0 && transThread <= TRANS_THREAD_MAX))
+            throw new IllegalArgumentException("线程数不对！");
+
+        long fileLength = file.length();
+        long CUT_LENGTH = fileLength / transThread;
+        long yu = fileLength % transThread;
+
+        QyMsg qyMsg = new QyMsg(MsgType.NORM_MSG, DataType.FILE);
+        qyMsg.putMsgData(FILE_ID, UUID.fastUUID().toString());
+        qyMsg.putMsgData(FILE_NAME, file.getName());
+        qyMsg.putMsgData(FILE_LENGTH, fileLength);
+
+        qyMsg.putMsgData(FILE_LOCAL_PATH, file.getPath());
+        qyMsg.putMsgData(FILE_REMOTE_PATH, remotePath);
+        qyMsg.putMsgData(FILE_CUT_TIMES, transThread);
+
+        ArrayList<QyMsg> msg = new ArrayList<>();
+
+        if (transThread != 1) {
+            for (int i = 1; i <= transThread; i++) {
+                QyMsg clone = qyMsg.clone();
+                msg.add(clone);
+                clone.putMsgData(FILE_IDX, i);
+                clone.putMsgData(FILE_POSITION, Math.max((i - 1) * CUT_LENGTH - 1, 0));
+                clone.putMsgData(FILE_CUT_LENGTH, transThread - 1 == i ? yu : CUT_LENGTH);
+            }
+            return msg;
+        }
+
+        qyMsg.putMsgData(FILE_POSITION, 0);
+        msg.add(qyMsg);
+        return msg;
+    }
+
 
     private final BlockingQueue<QyMsg> inQueue;
     private final BlockingQueue<QyMsg> outQueue;
@@ -57,7 +99,7 @@ public class MsgHelper implements Runnable {
     private final int clearTime;
     private final HashMap<String, ArrayList<QyMsg>> MSG_CONTAINER = new HashMap<>();
 
-    private final ReentrantLock lock  = new ReentrantLock();
+    private final ReentrantLock lock = new ReentrantLock();
 
     public MsgHelper(BlockingQueue<QyMsg> inQueue, BlockingQueue<QyMsg> outQueue, AtomicBoolean running, int clearTime) {
         this.inQueue = inQueue;
@@ -109,7 +151,7 @@ public class MsgHelper implements Runnable {
                         long min = LocalDateTimeUtil.between(now, (LocalDateTime) MsgHelper.gainMsgOBJ(maxMsg, "now"), ChronoUnit.MINUTES);
                         if (min > clearTime) {
                             MSG_CONTAINER.remove(k);
-                            log.debug("消息过期，已清除 {} ",maxMsg);
+                            log.debug("消息过期，已清除 {} ", maxMsg);
                         }
 
                     }
@@ -118,7 +160,7 @@ public class MsgHelper implements Runnable {
 
                 log.error("容器清除器异常", e);
 
-            }finally {
+            } finally {
                 lock.unlock();
             }
 
@@ -174,7 +216,7 @@ public class MsgHelper implements Runnable {
 
                     outQueue.put(out);
                     MSG_CONTAINER.remove(partition_id);
-                    log.debug("消息partition {} 拼接完成",partition_id);
+                    log.debug("消息partition {} 拼接完成", partition_id);
 
                 } else if (list != null && MSG_CONTAINER.get(partition_id).size() + 1 != denominator) {
                     take.putMsgData("now", LocalDateTime.now());
@@ -189,7 +231,7 @@ public class MsgHelper implements Runnable {
 
             } catch (Exception e) {
                 log.debug("消息组装异常", e);
-            }finally {
+            } finally {
                 lock.unlock();
             }
         }

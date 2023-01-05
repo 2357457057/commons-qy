@@ -3,6 +3,7 @@ package top.yqingyu.common.qymsg;
 import com.alibaba.fastjson2.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.yqingyu.common.exception.IllegalQyMsgException;
 import top.yqingyu.common.utils.IoUtil;
 
 import java.io.IOException;
@@ -11,6 +12,8 @@ import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.BlockingQueue;
+
+import static top.yqingyu.common.qymsg.Dict.*;
 
 /**
  * @author YYJ
@@ -23,6 +26,7 @@ import java.util.concurrent.BlockingQueue;
 public class DisassemblyMsg {
 
     private static final Logger log = LoggerFactory.getLogger(DisassemblyMsg.class);
+
     /**
      * @param sleep 服务端出口有限，需增加间隔时间，否则会导致流读不完整
      * @author YYJ
@@ -30,48 +34,65 @@ public class DisassemblyMsg {
      */
     public static QyMsg disassembly(Socket socket, BlockingQueue<QyMsg> segmentation$queue, long sleep) throws IOException, ClassNotFoundException, InterruptedException {
         InputStream inputStream = socket.getInputStream();
-        byte[] readBytes = IoUtil.readBytes(inputStream, 8);
         Thread.sleep(sleep);
+        byte[] readBytes = IoUtil.readBytes(inputStream, HEADER_LENGTH);
         String s = new String(readBytes, StandardCharsets.UTF_8);
-        char $0 = s.charAt(0);//msg  type
-        char $1 = s.charAt(1);//data type
-        char $2 = s.charAt(2);//是否分片
-        String $3 = s.substring(4);     //后五位
+        char $0 = s.charAt(MSG_TYPE_IDX);//msg  type
+        char $1 = s.charAt(DATA_TYPE_IDX);//data type
+        char $2 = s.charAt(SEGMENTATION_IDX);//是否分片
+        String $3 = s.substring(MSG_LENGTH_IDX_START, MSG_LENGTH_IDX_END);     //后五位
+        boolean segmentation;
+        try {
+            segmentation = MsgTransfer.SEGMENTATION_2_BOOLEAN($2);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法分片字符: " + $2, e);
+        }
+        if (segmentation) {
+            MsgType msgType;
+            try {
+                msgType = MsgTransfer.CHAR_2_MSG_TYPE($0);
+            } catch (Exception e) {
+                throw new IllegalQyMsgException("非法的消息类型: " + s, e);
+            }
+            DataType dataType;
+            try {
+                dataType = MsgTransfer.CHAR_2_DATA_TYPE($1);
+            } catch (Exception e) {
+                throw new IllegalQyMsgException("非法的数据类型: " + s, e);
+            }
 
-
-        if (MsgTransfer.SEGMENTATION_2_BOOLEAN($2)) {
-            QyMsg parse = new QyMsg(MsgTransfer.CHAR_2_MSG_TYPE($0), MsgTransfer.CHAR_2_DATA_TYPE($1));
-            parse.setSegmentation(MsgTransfer.SEGMENTATION_2_BOOLEAN($2));
-            readBytes = IoUtil.readBytes(inputStream, 18);
-            String partition_numerator_denominator = new String(readBytes, StandardCharsets.UTF_8);
-            parse.setPartition_id(partition_numerator_denominator.substring(0, 16));
-            parse.setNumerator(Integer.parseInt(partition_numerator_denominator.substring(16, 17), MsgTransfer.MSG_LENGTH_RADIX));
-            parse.setDenominator(Integer.parseInt(partition_numerator_denominator.substring(17, 18), MsgTransfer.MSG_LENGTH_RADIX));
+            QyMsg parse = new QyMsg(msgType, dataType);
+            parse.setSegmentation(true);
+            readBytes = IoUtil.readBytes(inputStream, SEGMENTATION_INFO_LENGTH);
+            String segmentationInfo = new String(readBytes, StandardCharsets.UTF_8);
+            parse.setPartition_id(segmentationInfo.substring(PARTITION_ID_IDX_START, PARTITION_ID_IDX_END));
+            parse.setNumerator(Integer.parseInt(segmentationInfo.substring(NUMERATOR_IDX_START, NUMERATOR_IDX_END), MsgTransfer.MSG_LENGTH_RADIX));
+            parse.setDenominator(Integer.parseInt(segmentationInfo.substring(DENOMINATOR_IDX_START, DENOMINATOR_IDX_END), MsgTransfer.MSG_LENGTH_RADIX));
             readBytes = IoUtil.readBytes(inputStream, Integer.parseInt($3, MsgTransfer.MSG_LENGTH_RADIX));
             parse.putMsg(readBytes);
             segmentation$queue.add(parse);
             log.debug("part msg id: {} the part {} of {}", parse.getPartition_id(), parse.getNumerator(), parse.getDenominator());
             return null;
         } else {
-            MsgType msgType = MsgTransfer.CHAR_2_MSG_TYPE($0);
-            if (MsgType.AC.equals(msgType)) {
-
-                //认证消息解析
-                return AC_Disassembly($3, inputStream);
-            } else if (MsgType.HEART_BEAT.equals(msgType)) {
-
-                //心跳消息解析
-                return HEART_BEAT_Disassembly($0, $1, $2, $3, inputStream);
-            } else if (MsgType.NORM_MSG.equals(msgType)) {
-
-                //普通消息解析
-                return NORM_MSG_Disassembly($0, $1, $2, $3, inputStream);
-            } else if (MsgType.ERR_MSG.equals(msgType)) {
-                //异常消息解析
-                return ERR_MSG_Disassembly($0, $1, $2, $3, inputStream);
-            } else {
-                //普通消息解析
-                return NORM_MSG_Disassembly($0, $1, $2, $3, inputStream);
+            MsgType msgType;
+            try {
+                msgType = MsgTransfer.CHAR_2_MSG_TYPE($0);
+            } catch (Exception e) {
+                throw new IllegalQyMsgException("非法的消息类型: " + s, e);
+            }
+            switch (msgType) {
+                case AC -> {
+                    return AC_Disassembly($3, inputStream);
+                }
+                case HEART_BEAT -> {
+                    return HEART_BEAT_Disassembly($0, $1, $2, $3, inputStream);
+                }
+                case ERR_MSG -> {
+                    return ERR_MSG_Disassembly($0, $1, $2, $3, inputStream);
+                }
+                default -> {
+                    return NORM_MSG_Disassembly($0, $1, $2, $3, inputStream);
+                }
             }
         }
     }
@@ -82,48 +103,67 @@ public class DisassemblyMsg {
      */
     public static QyMsg disassembly(SocketChannel socketChannel, BlockingQueue<QyMsg> segmentation$queue, long sleep) throws IOException, ClassNotFoundException, InterruptedException {
 
-        byte[] readBytes = IoUtil.readBytes(socketChannel, 8);
-        String s = new String(readBytes, StandardCharsets.UTF_8);
+        byte[] readBytes = IoUtil.readBytes(socketChannel, HEADER_LENGTH);
         Thread.sleep(sleep);
-        char $0 = s.charAt(0);//msg  type
-        char $1 = s.charAt(1);//data type
-        char $2 = s.charAt(2);//是否分片
-        String $3 = s.substring(4);     //后五位
+        String s = new String(readBytes, StandardCharsets.UTF_8);
+        char $0 = s.charAt(MSG_TYPE_IDX);//msg  type
+        char $1 = s.charAt(DATA_TYPE_IDX);//data type
+        char $2 = s.charAt(SEGMENTATION_IDX);//是否分片
+        String $3 = s.substring(MSG_LENGTH_IDX_START, MSG_LENGTH_IDX_END);     //后五位
 
+        boolean segmentation;
+        try {
+            segmentation = MsgTransfer.SEGMENTATION_2_BOOLEAN($2);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法分片字符: " + $2, e);
+        }
 
-        if (MsgTransfer.SEGMENTATION_2_BOOLEAN($2)) {
-            QyMsg parse = new QyMsg(MsgTransfer.CHAR_2_MSG_TYPE($0), MsgTransfer.CHAR_2_DATA_TYPE($1));
-            parse.setSegmentation(MsgTransfer.SEGMENTATION_2_BOOLEAN($2));
-            readBytes = IoUtil.readBytes(socketChannel, 18);
-            String partition_numerator_denominator = new String(readBytes, StandardCharsets.UTF_8);
-            parse.setPartition_id(partition_numerator_denominator.substring(0, 16));
-            parse.setNumerator(Integer.parseInt(partition_numerator_denominator.substring(16, 17), MsgTransfer.MSG_LENGTH_RADIX));
-            parse.setDenominator(Integer.parseInt(partition_numerator_denominator.substring(17, 18), MsgTransfer.MSG_LENGTH_RADIX));
+        if (segmentation) {
+            MsgType msgType;
+            try {
+                msgType = MsgTransfer.CHAR_2_MSG_TYPE($0);
+            } catch (Exception e) {
+                throw new IllegalQyMsgException("非法的消息类型: " + s, e);
+            }
+            DataType dataType;
+            try {
+                dataType = MsgTransfer.CHAR_2_DATA_TYPE($1);
+            } catch (Exception e) {
+                throw new IllegalQyMsgException("非法的数据类型: " + s, e);
+            }
+
+            QyMsg parse = new QyMsg(msgType, dataType);
+            parse.setSegmentation(true);
+            readBytes = IoUtil.readBytes(socketChannel, SEGMENTATION_INFO_LENGTH);
+            String segmentationInfo = new String(readBytes, StandardCharsets.UTF_8);
+            parse.setPartition_id(segmentationInfo.substring(PARTITION_ID_IDX_START, PARTITION_ID_IDX_END));
+            parse.setNumerator(Integer.parseInt(segmentationInfo.substring(NUMERATOR_IDX_START, NUMERATOR_IDX_END), MsgTransfer.MSG_LENGTH_RADIX));
+            parse.setDenominator(Integer.parseInt(segmentationInfo.substring(DENOMINATOR_IDX_START, DENOMINATOR_IDX_END), MsgTransfer.MSG_LENGTH_RADIX));
             readBytes = IoUtil.readBytes(socketChannel, Integer.parseInt($3, MsgTransfer.MSG_LENGTH_RADIX));
             parse.putMsg(readBytes);
             segmentation$queue.add(parse);
             log.debug("part msg id: {} the part {} of {}", parse.getPartition_id(), parse.getNumerator(), parse.getDenominator());
             return null;
         } else {
-            MsgType msgType = MsgTransfer.CHAR_2_MSG_TYPE($0);
-            if (MsgType.AC.equals(msgType)) {
-
-                //认证消息解析
-                return AC_Disassembly($3, socketChannel);
-            } else if (MsgType.HEART_BEAT.equals(msgType)) {
-
-                //心跳消息解析
-                return HEART_BEAT_Disassembly($0, $1, $2, $3, socketChannel);
-            } else if (MsgType.NORM_MSG.equals(msgType)) {
-
-                //普通消息解析
-                return NORM_MSG_Disassembly($0, $1, $2, $3, socketChannel);
-            } else if (MsgType.ERR_MSG.equals(msgType)) {
-                //异常消息解析
-                return ERR_MSG_Disassembly($0, $1, $2, $3, socketChannel);
-            } else {
-                //普通消息解析
-                return NORM_MSG_Disassembly($0, $1, $2, $3, socketChannel);
+            MsgType msgType;
+            try {
+                msgType = MsgTransfer.CHAR_2_MSG_TYPE($0);
+            } catch (Exception e) {
+                throw new IllegalQyMsgException("非法的消息类型: " + s, e);
+            }
+            switch (msgType) {
+                case AC -> {
+                    return AC_Disassembly($3, socketChannel);
+                }
+                case HEART_BEAT -> {
+                    return HEART_BEAT_Disassembly($0, $1, $2, $3, socketChannel);
+                }
+                case ERR_MSG -> {
+                    return ERR_MSG_Disassembly($0, $1, $2, $3, socketChannel);
+                }
+                default -> {
+                    return NORM_MSG_Disassembly($0, $1, $3, socketChannel);
+                }
             }
         }
     }
@@ -142,10 +182,29 @@ public class DisassemblyMsg {
     /**
      * 心跳消息组装
      */
-    private static QyMsg HEART_BEAT_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, InputStream inputStream) {
-        QyMsg qyMsg = new QyMsg(MsgTransfer.CHAR_2_MSG_TYPE(msg_type), MsgTransfer.CHAR_2_DATA_TYPE(data_type));
+    private static QyMsg HEART_BEAT_Disassembly(char msg_type, char data_type, char segmentationC, String msg_length, InputStream inputStream) {
+        MsgType msgType;
+        try {
+            msgType = MsgTransfer.CHAR_2_MSG_TYPE(msg_type);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法的消息类型: " + msg_type, e);
+        }
+        DataType dataType;
+        try {
+            dataType = MsgTransfer.CHAR_2_DATA_TYPE(data_type);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法的数据类型: " + data_type, e);
+        }
+        boolean segmentation;
+        try {
+            segmentation = MsgTransfer.SEGMENTATION_2_BOOLEAN(segmentationC);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法分片字符: " + segmentationC, e);
+        }
+
+        QyMsg qyMsg = new QyMsg(msgType, dataType);
+        qyMsg.setSegmentation(segmentation);
         byte[] bytes = IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
-        qyMsg.setSegmentation(MsgTransfer.SEGMENTATION_2_BOOLEAN(segmentation));
         qyMsg.setFrom(new String(bytes, StandardCharsets.UTF_8));
         return qyMsg;
     }
@@ -154,30 +213,41 @@ public class DisassemblyMsg {
      * 常规消息组装
      */
     private static QyMsg NORM_MSG_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, InputStream inputStream) throws IOException, ClassNotFoundException {
+        MsgType msgType;
+        try {
+            msgType = MsgTransfer.CHAR_2_MSG_TYPE(msg_type);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法的消息类型: " + msg_type, e);
+        }
+        DataType dataType;
+        try {
+            dataType = MsgTransfer.CHAR_2_DATA_TYPE(data_type);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法的数据类型:" + data_type, e);
+        }
 
-        if (DataType.JSON.equals(MsgTransfer.CHAR_2_DATA_TYPE(data_type))) {
-
-            byte[] bytes = IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
-            return JSON.parseObject(bytes, QyMsg.class);
-        } else if (DataType.OBJECT.equals(MsgTransfer.CHAR_2_DATA_TYPE(data_type))) {
-
-            byte[] bytes = IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
-            return IoUtil.deserializationObj(bytes, QyMsg.class);
-        } else if (DataType.STRING.equals(MsgTransfer.CHAR_2_DATA_TYPE(data_type))) {
-
-            byte[] bytes = IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
-            String s = new String(bytes, StandardCharsets.UTF_8);
-            String from = s.substring(0, 32);
-            String msg = s.substring(32);
-            QyMsg qyMsg = new QyMsg(MsgTransfer.CHAR_2_MSG_TYPE(msg_type), MsgTransfer.CHAR_2_DATA_TYPE(data_type));
-            qyMsg.setFrom(from);
-            qyMsg.putMsg(msg.getBytes(StandardCharsets.UTF_8));
-
-            return qyMsg;
-        } else if (DataType.STREAM.equals(MsgTransfer.CHAR_2_DATA_TYPE(data_type))) {
-            return streamDeal(msg_type, data_type, msg_length, inputStream);
-        } else {
-            return streamDeal(msg_type, data_type, msg_length, inputStream);
+        switch (dataType) {
+            case STRING -> {
+                byte[] bytes = IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
+                String s = new String(bytes, StandardCharsets.UTF_8);
+                String from = s.substring(0, CLIENT_ID_LENGTH);
+                String msg = s.substring(CLIENT_ID_LENGTH);
+                QyMsg qyMsg = new QyMsg(msgType, dataType);
+                qyMsg.setFrom(from);
+                qyMsg.putMsg(msg.getBytes(StandardCharsets.UTF_8));
+                return qyMsg;
+            }
+            case OBJECT -> {
+                byte[] bytes = IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
+                return IoUtil.deserializationObj(bytes, QyMsg.class);
+            }
+            case STREAM -> {
+                return streamDeal(msg_type, data_type, msg_length, inputStream);
+            }
+            default -> { //JSON\FILE
+                byte[] bytes = IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
+                return JSON.parseObject(bytes, QyMsg.class);
+            }
         }
     }
 
@@ -185,8 +255,13 @@ public class DisassemblyMsg {
      * 异常消息组装
      */
     private static QyMsg ERR_MSG_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, InputStream inputStream) {
-
-        if (DataType.JSON.equals(MsgTransfer.CHAR_2_DATA_TYPE(data_type))) {
+        DataType dataType;
+        try {
+            dataType = MsgTransfer.CHAR_2_DATA_TYPE(data_type);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法的数据类型:" + data_type, e);
+        }
+        if (DataType.JSON.equals(dataType)) {
             byte[] bytes = IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
             return JSON.parseObject(bytes, QyMsg.class);
         } else {
@@ -199,10 +274,22 @@ public class DisassemblyMsg {
      * @description 流类型数据处理
      */
     private static QyMsg streamDeal(char msg_type, char data_type, String msg_length, InputStream inputStream) {
-        QyMsg qyMsg = new QyMsg(MsgTransfer.CHAR_2_MSG_TYPE(msg_type), MsgTransfer.CHAR_2_DATA_TYPE(data_type));
-        byte[] bytes = IoUtil.readBytes(inputStream, 36);
+        MsgType msgType;
+        try {
+            msgType = MsgTransfer.CHAR_2_MSG_TYPE(msg_type);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法的消息类型: " + msg_type, e);
+        }
+        DataType dataType;
+        try {
+            dataType = MsgTransfer.CHAR_2_DATA_TYPE(data_type);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法的数据类型: " + data_type, e);
+        }
+        QyMsg qyMsg = new QyMsg(msgType, dataType);
+        byte[] bytes = IoUtil.readBytes(inputStream, CLIENT_ID_LENGTH);
         qyMsg.setFrom(new String(bytes, StandardCharsets.UTF_8));
-        qyMsg.putMsg(IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX) - 36));
+        qyMsg.putMsg(IoUtil.readBytes(inputStream, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX) - CLIENT_ID_LENGTH));
         return qyMsg;
     }
 
@@ -219,10 +306,29 @@ public class DisassemblyMsg {
     /**
      * 心跳消息组装
      */
-    private static QyMsg HEART_BEAT_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, SocketChannel socketChannel) throws IOException {
+    private static QyMsg HEART_BEAT_Disassembly(char msg_type, char data_type, char segmentationC, String msg_length, SocketChannel socketChannel) throws IOException {
+        MsgType msgType;
+        try {
+            msgType = MsgTransfer.CHAR_2_MSG_TYPE(msg_type);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法的消息类型: " + msg_type, e);
+        }
+        DataType dataType;
+        try {
+            dataType = MsgTransfer.CHAR_2_DATA_TYPE(data_type);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法的数据类型: " + data_type, e);
+        }
+        boolean segmentation;
+        try {
+            segmentation = MsgTransfer.SEGMENTATION_2_BOOLEAN(segmentationC);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法分片字符: " + segmentationC, e);
+        }
+
+        QyMsg qyMsg = new QyMsg(msgType, dataType);
+        qyMsg.setSegmentation(segmentation);
         byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
-        QyMsg qyMsg = new QyMsg(MsgTransfer.CHAR_2_MSG_TYPE(msg_type), MsgTransfer.CHAR_2_DATA_TYPE(data_type));
-        qyMsg.setSegmentation(MsgTransfer.SEGMENTATION_2_BOOLEAN(segmentation));
         qyMsg.setFrom(new String(bytes, StandardCharsets.UTF_8));
         return qyMsg;
     }
@@ -230,31 +336,41 @@ public class DisassemblyMsg {
     /**
      * 常规消息组装
      */
-    private static QyMsg NORM_MSG_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, SocketChannel socketChannel) throws IOException, ClassNotFoundException {
-
-        if (DataType.JSON.equals(MsgTransfer.CHAR_2_DATA_TYPE(data_type))) {
-
-            byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
-            return JSON.parseObject(bytes, QyMsg.class);
-        } else if (DataType.OBJECT.equals(MsgTransfer.CHAR_2_DATA_TYPE(data_type))) {
-
-            byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
-            return IoUtil.deserializationObj(bytes, QyMsg.class);
-        } else if (DataType.STRING.equals(MsgTransfer.CHAR_2_DATA_TYPE(data_type))) {
-
-            byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
-            String s = new String(bytes, StandardCharsets.UTF_8);
-            String from = s.substring(0, 36);
-            String msg = s.substring(36);
-            QyMsg qyMsg = new QyMsg(MsgTransfer.CHAR_2_MSG_TYPE(msg_type), MsgTransfer.CHAR_2_DATA_TYPE(data_type));
-            qyMsg.setFrom(from);
-            qyMsg.putMsg(msg);
-
-            return qyMsg;
-        } else if (DataType.STREAM.equals(MsgTransfer.CHAR_2_DATA_TYPE(data_type))) {
-            return streamDeal(msg_type, data_type, msg_length, socketChannel);
-        } else {
-            return streamDeal(msg_type, data_type, msg_length, socketChannel);
+    private static QyMsg NORM_MSG_Disassembly(char msg_type, char data_type, String msg_length, SocketChannel socketChannel) throws IOException, ClassNotFoundException {
+        MsgType msgType;
+        try {
+            msgType = MsgTransfer.CHAR_2_MSG_TYPE(msg_type);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法的消息类型: " + msg_type, e);
+        }
+        DataType dataType;
+        try {
+            dataType = MsgTransfer.CHAR_2_DATA_TYPE(data_type);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法的数据类型: " + data_type, e);
+        }
+        switch (dataType) {
+            case STRING -> {
+                byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
+                String s = new String(bytes, StandardCharsets.UTF_8);
+                String from = s.substring(0, CLIENT_ID_LENGTH);
+                String msg = s.substring(CLIENT_ID_LENGTH);
+                QyMsg qyMsg = new QyMsg(msgType, dataType);
+                qyMsg.setFrom(from);
+                qyMsg.putMsg(msg);
+                return qyMsg;
+            }
+            case OBJECT -> {
+                byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
+                return IoUtil.deserializationObj(bytes, QyMsg.class);
+            }
+            case STREAM -> {
+                return streamDeal(msg_type, data_type, msg_length, socketChannel);
+            }
+            default -> { //JSON FILE
+                byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
+                return JSON.parseObject(bytes, QyMsg.class);
+            }
         }
     }
 
@@ -262,8 +378,13 @@ public class DisassemblyMsg {
      * 异常消息组装
      */
     private static QyMsg ERR_MSG_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, SocketChannel socketChannel) throws IOException {
-
-        if (DataType.JSON.equals(MsgTransfer.CHAR_2_DATA_TYPE(data_type))) {
+        DataType dataType;
+        try {
+            dataType = MsgTransfer.CHAR_2_DATA_TYPE(data_type);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法的数据类型:" + data_type, e);
+        }
+        if (DataType.JSON.equals(dataType)) {
             byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
             return JSON.parseObject(bytes, QyMsg.class);
         } else {
@@ -276,10 +397,22 @@ public class DisassemblyMsg {
      * @description 流类型数据处理
      */
     private static QyMsg streamDeal(char msg_type, char data_type, String msg_length, SocketChannel socketChannel) throws IOException {
-        byte[] bytes = IoUtil.readBytes(socketChannel, 36);
-        QyMsg qyMsg = new QyMsg(MsgTransfer.CHAR_2_MSG_TYPE(msg_type), MsgTransfer.CHAR_2_DATA_TYPE(data_type));
+        MsgType msgType;
+        try {
+            msgType = MsgTransfer.CHAR_2_MSG_TYPE(msg_type);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法的消息类型: " + msg_type, e);
+        }
+        DataType dataType;
+        try {
+            dataType = MsgTransfer.CHAR_2_DATA_TYPE(data_type);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法的数据类型: " + data_type, e);
+        }
+        QyMsg qyMsg = new QyMsg(msgType, dataType);
+        byte[] bytes = IoUtil.readBytes(socketChannel, CLIENT_ID_LENGTH);
         qyMsg.setFrom(new String(bytes, StandardCharsets.UTF_8));
-        qyMsg.putMsg(IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX) - 36));
+        qyMsg.putMsg(IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX) - CLIENT_ID_LENGTH));
         return qyMsg;
     }
 }

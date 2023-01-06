@@ -55,9 +55,7 @@ public class HttpUtil {
             throw new IllegalMediaTypeException("不支持的媒体类型");
         }
     }
-
     public static JSONObject doPost(String url, Map<String, String> headers, Map<String, String> urlParam, Object body) throws Exception {
-        OkHttpClient httpclient = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(JSON.toJSONString(body), JSON_TYPE);
         Request.Builder builder = new Request.Builder();
         StringBuilder sb = new StringBuilder(url);

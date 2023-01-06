@@ -1,317 +1,95 @@
 package top.yqingyu.common.utils;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.hc.client5.http.classic.HttpClient;
-import org.apache.hc.client5.http.classic.methods.HttpDelete;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.classic.methods.HttpPut;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
-import org.apache.hc.client5.http.io.HttpClientConnectionManager;
-import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
-import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
-import org.apache.hc.core5.http.ContentType;
-import org.apache.hc.core5.http.HttpResponse;
-import org.apache.hc.core5.http.NameValuePair;
-import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
-import org.apache.hc.core5.http.io.entity.StringEntity;
-import org.apache.hc.core5.http.message.BasicNameValuePair;
-import org.apache.hc.core5.net.WWWFormCodec;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
+import okhttp3.*;
+import okio.Timeout;
+import top.yqingyu.common.exception.IllegalMediaTypeException;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class HttpUtil {
 
+    private static final MediaType JSON_TYPE = MediaType.parse("application/json; charset=UTF-8");
+
     /**
      * get
-     *
-     * @param host
-     * @param path
-     * @param method
-     * @param headers
-     * @param querys
-     * @return
-     * @throws Exception
      */
-    public static HttpResponse doGet(String host, String path, String method,
-                                     Map<String, String> headers,
-                                     Map<String, String> querys)
-            throws Exception {
-        HttpClient httpClient = wrapClient(host);
+    static OkHttpClient httpclient = new OkHttpClient();
 
-        HttpGet request = new HttpGet(buildUrl(host, path, querys));
-        for (Map.Entry<String, String> e : headers.entrySet()) {
-            request.addHeader(e.getKey(), e.getValue());
-        }
-
-        return httpClient.execute(request);
-    }
-
-    /**
-     * post form
-     *
-     * @param host
-     * @param path
-     * @param method
-     * @param headers
-     * @param querys
-     * @param bodys
-     * @return
-     * @throws Exception
-     */
-    public static HttpResponse doPost(String host, String path, String method,
-                                      Map<String, String> headers,
-                                      Map<String, String> querys,
-                                      Map<String, String> bodys)
-            throws Exception {
-        HttpClient httpClient = wrapClient(host);
-
-        HttpPost request = new HttpPost(buildUrl(host, path, querys));
-        for (Map.Entry<String, String> e : headers.entrySet()) {
-            request.addHeader(e.getKey(), e.getValue());
-        }
-
-        if (bodys != null) {
-            List<NameValuePair> nameValuePairList = new ArrayList<NameValuePair>();
-
-            for (String key : bodys.keySet()) {
-                nameValuePairList.add(new BasicNameValuePair(key, bodys.get(key)));
-            }
-
-            //http5
-            StringEntity stringEntity = new StringEntity(WWWFormCodec.format(
-                    nameValuePairList,
-                    ContentType.APPLICATION_JSON.getCharset()),
-                    ContentType.APPLICATION_JSON.withCharset(StandardCharsets.UTF_8));
-
-            request.setEntity(stringEntity);
-        }
-
-        return httpClient.execute(request);
-    }
-
-    /**
-     * Post String
-     *
-     * @param host
-     * @param path
-     * @param method
-     * @param headers
-     * @param querys
-     * @param body
-     * @return
-     * @throws Exception
-     */
-    public static HttpResponse doPost(String host, String path, String method,
-                                      Map<String, String> headers,
-                                      Map<String, String> querys,
-                                      String body)
-            throws Exception {
-        HttpClient httpClient = wrapClient(host);
-
-        HttpPost request = new HttpPost(buildUrl(host, path, querys));
-        for (Map.Entry<String, String> e : headers.entrySet()) {
-            request.addHeader(e.getKey(), e.getValue());
-        }
-
-        if (StringUtils.isNotBlank(body)) {
-            request.setEntity(new StringEntity(body, ContentType.APPLICATION_JSON.withCharset(StandardCharsets.UTF_8)));
-        }
-
-        return httpClient.execute(request);
-    }
-
-    /**
-     * Post stream
-     *
-     * @param host
-     * @param path
-     * @param method
-     * @param headers
-     * @param querys
-     * @param body
-     * @return
-     * @throws Exception
-     */
-    public static HttpResponse doPost(String host, String path, String method,
-                                      Map<String, String> headers,
-                                      Map<String, String> querys,
-                                      byte[] body)
-            throws Exception {
-        HttpClient httpClient = wrapClient(host);
-
-        HttpPost request = new HttpPost(buildUrl(host, path, querys));
-        for (Map.Entry<String, String> e : headers.entrySet()) {
-            request.addHeader(e.getKey(), e.getValue());
-        }
-
-        if (body != null) {
-            request.setEntity(new ByteArrayEntity(body, ContentType.APPLICATION_OCTET_STREAM));
-        }
-
-        return httpClient.execute(request);
-    }
-
-    /**
-     * Put String
-     *
-     * @param host
-     * @param path
-     * @param method
-     * @param headers
-     * @param querys
-     * @param body
-     * @return
-     * @throws Exception
-     */
-    public static HttpResponse doPut(String host, String path, String method,
-                                     Map<String, String> headers,
-                                     Map<String, String> querys,
-                                     String body)
-            throws Exception {
-        HttpClient httpClient = wrapClient(host);
-
-        HttpPut request = new HttpPut(buildUrl(host, path, querys));
-        for (Map.Entry<String, String> e : headers.entrySet()) {
-            request.addHeader(e.getKey(), e.getValue());
-        }
-
-        if (StringUtils.isNotBlank(body)) {
-            request.setEntity(new StringEntity(body));
-        }
-
-        return httpClient.execute(request);
-    }
-
-    /**
-     * Put stream
-     *
-     * @param host
-     * @param path
-     * @param method
-     * @param headers
-     * @param querys
-     * @param body
-     * @return
-     * @throws Exception
-     */
-    public static HttpResponse doPut(String host, String path, String method,
-                                     Map<String, String> headers,
-                                     Map<String, String> querys,
-                                     byte[] body)
-            throws Exception {
-        HttpClient httpClient = wrapClient(host);
-
-        HttpPut request = new HttpPut(buildUrl(host, path, querys));
-        for (Map.Entry<String, String> e : headers.entrySet()) {
-            request.addHeader(e.getKey(), e.getValue());
-        }
-
-        if (body != null) {
-            request.setEntity(new ByteArrayEntity(body, ContentType.APPLICATION_OCTET_STREAM));
-        }
-
-        return httpClient.execute(request);
-    }
-
-    /**
-     * Delete
-     *
-     * @param host
-     * @param path
-     * @param method
-     * @param headers
-     * @param querys
-     * @return
-     * @throws Exception
-     */
-    public static HttpResponse doDelete(String host, String path, String method,
-                                        Map<String, String> headers,
-                                        Map<String, String> querys)
-            throws Exception {
-        HttpClient httpClient = wrapClient(host);
-
-        HttpDelete request = new HttpDelete(buildUrl(host, path, querys));
-        for (Map.Entry<String, String> e : headers.entrySet()) {
-            request.addHeader(e.getKey(), e.getValue());
-        }
-
-        return httpClient.execute(request);
-    }
-
-    private static String buildUrl(String host, String path, Map<String, String> querys) throws UnsupportedEncodingException {
-        StringBuilder sbUrl = new StringBuilder();
-        sbUrl.append(host);
-        if (!StringUtils.isBlank(path)) {
-            sbUrl.append(path);
-        }
-        if (null != querys) {
-            StringBuilder sbQuery = new StringBuilder();
-            for (Map.Entry<String, String> query : querys.entrySet()) {
-                if (0 < sbQuery.length()) {
-                    sbQuery.append("&");
+    public static JSONObject doGet(String url, Map<String, String> headers, Map<String, String> urlParam) throws Exception {
+        Request.Builder builder = new Request.Builder().get();
+        StringBuilder sb = new StringBuilder(url);
+        boolean contains = url.contains("?");
+        if (null != urlParam) {
+            AtomicInteger integer = new AtomicInteger();
+            urlParam.forEach((a, b) -> {
+                if (integer.getAndIncrement() == 0 && !contains) {
+                    sb.append("?");
+                } else if (sb.charAt('?') != sb.length() - 1) {
+                    sb.append("&");
                 }
-                if (StringUtils.isBlank(query.getKey()) && !StringUtils.isBlank(query.getValue())) {
-                    sbQuery.append(query.getValue());
-                }
-                if (!StringUtils.isBlank(query.getKey())) {
-                    sbQuery.append(query.getKey());
-                    if (!StringUtils.isBlank(query.getValue())) {
-                        sbQuery.append("=");
-                        sbQuery.append(URLEncoder.encode(query.getValue(), StandardCharsets.UTF_8));
-                    }
-                }
-            }
-            if (0 < sbQuery.length()) {
-                sbUrl.append("?").append(sbQuery);
-            }
-        }
+                sb.append(a).append("=").append(b);
 
-        return sbUrl.toString();
+            });
+        }
+        if (null != headers) {
+            headers.forEach(builder::addHeader);
+        }
+        builder.url(sb.toString());
+        Request request = builder.build();
+        Call call = httpclient.newCall(request);
+        Timeout timeout = call.timeout();
+        timeout.timeout(30, TimeUnit.SECONDS);
+        Response execute = call.execute();
+        ResponseBody body = execute.body();
+
+        MediaType contentType = body.contentType();
+        if (JSON_TYPE.equals(contentType)) {
+            String string = body.string();
+            return JSON.parseObject(string);
+        } else {
+            throw new IllegalMediaTypeException("不支持的媒体类型");
+        }
     }
 
-    private static HttpClient wrapClient(String host) throws NoSuchAlgorithmException, KeyManagementException {
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        if (host.startsWith("https://")) {
-            return sslClient(httpClient);
+    public static JSONObject doPost(String url, Map<String, String> headers, Map<String, String> urlParam, Object body) throws Exception {
+        OkHttpClient httpclient = new OkHttpClient();
+        RequestBody requestBody = RequestBody.create(JSON.toJSONString(body), JSON_TYPE);
+        Request.Builder builder = new Request.Builder();
+        StringBuilder sb = new StringBuilder(url);
+        boolean contains = url.contains("?");
+        if (null != urlParam) {
+            AtomicInteger integer = new AtomicInteger();
+            urlParam.forEach((a, b) -> {
+                if (integer.getAndIncrement() == 0 && !contains) {
+                    sb.append("?");
+                } else if (sb.charAt('?') != sb.length() - 1) {
+                    sb.append("&");
+                }
+                sb.append(a).append("=").append(b);
+
+            });
         }
-
-        return httpClient;
-    }
-
-    private static HttpClient sslClient(HttpClient httpClient) throws KeyManagementException, NoSuchAlgorithmException {
-
-        SSLContext ctx = SSLContext.getInstance("TLS");
-        X509TrustManager tm = new X509TrustManager() {
-            public X509Certificate[] getAcceptedIssuers() {
-                return null;
-            }
-
-            public void checkClientTrusted(X509Certificate[] xcs, String str) {
-
-            }
-
-            public void checkServerTrusted(X509Certificate[] xcs, String str) {
-
-            }
-        };
-        ctx.init(null, new TrustManager[]{tm}, null);
-        SSLConnectionSocketFactory sslFactory = new SSLConnectionSocketFactory(ctx, new NoopHostnameVerifier());
-        HttpClientConnectionManager connMgr = PoolingHttpClientConnectionManagerBuilder.create().setSSLSocketFactory(sslFactory).build();
-        return HttpClients.custom().setConnectionManager(connMgr).setUserAgent("MyService").build();
+        if (null != headers) {
+            headers.forEach(builder::addHeader);
+        }
+        builder.url(sb.toString()).post(requestBody);
+        Request request = builder.build();
+        Call call = httpclient.newCall(request);
+        Timeout timeout = call.timeout();
+        timeout.timeout(30, TimeUnit.SECONDS);
+        Response execute = call.execute();
+        ResponseBody responseBody = execute.body();
+        MediaType contentType = responseBody.contentType();
+        if (JSON_TYPE.equals(contentType)) {
+            String string = responseBody.string();
+            return JSON.parseObject(string);
+        } else {
+            throw new IllegalMediaTypeException("不支持的媒体类型");
+        }
     }
 }

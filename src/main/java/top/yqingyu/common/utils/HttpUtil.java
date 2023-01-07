@@ -48,7 +48,7 @@ public class HttpUtil {
         ResponseBody body = execute.body();
 
         MediaType contentType = body.contentType();
-        if (JSON_TYPE.equals(contentType)) {
+        if (JSON_TYPE.type().equals(contentType.type())) {
             String string = body.string();
             return JSON.parseObject(string);
         } else {
@@ -83,7 +83,7 @@ public class HttpUtil {
         Response execute = call.execute();
         ResponseBody responseBody = execute.body();
         MediaType contentType = responseBody.contentType();
-        if (JSON_TYPE.equals(contentType)) {
+        if (JSON_TYPE.type().equals(contentType.type())) {
             String string = responseBody.string();
             return JSON.parseObject(string);
         } else {

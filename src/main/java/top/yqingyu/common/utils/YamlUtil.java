@@ -86,7 +86,7 @@ public class YamlUtil {
             });
         }
 
-        if (loadType == LoadType.OUTER || loadType == LoadType.BOTH) {
+        if (loadType == LoadType.INNER || loadType == LoadType.BOTH) {
             try {
                 HashMap<String, InputStream> mapIn = getYamlInner(fileName);
 
@@ -261,7 +261,9 @@ public class YamlUtil {
 
 
     public static enum LoadType {
-        OUTER, INNER, BOTH;
+        OUTER,
+        INNER,
+        BOTH;
     }
 
     /**

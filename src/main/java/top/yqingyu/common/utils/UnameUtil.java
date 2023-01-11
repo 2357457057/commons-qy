@@ -8,4 +8,7 @@ package top.yqingyu.common.utils;
  * @createTime 2022年09月17日 11:11:00
  */
 public class UnameUtil {
+    public static boolean isWindows() {
+        return "\\".equals(System.getProperty("file.separator"));
+    }
 }

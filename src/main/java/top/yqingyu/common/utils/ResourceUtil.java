@@ -1,14 +1,21 @@
 package top.yqingyu.common.utils;
 
 import cn.hutool.core.lang.Assert;
+import org.apache.commons.lang3.StringUtils;
+import top.yqingyu.common.qydata.DataList;
+import top.yqingyu.common.qydata.DataMap;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static top.yqingyu.common.utils.UnameUtil.isWindows;
 
 /**
  * @author YYJ
@@ -169,6 +176,156 @@ public class ResourceUtil {
             stream.close();
         }
         return outputStream.toByteArray();
+    }
+
+    /**
+     * @param cfgFileName 配置文件名称
+     * @param target_Regx 目标文件正则表达式
+     * @return 目标文件list
+     * @author YYJ
+     * @description 运行路径中的文件
+     */
+    public static HashMap<String, File> getConfigFileOuter(String rootPath, String cfgFileName, String target_Regx) {
+
+        File file = new File(rootPath);
+
+        AtomicInteger atomicInteger = new AtomicInteger();
+
+        Pattern tgPattern = Pattern.compile(target_Regx);
+
+
+        File[] files = file.listFiles((dir, name) -> {
+            if (dir.isDirectory())
+                return true;
+            Matcher matcher = tgPattern.matcher(name);
+            return matcher.find();
+        });
+
+        HashMap<String, File> map = new HashMap<>();
+        LinkedList<File> queue = new LinkedList<>(Arrays.asList(files));
+        do {
+            File poll = queue.poll();
+            if (poll != null) {
+
+                File[] listFiles = null;
+                if (poll.isDirectory()) {
+                    listFiles = poll.listFiles((dir, name) -> {
+                        if (dir.isDirectory())
+                            return true;
+                        Matcher matcher = tgPattern.matcher(name);
+                        return matcher.find();
+                    });
+                }
+                if (listFiles != null && listFiles.length > 0)
+                    queue.addAll(Arrays.asList(listFiles));
+
+                if (poll.isFile()) {
+                    String name = poll.getName();
+                    Matcher matcher = tgPattern.matcher(name);
+                    if (name.contains(cfgFileName) && matcher.find()) {
+                        if (map.get(name) != null)
+                            map.put(name + "_" + atomicInteger.getAndIncrement(), poll);
+                        else
+                            map.put(name, poll);
+                    }
+                }
+            }
+        } while (queue.size() > 0);
+
+        return map;
+    }
+
+
+    public static DataList getConfigFileInner(String cfgFileName, String target_Regx) throws IOException {
+
+
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        Enumeration<URL> resources = classLoader.getResources("/");
+        Iterator<URL> urlIterator = resources.asIterator();
+
+        DataList list = new DataList();
+
+        while (urlIterator.hasNext()) {
+            URL url = urlIterator.next();
+            String protocol = url.getProtocol();
+            if (protocol.equals("jar")) {
+                JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
+                JarFile jarFile = jarURLConnection.getJarFile();
+                Enumeration<JarEntry> jarEntries = jarFile.entries();
+                while (jarEntries.hasMoreElements()) {
+                    JarEntry jarEntry = jarEntries.nextElement();
+                    String jarEntryName = jarEntry.getName();
+                    if (jarEntryName.contains(cfgFileName) && jarEntryName.matches(target_Regx)) {
+                        DataMap dataMap = new DataMap();
+                        dataMap.put("path", jarEntryName);
+                        String[] split = jarEntryName.split("/");
+                        dataMap.put("name", split[split.length - 1]);
+                        list.add(dataMap);
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    /**
+     * @param rootPath 文件映射
+     *      eg  /a
+     *           |
+     *           ----c
+     *               |
+     *               ---d.txt
+     *               |
+     *               ---e.exe
+     *  getFilePathMapping("/a")
+     *              return
+     *                 /c/d.txt     /a/c/d.txt
+     *                 /c/e.txt      /a/c/e.txt
+     * @return 目标文件list
+     * @author YYJ
+     */
+    public static HashMap<String, String> getFilePathMapping(String rootPath) {
+        String file_separator = System.getProperty("file.separator");
+
+        if (isWindows() && rootPath.indexOf("/") == rootPath.length() - 1)
+            rootPath = StringUtils.removeEnd(rootPath, "/");
+
+        if (rootPath.endsWith(file_separator) && rootPath.length() > 1)
+            rootPath = StringUtils.removeEnd(rootPath, file_separator);
+
+        File file = new File(rootPath);
+        File[] files = file.listFiles();
+        HashMap<String, String> map = new HashMap<>();
+
+        assert files != null;
+        LinkedList<File> queue = new LinkedList<>(Arrays.asList(files));
+        do {
+            File poll = queue.poll();
+            if (poll != null) {
+
+                File[] listFiles = null;
+                if (poll.isDirectory()) {
+                    listFiles = poll.listFiles();
+                }
+                if (listFiles != null && listFiles.length > 0)
+                    queue.addAll(Arrays.asList(listFiles));
+
+                if (poll.isFile()) {
+                    String path = poll.getPath();
+                    String key = path.replace(rootPath, "");
+
+                    if (isWindows()) {
+                        key = key.replaceAll("\\\\", "/");
+                        if (key.indexOf("/") != 0)
+                            key = "/" + key;
+                    }
+
+                    map.put(key, path);
+                }
+            }
+        } while (queue.size() > 0);
+
+        return map;
     }
 
     private final static ConcurrentHashMap<String, byte[]> FILE_RESOURCE_CACHE = new ConcurrentHashMap<>();

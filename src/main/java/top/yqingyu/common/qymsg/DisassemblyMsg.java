@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.exception.IllegalQyMsgException;
 import top.yqingyu.common.utils.IoUtil;
+import top.yqingyu.common.utils.StringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -106,6 +107,9 @@ public class DisassemblyMsg {
         byte[] readBytes = IoUtil.readBytes(socketChannel, HEADER_LENGTH);
         Thread.sleep(sleep);
         String s = new String(readBytes, StandardCharsets.UTF_8);
+        if (StringUtil.isNotBlank(s) && s.length() != HEADER_LENGTH) {
+            throw new IllegalQyMsgException("消息头长度非法 消息头为：" + s);
+        }
         char $0 = s.charAt(MSG_TYPE_IDX);//msg  type
         char $1 = s.charAt(DATA_TYPE_IDX);//data type
         char $2 = s.charAt(SEGMENTATION_IDX);//是否分片

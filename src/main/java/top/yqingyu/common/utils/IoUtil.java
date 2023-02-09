@@ -4,11 +4,14 @@ import cn.hutool.core.io.IORuntimeException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.yqingyu.common.bean.NetChannel;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.nio.channels.CompletionHandler;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -67,6 +70,7 @@ public class IoUtil {
      * description: 读取InputStream中的数据直至读到一定长度的 byte
      * (绝对长度)
      * 或抛出异常
+     *
      * @author yqingyu
      * DATE 2022/4/22
      */
@@ -191,6 +195,7 @@ public class IoUtil {
         return bytes;
 
     }
+
     /**
      * description:读取SocketChannel中的数据直至读到一定长度的    byte
      *
@@ -203,7 +208,7 @@ public class IoUtil {
         byte[] bytes = new byte[0];
         while (true) {
             byteBuffer.clear();
-            int n = socketChannel.read(byteBuffer).get(1,TimeUnit.SECONDS);
+            int n = socketChannel.read(byteBuffer).get(1, TimeUnit.MILLISECONDS);
             if (n == -1) {
                 break;
             }
@@ -221,6 +226,13 @@ public class IoUtil {
         }
         return bytes;
 
+    }
+
+    public static byte[] readBytes2(NetChannel netChannel, int len) throws IOException, ExecutionException, InterruptedException, TimeoutException {
+        if (netChannel.isNioChannel()) {
+            return readBytes2(netChannel.getNChannel(), len);
+        }
+        return readBytes2(netChannel.getAChannel(), len);
     }
 
     /**
@@ -259,6 +271,25 @@ public class IoUtil {
         }
         return bytes;
 
+    }
+
+    /**
+     * description: for http
+     *
+     * @author yqingyu
+     * DATE 2022/4/21
+     */
+    public static byte[] readBytes2(AsynchronousSocketChannel socketChannel, int len) throws IOException, ExecutionException, InterruptedException, TimeoutException {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(len);
+        byteBuffer.clear();
+        int n = socketChannel.read(byteBuffer).get();
+        byteBuffer.flip();
+        int limit = byteBuffer.limit();
+        byte[] currentData = new byte[limit];
+        for (int i = 0; i < limit; i++) {
+            currentData[i] = byteBuffer.get(i);
+        }
+        return currentData;
     }
 
     /***
@@ -316,6 +347,49 @@ public class IoUtil {
         thread.start();
         return futureTask.get(timeout, TimeUnit.MILLISECONDS);
     }
+
+    public static <T> boolean writeBytes(AsynchronousSocketChannel socketChannel, byte[] bytes, long timeout, T attachment, CompletionHandler<Integer, ? super T> handler) throws Exception {
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bytes.length);
+        byteBuffer.put(bytes);
+        byteBuffer.flip();
+        socketChannel.write(byteBuffer, timeout, TimeUnit.MILLISECONDS, attachment, handler);
+        return true;
+    }
+
+    public static <T> boolean writeBytes(AsynchronousSocketChannel socketChannel, ByteBuffer byteBuffer, long timeout, T attachment, CompletionHandler<Integer, ? super T> handler) throws Exception {
+        byteBuffer.limit();
+        byteBuffer.flip();
+        socketChannel.write(byteBuffer, timeout, TimeUnit.MILLISECONDS, attachment, handler);
+        return true;
+    }
+
+    public static <T> boolean writeBytes(NetChannel netChannel, ByteBuffer byteBuffer, long timeout, T attachment, CompletionHandler<Integer, ? super T> handler) throws Exception {
+        if (netChannel.isAioChannel()) {
+            return writeBytes(netChannel.getAChannel(), byteBuffer, timeout, attachment, handler);
+        }
+        return writeBytes(netChannel.getNChannel(), byteBuffer, timeout);
+    }
+
+    public static <T> boolean writeBytes(NetChannel netChannel, byte[] bytes, long timeout, T attachment, CompletionHandler<Integer, ? super T> handler) throws Exception {
+        if (netChannel.isAioChannel()) {
+            return writeBytes(netChannel.getAChannel(), bytes, timeout, attachment, handler);
+        }
+        return writeBytes(netChannel.getNChannel(), bytes, timeout);
+    }
+
+    public static int leftToRight(ReadableByteChannel leftChannel, AsynchronousSocketChannel rightChannel, ByteBuffer byteBuffer) throws IOException, ExecutionException, InterruptedException {
+        byteBuffer.clear();
+        int read = leftChannel.read(byteBuffer);
+        byteBuffer.flip();
+        long l = 0;
+        do {
+            l += rightChannel.write(byteBuffer).get();
+        } while (read != l);
+
+        return read;
+
+    }
+
 
     public static void writeBytes(Socket socket, byte[] bytes) throws Exception {
         OutputStream outputStream = socket.getOutputStream();

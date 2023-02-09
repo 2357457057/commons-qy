@@ -2,7 +2,6 @@ package top.yqingyu.common.server$aio;
 
 import top.yqingyu.common.exception.IllegalStartupOrderException;
 import top.yqingyu.common.qydata.ConcurrentQyMap;
-import top.yqingyu.common.server$aio.core.EventHandler;
 import top.yqingyu.common.utils.ThreadUtil;
 
 import java.io.IOException;
@@ -31,7 +30,7 @@ public class CreateServer {
     private boolean notBind = true;
     private boolean notHandler = true;
 
-    public final static ConcurrentQyMap  qyMap = new ConcurrentQyMap();
+    public final static ConcurrentQyMap qyMap = new ConcurrentQyMap();
 
     CreateServer() {
         threads = Runtime.getRuntime().availableProcessors() * 2;
@@ -85,18 +84,19 @@ public class CreateServer {
         return this;
     }
 
-    public CreateServer setHandler(EventHandler handler) {
+    public <T> CreateServer setHandler(EventHandler<T> handler) throws IOException {
+        if (notInit) init();
         notHandler = false;
         this.eventHandler = handler;
+        handler.setServerSokChannel(this.serverSocketChannel);
         return this;
     }
 
     public void start() throws IOException {
-        if (notInit) init();
         if (notBind) bind(this.port);
         if (notHandler)
             throw new IllegalStartupOrderException("setHandler(EventHandler handler)");
-        this.serverSocketChannel.accept(this, eventHandler);
+        this.serverSocketChannel.accept(eventHandler, eventHandler);
     }
 
     public AsynchronousServerSocketChannel getSocketChannel() {

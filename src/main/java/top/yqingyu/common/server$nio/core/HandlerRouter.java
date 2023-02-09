@@ -2,6 +2,7 @@ package top.yqingyu.common.server$nio.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.yqingyu.common.bean.NetChannel;
 import top.yqingyu.common.qydata.ConcurrentQyMap;
 
 import java.io.IOException;
@@ -57,9 +58,10 @@ public class HandlerRouter {
 
             EventHandler nextHandler = handlerHolder.nextHandler();
             Selector nextSelector = nextHandler.getSelector();
-            nextHandler.SOCKET_CHANNELS.put(socketChannel.hashCode(),
+            NetChannel netChannel = new NetChannel(socketChannel);
+            nextHandler.NET_CHANNELS.put(netChannel.hashCode(),
                     new ConcurrentQyMap<String, Object>()
-                            .putConsecutive("SocketChannel", socketChannel)
+                            .putConsecutive("NetChannel", netChannel)
                             .putConsecutive("LocalDateTime", LocalDateTime.now())
             );
 

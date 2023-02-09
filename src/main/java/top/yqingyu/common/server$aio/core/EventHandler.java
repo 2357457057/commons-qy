@@ -3,11 +3,13 @@ package top.yqingyu.common.server$aio.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.bean.NetChannel;
+import top.yqingyu.common.qydata.ConcurrentQyMap;
 import top.yqingyu.common.server$aio.CreateServer;
 import top.yqingyu.common.utils.IoUtil;
 
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
+import java.time.LocalDateTime;
 
 /**
  * @author YYJ
@@ -19,10 +21,18 @@ import java.nio.channels.CompletionHandler;
 public class EventHandler implements CompletionHandler<AsynchronousSocketChannel, CreateServer> {
     static final Logger logger = LoggerFactory.getLogger(EventHandler.class);
 
+    protected final ConcurrentQyMap<Integer, ConcurrentQyMap<String, Object>> NET_CHANNELS = new ConcurrentQyMap<>();
+
     @Override
     public final void completed(AsynchronousSocketChannel channel, CreateServer attachment) {
         attachment.getSocketChannel().accept(attachment, this);
-        IO(new NetChannel(channel), attachment);
+        NetChannel netChannel = new NetChannel(channel);
+        NET_CHANNELS.put(netChannel.hashCode(),
+                new ConcurrentQyMap<String, Object>()
+                        .putConsecutive("NetChannel", netChannel)
+                        .putConsecutive("LocalDateTime", LocalDateTime.now())
+        );
+        IO(netChannel, attachment);
     }
 
     @Override

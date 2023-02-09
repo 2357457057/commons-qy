@@ -31,7 +31,7 @@ public abstract class EventHandler implements Runnable {
 
     protected static final OperatingRecorder<Integer> OPERATE_RECORDER = OperatingRecorder.createNormalRecorder(1024L * 1024);
 
-    protected final ConcurrentQyMap<Integer, ConcurrentQyMap<String, Object>> SOCKET_CHANNELS = new ConcurrentQyMap<>();
+    protected final ConcurrentQyMap<Integer, ConcurrentQyMap<String, Object>> NET_CHANNELS = new ConcurrentQyMap<>();
 
     /**
      * 是否正在重建当前 selector
@@ -112,11 +112,11 @@ public abstract class EventHandler implements Runnable {
         OPERATE_RECORDER.remove(this.selector.hashCode());
 
         this.selector = Selector.open();
-        SOCKET_CHANNELS.forEach((I, S) -> {
+        NET_CHANNELS.forEach((I, S) -> {
             try {
-                if (S.get("SocketChannel", SocketChannel.class).isOpen() && S.get("SocketChannel", SocketChannel.class).isConnectionPending())
-                    S.get("SocketChannel", SocketChannel.class).register(this.selector, SelectionKey.OP_READ);
-                else SOCKET_CHANNELS.remove(I);
+                if (S.get("NetChannel", NetChannel.class).isOpen() && S.get("NetChannel", NetChannel.class).isConnectionPending())
+                    S.get("NetChannel", NetChannel.class).register(this.selector, SelectionKey.OP_READ);
+                else NET_CHANNELS.remove(I);
             } catch (Exception e) {
                 log.error("selector 重建异常", e);
             }

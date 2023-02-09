@@ -276,4 +276,15 @@ public class NetChannel {
         }
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        if (isNioChannel) {
+            return nioChannel.hashCode();
+        }
+        if (isAioChannel) {
+            return aioChannel.hashCode();
+        }
+        return super.hashCode();
+    }
 }

@@ -1,7 +1,8 @@
-package top.yqingyu.common.nio$server.core;
+package top.yqingyu.common.server$nio.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.yqingyu.common.bean.NetChannel;
 import top.yqingyu.common.qydata.ConcurrentQyMap;
 
 import java.io.IOException;
@@ -78,9 +79,9 @@ public abstract class EventHandler implements Runnable {
                     SocketChannel channel = (SocketChannel) selectionKey.channel();
 
                     if (selectionKey.isReadable()) {
-                        read(selector, channel);
+                        read(selector,new NetChannel(channel));
                     } else {
-                        write(selector, channel);
+                        write(selector, new NetChannel(channel));
                     }
                 }
 
@@ -98,11 +99,11 @@ public abstract class EventHandler implements Runnable {
         }
     }
 
-    public abstract void read(Selector selector, SocketChannel socketChannel) throws Exception;
+    public abstract void read(Selector selector, NetChannel socketChannel) throws Exception;
 
-    public abstract void write(Selector selector, SocketChannel socketChannel) throws Exception;
+    public abstract void write(Selector selector, NetChannel socketChannel) throws Exception;
 
-    public abstract void assess(Selector selector, SocketChannel socketChannel) throws Exception;
+    public abstract void assess(Selector selector, NetChannel socketChannel) throws Exception;
 
 
     private void rebuildSelector() throws IOException {

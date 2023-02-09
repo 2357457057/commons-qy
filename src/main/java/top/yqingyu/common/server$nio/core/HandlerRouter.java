@@ -1,4 +1,4 @@
-package top.yqingyu.common.nio$server.core;
+package top.yqingyu.common.server$nio.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

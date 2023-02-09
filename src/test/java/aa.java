@@ -1,12 +1,12 @@
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.yqingyu.common.nio$server.core.EventHandler;
+import top.yqingyu.common.bean.NetChannel;
+import top.yqingyu.common.server$nio.core.EventHandler;
 import top.yqingyu.common.utils.IoUtil;
 
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.StandardOpenOption;
 
@@ -35,13 +35,13 @@ public class aa extends EventHandler {
      * @throws Exception
      */
     @Override
-    public void read(Selector selector, SocketChannel socketChannel) throws Exception {
-        byte[] bytes = IoUtil.readBytes2(socketChannel, 5);
+    public void read(Selector selector, NetChannel socketChannel) throws Exception {
+        byte[] bytes = IoUtil.readBytes2(socketChannel.getNChannel(), 5);
         String s = new String(bytes, StandardCharsets.UTF_8);
         int p = Integer.parseInt(s, 32);
         FileChannel open = FileChannel.open(test.file.toPath(), StandardOpenOption.WRITE);
 
-        long l =  open.transferFrom(socketChannel, Math.max(p * test.l - 1, 0),test.l);
+        long l =  open.transferFrom(socketChannel.getNChannel(), Math.max(p * test.l - 1, 0),test.l);
         //        byte[] bytes2 = IoUtil.readBytes(socketChannel, 4096);
 //        ByteBuffer allocate = ByteBuffer.allocate(bytes2.length);
 //        allocate.put(bytes2);
@@ -58,7 +58,7 @@ public class aa extends EventHandler {
      * @throws Exception
      */
     @Override
-    public void write(Selector selector, SocketChannel socketChannel) throws Exception {
+    public void write(Selector selector, NetChannel socketChannel) throws Exception {
 
     }
 
@@ -68,7 +68,7 @@ public class aa extends EventHandler {
      * @throws Exception
      */
     @Override
-    public void assess(Selector selector, SocketChannel socketChannel) throws Exception {
+    public void assess(Selector selector, NetChannel socketChannel) throws Exception {
 
     }
 }

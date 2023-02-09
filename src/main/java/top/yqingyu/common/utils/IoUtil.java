@@ -8,14 +8,13 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -177,6 +176,37 @@ public class IoUtil {
                 break;
             }
 
+            byteBuffer.flip();
+            int limit = byteBuffer.limit();
+            byte[] currentData = new byte[limit];
+            for (int i = 0; i < limit; i++) {
+                currentData[i] = byteBuffer.get(i);
+            }
+            bytes = ArrayUtils.addAll(bytes, currentData);
+
+            if (bytes.length == len) {
+                break;
+            }
+        }
+        return bytes;
+
+    }
+    /**
+     * description:读取SocketChannel中的数据直至读到一定长度的    byte
+     *
+     * @author yqingyu
+     * DATE 2022/4/21
+     */
+    public static byte[] readBytes(AsynchronousSocketChannel socketChannel, int len) throws IOException, ExecutionException, InterruptedException, TimeoutException {
+
+        ByteBuffer byteBuffer = ByteBuffer.allocate(len);
+        byte[] bytes = new byte[0];
+        while (true) {
+            byteBuffer.clear();
+            int n = socketChannel.read(byteBuffer).get(1,TimeUnit.SECONDS);
+            if (n == -1) {
+                break;
+            }
             byteBuffer.flip();
             int limit = byteBuffer.limit();
             byte[] currentData = new byte[limit];

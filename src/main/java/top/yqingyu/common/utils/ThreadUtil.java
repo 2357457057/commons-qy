@@ -103,6 +103,15 @@ public class ThreadUtil {
         }
     }
 
+
+    public static ThreadFactory createThFactoryG(String poolName, String threadName){
+        return new QyGlobalPoolNameFactory().QyThreadFactory(poolName, threadName);
+    }
+
+    public static ThreadFactory createThFactoryC(String poolName, String threadName){
+        return new QyCurrentPoolNameFactory().QyThreadFactory(poolName, threadName);
+    }
+
     /**
      * @param name 当前线程名称
      * @author YYJ

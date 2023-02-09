@@ -1,13 +1,13 @@
-package top.yqingyu.common.nio$server.event$demo.event;
+package top.yqingyu.common.server$nio.event$demo.event;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.yqingyu.common.nio$server.core.EventHandler;
+import top.yqingyu.common.bean.NetChannel;
+import top.yqingyu.common.server$nio.core.EventHandler;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
 
 /**
  * @author YYJ
@@ -45,7 +45,7 @@ public class DemoEventHandler extends EventHandler {
      * @throws IOException
      */
     @Override
-    public void read(Selector selector,SocketChannel socketChannel) throws IOException {
+    public void read(Selector selector, NetChannel socketChannel) throws IOException {
         log.info("HELLO WORLD! - ++");
         socketChannel.register(selector, SelectionKey.OP_WRITE);
     }
@@ -56,7 +56,7 @@ public class DemoEventHandler extends EventHandler {
      * @throws IOException
      */
     @Override
-    public void write(Selector selector, SocketChannel socketChannel) throws IOException {
+    public void write(Selector selector, NetChannel socketChannel) throws IOException {
         log.info("HELLO WORLD! - ==");
         socketChannel.close();
     }
@@ -67,7 +67,7 @@ public class DemoEventHandler extends EventHandler {
      * @throws IOException
      */
     @Override
-    public void assess(Selector selector, SocketChannel socketChannel) throws IOException, InterruptedException {
+    public void assess(Selector selector, NetChannel socketChannel) throws IOException, InterruptedException {
             while (true){
                 Object take = QUEUE.take();
 

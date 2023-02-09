@@ -1,4 +1,4 @@
-package top.yqingyu.common.nio$server.event$demo.server;
+package top.yqingyu.common.server$nio.event$demo.server;
 
 import top.yqingyu.common.utils.LocalDateTimeUtil;
 

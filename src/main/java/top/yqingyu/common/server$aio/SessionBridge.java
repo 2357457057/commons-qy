@@ -23,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 public class SessionBridge {
     public static final ConcurrentQyMap<Integer, ConcurrentQyMap<String, Object>> NET_CHANNELS = new ConcurrentQyMap<>();
     private final AsynchronousServerSocketChannel serverSocketChannel;
-    static Logger logger = LoggerFactory.getLogger(ReadHandler.class);
     static Class<? extends Session> sessionClazz;
     final Session session;
     private NetChannel netChannel;
@@ -37,7 +36,6 @@ public class SessionBridge {
     }
 
     void ready(AsynchronousSocketChannel channel) {
-        logger.warn("ready");
         try {
             SessionBridge sessionBridge = new SessionBridge(this.serverSocketChannel);
             serverSocketChannel.accept(sessionBridge, new AcceptHandler(sessionBridge));

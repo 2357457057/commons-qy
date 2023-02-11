@@ -14,7 +14,6 @@ import java.nio.channels.CompletionHandler;
  */
 public class ReadHandler implements CompletionHandler<Integer, SessionBridge> {
 
-    static Logger logger = LoggerFactory.getLogger(ReadHandler.class);
     private final SessionBridge sessionBridge;
 
     ReadHandler(SessionBridge sessionBridge) {

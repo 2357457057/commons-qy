@@ -1,8 +1,5 @@
 package top.yqingyu.common.server$aio;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 
@@ -15,7 +12,6 @@ import java.nio.channels.CompletionHandler;
  */
 public class AcceptHandler implements CompletionHandler<AsynchronousSocketChannel, SessionBridge> {
 
-    static Logger logger = LoggerFactory.getLogger(AcceptHandler.class);
     private final SessionBridge sessionBridge;
 
     public AcceptHandler(SessionBridge sessionBridge) {

@@ -58,13 +58,11 @@ public class SessionBridge {
     final CountDownLatch writeLock = new CountDownLatch(1);
 
     Integer writeComplete() throws InterruptedException {
-        logger.warn("wAwait");
         writeLock.await();
         return writeResult;
     }
 
     Integer readComplete() throws InterruptedException {
-        logger.warn("rAwait");
         readLock.await();
         return readResult;
     }

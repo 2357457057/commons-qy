@@ -24,7 +24,6 @@ public class AcceptHandler implements CompletionHandler<AsynchronousSocketChanne
 
     @Override
     public void completed(AsynchronousSocketChannel result, SessionBridge attachment) {
-        logger.warn("accept");
         sessionBridge.ready(result);
     }
 

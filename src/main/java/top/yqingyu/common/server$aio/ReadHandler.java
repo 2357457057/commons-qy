@@ -23,7 +23,6 @@ public class ReadHandler implements CompletionHandler<Integer, SessionBridge> {
 
     @Override
     public void completed(Integer result, SessionBridge attachment) {
-        logger.warn("completed");
         sessionBridge.readLock.countDown();
         sessionBridge.readResult = result;
     }

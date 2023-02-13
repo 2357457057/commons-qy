@@ -170,7 +170,9 @@ public class ThreadUtil {
      * @author YYJ
      * @description 创建定时任务
      */
-    public static void createPeriodScheduled(long iniDelay, long period, TimeUnit unit, Runnable runnable) {
-        createScheduledPool(1, "Scheduled", "").scheduleAtFixedRate(runnable, iniDelay, period, unit);
+    public static ScheduledThreadPoolExecutor createPeriodScheduled(long iniDelay, long period, TimeUnit unit, Runnable runnable) {
+        ScheduledThreadPoolExecutor scheduled = createScheduledPool(1, "Scheduled", "");
+        scheduled.scheduleAtFixedRate(runnable, iniDelay, period, unit);
+        return scheduled;
     }
 }

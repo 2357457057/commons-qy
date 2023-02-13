@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -129,7 +130,7 @@ public class MsgHelper implements Runnable {
         String monitor = Thread.currentThread().getName() + "monitor";
 
 
-        ThreadUtil.createPeriodScheduled(0, 30, TimeUnit.MINUTES, () -> {
+        ScheduledThreadPoolExecutor scheduled = ThreadUtil.createPeriodScheduled(0, 30, TimeUnit.MINUTES, () -> {
             ThreadUtil.setThisThreadName(monitor);
             try {
                 lock.lock();
@@ -168,7 +169,10 @@ public class MsgHelper implements Runnable {
         while (running.get()) {
             try {
                 lock.lock();
-                QyMsg take = inQueue.take();
+                QyMsg take = inQueue.poll(1000, TimeUnit.MILLISECONDS);
+                if (take == null){
+                    continue;
+                }
                 String partition_id = take.getPartition_id();
                 Integer denominator = take.getDenominator();
                 ArrayList<QyMsg> list = MSG_CONTAINER.get(partition_id);
@@ -235,6 +239,6 @@ public class MsgHelper implements Runnable {
                 lock.unlock();
             }
         }
-
+        scheduled.shutdown();
     }
 }

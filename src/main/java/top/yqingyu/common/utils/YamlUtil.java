@@ -1,20 +1,13 @@
 package top.yqingyu.common.utils;
 
 import com.alibaba.fastjson2.JSON;
-import org.apache.commons.lang3.StringUtils;
 import org.yaml.snakeyaml.Yaml;
-import top.yqingyu.common.qydata.DataMap;
 import top.yqingyu.common.qydata.DataList;
+import top.yqingyu.common.qydata.DataMap;
 
 import java.io.*;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static top.yqingyu.common.utils.ResourceUtil.getConfigFileInner;
 import static top.yqingyu.common.utils.ResourceUtil.getConfigFileOuter;
@@ -76,14 +69,16 @@ public class YamlUtil {
             HashMap<String, File> map = getYamlOuter(fileName);
             map.forEach((k, v) -> {
                 try {
-                    HashMap hashMap = yaml.loadAs(new FileInputStream(v), HashMap.class);
+                    FileInputStream inputStream = new FileInputStream(v);
+                    HashMap hashMap = yaml.loadAs(inputStream, HashMap.class);
 
                     String s = JSON.toJSONString(hashMap);
                     if (cfgData.containsKey(k))
                         cfgData.put(k + "_" + atomicInteger.getAndIncrement(), JSON.parseObject(s));
                     else
                         cfgData.put(k, JSON.parseObject(s));
-                } catch (FileNotFoundException e) {
+                    inputStream.close();
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             });

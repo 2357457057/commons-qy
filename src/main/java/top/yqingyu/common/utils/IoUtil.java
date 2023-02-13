@@ -108,7 +108,41 @@ public class IoUtil {
             return b;
         }
     }
+    public static byte[] readBytes2(InputStream in, int len,Boolean breakFlag) throws IORuntimeException, IOException {
+        if (null == in) {
+            return null;
+        }
+        if (len <= 0) {
+            return new byte[0];
+        }
 
+        byte[] b = new byte[len];
+        int readLength;
+        var ref = new Object() {
+            int i = 0;
+        };
+
+        for (; ref.i < len; ref.i++) {
+            int c = in.read();
+            if (c == -1) {
+                //保持此位读取 直至读完
+                ref.i -= 1;
+                if (breakFlag) break; //跳出
+                continue;
+            }
+            b[ref.i] = (byte) c;
+        }
+
+        readLength = ref.i + 1;
+
+        if (readLength > 0 && readLength < len) {
+            byte[] b2 = new byte[readLength];
+            System.arraycopy(b, 0, b2, 0, readLength);
+            return b2;
+        } else {
+            return b;
+        }
+    }
     /**
      * description: 读取InputStream中的数据直至读到一定长度的    byte
      *

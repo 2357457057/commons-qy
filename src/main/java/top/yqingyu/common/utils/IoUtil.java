@@ -108,7 +108,13 @@ public class IoUtil {
             return b;
         }
     }
-    public static byte[] readBytes2(InputStream in, int len,Boolean breakFlag) throws IORuntimeException, IOException {
+
+    /**
+     *
+     * @author YYJ
+     * @description 当远端主动断开后 客户端在读取数据时将一直为-1 并不会抛出异常，只有在write的时候才会抛出异常
+     * */
+    public static byte[] readBytes2(InputStream in, int len,AtomicReference<Boolean> breakFlag) throws IORuntimeException, IOException {
         if (null == in) {
             return null;
         }
@@ -127,7 +133,7 @@ public class IoUtil {
             if (c == -1) {
                 //保持此位读取 直至读完
                 ref.i -= 1;
-                if (breakFlag) break; //跳出
+                if (breakFlag.get()) break; //跳出
                 continue;
             }
             b[ref.i] = (byte) c;

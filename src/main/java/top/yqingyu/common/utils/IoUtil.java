@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -110,11 +111,10 @@ public class IoUtil {
     }
 
     /**
-     *
      * @author YYJ
      * @description 当远端主动断开后 客户端在读取数据时将一直为-1 并不会抛出异常，只有在write的时候才会抛出异常
-     * */
-    public static byte[] readBytes2(InputStream in, int len,AtomicReference<Boolean> breakFlag) throws IORuntimeException, IOException {
+     */
+    public static byte[] readBytes2(InputStream in, int len, AtomicBoolean breakFlag) throws IORuntimeException, IOException {
         if (null == in) {
             return null;
         }
@@ -149,6 +149,7 @@ public class IoUtil {
             return b;
         }
     }
+
     /**
      * description: 读取InputStream中的数据直至读到一定长度的    byte
      *

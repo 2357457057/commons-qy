@@ -13,6 +13,7 @@ import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static top.yqingyu.common.qymsg.Dict.*;
 
@@ -29,14 +30,12 @@ public class DisassemblyMsg {
     private static final Logger log = LoggerFactory.getLogger(DisassemblyMsg.class);
 
     /**
-     * @param sleep 服务端出口有限，需增加间隔时间，否则会导致流读不完整
      * @author YYJ
      * @description 消息解析
      */
-    public static QyMsg disassembly(Socket socket, BlockingQueue<QyMsg> segmentation$queue, long sleep) throws IOException, ClassNotFoundException, InterruptedException {
+    public static QyMsg disassembly(Socket socket, BlockingQueue<QyMsg> segmentation$queue, AtomicBoolean runFlag) throws IOException, ClassNotFoundException, InterruptedException {
         InputStream inputStream = socket.getInputStream();
-        byte[] readBytes = IoUtil.readBytes2(inputStream, HEADER_LENGTH);
-        Thread.sleep(sleep);
+        byte[] readBytes = IoUtil.readBytes2(inputStream, HEADER_LENGTH,runFlag);
         String s = new String(readBytes, StandardCharsets.UTF_8);
         char $0 = s.charAt(MSG_TYPE_IDX);//msg  type
         char $1 = s.charAt(DATA_TYPE_IDX);//data type
@@ -64,12 +63,12 @@ public class DisassemblyMsg {
 
             QyMsg parse = new QyMsg(msgType, dataType);
             parse.setSegmentation(true);
-            readBytes = IoUtil.readBytes2(inputStream, SEGMENTATION_INFO_LENGTH);
+            readBytes = IoUtil.readBytes2(inputStream, SEGMENTATION_INFO_LENGTH,runFlag);
             String segmentationInfo = new String(readBytes, StandardCharsets.UTF_8);
             parse.setPartition_id(segmentationInfo.substring(PARTITION_ID_IDX_START, PARTITION_ID_IDX_END));
             parse.setNumerator(Integer.parseInt(segmentationInfo.substring(NUMERATOR_IDX_START, NUMERATOR_IDX_END), MsgTransfer.MSG_LENGTH_RADIX));
             parse.setDenominator(Integer.parseInt(segmentationInfo.substring(DENOMINATOR_IDX_START, DENOMINATOR_IDX_END), MsgTransfer.MSG_LENGTH_RADIX));
-            readBytes = IoUtil.readBytes2(inputStream, Integer.parseInt($3, MsgTransfer.MSG_LENGTH_RADIX));
+            readBytes = IoUtil.readBytes2(inputStream, Integer.parseInt($3, MsgTransfer.MSG_LENGTH_RADIX),runFlag);
             parse.putMsg(readBytes);
             segmentation$queue.add(parse);
             log.debug("part msg id: {} the part {} of {}", parse.getPartition_id(), parse.getNumerator(), parse.getDenominator());

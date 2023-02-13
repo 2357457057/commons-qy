@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
@@ -209,8 +210,8 @@ public class MsgTransfer {
      * @version 1.0.0
      * @description 读取消息并将分片消息写入队列
      */
-    public static QyMsg readQyMsg(Socket socket, BlockingQueue<QyMsg> queue, long sleep) throws IOException, ClassNotFoundException, InterruptedException {
-        return DisassemblyMsg.disassembly(socket, queue, sleep);
+    public static QyMsg readQyMsg(Socket socket, BlockingQueue<QyMsg> queue, AtomicBoolean breakFlag) throws IOException, ClassNotFoundException, InterruptedException {
+        return DisassemblyMsg.disassembly(socket, queue, breakFlag);
     }
 
 

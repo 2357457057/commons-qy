@@ -133,7 +133,7 @@ public class IoUtil {
             if (c == -1) {
                 //保持此位读取 直至读完
                 ref.i -= 1;
-                if (breakFlag.get()) break; //跳出
+                if (!breakFlag.get()) break; //跳出
                 continue;
             }
             b[ref.i] = (byte) c;

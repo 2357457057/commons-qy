@@ -1,9 +1,11 @@
 package top.yqingyu.common.qymsg;
 
+import cn.hutool.core.lang.UUID;
 import top.yqingyu.common.qydata.DataMap;
 
 import java.io.Serializable;
 
+import static top.yqingyu.common.qymsg.Dict.MSG_ID;
 import static top.yqingyu.common.qymsg.Dict.QYMSG;
 
 /**
@@ -41,6 +43,20 @@ public class QyMsg implements Serializable {
         this.dataType = dataType;
     }
 
+    public void putMsgId(String msgId) {
+        this.dataMap.put(MSG_ID, msgId);
+    }
+
+    public String gainMsgId() {
+        return (String) this.dataMap.get(MSG_ID);
+    }
+
+    public String genMsgId() {
+        String s = UUID.fastUUID().toString();
+        this.dataMap.put(MSG_ID, s);
+        return s;
+    }
+
     public void putMsg(String msg) {
         this.dataMap.put(QYMSG, msg);
     }
@@ -60,7 +76,7 @@ public class QyMsg implements Serializable {
         return this;
     }
 
-    public QyMsg clone(){
+    public QyMsg clone() {
         QyMsg clone = new QyMsg(this.msgType, this.dataType);
         clone.from = this.from;
         clone.to = this.to;

@@ -35,6 +35,7 @@ public interface Dict {
     /*==========================QyMSG=============================*/
     Integer CLIENT_ID_LENGTH = 36;
     String QYMSG = "MSG";
+    String MSG_ID = "Q_MSG_ID";
     /*==========================QyMSG=============================*/
 
 

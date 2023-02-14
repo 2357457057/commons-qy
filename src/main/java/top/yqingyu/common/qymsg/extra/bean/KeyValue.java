@@ -14,7 +14,10 @@ public class KeyValue {
 
     private String key;
 
-    private final DataType dataType;
+    private DataType dataType;
+
+    public KeyValue() {
+    }
 
     public KeyValue(DataType dataType) {
         this.dataType = dataType;
@@ -41,13 +44,16 @@ public class KeyValue {
         this.key = key;
     }
 
+    public void setDataType(DataType dataType) {
+        this.dataType = dataType;
+    }
+
     public enum DataType {
         STRING("String"),
         SET("Set"),
         QUEUE("Queue"),
         STACK("Stack"),
-        OTHER("other")
-        ;
+        OTHER("other");
 
         private final String name;
 
@@ -60,7 +66,7 @@ public class KeyValue {
         }
     }
 
-    public enum OperatingState{
+    public enum OperatingState {
         ADD,
         REMOVE,
         GET,

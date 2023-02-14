@@ -14,7 +14,7 @@ import static top.yqingyu.common.qymsg.Dict.QYMSG;
  * @createTime 2022年07月12日 01:13:00
  */
 @SuppressWarnings("all")
-public class QyMsg implements Serializable, Cloneable {
+public class QyMsg implements Serializable {
     private final static long serialVersionUID = -1854823182151532168L;
     private final MsgType msgType;
     private DataType dataType;
@@ -60,11 +60,10 @@ public class QyMsg implements Serializable, Cloneable {
         return this;
     }
 
-    @Override
-    public QyMsg clone() throws CloneNotSupportedException {
-        QyMsg clone = (QyMsg) super.clone();
-        DataMap dataMap = clone.dataMap.clone();
-        clone.setDataMap(dataMap);
+    public QyMsg clone(){
+        QyMsg clone = new QyMsg(this.msgType, this.dataType);
+        clone.from = this.from;
+        clone.to = this.to;
         return clone;
     }
 
@@ -142,13 +141,14 @@ public class QyMsg implements Serializable, Cloneable {
         } else if (!(o instanceof QyMsg)) {
             return false;
         } else {
-            QyMsg other = (QyMsg)o;
+            QyMsg other = (QyMsg) o;
             if (!other.canEqual(this)) {
                 return false;
             } else if (this.isSegmentation() != other.isSegmentation()) {
                 return false;
             } else {
-                label109: {
+                label109:
+                {
                     Object this$numerator = this.getNumerator();
                     Object other$numerator = other.getNumerator();
                     if (this$numerator == null) {
@@ -162,7 +162,8 @@ public class QyMsg implements Serializable, Cloneable {
                     return false;
                 }
 
-                label102: {
+                label102:
+                {
                     Object this$denominator = this.getDenominator();
                     Object other$denominator = other.getDenominator();
                     if (this$denominator == null) {
@@ -186,7 +187,8 @@ public class QyMsg implements Serializable, Cloneable {
                     return false;
                 }
 
-                label88: {
+                label88:
+                {
                     Object this$dataType = this.getDataType();
                     Object other$dataType = other.getDataType();
                     if (this$dataType == null) {
@@ -210,7 +212,8 @@ public class QyMsg implements Serializable, Cloneable {
                     return false;
                 }
 
-                label74: {
+                label74:
+                {
                     Object this$to = this.getTo();
                     Object other$to = other.getTo();
                     if (this$to == null) {

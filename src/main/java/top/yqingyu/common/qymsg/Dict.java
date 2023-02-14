@@ -7,7 +7,7 @@ package top.yqingyu.common.qymsg;
  * @description
  * @createTime 2023年01月05日 23:23:00
  */
-interface Dict {
+public interface Dict {
     /*==========================HEADER=============================*/
     Integer HEADER_LENGTH = 8;
     Integer MSG_TYPE_IDX = 0;
@@ -32,20 +32,10 @@ interface Dict {
     /*==========================分片信息=============================*/
 
 
-
-
-
-
     /*==========================QyMSG=============================*/
     Integer CLIENT_ID_LENGTH = 36;
     String QYMSG = "MSG";
-
     /*==========================QyMSG=============================*/
-
-
-
-
-
 
 
     /*==========================FileMSG=============================*/
@@ -58,8 +48,9 @@ interface Dict {
     String FILE_IDX = "IDX";
     String FILE_POSITION = "POSITION";
     String FILE_CUT_LENGTH = "CUT_LENGTH";
-
     Integer TRANS_THREAD_MAX = 6;
 
     /*==========================FileMSG=============================*/
+
+    String KEY_CMD = "key";
 }

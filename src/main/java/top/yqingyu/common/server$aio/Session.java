@@ -3,6 +3,8 @@ package top.yqingyu.common.server$aio;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.nio.channels.FileChannel;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -80,6 +82,21 @@ public abstract class Session {
     public Integer writeBytes(ByteBuffer byteBuffer, long timeout) throws Exception {
         byteBuffer.flip();
         return write(byteBuffer, timeout, TimeUnit.MILLISECONDS);
+    }
+
+    public void writeFile(FileChannel fileChannel, ByteBuffer byteBuffer) throws Exception {
+        long size = fileChannel.size();
+        long l = 0;
+        do {
+            byteBuffer.clear();
+            fileChannel.read(byteBuffer, l);
+            l += blockWrite(byteBuffer);
+            byteBuffer.flip();
+        } while (l != size);
+    }
+
+    public int blockWrite(ByteBuffer buffer) throws Exception {
+        return getChannel().write(buffer).get();
     }
 
 }

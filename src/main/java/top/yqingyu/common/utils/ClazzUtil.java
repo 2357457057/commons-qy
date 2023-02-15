@@ -3,6 +3,7 @@ package top.yqingyu.common.utils;
 import cn.hutool.core.lang.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.yqingyu.common.annotation.Init;
 import top.yqingyu.common.qydata.ConcurrentReferenceHashMap;
 
 import java.beans.Introspector;
@@ -114,6 +115,34 @@ public class ClazzUtil {
             e.printStackTrace();
         }
         return classList;
+    }
+
+    /**
+     * @param basePackage     扫描包名
+     * @param annotationClass 注解类
+     * @param isRecursive     是否注解递归（当注解B上有注解A是 ，被B注解注解的类中的被A注解注解的方法同样可以扫描到。）
+     * @return
+     */
+    public static List<Method> getMethodByAnno(String basePackage, Class<? extends Annotation> annotationClass, boolean isRecursive) {
+        List<Method> methodList = new ArrayList<>();
+        LinkedList<Class<? extends Annotation>> annoList = new LinkedList<>();
+        annoList.add(annotationClass);
+        while (!annoList.isEmpty()) {
+            Class<? extends Annotation> pop = annoList.pop();
+            List<Class<?>> clazzlist = ClazzUtil.getClassListByAnnotation(basePackage, pop);
+            for (Class<?> aClass : clazzlist) {
+                if (aClass.isAnnotation() && isRecursive) {
+                    annoList.add((Class<? extends Annotation>) aClass);
+                } else {
+                    Method[] declaredMethods = aClass.getDeclaredMethods();
+                    for (Method method : declaredMethods) {
+                        Annotation a = method.getAnnotation(annotationClass);
+                        if (a != null) methodList.add(method);
+                    }
+                }
+            }
+        }
+        return methodList;
     }
 
     private static void addClass(List<Class<?>> classList, String packagePath, String packageName, boolean isRecursive) {

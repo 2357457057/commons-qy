@@ -90,13 +90,14 @@ public abstract class Session {
         do {
             byteBuffer.clear();
             fileChannel.read(byteBuffer, l);
-            l += blockWrite(byteBuffer);
             byteBuffer.flip();
+            l += byteBuffer.limit();
+            blockWrite(byteBuffer);
         } while (l != size);
     }
 
-    public int blockWrite(ByteBuffer buffer) throws Exception {
-        return getChannel().write(buffer).get();
+    public void blockWrite(ByteBuffer buffer) throws Exception {
+        getChannel().write(buffer).get();
     }
 
 }

@@ -1,5 +1,8 @@
 package top.yqingyu.common.qymsg.extra.bean;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * @author YYJ
  * @version 1.0.0
@@ -7,13 +10,12 @@ package top.yqingyu.common.qymsg.extra.bean;
  * @description
  * @createTime 2023年02月14日 22:57:00
  */
-public class KeyValue {
-
-
-    private OperatingState operatingState;
-
+public class KeyValue<V> implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 704921303243464809L;
     private String key;
-
+    private V val;
+    private OperatingState operatingState;
     private DataType dataType;
 
     public KeyValue() {
@@ -42,6 +44,14 @@ public class KeyValue {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public V getVal() {
+        return val;
+    }
+
+    public void setVal(V val) {
+        this.val = val;
     }
 
     public void setDataType(DataType dataType) {

@@ -10,24 +10,12 @@ import java.io.Serializable;
  * @description
  * @createTime 2023年02月14日 23:26:00
  */
-public class StringKey extends KeyValue implements Serializable {
+public class StringKey extends KeyValue<String> implements Serializable {
     @Serial
     private static final long serialVersionUID = 704921303243464809L;
-
     public StringKey() {
         super(DataType.STRING);
     }
-
-    private String val;
-
-    public String getVal() {
-        return val;
-    }
-
-    public void setVal(String val) {
-        this.val = val;
-    }
-
 
     public static StringKey add(String key, String val) {
         return createKeyCmd(key, val, OperatingState.ADD);

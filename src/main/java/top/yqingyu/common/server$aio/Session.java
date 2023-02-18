@@ -1,10 +1,12 @@
 package top.yqingyu.common.server$aio;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.FileChannel;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 public abstract class Session {
 
     protected SessionBridge sessionBridge;
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public Session() {
     }
@@ -91,13 +95,17 @@ public abstract class Session {
             byteBuffer.clear();
             fileChannel.read(byteBuffer, l);
             byteBuffer.flip();
-            l += byteBuffer.limit();
-            blockWrite(byteBuffer);
+            int limit = byteBuffer.limit();
+            l += limit;
+            do {
+                blockWrite(byteBuffer);
+            } while (limit != byteBuffer.position());
+
         } while (l != size);
     }
 
-    public void blockWrite(ByteBuffer buffer) throws Exception {
-        getChannel().write(buffer).get();
+    public int blockWrite(ByteBuffer buffer) throws Exception {
+        return getChannel().write(buffer).get();
     }
 
 }

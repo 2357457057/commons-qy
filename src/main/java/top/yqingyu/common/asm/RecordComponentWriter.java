@@ -27,14 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.*;
-import top.yqingyu.common.asm.AnnotationVisitor;
-import top.yqingyu.common.asm.AnnotationWriter;
-import top.yqingyu.common.asm.Attribute;
-import top.yqingyu.common.asm.ByteVector;
-import top.yqingyu.common.asm.Opcodes;
-import top.yqingyu.common.asm.RecordComponentVisitor;
-
 final class RecordComponentWriter extends RecordComponentVisitor {
   /** Where the constants used in this RecordComponentWriter must be stored. */
   private final SymbolTable symbolTable;
@@ -56,38 +48,38 @@ final class RecordComponentWriter extends RecordComponentVisitor {
 
   /**
    * The last runtime visible annotation of this record component. The previous ones can be accessed
-   * with the {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+   * with the {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter lastRuntimeVisibleAnnotation;
+  private AnnotationWriter lastRuntimeVisibleAnnotation;
 
   /**
    * The last runtime invisible annotation of this record component. The previous ones can be
-   * accessed with the {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+   * accessed with the {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter lastRuntimeInvisibleAnnotation;
+  private AnnotationWriter lastRuntimeInvisibleAnnotation;
 
   /**
    * The last runtime visible type annotation of this record component. The previous ones can be
-   * accessed with the {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+   * accessed with the {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter lastRuntimeVisibleTypeAnnotation;
+  private AnnotationWriter lastRuntimeVisibleTypeAnnotation;
 
   /**
    * The last runtime invisible type annotation of this record component. The previous ones can be
-   * accessed with the {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+   * accessed with the {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter lastRuntimeInvisibleTypeAnnotation;
+  private AnnotationWriter lastRuntimeInvisibleTypeAnnotation;
 
   /**
    * The first non standard attribute of this record component. The next ones can be accessed with
-   * the {@link top.yqingyu.common.asm.Attribute#nextAttribute} field. May be {@literal null}.
+   * the {@link Attribute#nextAttribute} field. May be {@literal null}.
    *
    * <p><b>WARNING</b>: this list stores the attributes in the <i>reverse</i> order of their visit.
-   * firstAttribute is actually the last attribute visited in {@link #visitAttribute(top.yqingyu.common.asm.Attribute)}.
-   * The {@link #putRecordComponentInfo(top.yqingyu.common.asm.ByteVector)} method writes the attributes in the order
+   * firstAttribute is actually the last attribute visited in {@link #visitAttribute(Attribute)}.
+   * The {@link #putRecordComponentInfo(ByteVector)} method writes the attributes in the order
    * defined by this list, i.e. in the reverse order specified by the user.
    */
-  private top.yqingyu.common.asm.Attribute firstAttribute;
+  private Attribute firstAttribute;
 
   /**
    * Constructs a new {@link RecordComponentWriter}.
@@ -116,13 +108,13 @@ final class RecordComponentWriter extends RecordComponentVisitor {
   // -----------------------------------------------------------------------------------------------
 
   @Override
-  public top.yqingyu.common.asm.AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
+  public AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
     if (visible) {
       return lastRuntimeVisibleAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(symbolTable, descriptor, lastRuntimeVisibleAnnotation);
+          AnnotationWriter.create(symbolTable, descriptor, lastRuntimeVisibleAnnotation);
     } else {
       return lastRuntimeInvisibleAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(symbolTable, descriptor, lastRuntimeInvisibleAnnotation);
+          AnnotationWriter.create(symbolTable, descriptor, lastRuntimeInvisibleAnnotation);
     }
   }
 
@@ -131,17 +123,17 @@ final class RecordComponentWriter extends RecordComponentVisitor {
           final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (visible) {
       return lastRuntimeVisibleTypeAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(
+          AnnotationWriter.create(
               symbolTable, typeRef, typePath, descriptor, lastRuntimeVisibleTypeAnnotation);
     } else {
       return lastRuntimeInvisibleTypeAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(
+          AnnotationWriter.create(
               symbolTable, typeRef, typePath, descriptor, lastRuntimeInvisibleTypeAnnotation);
     }
   }
 
   @Override
-  public void visitAttribute(final top.yqingyu.common.asm.Attribute attribute) {
+  public void visitAttribute(final Attribute attribute) {
     // Store the attributes in the <i>reverse</i> order of their visit by this method.
     attribute.nextAttribute = firstAttribute;
     firstAttribute = attribute;
@@ -166,9 +158,9 @@ final class RecordComponentWriter extends RecordComponentVisitor {
   int computeRecordComponentInfoSize() {
     // name_index, descriptor_index and attributes_count fields use 6 bytes.
     int size = 6;
-    size += top.yqingyu.common.asm.Attribute.computeAttributesSize(symbolTable, 0, signatureIndex);
+    size += Attribute.computeAttributesSize(symbolTable, 0, signatureIndex);
     size +=
-        top.yqingyu.common.asm.AnnotationWriter.computeAnnotationsSize(
+        AnnotationWriter.computeAnnotationsSize(
             lastRuntimeVisibleAnnotation,
             lastRuntimeInvisibleAnnotation,
             lastRuntimeVisibleTypeAnnotation,
@@ -209,8 +201,8 @@ final class RecordComponentWriter extends RecordComponentVisitor {
       attributesCount += firstAttribute.getAttributeCount();
     }
     output.putShort(attributesCount);
-    top.yqingyu.common.asm.Attribute.putAttributes(symbolTable, 0, signatureIndex, output);
-    top.yqingyu.common.asm.AnnotationWriter.putAnnotations(
+    Attribute.putAttributes(symbolTable, 0, signatureIndex, output);
+    AnnotationWriter.putAnnotations(
         symbolTable,
         lastRuntimeVisibleAnnotation,
         lastRuntimeInvisibleAnnotation,

@@ -28,9 +28,6 @@
 
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.Opcodes;
-import top.yqingyu.common.asm.Type;
-
 /**
  * A reference to a field or a method.
  *

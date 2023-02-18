@@ -27,17 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.*;
-import top.yqingyu.common.asm.Attribute;
-import top.yqingyu.common.asm.ByteVector;
-import top.yqingyu.common.asm.ClassReader;
-import top.yqingyu.common.asm.ClassWriter;
-import top.yqingyu.common.asm.ConstantDynamic;
-import top.yqingyu.common.asm.Constants;
-import top.yqingyu.common.asm.Frame;
-import top.yqingyu.common.asm.Handle;
-import top.yqingyu.common.asm.Opcodes;
-import top.yqingyu.common.asm.Symbol;
 
 /**
  * The constant pool entries, the BootstrapMethods attribute entries and the (ASM specific) type
@@ -53,16 +42,16 @@ final class SymbolTable {
 
   /**
    * The ClassWriter to which this SymbolTable belongs. This is only used to get access to {@link
-   * top.yqingyu.common.asm.ClassWriter#getCommonSuperClass} and to serialize custom attributes with {@link
+   * ClassWriter#getCommonSuperClass} and to serialize custom attributes with {@link
    * Attribute#write}.
    */
-  final top.yqingyu.common.asm.ClassWriter classWriter;
+  final ClassWriter classWriter;
 
   /**
    * The ClassReader from which this SymbolTable was constructed, or {@literal null} if it was
    * constructed from scratch.
    */
-  private final top.yqingyu.common.asm.ClassReader sourceClassReader;
+  private final ClassReader sourceClassReader;
 
   /** The major version number of the class to which this symbol table belongs. */
   private int majorVersion;
@@ -95,7 +84,7 @@ final class SymbolTable {
    * The content of the ClassFile's constant_pool JVMS structure corresponding to this SymbolTable.
    * The ClassFile's constant_pool_count field is <i>not</i> included.
    */
-  private top.yqingyu.common.asm.ByteVector constantPool;
+  private ByteVector constantPool;
 
   /**
    * The number of bootstrap methods in {@link #bootstrapMethods}. Corresponds to the
@@ -108,7 +97,7 @@ final class SymbolTable {
    * SymbolTable. Note that the first 6 bytes of the BootstrapMethods_attribute, and its
    * num_bootstrap_methods field, are <i>not</i> included.
    */
-  private top.yqingyu.common.asm.ByteVector bootstrapMethods;
+  private ByteVector bootstrapMethods;
 
   /**
    * The actual number of elements in {@link #typeTable}. These elements are stored from index 0 to
@@ -120,8 +109,8 @@ final class SymbolTable {
    * An ASM specific type table used to temporarily store internal names that will not necessarily
    * be stored in the constant pool. This type table is used by the control flow and data flow
    * analysis algorithm used to compute stack map frames from scratch. This array stores {@link
-   * top.yqingyu.common.asm.Symbol#TYPE_TAG} and {@link top.yqingyu.common.asm.Symbol#UNINITIALIZED_TYPE_TAG}) Symbol. The type symbol at index
-   * {@code i} has its {@link top.yqingyu.common.asm.Symbol#index} equal to {@code i} (and vice versa).
+   * Symbol#TYPE_TAG} and {@link Symbol#UNINITIALIZED_TYPE_TAG}) Symbol. The type symbol at index
+   * {@code i} has its {@link Symbol#index} equal to {@code i} (and vice versa).
    */
   private Entry[] typeTable;
 
@@ -130,12 +119,12 @@ final class SymbolTable {
    *
    * @param classWriter a ClassWriter.
    */
-  SymbolTable(final top.yqingyu.common.asm.ClassWriter classWriter) {
+  SymbolTable(final ClassWriter classWriter) {
     this.classWriter = classWriter;
     this.sourceClassReader = null;
     this.entries = new Entry[256];
     this.constantPoolCount = 1;
-    this.constantPool = new top.yqingyu.common.asm.ByteVector();
+    this.constantPool = new ByteVector();
   }
 
   /**
@@ -146,7 +135,7 @@ final class SymbolTable {
    * @param classReader the ClassReader whose constant pool and bootstrap methods must be copied to
    *     initialize the SymbolTable.
    */
-  SymbolTable(final ClassWriter classWriter, final top.yqingyu.common.asm.ClassReader classReader) {
+  SymbolTable(final ClassWriter classWriter, final ClassReader classReader) {
     this.classWriter = classWriter;
     this.sourceClassReader = classReader;
 
@@ -155,7 +144,7 @@ final class SymbolTable {
     int constantPoolOffset = classReader.getItem(1) - 1;
     int constantPoolLength = classReader.header - constantPoolOffset;
     constantPoolCount = classReader.getItemCount();
-    constantPool = new top.yqingyu.common.asm.ByteVector(constantPoolLength);
+    constantPool = new ByteVector(constantPoolLength);
     constantPool.putByteArray(inputBytes, constantPoolOffset, constantPoolLength);
 
     // Add the constant pool items in the symbol table entries. Reserve enough space in 'entries' to
@@ -170,9 +159,9 @@ final class SymbolTable {
       int itemTag = inputBytes[itemOffset - 1];
       int nameAndTypeItemOffset;
       switch (itemTag) {
-        case top.yqingyu.common.asm.Symbol.CONSTANT_FIELDREF_TAG:
-        case top.yqingyu.common.asm.Symbol.CONSTANT_METHODREF_TAG:
-        case top.yqingyu.common.asm.Symbol.CONSTANT_INTERFACE_METHODREF_TAG:
+        case Symbol.CONSTANT_FIELDREF_TAG:
+        case Symbol.CONSTANT_METHODREF_TAG:
+        case Symbol.CONSTANT_INTERFACE_METHODREF_TAG:
           nameAndTypeItemOffset =
               classReader.getItem(classReader.readUnsignedShort(itemOffset + 2));
           addConstantMemberReference(
@@ -182,24 +171,24 @@ final class SymbolTable {
               classReader.readUTF8(nameAndTypeItemOffset, charBuffer),
               classReader.readUTF8(nameAndTypeItemOffset + 2, charBuffer));
           break;
-        case top.yqingyu.common.asm.Symbol.CONSTANT_INTEGER_TAG:
-        case top.yqingyu.common.asm.Symbol.CONSTANT_FLOAT_TAG:
+        case Symbol.CONSTANT_INTEGER_TAG:
+        case Symbol.CONSTANT_FLOAT_TAG:
           addConstantIntegerOrFloat(itemIndex, itemTag, classReader.readInt(itemOffset));
           break;
-        case top.yqingyu.common.asm.Symbol.CONSTANT_NAME_AND_TYPE_TAG:
+        case Symbol.CONSTANT_NAME_AND_TYPE_TAG:
           addConstantNameAndType(
               itemIndex,
               classReader.readUTF8(itemOffset, charBuffer),
               classReader.readUTF8(itemOffset + 2, charBuffer));
           break;
-        case top.yqingyu.common.asm.Symbol.CONSTANT_LONG_TAG:
-        case top.yqingyu.common.asm.Symbol.CONSTANT_DOUBLE_TAG:
+        case Symbol.CONSTANT_LONG_TAG:
+        case Symbol.CONSTANT_DOUBLE_TAG:
           addConstantLongOrDouble(itemIndex, itemTag, classReader.readLong(itemOffset));
           break;
-        case top.yqingyu.common.asm.Symbol.CONSTANT_UTF8_TAG:
+        case Symbol.CONSTANT_UTF8_TAG:
           addConstantUtf8(itemIndex, classReader.readUtf(itemIndex, charBuffer));
           break;
-        case top.yqingyu.common.asm.Symbol.CONSTANT_METHOD_HANDLE_TAG:
+        case Symbol.CONSTANT_METHOD_HANDLE_TAG:
           int memberRefItemOffset =
               classReader.getItem(classReader.readUnsignedShort(itemOffset + 1));
           nameAndTypeItemOffset =
@@ -211,8 +200,8 @@ final class SymbolTable {
               classReader.readUTF8(nameAndTypeItemOffset, charBuffer),
               classReader.readUTF8(nameAndTypeItemOffset + 2, charBuffer));
           break;
-        case top.yqingyu.common.asm.Symbol.CONSTANT_DYNAMIC_TAG:
-        case top.yqingyu.common.asm.Symbol.CONSTANT_INVOKE_DYNAMIC_TAG:
+        case Symbol.CONSTANT_DYNAMIC_TAG:
+        case Symbol.CONSTANT_INVOKE_DYNAMIC_TAG:
           hasBootstrapMethods = true;
           nameAndTypeItemOffset =
               classReader.getItem(classReader.readUnsignedShort(itemOffset + 2));
@@ -223,11 +212,11 @@ final class SymbolTable {
               classReader.readUTF8(nameAndTypeItemOffset + 2, charBuffer),
               classReader.readUnsignedShort(itemOffset));
           break;
-        case top.yqingyu.common.asm.Symbol.CONSTANT_STRING_TAG:
-        case top.yqingyu.common.asm.Symbol.CONSTANT_CLASS_TAG:
-        case top.yqingyu.common.asm.Symbol.CONSTANT_METHOD_TYPE_TAG:
-        case top.yqingyu.common.asm.Symbol.CONSTANT_MODULE_TAG:
-        case top.yqingyu.common.asm.Symbol.CONSTANT_PACKAGE_TAG:
+        case Symbol.CONSTANT_STRING_TAG:
+        case Symbol.CONSTANT_CLASS_TAG:
+        case Symbol.CONSTANT_METHOD_TYPE_TAG:
+        case Symbol.CONSTANT_MODULE_TAG:
+        case Symbol.CONSTANT_PACKAGE_TAG:
           addConstantUtf8Reference(
               itemIndex, itemTag, classReader.readUTF8(itemOffset, charBuffer));
           break;
@@ -235,7 +224,7 @@ final class SymbolTable {
           throw new IllegalArgumentException();
       }
       itemIndex +=
-          (itemTag == top.yqingyu.common.asm.Symbol.CONSTANT_LONG_TAG || itemTag == top.yqingyu.common.asm.Symbol.CONSTANT_DOUBLE_TAG) ? 2 : 1;
+          (itemTag == Symbol.CONSTANT_LONG_TAG || itemTag == Symbol.CONSTANT_DOUBLE_TAG) ? 2 : 1;
     }
 
     // Copy the BootstrapMethods, if any.
@@ -252,13 +241,13 @@ final class SymbolTable {
    *     SymbolTable.
    * @param charBuffer a buffer used to read strings in the constant pool.
    */
-  private void copyBootstrapMethods(final top.yqingyu.common.asm.ClassReader classReader, final char[] charBuffer) {
+  private void copyBootstrapMethods(final ClassReader classReader, final char[] charBuffer) {
     // Find attributOffset of the 'bootstrap_methods' array.
     byte[] inputBytes = classReader.classFileBuffer;
     int currentAttributeOffset = classReader.getFirstAttributeOffset();
     for (int i = classReader.readUnsignedShort(currentAttributeOffset - 2); i > 0; --i) {
       String attributeName = classReader.readUTF8(currentAttributeOffset, charBuffer);
-      if (top.yqingyu.common.asm.Constants.BOOTSTRAP_METHODS.equals(attributeName)) {
+      if (Constants.BOOTSTRAP_METHODS.equals(attributeName)) {
         bootstrapMethodCount = classReader.readUnsignedShort(currentAttributeOffset + 6);
         break;
       }
@@ -268,7 +257,7 @@ final class SymbolTable {
       // Compute the offset and the length of the BootstrapMethods 'bootstrap_methods' array.
       int bootstrapMethodsOffset = currentAttributeOffset + 8;
       int bootstrapMethodsLength = classReader.readInt(currentAttributeOffset + 2) - 2;
-      bootstrapMethods = new top.yqingyu.common.asm.ByteVector(bootstrapMethodsLength);
+      bootstrapMethods = new ByteVector(bootstrapMethodsLength);
       bootstrapMethods.putByteArray(inputBytes, bootstrapMethodsOffset, bootstrapMethodsLength);
 
       // Add each bootstrap method in the symbol table entries.
@@ -285,7 +274,7 @@ final class SymbolTable {
           currentOffset += 2;
           hashCode ^= classReader.readConst(bootstrapArgument, charBuffer).hashCode();
         }
-        add(new Entry(i, top.yqingyu.common.asm.Symbol.BOOTSTRAP_METHOD_TAG, offset, hashCode & 0x7FFFFFFF));
+        add(new Entry(i, Symbol.BOOTSTRAP_METHOD_TAG, offset, hashCode & 0x7FFFFFFF));
       }
     }
   }
@@ -356,7 +345,7 @@ final class SymbolTable {
    *
    * @param output where the JVMS ClassFile's constant_pool array must be put.
    */
-  void putConstantPool(final top.yqingyu.common.asm.ByteVector output) {
+  void putConstantPool(final ByteVector output) {
     output.putShort(constantPoolCount).putByteArray(constantPool.data, 0, constantPool.length);
   }
 
@@ -368,7 +357,7 @@ final class SymbolTable {
    */
   int computeBootstrapMethodsSize() {
     if (bootstrapMethods != null) {
-      addConstantUtf8(top.yqingyu.common.asm.Constants.BOOTSTRAP_METHODS);
+      addConstantUtf8(Constants.BOOTSTRAP_METHODS);
       return 8 + bootstrapMethods.length;
     } else {
       return 0;
@@ -381,10 +370,10 @@ final class SymbolTable {
    *
    * @param output where the JVMS BootstrapMethods attribute must be put.
    */
-  void putBootstrapMethods(final top.yqingyu.common.asm.ByteVector output) {
+  void putBootstrapMethods(final ByteVector output) {
     if (bootstrapMethods != null) {
       output
-          .putShort(addConstantUtf8(top.yqingyu.common.asm.Constants.BOOTSTRAP_METHODS))
+          .putShort(addConstantUtf8(Constants.BOOTSTRAP_METHODS))
           .putInt(bootstrapMethods.length + 2)
           .putShort(bootstrapMethodCount)
           .putByteArray(bootstrapMethods.data, 0, bootstrapMethods.length);
@@ -462,10 +451,10 @@ final class SymbolTable {
    *
    * @param value the value of the constant to be added to the constant pool. This parameter must be
    *     an {@link Integer}, {@link Byte}, {@link Character}, {@link Short}, {@link Boolean}, {@link
-   *     Float}, {@link Long}, {@link Double}, {@link String}, {@link Type} or {@link top.yqingyu.common.asm.Handle}.
+   *     Float}, {@link Long}, {@link Double}, {@link String}, {@link Type} or {@link Handle}.
    * @return a new or already existing Symbol with the given value.
    */
-  top.yqingyu.common.asm.Symbol addConstant(final Object value) {
+  Symbol addConstant(final Object value) {
     if (value instanceof Integer) {
       return addConstantInteger(((Integer) value).intValue());
     } else if (value instanceof Byte) {
@@ -494,16 +483,16 @@ final class SymbolTable {
       } else { // type is a primitive or array type.
         return addConstantClass(type.getDescriptor());
       }
-    } else if (value instanceof top.yqingyu.common.asm.Handle) {
-      top.yqingyu.common.asm.Handle handle = (top.yqingyu.common.asm.Handle) value;
+    } else if (value instanceof Handle) {
+      Handle handle = (Handle) value;
       return addConstantMethodHandle(
           handle.getTag(),
           handle.getOwner(),
           handle.getName(),
           handle.getDesc(),
           handle.isInterface());
-    } else if (value instanceof top.yqingyu.common.asm.ConstantDynamic) {
-      top.yqingyu.common.asm.ConstantDynamic constantDynamic = (ConstantDynamic) value;
+    } else if (value instanceof ConstantDynamic) {
+      ConstantDynamic constantDynamic = (ConstantDynamic) value;
       return addConstantDynamic(
           constantDynamic.getName(),
           constantDynamic.getDescriptor(),
@@ -521,8 +510,8 @@ final class SymbolTable {
    * @param value the internal name of a class.
    * @return a new or already existing Symbol with the given value.
    */
-  top.yqingyu.common.asm.Symbol addConstantClass(final String value) {
-    return addConstantUtf8Reference(top.yqingyu.common.asm.Symbol.CONSTANT_CLASS_TAG, value);
+  Symbol addConstantClass(final String value) {
+    return addConstantUtf8Reference(Symbol.CONSTANT_CLASS_TAG, value);
   }
 
   /**
@@ -534,8 +523,8 @@ final class SymbolTable {
    * @param descriptor a field descriptor.
    * @return a new or already existing Symbol with the given value.
    */
-  top.yqingyu.common.asm.Symbol addConstantFieldref(final String owner, final String name, final String descriptor) {
-    return addConstantMemberReference(top.yqingyu.common.asm.Symbol.CONSTANT_FIELDREF_TAG, owner, name, descriptor);
+  Symbol addConstantFieldref(final String owner, final String name, final String descriptor) {
+    return addConstantMemberReference(Symbol.CONSTANT_FIELDREF_TAG, owner, name, descriptor);
   }
 
   /**
@@ -548,9 +537,9 @@ final class SymbolTable {
    * @param isInterface whether owner is an interface or not.
    * @return a new or already existing Symbol with the given value.
    */
-  top.yqingyu.common.asm.Symbol addConstantMethodref(
+  Symbol addConstantMethodref(
       final String owner, final String name, final String descriptor, final boolean isInterface) {
-    int tag = isInterface ? top.yqingyu.common.asm.Symbol.CONSTANT_INTERFACE_METHODREF_TAG : top.yqingyu.common.asm.Symbol.CONSTANT_METHODREF_TAG;
+    int tag = isInterface ? Symbol.CONSTANT_INTERFACE_METHODREF_TAG : Symbol.CONSTANT_METHODREF_TAG;
     return addConstantMemberReference(tag, owner, name, descriptor);
   }
 
@@ -559,8 +548,8 @@ final class SymbolTable {
    * the constant pool of this symbol table. Does nothing if the constant pool already contains a
    * similar item.
    *
-   * @param tag one of {@link top.yqingyu.common.asm.Symbol#CONSTANT_FIELDREF_TAG}, {@link top.yqingyu.common.asm.Symbol#CONSTANT_METHODREF_TAG}
-   *     or {@link top.yqingyu.common.asm.Symbol#CONSTANT_INTERFACE_METHODREF_TAG}.
+   * @param tag one of {@link Symbol#CONSTANT_FIELDREF_TAG}, {@link Symbol#CONSTANT_METHODREF_TAG}
+   *     or {@link Symbol#CONSTANT_INTERFACE_METHODREF_TAG}.
    * @param owner the internal name of a class.
    * @param name a field or method name.
    * @param descriptor a field or method descriptor.
@@ -590,8 +579,8 @@ final class SymbolTable {
    * to the constant pool of this symbol table.
    *
    * @param index the constant pool index of the new Symbol.
-   * @param tag one of {@link top.yqingyu.common.asm.Symbol#CONSTANT_FIELDREF_TAG}, {@link top.yqingyu.common.asm.Symbol#CONSTANT_METHODREF_TAG}
-   *     or {@link top.yqingyu.common.asm.Symbol#CONSTANT_INTERFACE_METHODREF_TAG}.
+   * @param tag one of {@link Symbol#CONSTANT_FIELDREF_TAG}, {@link Symbol#CONSTANT_METHODREF_TAG}
+   *     or {@link Symbol#CONSTANT_INTERFACE_METHODREF_TAG}.
    * @param owner the internal name of a class.
    * @param name a field or method name.
    * @param descriptor a field or method descriptor.
@@ -612,8 +601,8 @@ final class SymbolTable {
    * @param value a string.
    * @return a new or already existing Symbol with the given value.
    */
-  top.yqingyu.common.asm.Symbol addConstantString(final String value) {
-    return addConstantUtf8Reference(top.yqingyu.common.asm.Symbol.CONSTANT_STRING_TAG, value);
+  Symbol addConstantString(final String value) {
+    return addConstantUtf8Reference(Symbol.CONSTANT_STRING_TAG, value);
   }
 
   /**
@@ -623,8 +612,8 @@ final class SymbolTable {
    * @param value an int.
    * @return a new or already existing Symbol with the given value.
    */
-  top.yqingyu.common.asm.Symbol addConstantInteger(final int value) {
-    return addConstantIntegerOrFloat(top.yqingyu.common.asm.Symbol.CONSTANT_INTEGER_TAG, value);
+  Symbol addConstantInteger(final int value) {
+    return addConstantIntegerOrFloat(Symbol.CONSTANT_INTEGER_TAG, value);
   }
 
   /**
@@ -634,19 +623,19 @@ final class SymbolTable {
    * @param value a float.
    * @return a new or already existing Symbol with the given value.
    */
-  top.yqingyu.common.asm.Symbol addConstantFloat(final float value) {
-    return addConstantIntegerOrFloat(top.yqingyu.common.asm.Symbol.CONSTANT_FLOAT_TAG, Float.floatToRawIntBits(value));
+  Symbol addConstantFloat(final float value) {
+    return addConstantIntegerOrFloat(Symbol.CONSTANT_FLOAT_TAG, Float.floatToRawIntBits(value));
   }
 
   /**
    * Adds a CONSTANT_Integer_info or CONSTANT_Float_info to the constant pool of this symbol table.
    * Does nothing if the constant pool already contains a similar item.
    *
-   * @param tag one of {@link top.yqingyu.common.asm.Symbol#CONSTANT_INTEGER_TAG} or {@link top.yqingyu.common.asm.Symbol#CONSTANT_FLOAT_TAG}.
+   * @param tag one of {@link Symbol#CONSTANT_INTEGER_TAG} or {@link Symbol#CONSTANT_FLOAT_TAG}.
    * @param value an int or float.
    * @return a constant pool constant with the given tag and primitive values.
    */
-  private top.yqingyu.common.asm.Symbol addConstantIntegerOrFloat(final int tag, final int value) {
+  private Symbol addConstantIntegerOrFloat(final int tag, final int value) {
     int hashCode = hash(tag, value);
     Entry entry = get(hashCode);
     while (entry != null) {
@@ -664,7 +653,7 @@ final class SymbolTable {
    * table.
    *
    * @param index the constant pool index of the new Symbol.
-   * @param tag one of {@link top.yqingyu.common.asm.Symbol#CONSTANT_INTEGER_TAG} or {@link top.yqingyu.common.asm.Symbol#CONSTANT_FLOAT_TAG}.
+   * @param tag one of {@link Symbol#CONSTANT_INTEGER_TAG} or {@link Symbol#CONSTANT_FLOAT_TAG}.
    * @param value an int or float.
    */
   private void addConstantIntegerOrFloat(final int index, final int tag, final int value) {
@@ -678,8 +667,8 @@ final class SymbolTable {
    * @param value a long.
    * @return a new or already existing Symbol with the given value.
    */
-  top.yqingyu.common.asm.Symbol addConstantLong(final long value) {
-    return addConstantLongOrDouble(top.yqingyu.common.asm.Symbol.CONSTANT_LONG_TAG, value);
+  Symbol addConstantLong(final long value) {
+    return addConstantLongOrDouble(Symbol.CONSTANT_LONG_TAG, value);
   }
 
   /**
@@ -689,19 +678,19 @@ final class SymbolTable {
    * @param value a double.
    * @return a new or already existing Symbol with the given value.
    */
-  top.yqingyu.common.asm.Symbol addConstantDouble(final double value) {
-    return addConstantLongOrDouble(top.yqingyu.common.asm.Symbol.CONSTANT_DOUBLE_TAG, Double.doubleToRawLongBits(value));
+  Symbol addConstantDouble(final double value) {
+    return addConstantLongOrDouble(Symbol.CONSTANT_DOUBLE_TAG, Double.doubleToRawLongBits(value));
   }
 
   /**
    * Adds a CONSTANT_Long_info or CONSTANT_Double_info to the constant pool of this symbol table.
    * Does nothing if the constant pool already contains a similar item.
    *
-   * @param tag one of {@link top.yqingyu.common.asm.Symbol#CONSTANT_LONG_TAG} or {@link top.yqingyu.common.asm.Symbol#CONSTANT_DOUBLE_TAG}.
+   * @param tag one of {@link Symbol#CONSTANT_LONG_TAG} or {@link Symbol#CONSTANT_DOUBLE_TAG}.
    * @param value a long or double.
    * @return a constant pool constant with the given tag and primitive values.
    */
-  private top.yqingyu.common.asm.Symbol addConstantLongOrDouble(final int tag, final long value) {
+  private Symbol addConstantLongOrDouble(final int tag, final long value) {
     int hashCode = hash(tag, value);
     Entry entry = get(hashCode);
     while (entry != null) {
@@ -721,7 +710,7 @@ final class SymbolTable {
    * table.
    *
    * @param index the constant pool index of the new Symbol.
-   * @param tag one of {@link top.yqingyu.common.asm.Symbol#CONSTANT_LONG_TAG} or {@link top.yqingyu.common.asm.Symbol#CONSTANT_DOUBLE_TAG}.
+   * @param tag one of {@link Symbol#CONSTANT_LONG_TAG} or {@link Symbol#CONSTANT_DOUBLE_TAG}.
    * @param value a long or double.
    */
   private void addConstantLongOrDouble(final int index, final int tag, final long value) {
@@ -737,7 +726,7 @@ final class SymbolTable {
    * @return a new or already existing Symbol with the given value.
    */
   int addConstantNameAndType(final String name, final String descriptor) {
-    final int tag = top.yqingyu.common.asm.Symbol.CONSTANT_NAME_AND_TYPE_TAG;
+    final int tag = Symbol.CONSTANT_NAME_AND_TYPE_TAG;
     int hashCode = hash(tag, name, descriptor);
     Entry entry = get(hashCode);
     while (entry != null) {
@@ -761,7 +750,7 @@ final class SymbolTable {
    * @param descriptor a field or method descriptor.
    */
   private void addConstantNameAndType(final int index, final String name, final String descriptor) {
-    final int tag = top.yqingyu.common.asm.Symbol.CONSTANT_NAME_AND_TYPE_TAG;
+    final int tag = Symbol.CONSTANT_NAME_AND_TYPE_TAG;
     add(new Entry(index, tag, name, descriptor, hash(tag, name, descriptor)));
   }
 
@@ -773,18 +762,18 @@ final class SymbolTable {
    * @return a new or already existing Symbol with the given value.
    */
   int addConstantUtf8(final String value) {
-    int hashCode = hash(top.yqingyu.common.asm.Symbol.CONSTANT_UTF8_TAG, value);
+    int hashCode = hash(Symbol.CONSTANT_UTF8_TAG, value);
     Entry entry = get(hashCode);
     while (entry != null) {
-      if (entry.tag == top.yqingyu.common.asm.Symbol.CONSTANT_UTF8_TAG
+      if (entry.tag == Symbol.CONSTANT_UTF8_TAG
           && entry.hashCode == hashCode
           && entry.value.equals(value)) {
         return entry.index;
       }
       entry = entry.next;
     }
-    constantPool.putByte(top.yqingyu.common.asm.Symbol.CONSTANT_UTF8_TAG).putUTF8(value);
-    return put(new Entry(constantPoolCount++, top.yqingyu.common.asm.Symbol.CONSTANT_UTF8_TAG, value, hashCode)).index;
+    constantPool.putByte(Symbol.CONSTANT_UTF8_TAG).putUTF8(value);
+    return put(new Entry(constantPoolCount++, Symbol.CONSTANT_UTF8_TAG, value, hashCode)).index;
   }
 
   /**
@@ -794,30 +783,30 @@ final class SymbolTable {
    * @param value a string.
    */
   private void addConstantUtf8(final int index, final String value) {
-    add(new Entry(index, top.yqingyu.common.asm.Symbol.CONSTANT_UTF8_TAG, value, hash(top.yqingyu.common.asm.Symbol.CONSTANT_UTF8_TAG, value)));
+    add(new Entry(index, Symbol.CONSTANT_UTF8_TAG, value, hash(Symbol.CONSTANT_UTF8_TAG, value)));
   }
 
   /**
    * Adds a CONSTANT_MethodHandle_info to the constant pool of this symbol table. Does nothing if
    * the constant pool already contains a similar item.
    *
-   * @param referenceKind one of {@link top.yqingyu.common.asm.Opcodes#H_GETFIELD}, {@link top.yqingyu.common.asm.Opcodes#H_GETSTATIC}, {@link
-   *     top.yqingyu.common.asm.Opcodes#H_PUTFIELD}, {@link top.yqingyu.common.asm.Opcodes#H_PUTSTATIC}, {@link top.yqingyu.common.asm.Opcodes#H_INVOKEVIRTUAL}, {@link
-   *     top.yqingyu.common.asm.Opcodes#H_INVOKESTATIC}, {@link top.yqingyu.common.asm.Opcodes#H_INVOKESPECIAL}, {@link
-   *     top.yqingyu.common.asm.Opcodes#H_NEWINVOKESPECIAL} or {@link top.yqingyu.common.asm.Opcodes#H_INVOKEINTERFACE}.
+   * @param referenceKind one of {@link Opcodes#H_GETFIELD}, {@link Opcodes#H_GETSTATIC}, {@link
+   *     Opcodes#H_PUTFIELD}, {@link Opcodes#H_PUTSTATIC}, {@link Opcodes#H_INVOKEVIRTUAL}, {@link
+   *     Opcodes#H_INVOKESTATIC}, {@link Opcodes#H_INVOKESPECIAL}, {@link
+   *     Opcodes#H_NEWINVOKESPECIAL} or {@link Opcodes#H_INVOKEINTERFACE}.
    * @param owner the internal name of a class of interface.
    * @param name a field or method name.
    * @param descriptor a field or method descriptor.
    * @param isInterface whether owner is an interface or not.
    * @return a new or already existing Symbol with the given value.
    */
-  top.yqingyu.common.asm.Symbol addConstantMethodHandle(
+  Symbol addConstantMethodHandle(
       final int referenceKind,
       final String owner,
       final String name,
       final String descriptor,
       final boolean isInterface) {
-    final int tag = top.yqingyu.common.asm.Symbol.CONSTANT_METHOD_HANDLE_TAG;
+    final int tag = Symbol.CONSTANT_METHOD_HANDLE_TAG;
     // Note that we don't need to include isInterface in the hash computation, because it is
     // redundant with owner (we can't have the same owner with different isInterface values).
     int hashCode = hash(tag, owner, name, descriptor, referenceKind);
@@ -833,7 +822,7 @@ final class SymbolTable {
       }
       entry = entry.next;
     }
-    if (referenceKind <= top.yqingyu.common.asm.Opcodes.H_PUTSTATIC) {
+    if (referenceKind <= Opcodes.H_PUTSTATIC) {
       constantPool.put112(tag, referenceKind, addConstantFieldref(owner, name, descriptor).index);
     } else {
       constantPool.put112(
@@ -847,10 +836,10 @@ final class SymbolTable {
    * Adds a new CONSTANT_MethodHandle_info to the constant pool of this symbol table.
    *
    * @param index the constant pool index of the new Symbol.
-   * @param referenceKind one of {@link top.yqingyu.common.asm.Opcodes#H_GETFIELD}, {@link top.yqingyu.common.asm.Opcodes#H_GETSTATIC}, {@link
-   *     top.yqingyu.common.asm.Opcodes#H_PUTFIELD}, {@link top.yqingyu.common.asm.Opcodes#H_PUTSTATIC}, {@link top.yqingyu.common.asm.Opcodes#H_INVOKEVIRTUAL}, {@link
-   *     top.yqingyu.common.asm.Opcodes#H_INVOKESTATIC}, {@link top.yqingyu.common.asm.Opcodes#H_INVOKESPECIAL}, {@link
-   *     top.yqingyu.common.asm.Opcodes#H_NEWINVOKESPECIAL} or {@link Opcodes#H_INVOKEINTERFACE}.
+   * @param referenceKind one of {@link Opcodes#H_GETFIELD}, {@link Opcodes#H_GETSTATIC}, {@link
+   *     Opcodes#H_PUTFIELD}, {@link Opcodes#H_PUTSTATIC}, {@link Opcodes#H_INVOKEVIRTUAL}, {@link
+   *     Opcodes#H_INVOKESTATIC}, {@link Opcodes#H_INVOKESPECIAL}, {@link
+   *     Opcodes#H_NEWINVOKESPECIAL} or {@link Opcodes#H_INVOKEINTERFACE}.
    * @param owner the internal name of a class of interface.
    * @param name a field or method name.
    * @param descriptor a field or method descriptor.
@@ -861,7 +850,7 @@ final class SymbolTable {
       final String owner,
       final String name,
       final String descriptor) {
-    final int tag = top.yqingyu.common.asm.Symbol.CONSTANT_METHOD_HANDLE_TAG;
+    final int tag = Symbol.CONSTANT_METHOD_HANDLE_TAG;
     int hashCode = hash(tag, owner, name, descriptor, referenceKind);
     add(new Entry(index, tag, owner, name, descriptor, referenceKind, hashCode));
   }
@@ -873,8 +862,8 @@ final class SymbolTable {
    * @param methodDescriptor a method descriptor.
    * @return a new or already existing Symbol with the given value.
    */
-  top.yqingyu.common.asm.Symbol addConstantMethodType(final String methodDescriptor) {
-    return addConstantUtf8Reference(top.yqingyu.common.asm.Symbol.CONSTANT_METHOD_TYPE_TAG, methodDescriptor);
+  Symbol addConstantMethodType(final String methodDescriptor) {
+    return addConstantUtf8Reference(Symbol.CONSTANT_METHOD_TYPE_TAG, methodDescriptor);
   }
 
   /**
@@ -888,14 +877,14 @@ final class SymbolTable {
    * @param bootstrapMethodArguments the bootstrap method arguments.
    * @return a new or already existing Symbol with the given value.
    */
-  top.yqingyu.common.asm.Symbol addConstantDynamic(
+  Symbol addConstantDynamic(
       final String name,
       final String descriptor,
-      final top.yqingyu.common.asm.Handle bootstrapMethodHandle,
+      final Handle bootstrapMethodHandle,
       final Object... bootstrapMethodArguments) {
-    top.yqingyu.common.asm.Symbol bootstrapMethod = addBootstrapMethod(bootstrapMethodHandle, bootstrapMethodArguments);
+    Symbol bootstrapMethod = addBootstrapMethod(bootstrapMethodHandle, bootstrapMethodArguments);
     return addConstantDynamicOrInvokeDynamicReference(
-        top.yqingyu.common.asm.Symbol.CONSTANT_DYNAMIC_TAG, name, descriptor, bootstrapMethod.index);
+        Symbol.CONSTANT_DYNAMIC_TAG, name, descriptor, bootstrapMethod.index);
   }
 
   /**
@@ -909,29 +898,29 @@ final class SymbolTable {
    * @param bootstrapMethodArguments the bootstrap method arguments.
    * @return a new or already existing Symbol with the given value.
    */
-  top.yqingyu.common.asm.Symbol addConstantInvokeDynamic(
+  Symbol addConstantInvokeDynamic(
       final String name,
       final String descriptor,
-      final top.yqingyu.common.asm.Handle bootstrapMethodHandle,
+      final Handle bootstrapMethodHandle,
       final Object... bootstrapMethodArguments) {
-    top.yqingyu.common.asm.Symbol bootstrapMethod = addBootstrapMethod(bootstrapMethodHandle, bootstrapMethodArguments);
+    Symbol bootstrapMethod = addBootstrapMethod(bootstrapMethodHandle, bootstrapMethodArguments);
     return addConstantDynamicOrInvokeDynamicReference(
-        top.yqingyu.common.asm.Symbol.CONSTANT_INVOKE_DYNAMIC_TAG, name, descriptor, bootstrapMethod.index);
+        Symbol.CONSTANT_INVOKE_DYNAMIC_TAG, name, descriptor, bootstrapMethod.index);
   }
 
   /**
    * Adds a CONSTANT_Dynamic or a CONSTANT_InvokeDynamic_info to the constant pool of this symbol
    * table. Does nothing if the constant pool already contains a similar item.
    *
-   * @param tag one of {@link top.yqingyu.common.asm.Symbol#CONSTANT_DYNAMIC_TAG} or {@link
-   *     top.yqingyu.common.asm.Symbol#CONSTANT_INVOKE_DYNAMIC_TAG}.
+   * @param tag one of {@link Symbol#CONSTANT_DYNAMIC_TAG} or {@link
+   *     Symbol#CONSTANT_INVOKE_DYNAMIC_TAG}.
    * @param name a method name.
    * @param descriptor a field descriptor for CONSTANT_DYNAMIC_TAG) or a method descriptor for
    *     CONSTANT_INVOKE_DYNAMIC_TAG.
    * @param bootstrapMethodIndex the index of a bootstrap method in the BootstrapMethods attribute.
    * @return a new or already existing Symbol with the given value.
    */
-  private top.yqingyu.common.asm.Symbol addConstantDynamicOrInvokeDynamicReference(
+  private Symbol addConstantDynamicOrInvokeDynamicReference(
       final int tag, final String name, final String descriptor, final int bootstrapMethodIndex) {
     int hashCode = hash(tag, name, descriptor, bootstrapMethodIndex);
     Entry entry = get(hashCode);
@@ -955,8 +944,8 @@ final class SymbolTable {
    * Adds a new CONSTANT_Dynamic_info or CONSTANT_InvokeDynamic_info to the constant pool of this
    * symbol table.
    *
-   * @param tag one of {@link top.yqingyu.common.asm.Symbol#CONSTANT_DYNAMIC_TAG} or {@link
-   *     top.yqingyu.common.asm.Symbol#CONSTANT_INVOKE_DYNAMIC_TAG}.
+   * @param tag one of {@link Symbol#CONSTANT_DYNAMIC_TAG} or {@link
+   *     Symbol#CONSTANT_INVOKE_DYNAMIC_TAG}.
    * @param index the constant pool index of the new Symbol.
    * @param name a method name.
    * @param descriptor a field descriptor for CONSTANT_DYNAMIC_TAG or a method descriptor for
@@ -980,8 +969,8 @@ final class SymbolTable {
    * @param moduleName a fully qualified name (using dots) of a module.
    * @return a new or already existing Symbol with the given value.
    */
-  top.yqingyu.common.asm.Symbol addConstantModule(final String moduleName) {
-    return addConstantUtf8Reference(top.yqingyu.common.asm.Symbol.CONSTANT_MODULE_TAG, moduleName);
+  Symbol addConstantModule(final String moduleName) {
+    return addConstantUtf8Reference(Symbol.CONSTANT_MODULE_TAG, moduleName);
   }
 
   /**
@@ -991,8 +980,8 @@ final class SymbolTable {
    * @param packageName the internal name of a package.
    * @return a new or already existing Symbol with the given value.
    */
-  top.yqingyu.common.asm.Symbol addConstantPackage(final String packageName) {
-    return addConstantUtf8Reference(top.yqingyu.common.asm.Symbol.CONSTANT_PACKAGE_TAG, packageName);
+  Symbol addConstantPackage(final String packageName) {
+    return addConstantUtf8Reference(Symbol.CONSTANT_PACKAGE_TAG, packageName);
   }
 
   /**
@@ -1000,14 +989,14 @@ final class SymbolTable {
    * CONSTANT_Module_info or CONSTANT_Package_info to the constant pool of this symbol table. Does
    * nothing if the constant pool already contains a similar item.
    *
-   * @param tag one of {@link top.yqingyu.common.asm.Symbol#CONSTANT_CLASS_TAG}, {@link top.yqingyu.common.asm.Symbol#CONSTANT_STRING_TAG}, {@link
-   *     top.yqingyu.common.asm.Symbol#CONSTANT_METHOD_TYPE_TAG}, {@link top.yqingyu.common.asm.Symbol#CONSTANT_MODULE_TAG} or {@link
-   *     top.yqingyu.common.asm.Symbol#CONSTANT_PACKAGE_TAG}.
+   * @param tag one of {@link Symbol#CONSTANT_CLASS_TAG}, {@link Symbol#CONSTANT_STRING_TAG}, {@link
+   *     Symbol#CONSTANT_METHOD_TYPE_TAG}, {@link Symbol#CONSTANT_MODULE_TAG} or {@link
+   *     Symbol#CONSTANT_PACKAGE_TAG}.
    * @param value an internal class name, an arbitrary string, a method descriptor, a module or a
    *     package name, depending on tag.
    * @return a new or already existing Symbol with the given value.
    */
-  private top.yqingyu.common.asm.Symbol addConstantUtf8Reference(final int tag, final String value) {
+  private Symbol addConstantUtf8Reference(final int tag, final String value) {
     int hashCode = hash(tag, value);
     Entry entry = get(hashCode);
     while (entry != null) {
@@ -1025,9 +1014,9 @@ final class SymbolTable {
    * CONSTANT_Module_info or CONSTANT_Package_info to the constant pool of this symbol table.
    *
    * @param index the constant pool index of the new Symbol.
-   * @param tag one of {@link top.yqingyu.common.asm.Symbol#CONSTANT_CLASS_TAG}, {@link top.yqingyu.common.asm.Symbol#CONSTANT_STRING_TAG}, {@link
-   *     top.yqingyu.common.asm.Symbol#CONSTANT_METHOD_TYPE_TAG}, {@link top.yqingyu.common.asm.Symbol#CONSTANT_MODULE_TAG} or {@link
-   *     top.yqingyu.common.asm.Symbol#CONSTANT_PACKAGE_TAG}.
+   * @param tag one of {@link Symbol#CONSTANT_CLASS_TAG}, {@link Symbol#CONSTANT_STRING_TAG}, {@link
+   *     Symbol#CONSTANT_METHOD_TYPE_TAG}, {@link Symbol#CONSTANT_MODULE_TAG} or {@link
+   *     Symbol#CONSTANT_PACKAGE_TAG}.
    * @param value an internal class name, an arbitrary string, a method descriptor, a module or a
    *     package name, depending on tag.
    */
@@ -1047,9 +1036,9 @@ final class SymbolTable {
    * @param bootstrapMethodArguments the bootstrap method arguments.
    * @return a new or already existing Symbol with the given value.
    */
-  top.yqingyu.common.asm.Symbol addBootstrapMethod(
+  Symbol addBootstrapMethod(
           final Handle bootstrapMethodHandle, final Object... bootstrapMethodArguments) {
-    top.yqingyu.common.asm.ByteVector bootstrapMethodsAttribute = bootstrapMethods;
+    ByteVector bootstrapMethodsAttribute = bootstrapMethods;
     if (bootstrapMethodsAttribute == null) {
       bootstrapMethodsAttribute = bootstrapMethods = new ByteVector();
     }
@@ -1104,11 +1093,11 @@ final class SymbolTable {
    * @param hashCode the hash code of this bootstrap method.
    * @return a new or already existing Symbol with the given value.
    */
-  private top.yqingyu.common.asm.Symbol addBootstrapMethod(final int offset, final int length, final int hashCode) {
+  private Symbol addBootstrapMethod(final int offset, final int length, final int hashCode) {
     final byte[] bootstrapMethodsData = bootstrapMethods.data;
     Entry entry = get(hashCode);
     while (entry != null) {
-      if (entry.tag == top.yqingyu.common.asm.Symbol.BOOTSTRAP_METHOD_TAG && entry.hashCode == hashCode) {
+      if (entry.tag == Symbol.BOOTSTRAP_METHOD_TAG && entry.hashCode == hashCode) {
         int otherOffset = (int) entry.data;
         boolean isSameBootstrapMethod = true;
         for (int i = 0; i < length; ++i) {
@@ -1124,7 +1113,7 @@ final class SymbolTable {
       }
       entry = entry.next;
     }
-    return put(new Entry(bootstrapMethodCount++, top.yqingyu.common.asm.Symbol.BOOTSTRAP_METHOD_TAG, offset, hashCode));
+    return put(new Entry(bootstrapMethodCount++, Symbol.BOOTSTRAP_METHOD_TAG, offset, hashCode));
   }
 
   // -----------------------------------------------------------------------------------------------
@@ -1137,7 +1126,7 @@ final class SymbolTable {
    * @param typeIndex a type table index.
    * @return the type table element whose index is given.
    */
-  top.yqingyu.common.asm.Symbol getType(final int typeIndex) {
+  Symbol getType(final int typeIndex) {
     return typeTable[typeIndex];
   }
 
@@ -1149,31 +1138,31 @@ final class SymbolTable {
    * @return the index of a new or already existing type Symbol with the given value.
    */
   int addType(final String value) {
-    int hashCode = hash(top.yqingyu.common.asm.Symbol.TYPE_TAG, value);
+    int hashCode = hash(Symbol.TYPE_TAG, value);
     Entry entry = get(hashCode);
     while (entry != null) {
-      if (entry.tag == top.yqingyu.common.asm.Symbol.TYPE_TAG && entry.hashCode == hashCode && entry.value.equals(value)) {
+      if (entry.tag == Symbol.TYPE_TAG && entry.hashCode == hashCode && entry.value.equals(value)) {
         return entry.index;
       }
       entry = entry.next;
     }
-    return addTypeInternal(new Entry(typeCount, top.yqingyu.common.asm.Symbol.TYPE_TAG, value, hashCode));
+    return addTypeInternal(new Entry(typeCount, Symbol.TYPE_TAG, value, hashCode));
   }
 
   /**
-   * Adds an {@link top.yqingyu.common.asm.Frame#ITEM_UNINITIALIZED} type in the type table of this symbol table. Does
+   * Adds an {@link Frame#ITEM_UNINITIALIZED} type in the type table of this symbol table. Does
    * nothing if the type table already contains a similar type.
    *
    * @param value an internal class name.
    * @param bytecodeOffset the bytecode offset of the NEW instruction that created this {@link
-   *     top.yqingyu.common.asm.Frame#ITEM_UNINITIALIZED} type value.
+   *     Frame#ITEM_UNINITIALIZED} type value.
    * @return the index of a new or already existing type Symbol with the given value.
    */
   int addUninitializedType(final String value, final int bytecodeOffset) {
-    int hashCode = hash(top.yqingyu.common.asm.Symbol.UNINITIALIZED_TYPE_TAG, value, bytecodeOffset);
+    int hashCode = hash(Symbol.UNINITIALIZED_TYPE_TAG, value, bytecodeOffset);
     Entry entry = get(hashCode);
     while (entry != null) {
-      if (entry.tag == top.yqingyu.common.asm.Symbol.UNINITIALIZED_TYPE_TAG
+      if (entry.tag == Symbol.UNINITIALIZED_TYPE_TAG
           && entry.hashCode == hashCode
           && entry.data == bytecodeOffset
           && entry.value.equals(value)) {
@@ -1182,18 +1171,18 @@ final class SymbolTable {
       entry = entry.next;
     }
     return addTypeInternal(
-        new Entry(typeCount, top.yqingyu.common.asm.Symbol.UNINITIALIZED_TYPE_TAG, value, bytecodeOffset, hashCode));
+        new Entry(typeCount, Symbol.UNINITIALIZED_TYPE_TAG, value, bytecodeOffset, hashCode));
   }
 
   /**
    * Adds a merged type in the type table of this symbol table. Does nothing if the type table
    * already contains a similar type.
    *
-   * @param typeTableIndex1 a {@link top.yqingyu.common.asm.Symbol#TYPE_TAG} type, specified by its index in the type
+   * @param typeTableIndex1 a {@link Symbol#TYPE_TAG} type, specified by its index in the type
    *     table.
-   * @param typeTableIndex2 another {@link top.yqingyu.common.asm.Symbol#TYPE_TAG} type, specified by its index in the type
+   * @param typeTableIndex2 another {@link Symbol#TYPE_TAG} type, specified by its index in the type
    *     table.
-   * @return the index of a new or already existing {@link top.yqingyu.common.asm.Symbol#TYPE_TAG} type Symbol,
+   * @return the index of a new or already existing {@link Symbol#TYPE_TAG} type Symbol,
    *     corresponding to the common super class of the given types.
    */
   int addMergedType(final int typeTableIndex1, final int typeTableIndex2) {
@@ -1201,10 +1190,10 @@ final class SymbolTable {
         typeTableIndex1 < typeTableIndex2
             ? typeTableIndex1 | (((long) typeTableIndex2) << 32)
             : typeTableIndex2 | (((long) typeTableIndex1) << 32);
-    int hashCode = hash(top.yqingyu.common.asm.Symbol.MERGED_TYPE_TAG, typeTableIndex1 + typeTableIndex2);
+    int hashCode = hash(Symbol.MERGED_TYPE_TAG, typeTableIndex1 + typeTableIndex2);
     Entry entry = get(hashCode);
     while (entry != null) {
-      if (entry.tag == top.yqingyu.common.asm.Symbol.MERGED_TYPE_TAG && entry.hashCode == hashCode && entry.data == data) {
+      if (entry.tag == Symbol.MERGED_TYPE_TAG && entry.hashCode == hashCode && entry.data == data) {
         return entry.info;
       }
       entry = entry.next;
@@ -1212,14 +1201,14 @@ final class SymbolTable {
     String type1 = typeTable[typeTableIndex1].value;
     String type2 = typeTable[typeTableIndex2].value;
     int commonSuperTypeIndex = addType(classWriter.getCommonSuperClass(type1, type2));
-    put(new Entry(typeCount, top.yqingyu.common.asm.Symbol.MERGED_TYPE_TAG, data, hashCode)).info = commonSuperTypeIndex;
+    put(new Entry(typeCount, Symbol.MERGED_TYPE_TAG, data, hashCode)).info = commonSuperTypeIndex;
     return commonSuperTypeIndex;
   }
 
   /**
    * Adds the given type Symbol to {@link #typeTable}.
    *
-   * @param entry a {@link top.yqingyu.common.asm.Symbol#TYPE_TAG} or {@link top.yqingyu.common.asm.Symbol#UNINITIALIZED_TYPE_TAG} type symbol.
+   * @param entry a {@link Symbol#TYPE_TAG} or {@link Symbol#UNINITIALIZED_TYPE_TAG} type symbol.
    *     The index of this Symbol must be equal to the current value of {@link #typeCount}.
    * @return the index in {@link #typeTable} where the given type was added, which is also equal to
    *     entry's index by hypothesis.
@@ -1281,13 +1270,13 @@ final class SymbolTable {
   }
 
   /**
-   * An entry of a SymbolTable. This concrete and private subclass of {@link top.yqingyu.common.asm.Symbol} adds two fields
+   * An entry of a SymbolTable. This concrete and private subclass of {@link Symbol} adds two fields
    * which are only used inside SymbolTable, to implement hash sets of symbols (in order to avoid
    * duplicate symbols). See {@link #entries}.
    *
    * @author Eric Bruneton
    */
-  private static class Entry extends top.yqingyu.common.asm.Symbol {
+  private static class Entry extends Symbol {
 
     /** The hash code of this entry. */
     final int hashCode;

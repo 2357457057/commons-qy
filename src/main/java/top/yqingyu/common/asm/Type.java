@@ -27,8 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.Opcodes;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
@@ -770,27 +768,27 @@ public final class Type {
    *     FRETURN.
    */
   public int getOpcode(final int opcode) {
-    if (opcode == top.yqingyu.common.asm.Opcodes.IALOAD || opcode == top.yqingyu.common.asm.Opcodes.IASTORE) {
+    if (opcode == Opcodes.IALOAD || opcode == Opcodes.IASTORE) {
       switch (sort) {
         case BOOLEAN:
         case BYTE:
-          return opcode + (top.yqingyu.common.asm.Opcodes.BALOAD - top.yqingyu.common.asm.Opcodes.IALOAD);
+          return opcode + (Opcodes.BALOAD - Opcodes.IALOAD);
         case CHAR:
-          return opcode + (top.yqingyu.common.asm.Opcodes.CALOAD - top.yqingyu.common.asm.Opcodes.IALOAD);
+          return opcode + (Opcodes.CALOAD - Opcodes.IALOAD);
         case SHORT:
-          return opcode + (top.yqingyu.common.asm.Opcodes.SALOAD - top.yqingyu.common.asm.Opcodes.IALOAD);
+          return opcode + (Opcodes.SALOAD - Opcodes.IALOAD);
         case INT:
           return opcode;
         case FLOAT:
-          return opcode + (top.yqingyu.common.asm.Opcodes.FALOAD - top.yqingyu.common.asm.Opcodes.IALOAD);
+          return opcode + (Opcodes.FALOAD - Opcodes.IALOAD);
         case LONG:
-          return opcode + (top.yqingyu.common.asm.Opcodes.LALOAD - top.yqingyu.common.asm.Opcodes.IALOAD);
+          return opcode + (Opcodes.LALOAD - Opcodes.IALOAD);
         case DOUBLE:
-          return opcode + (top.yqingyu.common.asm.Opcodes.DALOAD - top.yqingyu.common.asm.Opcodes.IALOAD);
+          return opcode + (Opcodes.DALOAD - Opcodes.IALOAD);
         case ARRAY:
         case OBJECT:
         case INTERNAL:
-          return opcode + (top.yqingyu.common.asm.Opcodes.AALOAD - top.yqingyu.common.asm.Opcodes.IALOAD);
+          return opcode + (Opcodes.AALOAD - Opcodes.IALOAD);
         case METHOD:
         case VOID:
           throw new UnsupportedOperationException();
@@ -800,10 +798,10 @@ public final class Type {
     } else {
       switch (sort) {
         case VOID:
-          if (opcode != top.yqingyu.common.asm.Opcodes.IRETURN) {
+          if (opcode != Opcodes.IRETURN) {
             throw new UnsupportedOperationException();
           }
-          return top.yqingyu.common.asm.Opcodes.RETURN;
+          return Opcodes.RETURN;
         case BOOLEAN:
         case BYTE:
         case CHAR:
@@ -811,18 +809,18 @@ public final class Type {
         case INT:
           return opcode;
         case FLOAT:
-          return opcode + (top.yqingyu.common.asm.Opcodes.FRETURN - top.yqingyu.common.asm.Opcodes.IRETURN);
+          return opcode + (Opcodes.FRETURN - Opcodes.IRETURN);
         case LONG:
-          return opcode + (top.yqingyu.common.asm.Opcodes.LRETURN - top.yqingyu.common.asm.Opcodes.IRETURN);
+          return opcode + (Opcodes.LRETURN - Opcodes.IRETURN);
         case DOUBLE:
-          return opcode + (top.yqingyu.common.asm.Opcodes.DRETURN - top.yqingyu.common.asm.Opcodes.IRETURN);
+          return opcode + (Opcodes.DRETURN - Opcodes.IRETURN);
         case ARRAY:
         case OBJECT:
         case INTERNAL:
-          if (opcode != top.yqingyu.common.asm.Opcodes.ILOAD && opcode != top.yqingyu.common.asm.Opcodes.ISTORE && opcode != top.yqingyu.common.asm.Opcodes.IRETURN) {
+          if (opcode != Opcodes.ILOAD && opcode != Opcodes.ISTORE && opcode != Opcodes.IRETURN) {
             throw new UnsupportedOperationException();
           }
-          return opcode + (top.yqingyu.common.asm.Opcodes.ARETURN - Opcodes.IRETURN);
+          return opcode + (Opcodes.ARETURN - Opcodes.IRETURN);
         case METHOD:
           throw new UnsupportedOperationException();
         default:

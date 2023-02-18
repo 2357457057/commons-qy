@@ -27,9 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.Frame;
-import top.yqingyu.common.asm.SymbolTable;
-import top.yqingyu.common.asm.Type;
 
 /**
  * An entry of the constant pool, of the BootstrapMethods attribute, or of the (ASM specific) type

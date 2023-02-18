@@ -27,8 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.Opcodes;
-
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,8 +61,7 @@ final class Constants {
   static final String RUNTIME_VISIBLE_ANNOTATIONS = "RuntimeVisibleAnnotations";
   static final String RUNTIME_INVISIBLE_ANNOTATIONS = "RuntimeInvisibleAnnotations";
   static final String RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS = "RuntimeVisibleParameterAnnotations";
-  static final String RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS =
-      "RuntimeInvisibleParameterAnnotations";
+  static final String RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS = "RuntimeInvisibleParameterAnnotations";
   static final String RUNTIME_VISIBLE_TYPE_ANNOTATIONS = "RuntimeVisibleTypeAnnotations";
   static final String RUNTIME_INVISIBLE_TYPE_ANNOTATIONS = "RuntimeInvisibleTypeAnnotations";
   static final String ANNOTATION_DEFAULT = "AnnotationDefault";
@@ -193,15 +190,15 @@ final class Constants {
   }
 
   static boolean isWhitelisted(final String internalName) {
-    if (!internalName.startsWith("org/objectweb/asm/")) {
+    if (!internalName.startsWith("top/yqingyu/common/asm/")) {
       return false;
     }
     String member = "(Annotation|Class|Field|Method|Module|RecordComponent|Signature)";
     return internalName.contains("Test$")
         || Pattern.matches(
-            "org/objectweb/asm/util/Trace" + member + "Visitor(\\$.*)?", internalName)
+            "top/yqingyu/common/asm/util/Trace" + member + "Visitor(\\$.*)?", internalName)
         || Pattern.matches(
-            "org/objectweb/asm/util/Check" + member + "Adapter(\\$.*)?", internalName);
+            "top/yqingyu/common/asm/util/Check" + member + "Adapter(\\$.*)?", internalName);
   }
 
   static void checkIsPreview(final InputStream classInputStream) {

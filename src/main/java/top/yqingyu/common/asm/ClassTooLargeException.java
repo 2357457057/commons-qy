@@ -27,7 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.ClassWriter;
 
 /**
  * Exception thrown when the constant pool of a class produced by a {@link ClassWriter} is too

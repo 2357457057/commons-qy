@@ -27,10 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.*;
-import top.yqingyu.common.asm.AnnotationVisitor;
-import top.yqingyu.common.asm.Attribute;
-
 /**
  * A visitor to visit a Java class. The methods of this class must be called in the following order:
  * {@code visit} [ {@code visitSource} ] [ {@code visitModule} ][ {@code visitNestHost} ][ {@code
@@ -79,9 +75,6 @@ public abstract class ClassVisitor {
         && api != Opcodes.ASM4
         && api != Opcodes.ASM10_EXPERIMENTAL) {
       throw new IllegalArgumentException("Unsupported api " + api);
-    }
-    if (api == Opcodes.ASM10_EXPERIMENTAL) {
-      Constants.checkAsmExperimental(this);
     }
     this.api = api;
     this.cv = classVisitor;
@@ -211,7 +204,7 @@ public abstract class ClassVisitor {
    * @return a visitor to visit the annotation values, or {@literal null} if this visitor is not
    *     interested in visiting this annotation.
    */
-  public top.yqingyu.common.asm.AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
+  public AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
     if (cv != null) {
       return cv.visitAnnotation(descriptor, visible);
     }

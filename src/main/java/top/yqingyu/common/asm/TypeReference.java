@@ -28,10 +28,6 @@
 
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.ByteVector;
-import top.yqingyu.common.asm.ClassVisitor;
-import top.yqingyu.common.asm.MethodVisitor;
-
 /**
  * A reference to a type appearing in a class, field or method declaration, or on an instruction.
  * Such a reference designates the part of the class where the referenced type is appearing (e.g. an

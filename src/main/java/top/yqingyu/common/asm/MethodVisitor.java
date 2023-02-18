@@ -27,14 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.*;
-import top.yqingyu.common.asm.AnnotationVisitor;
-import top.yqingyu.common.asm.Attribute;
-import top.yqingyu.common.asm.ConstantDynamic;
-import top.yqingyu.common.asm.Constants;
-import top.yqingyu.common.asm.Handle;
-import top.yqingyu.common.asm.Label;
-
 /**
  * A visitor to visit a Java method. The methods of this class must be called in the following
  * order: ( {@code visitParameter} )* [ {@code visitAnnotationDefault} ] ( {@code visitAnnotation} |
@@ -97,9 +89,6 @@ public abstract class MethodVisitor {
         && api != Opcodes.ASM10_EXPERIMENTAL) {
       throw new IllegalArgumentException("Unsupported api " + api);
     }
-    if (api == Opcodes.ASM10_EXPERIMENTAL) {
-      top.yqingyu.common.asm.Constants.checkAsmExperimental(this);
-    }
     this.api = api;
     this.mv = methodVisitor;
   }
@@ -142,7 +131,7 @@ public abstract class MethodVisitor {
    *     'name' parameters passed to the methods of this annotation visitor are ignored. Moreover,
    *     exactly one visit method must be called on this annotation visitor, followed by visitEnd.
    */
-  public top.yqingyu.common.asm.AnnotationVisitor visitAnnotationDefault() {
+  public AnnotationVisitor visitAnnotationDefault() {
     if (mv != null) {
       return mv.visitAnnotationDefault();
     }
@@ -157,7 +146,7 @@ public abstract class MethodVisitor {
    * @return a visitor to visit the annotation values, or {@literal null} if this visitor is not
    *     interested in visiting this annotation.
    */
-  public top.yqingyu.common.asm.AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
+  public AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
     if (mv != null) {
       return mv.visitAnnotation(descriptor, visible);
     }
@@ -180,7 +169,7 @@ public abstract class MethodVisitor {
    * @return a visitor to visit the annotation values, or {@literal null} if this visitor is not
    *     interested in visiting this annotation.
    */
-  public top.yqingyu.common.asm.AnnotationVisitor visitTypeAnnotation(
+  public AnnotationVisitor visitTypeAnnotation(
           final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (api < Opcodes.ASM5) {
       throw new UnsupportedOperationException(REQUIRES_ASM5);
@@ -225,7 +214,7 @@ public abstract class MethodVisitor {
    * @return a visitor to visit the annotation values, or {@literal null} if this visitor is not
    *     interested in visiting this annotation.
    */
-  public top.yqingyu.common.asm.AnnotationVisitor visitParameterAnnotation(
+  public AnnotationVisitor visitParameterAnnotation(
       final int parameter, final String descriptor, final boolean visible) {
     if (mv != null) {
       return mv.visitParameterAnnotation(parameter, descriptor, visible);
@@ -467,13 +456,13 @@ public abstract class MethodVisitor {
    * @param bootstrapMethodHandle the bootstrap method.
    * @param bootstrapMethodArguments the bootstrap method constant arguments. Each argument must be
    *     an {@link Integer}, {@link Float}, {@link Long}, {@link Double}, {@link String}, {@link
-   *     Type}, {@link top.yqingyu.common.asm.Handle} or {@link top.yqingyu.common.asm.ConstantDynamic} value. This method is allowed to modify
+   *     Type}, {@link Handle} or {@link ConstantDynamic} value. This method is allowed to modify
    *     the content of the array so a caller should expect that this array may change.
    */
   public void visitInvokeDynamicInsn(
       final String name,
       final String descriptor,
-      final top.yqingyu.common.asm.Handle bootstrapMethodHandle,
+      final Handle bootstrapMethodHandle,
       final Object... bootstrapMethodArguments) {
     if (api < Opcodes.ASM5) {
       throw new UnsupportedOperationException(REQUIRES_ASM5);
@@ -493,7 +482,7 @@ public abstract class MethodVisitor {
    * @param label the operand of the instruction to be visited. This operand is a label that
    *     designates the instruction to which the jump instruction may jump.
    */
-  public void visitJumpInsn(final int opcode, final top.yqingyu.common.asm.Label label) {
+  public void visitJumpInsn(final int opcode, final Label label) {
     if (mv != null) {
       mv.visitJumpInsn(opcode, label);
     }
@@ -502,9 +491,9 @@ public abstract class MethodVisitor {
   /**
    * Visits a label. A label designates the instruction that will be visited just after it.
    *
-   * @param label a {@link top.yqingyu.common.asm.Label} object.
+   * @param label a {@link Label} object.
    */
-  public void visitLabel(final top.yqingyu.common.asm.Label label) {
+  public void visitLabel(final Label label) {
     if (mv != null) {
       mv.visitLabel(label);
     }
@@ -553,8 +542,8 @@ public abstract class MethodVisitor {
    * @param value the constant to be loaded on the stack. This parameter must be a non null {@link
    *     Integer}, a {@link Float}, a {@link Long}, a {@link Double}, a {@link String}, a {@link
    *     Type} of OBJECT or ARRAY sort for {@code .class} constants, for classes whose version is
-   *     49, a {@link Type} of METHOD sort for MethodType, a {@link top.yqingyu.common.asm.Handle} for MethodHandle
-   *     constants, for classes whose version is 51 or a {@link top.yqingyu.common.asm.ConstantDynamic} for a constant
+   *     49, a {@link Type} of METHOD sort for MethodType, a {@link Handle} for MethodHandle
+   *     constants, for classes whose version is 51 or a {@link ConstantDynamic} for a constant
    *     dynamic for classes whose version is 55.
    */
   public void visitLdcInsn(final Object value) {
@@ -593,7 +582,7 @@ public abstract class MethodVisitor {
    *     handler block for the {@code min + i} key.
    */
   public void visitTableSwitchInsn(
-          final int min, final int max, final top.yqingyu.common.asm.Label dflt, final top.yqingyu.common.asm.Label... labels) {
+          final int min, final int max, final Label dflt, final Label... labels) {
     if (mv != null) {
       mv.visitTableSwitchInsn(min, max, dflt, labels);
     }
@@ -607,7 +596,7 @@ public abstract class MethodVisitor {
    * @param labels beginnings of the handler blocks. {@code labels[i]} is the beginning of the
    *     handler block for the {@code keys[i]} key.
    */
-  public void visitLookupSwitchInsn(final top.yqingyu.common.asm.Label dflt, final int[] keys, final top.yqingyu.common.asm.Label[] labels) {
+  public void visitLookupSwitchInsn(final Label dflt, final int[] keys, final Label[] labels) {
     if (mv != null) {
       mv.visitLookupSwitchInsn(dflt, keys, labels);
     }
@@ -644,7 +633,7 @@ public abstract class MethodVisitor {
    * @return a visitor to visit the annotation values, or {@literal null} if this visitor is not
    *     interested in visiting this annotation.
    */
-  public top.yqingyu.common.asm.AnnotationVisitor visitInsnAnnotation(
+  public AnnotationVisitor visitInsnAnnotation(
       final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (api < Opcodes.ASM5) {
       throw new UnsupportedOperationException(REQUIRES_ASM5);
@@ -672,7 +661,7 @@ public abstract class MethodVisitor {
    *     (by the {@link #visitLabel} method).
    */
   public void visitTryCatchBlock(
-          final top.yqingyu.common.asm.Label start, final top.yqingyu.common.asm.Label end, final top.yqingyu.common.asm.Label handler, final String type) {
+          final Label start, final Label end, final Label handler, final String type) {
     if (mv != null) {
       mv.visitTryCatchBlock(start, end, handler, type);
     }
@@ -693,7 +682,7 @@ public abstract class MethodVisitor {
    * @return a visitor to visit the annotation values, or {@literal null} if this visitor is not
    *     interested in visiting this annotation.
    */
-  public top.yqingyu.common.asm.AnnotationVisitor visitTryCatchAnnotation(
+  public AnnotationVisitor visitTryCatchAnnotation(
       final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (api < Opcodes.ASM5) {
       throw new UnsupportedOperationException(REQUIRES_ASM5);
@@ -722,8 +711,8 @@ public abstract class MethodVisitor {
       final String name,
       final String descriptor,
       final String signature,
-      final top.yqingyu.common.asm.Label start,
-      final top.yqingyu.common.asm.Label end,
+      final Label start,
+      final Label end,
       final int index) {
     if (mv != null) {
       mv.visitLocalVariable(name, descriptor, signature, start, end, index);
@@ -753,8 +742,8 @@ public abstract class MethodVisitor {
   public AnnotationVisitor visitLocalVariableAnnotation(
       final int typeRef,
       final TypePath typePath,
-      final top.yqingyu.common.asm.Label[] start,
-      final top.yqingyu.common.asm.Label[] end,
+      final Label[] start,
+      final Label[] end,
       final int[] index,
       final String descriptor,
       final boolean visible) {

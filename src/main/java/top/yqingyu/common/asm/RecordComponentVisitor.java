@@ -27,12 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.*;
-import top.yqingyu.common.asm.AnnotationVisitor;
-import top.yqingyu.common.asm.Attribute;
-import top.yqingyu.common.asm.Constants;
-import top.yqingyu.common.asm.Opcodes;
-
 /**
  * A visitor to visit a record component. The methods of this class must be called in the following
  * order: ( {@code visitAnnotation} | {@code visitTypeAnnotation} | {@code visitAttribute} )* {@code
@@ -72,17 +66,14 @@ public abstract class RecordComponentVisitor {
    */
   protected RecordComponentVisitor(
       final int api, final RecordComponentVisitor recordComponentVisitor) {
-    if (api != top.yqingyu.common.asm.Opcodes.ASM9
-        && api != top.yqingyu.common.asm.Opcodes.ASM8
-        && api != top.yqingyu.common.asm.Opcodes.ASM7
-        && api != top.yqingyu.common.asm.Opcodes.ASM6
-        && api != top.yqingyu.common.asm.Opcodes.ASM5
-        && api != top.yqingyu.common.asm.Opcodes.ASM4
-        && api != top.yqingyu.common.asm.Opcodes.ASM10_EXPERIMENTAL) {
+    if (api != Opcodes.ASM9
+        && api != Opcodes.ASM8
+        && api != Opcodes.ASM7
+        && api != Opcodes.ASM6
+        && api != Opcodes.ASM5
+        && api != Opcodes.ASM4
+        && api != Opcodes.ASM10_EXPERIMENTAL) {
       throw new IllegalArgumentException("Unsupported api " + api);
-    }
-    if (api == Opcodes.ASM10_EXPERIMENTAL) {
-      top.yqingyu.common.asm.Constants.checkAsmExperimental(this);
     }
     this.api = api;
     this.delegate = recordComponentVisitor;
@@ -106,7 +97,7 @@ public abstract class RecordComponentVisitor {
    * @return a visitor to visit the annotation values, or {@literal null} if this visitor is not
    *     interested in visiting this annotation.
    */
-  public top.yqingyu.common.asm.AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
+  public AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
     if (delegate != null) {
       return delegate.visitAnnotation(descriptor, visible);
     }

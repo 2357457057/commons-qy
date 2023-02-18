@@ -27,24 +27,8 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.*;
-import top.yqingyu.common.asm.AnnotationVisitor;
-import top.yqingyu.common.asm.AnnotationWriter;
-import top.yqingyu.common.asm.Attribute;
-import top.yqingyu.common.asm.ByteVector;
-import top.yqingyu.common.asm.ClassReader;
-import top.yqingyu.common.asm.Constants;
-import top.yqingyu.common.asm.CurrentFrame;
-import top.yqingyu.common.asm.Edge;
-import top.yqingyu.common.asm.Frame;
-import top.yqingyu.common.asm.Handle;
-import top.yqingyu.common.asm.Handler;
-import top.yqingyu.common.asm.Label;
-import top.yqingyu.common.asm.MethodTooLargeException;
-import top.yqingyu.common.asm.MethodVisitor;
-
 /**
- * A {@link top.yqingyu.common.asm.MethodVisitor} that generates a corresponding 'method_info' structure, as defined in the
+ * A {@link MethodVisitor} that generates a corresponding 'method_info' structure, as defined in the
  * Java Virtual Machine Specification (JVMS).
  *
  * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.6">JVMS
@@ -52,7 +36,7 @@ import top.yqingyu.common.asm.MethodVisitor;
  * @author Eric Bruneton
  * @author Eugene Kuleshov
  */
-final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
+final class MethodWriter extends MethodVisitor {
 
   /** Indicates that nothing must be computed. */
   static final int COMPUTE_NOTHING = 0;
@@ -333,27 +317,27 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
   private int maxLocals;
 
   /** The 'code' field of the Code attribute. */
-  private final top.yqingyu.common.asm.ByteVector code = new top.yqingyu.common.asm.ByteVector();
+  private final ByteVector code = new ByteVector();
 
   /**
    * The first element in the exception handler list (used to generate the exception_table of the
-   * Code attribute). The next ones can be accessed with the {@link top.yqingyu.common.asm.Handler#nextHandler} field. May
+   * Code attribute). The next ones can be accessed with the {@link Handler#nextHandler} field. May
    * be {@literal null}.
    */
-  private top.yqingyu.common.asm.Handler firstHandler;
+  private Handler firstHandler;
 
   /**
    * The last element in the exception handler list (used to generate the exception_table of the
-   * Code attribute). The next ones can be accessed with the {@link top.yqingyu.common.asm.Handler#nextHandler} field. May
+   * Code attribute). The next ones can be accessed with the {@link Handler#nextHandler} field. May
    * be {@literal null}.
    */
-  private top.yqingyu.common.asm.Handler lastHandler;
+  private Handler lastHandler;
 
   /** The line_number_table_length field of the LineNumberTable code attribute. */
   private int lineNumberTableLength;
 
   /** The line_number_table array of the LineNumberTable code attribute, or {@literal null}. */
-  private top.yqingyu.common.asm.ByteVector lineNumberTable;
+  private ByteVector lineNumberTable;
 
   /** The local_variable_table_length field of the LocalVariableTable code attribute. */
   private int localVariableTableLength;
@@ -361,7 +345,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
   /**
    * The local_variable_table array of the LocalVariableTable code attribute, or {@literal null}.
    */
-  private top.yqingyu.common.asm.ByteVector localVariableTable;
+  private ByteVector localVariableTable;
 
   /** The local_variable_type_table_length field of the LocalVariableTypeTable code attribute. */
   private int localVariableTypeTableLength;
@@ -370,36 +354,36 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
    * The local_variable_type_table array of the LocalVariableTypeTable code attribute, or {@literal
    * null}.
    */
-  private top.yqingyu.common.asm.ByteVector localVariableTypeTable;
+  private ByteVector localVariableTypeTable;
 
   /** The number_of_entries field of the StackMapTable code attribute. */
   private int stackMapTableNumberOfEntries;
 
   /** The 'entries' array of the StackMapTable code attribute. */
-  private top.yqingyu.common.asm.ByteVector stackMapTableEntries;
+  private ByteVector stackMapTableEntries;
 
   /**
    * The last runtime visible type annotation of the Code attribute. The previous ones can be
    * accessed with the {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter lastCodeRuntimeVisibleTypeAnnotation;
+  private AnnotationWriter lastCodeRuntimeVisibleTypeAnnotation;
 
   /**
    * The last runtime invisible type annotation of the Code attribute. The previous ones can be
    * accessed with the {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter lastCodeRuntimeInvisibleTypeAnnotation;
+  private AnnotationWriter lastCodeRuntimeInvisibleTypeAnnotation;
 
   /**
    * The first non standard attribute of the Code attribute. The next ones can be accessed with the
-   * {@link top.yqingyu.common.asm.Attribute#nextAttribute} field. May be {@literal null}.
+   * {@link Attribute#nextAttribute} field. May be {@literal null}.
    *
    * <p><b>WARNING</b>: this list stores the attributes in the <i>reverse</i> order of their visit.
    * firstAttribute is actually the last attribute visited in {@link #visitAttribute}. The {@link
    * #putMethodInfo} method writes the attributes in the order defined by this list, i.e. in the
    * reverse order specified by the user.
    */
-  private top.yqingyu.common.asm.Attribute firstCodeAttribute;
+  private Attribute firstCodeAttribute;
 
   // Other method_info attributes:
 
@@ -416,13 +400,13 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
    * The last runtime visible annotation of this method. The previous ones can be accessed with the
    * {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter lastRuntimeVisibleAnnotation;
+  private AnnotationWriter lastRuntimeVisibleAnnotation;
 
   /**
    * The last runtime invisible annotation of this method. The previous ones can be accessed with
    * the {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter lastRuntimeInvisibleAnnotation;
+  private AnnotationWriter lastRuntimeInvisibleAnnotation;
 
   /** The number of method parameters that can have runtime visible annotations, or 0. */
   private int visibleAnnotableParameterCount;
@@ -432,7 +416,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
    * annotation of a parameter (which can be {@literal null} - the previous ones can be accessed
    * with the {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field). May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter[] lastRuntimeVisibleParameterAnnotations;
+  private AnnotationWriter[] lastRuntimeVisibleParameterAnnotations;
 
   /** The number of method parameters that can have runtime visible annotations, or 0. */
   private int invisibleAnnotableParameterCount;
@@ -442,39 +426,39 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
    * last annotation of a parameter (which can be {@literal null} - the previous ones can be
    * accessed with the {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field). May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter[] lastRuntimeInvisibleParameterAnnotations;
+  private AnnotationWriter[] lastRuntimeInvisibleParameterAnnotations;
 
   /**
    * The last runtime visible type annotation of this method. The previous ones can be accessed with
    * the {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter lastRuntimeVisibleTypeAnnotation;
+  private AnnotationWriter lastRuntimeVisibleTypeAnnotation;
 
   /**
    * The last runtime invisible type annotation of this method. The previous ones can be accessed
    * with the {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter lastRuntimeInvisibleTypeAnnotation;
+  private AnnotationWriter lastRuntimeInvisibleTypeAnnotation;
 
   /** The default_value field of the AnnotationDefault attribute, or {@literal null}. */
-  private top.yqingyu.common.asm.ByteVector defaultValue;
+  private ByteVector defaultValue;
 
   /** The parameters_count field of the MethodParameters attribute. */
   private int parametersCount;
 
   /** The 'parameters' array of the MethodParameters attribute, or {@literal null}. */
-  private top.yqingyu.common.asm.ByteVector parameters;
+  private ByteVector parameters;
 
   /**
    * The first non standard attribute of this method. The next ones can be accessed with the {@link
-   * top.yqingyu.common.asm.Attribute#nextAttribute} field. May be {@literal null}.
+   * Attribute#nextAttribute} field. May be {@literal null}.
    *
    * <p><b>WARNING</b>: this list stores the attributes in the <i>reverse</i> order of their visit.
    * firstAttribute is actually the last attribute visited in {@link #visitAttribute}. The {@link
    * #putMethodInfo} method writes the attributes in the order defined by this list, i.e. in the
    * reverse order specified by the user.
    */
-  private top.yqingyu.common.asm.Attribute firstAttribute;
+  private Attribute firstAttribute;
 
   // -----------------------------------------------------------------------------------------------
   // Fields used to compute the maximum stack size and number of locals, and the stack map frames
@@ -489,15 +473,15 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
 
   /**
    * The first basic block of the method. The next ones (in bytecode offset order) can be accessed
-   * with the {@link top.yqingyu.common.asm.Label#nextBasicBlock} field.
+   * with the {@link Label#nextBasicBlock} field.
    */
-  private top.yqingyu.common.asm.Label firstBasicBlock;
+  private Label firstBasicBlock;
 
   /**
    * The last basic block of the method (in bytecode offset order). This field is updated each time
    * a basic block is encountered, and is used to append it at the end of the basic block list.
    */
-  private top.yqingyu.common.asm.Label lastBasicBlock;
+  private Label lastBasicBlock;
 
   /**
    * The current basic block, i.e. the basic block of the last visited instruction. When {@link
@@ -508,12 +492,12 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
    * indeed, the existing frames are sufficient by hypothesis to compute any intermediate frame -
    * and the maximum stack size as well - without using any control flow graph).
    */
-  private top.yqingyu.common.asm.Label currentBasicBlock;
+  private Label currentBasicBlock;
 
   /**
    * The relative stack size after the last visited instruction. This size is relative to the
    * beginning of {@link #currentBasicBlock}, i.e. the true stack size after the last visited
-   * instruction is equal to the {@link top.yqingyu.common.asm.Label#inputStackSize} of the current basic block plus {@link
+   * instruction is equal to the {@link Label#inputStackSize} of the current basic block plus {@link
    * #relativeStackSize}. When {@link #compute} is equal to {@link
    * #COMPUTE_MAX_STACK_AND_LOCAL_FROM_FRAMES}, {@link #currentBasicBlock} is always the start of
    * the method, so this relative size is also equal to the absolute stack size after the last
@@ -524,7 +508,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
   /**
    * The maximum relative stack size after the last visited instruction. This size is relative to
    * the beginning of {@link #currentBasicBlock}, i.e. the true maximum stack size after the last
-   * visited instruction is equal to the {@link top.yqingyu.common.asm.Label#inputStackSize} of the current basic block
+   * visited instruction is equal to the {@link Label#inputStackSize} of the current basic block
    * plus {@link #maxRelativeStackSize}.When {@link #compute} is equal to {@link
    * #COMPUTE_MAX_STACK_AND_LOCAL_FROM_FRAMES}, {@link #currentBasicBlock} is always the start of
    * the method, so this relative size is also equal to the absolute maximum stack size after the
@@ -549,9 +533,9 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
    * to which the frame corresponds, the second element is the number of locals and the third one is
    * the number of stack elements. The local variables start at index 3 and are followed by the
    * operand stack elements. In summary frame[0] = offset, frame[1] = numLocal, frame[2] = numStack.
-   * Local variables and operand stack entries contain abstract types, as defined in {@link top.yqingyu.common.asm.Frame},
-   * but restricted to {@link top.yqingyu.common.asm.Frame#CONSTANT_KIND}, {@link top.yqingyu.common.asm.Frame#REFERENCE_KIND} or {@link
-   * top.yqingyu.common.asm.Frame#UNINITIALIZED_KIND} abstract types. Long and double types use only one array entry.
+   * Local variables and operand stack entries contain abstract types, as defined in {@link Frame},
+   * but restricted to {@link Frame#CONSTANT_KIND}, {@link Frame#REFERENCE_KIND} or {@link
+   * Frame#UNINITIALIZED_KIND} abstract types. Long and double types use only one array entry.
    */
   private int[] currentFrame;
 
@@ -611,7 +595,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
       final int compute) {
     super(/* latest api = */ Opcodes.ASM9);
     this.symbolTable = symbolTable;
-    this.accessFlags = "<init>".equals(name) ? access | top.yqingyu.common.asm.Constants.ACC_CONSTRUCTOR : access;
+    this.accessFlags = "<init>".equals(name) ? access | Constants.ACC_CONSTRUCTOR : access;
     this.nameIndex = symbolTable.addConstantUtf8(name);
     this.name = name;
     this.descriptorIndex = symbolTable.addConstantUtf8(descriptor);
@@ -637,7 +621,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
       maxLocals = argumentsSize;
       currentLocals = argumentsSize;
       // Create and visit the label for the first basic block.
-      firstBasicBlock = new top.yqingyu.common.asm.Label();
+      firstBasicBlock = new Label();
       visitLabel(firstBasicBlock);
     }
   }
@@ -657,39 +641,39 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
   @Override
   public void visitParameter(final String name, final int access) {
     if (parameters == null) {
-      parameters = new top.yqingyu.common.asm.ByteVector();
+      parameters = new ByteVector();
     }
     ++parametersCount;
     parameters.putShort((name == null) ? 0 : symbolTable.addConstantUtf8(name)).putShort(access);
   }
 
   @Override
-  public top.yqingyu.common.asm.AnnotationVisitor visitAnnotationDefault() {
-    defaultValue = new top.yqingyu.common.asm.ByteVector();
-    return new top.yqingyu.common.asm.AnnotationWriter(symbolTable, /* useNamedValues = */ false, defaultValue, null);
+  public AnnotationVisitor visitAnnotationDefault() {
+    defaultValue = new ByteVector();
+    return new AnnotationWriter(symbolTable, /* useNamedValues = */ false, defaultValue, null);
   }
 
   @Override
-  public top.yqingyu.common.asm.AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
+  public AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
     if (visible) {
       return lastRuntimeVisibleAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(symbolTable, descriptor, lastRuntimeVisibleAnnotation);
+          AnnotationWriter.create(symbolTable, descriptor, lastRuntimeVisibleAnnotation);
     } else {
       return lastRuntimeInvisibleAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(symbolTable, descriptor, lastRuntimeInvisibleAnnotation);
+          AnnotationWriter.create(symbolTable, descriptor, lastRuntimeInvisibleAnnotation);
     }
   }
 
   @Override
-  public top.yqingyu.common.asm.AnnotationVisitor visitTypeAnnotation(
+  public AnnotationVisitor visitTypeAnnotation(
           final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (visible) {
       return lastRuntimeVisibleTypeAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(
+          AnnotationWriter.create(
               symbolTable, typeRef, typePath, descriptor, lastRuntimeVisibleTypeAnnotation);
     } else {
       return lastRuntimeInvisibleTypeAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(
+          AnnotationWriter.create(
               symbolTable, typeRef, typePath, descriptor, lastRuntimeInvisibleTypeAnnotation);
     }
   }
@@ -704,23 +688,23 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
   }
 
   @Override
-  public top.yqingyu.common.asm.AnnotationVisitor visitParameterAnnotation(
+  public AnnotationVisitor visitParameterAnnotation(
       final int parameter, final String annotationDescriptor, final boolean visible) {
     if (visible) {
       if (lastRuntimeVisibleParameterAnnotations == null) {
         lastRuntimeVisibleParameterAnnotations =
-            new top.yqingyu.common.asm.AnnotationWriter[Type.getArgumentTypes(descriptor).length];
+            new AnnotationWriter[Type.getArgumentTypes(descriptor).length];
       }
       return lastRuntimeVisibleParameterAnnotations[parameter] =
-          top.yqingyu.common.asm.AnnotationWriter.create(
+          AnnotationWriter.create(
               symbolTable, annotationDescriptor, lastRuntimeVisibleParameterAnnotations[parameter]);
     } else {
       if (lastRuntimeInvisibleParameterAnnotations == null) {
         lastRuntimeInvisibleParameterAnnotations =
-            new top.yqingyu.common.asm.AnnotationWriter[Type.getArgumentTypes(descriptor).length];
+            new AnnotationWriter[Type.getArgumentTypes(descriptor).length];
       }
       return lastRuntimeInvisibleParameterAnnotations[parameter] =
-          top.yqingyu.common.asm.AnnotationWriter.create(
+          AnnotationWriter.create(
               symbolTable,
               annotationDescriptor,
               lastRuntimeInvisibleParameterAnnotations[parameter]);
@@ -728,7 +712,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
   }
 
   @Override
-  public void visitAttribute(final top.yqingyu.common.asm.Attribute attribute) {
+  public void visitAttribute(final Attribute attribute) {
     // Store the attributes in the <i>reverse</i> order of their visit by this method.
     if (attribute.isCodeAttribute()) {
       attribute.nextAttribute = firstCodeAttribute;
@@ -760,7 +744,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
         // This should happen only once, for the implicit first frame (which is explicitly visited
         // in ClassReader if the EXPAND_ASM_INSNS option is used - and COMPUTE_INSERTED_FRAMES
         // can't be set if EXPAND_ASM_INSNS is not used).
-        currentBasicBlock.frame = new top.yqingyu.common.asm.CurrentFrame(currentBasicBlock);
+        currentBasicBlock.frame = new CurrentFrame(currentBasicBlock);
         currentBasicBlock.frame.setInputFrameFromDescriptor(
             symbolTable, accessFlags, descriptor, numLocal);
         currentBasicBlock.frame.accept(this);
@@ -777,7 +761,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
     } else if (type == Opcodes.F_NEW) {
       if (previousFrame == null) {
         int argumentsSize = Type.getArgumentsAndReturnSizes(descriptor) >> 2;
-        top.yqingyu.common.asm.Frame implicitFirstFrame = new top.yqingyu.common.asm.Frame(new top.yqingyu.common.asm.Label());
+        Frame implicitFirstFrame = new Frame(new Label());
         implicitFirstFrame.setInputFrameFromDescriptor(
             symbolTable, accessFlags, descriptor, argumentsSize);
         implicitFirstFrame.accept(this);
@@ -785,10 +769,10 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
       currentLocals = numLocal;
       int frameIndex = visitFrameStart(code.length, numLocal, numStack);
       for (int i = 0; i < numLocal; ++i) {
-        currentFrame[frameIndex++] = top.yqingyu.common.asm.Frame.getAbstractTypeFromApiFormat(symbolTable, local[i]);
+        currentFrame[frameIndex++] = Frame.getAbstractTypeFromApiFormat(symbolTable, local[i]);
       }
       for (int i = 0; i < numStack; ++i) {
-        currentFrame[frameIndex++] = top.yqingyu.common.asm.Frame.getAbstractTypeFromApiFormat(symbolTable, stack[i]);
+        currentFrame[frameIndex++] = Frame.getAbstractTypeFromApiFormat(symbolTable, stack[i]);
       }
       visitFrameEnd();
     } else {
@@ -797,7 +781,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
       }
       int offsetDelta;
       if (stackMapTableEntries == null) {
-        stackMapTableEntries = new top.yqingyu.common.asm.ByteVector();
+        stackMapTableEntries = new ByteVector();
         offsetDelta = code.length;
       } else {
         offsetDelta = code.length - previousFrameOffset - 1;
@@ -813,7 +797,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
       switch (type) {
         case Opcodes.F_FULL:
           currentLocals = numLocal;
-          stackMapTableEntries.putByte(top.yqingyu.common.asm.Frame.FULL_FRAME).putShort(offsetDelta).putShort(numLocal);
+          stackMapTableEntries.putByte(Frame.FULL_FRAME).putShort(offsetDelta).putShort(numLocal);
           for (int i = 0; i < numLocal; ++i) {
             putFrameType(local[i]);
           }
@@ -824,28 +808,28 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
           break;
         case Opcodes.F_APPEND:
           currentLocals += numLocal;
-          stackMapTableEntries.putByte(top.yqingyu.common.asm.Frame.SAME_FRAME_EXTENDED + numLocal).putShort(offsetDelta);
+          stackMapTableEntries.putByte(Frame.SAME_FRAME_EXTENDED + numLocal).putShort(offsetDelta);
           for (int i = 0; i < numLocal; ++i) {
             putFrameType(local[i]);
           }
           break;
         case Opcodes.F_CHOP:
           currentLocals -= numLocal;
-          stackMapTableEntries.putByte(top.yqingyu.common.asm.Frame.SAME_FRAME_EXTENDED - numLocal).putShort(offsetDelta);
+          stackMapTableEntries.putByte(Frame.SAME_FRAME_EXTENDED - numLocal).putShort(offsetDelta);
           break;
         case Opcodes.F_SAME:
           if (offsetDelta < 64) {
             stackMapTableEntries.putByte(offsetDelta);
           } else {
-            stackMapTableEntries.putByte(top.yqingyu.common.asm.Frame.SAME_FRAME_EXTENDED).putShort(offsetDelta);
+            stackMapTableEntries.putByte(Frame.SAME_FRAME_EXTENDED).putShort(offsetDelta);
           }
           break;
         case Opcodes.F_SAME1:
           if (offsetDelta < 64) {
-            stackMapTableEntries.putByte(top.yqingyu.common.asm.Frame.SAME_LOCALS_1_STACK_ITEM_FRAME + offsetDelta);
+            stackMapTableEntries.putByte(Frame.SAME_LOCALS_1_STACK_ITEM_FRAME + offsetDelta);
           } else {
             stackMapTableEntries
-                .putByte(top.yqingyu.common.asm.Frame.SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED)
+                .putByte(Frame.SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED)
                 .putShort(offsetDelta);
           }
           putFrameType(stack[0]);
@@ -927,13 +911,13 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
     if (varIndex < 4 && opcode != Opcodes.RET) {
       int optimizedOpcode;
       if (opcode < Opcodes.ISTORE) {
-        optimizedOpcode = top.yqingyu.common.asm.Constants.ILOAD_0 + ((opcode - Opcodes.ILOAD) << 2) + varIndex;
+        optimizedOpcode = Constants.ILOAD_0 + ((opcode - Opcodes.ILOAD) << 2) + varIndex;
       } else {
-        optimizedOpcode = top.yqingyu.common.asm.Constants.ISTORE_0 + ((opcode - Opcodes.ISTORE) << 2) + varIndex;
+        optimizedOpcode = Constants.ISTORE_0 + ((opcode - Opcodes.ISTORE) << 2) + varIndex;
       }
       code.putByte(optimizedOpcode);
     } else if (varIndex >= 256) {
-      code.putByte(top.yqingyu.common.asm.Constants.WIDE).put12(opcode, varIndex);
+      code.putByte(Constants.WIDE).put12(opcode, varIndex);
     } else {
       code.put11(opcode, varIndex);
     }
@@ -944,7 +928,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
       } else {
         if (opcode == Opcodes.RET) {
           // No stack size delta.
-          currentBasicBlock.flags |= top.yqingyu.common.asm.Label.FLAG_SUBROUTINE_END;
+          currentBasicBlock.flags |= Label.FLAG_SUBROUTINE_END;
           currentBasicBlock.outputStackSize = (short) relativeStackSize;
           endCurrentBasicBlockWithNoSuccessor();
         } else { // xLOAD or xSTORE
@@ -978,7 +962,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
       // handler range. However, instead of creating a basic block for each instruction, we can
       // get the same result in a more efficient way. Namely, by starting a new basic block after
       // each xSTORE instruction, which is what we do here.
-      visitLabel(new top.yqingyu.common.asm.Label());
+      visitLabel(new Label());
     }
   }
 
@@ -1107,23 +1091,23 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
   }
 
   @Override
-  public void visitJumpInsn(final int opcode, final top.yqingyu.common.asm.Label label) {
+  public void visitJumpInsn(final int opcode, final Label label) {
     lastBytecodeOffset = code.length;
     // Add the instruction to the bytecode of the method.
     // Compute the 'base' opcode, i.e. GOTO or JSR if opcode is GOTO_W or JSR_W, otherwise opcode.
     int baseOpcode =
-        opcode >= top.yqingyu.common.asm.Constants.GOTO_W ? opcode - top.yqingyu.common.asm.Constants.WIDE_JUMP_OPCODE_DELTA : opcode;
+        opcode >= Constants.GOTO_W ? opcode - Constants.WIDE_JUMP_OPCODE_DELTA : opcode;
     boolean nextInsnIsJumpTarget = false;
-    if ((label.flags & top.yqingyu.common.asm.Label.FLAG_RESOLVED) != 0
+    if ((label.flags & Label.FLAG_RESOLVED) != 0
         && label.bytecodeOffset - code.length < Short.MIN_VALUE) {
       // Case of a backward jump with an offset < -32768. In this case we automatically replace GOTO
       // with GOTO_W, JSR with JSR_W and IFxxx <l> with IFNOTxxx <L> GOTO_W <l> L:..., where
       // IFNOTxxx is the "opposite" opcode of IFxxx (e.g. IFNE for IFEQ) and where <L> designates
       // the instruction just after the GOTO_W.
       if (baseOpcode == Opcodes.GOTO) {
-        code.putByte(top.yqingyu.common.asm.Constants.GOTO_W);
+        code.putByte(Constants.GOTO_W);
       } else if (baseOpcode == Opcodes.JSR) {
-        code.putByte(top.yqingyu.common.asm.Constants.JSR_W);
+        code.putByte(Constants.JSR_W);
       } else {
         // Put the "opposite" opcode of baseOpcode. This can be done by flipping the least
         // significant bit for IFNULL and IFNONNULL, and similarly for IFEQ ... IF_ACMPEQ (with a
@@ -1136,7 +1120,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
         // specific instructions. To not miss this additional frame, we need to use an ASM_GOTO_W
         // here, which has the unfortunate effect of forcing this additional round trip (which in
         // some case would not have been really necessary, but we can't know this at this point).
-        code.putByte(top.yqingyu.common.asm.Constants.ASM_GOTO_W);
+        code.putByte(Constants.ASM_GOTO_W);
         hasAsmInstructions = true;
         // The instruction after the GOTO_W becomes the target of the IFNOT instruction.
         nextInsnIsJumpTarget = true;
@@ -1157,18 +1141,18 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
 
     // If needed, update the maximum stack size and number of locals, and stack map frames.
     if (currentBasicBlock != null) {
-      top.yqingyu.common.asm.Label nextBasicBlock = null;
+      Label nextBasicBlock = null;
       if (compute == COMPUTE_ALL_FRAMES) {
         currentBasicBlock.frame.execute(baseOpcode, 0, null, null);
         // Record the fact that 'label' is the target of a jump instruction.
-        label.getCanonicalInstance().flags |= top.yqingyu.common.asm.Label.FLAG_JUMP_TARGET;
+        label.getCanonicalInstance().flags |= Label.FLAG_JUMP_TARGET;
         // Add 'label' as a successor of the current basic block.
-        addSuccessorToCurrentBasicBlock(top.yqingyu.common.asm.Edge.JUMP, label);
+        addSuccessorToCurrentBasicBlock(Edge.JUMP, label);
         if (baseOpcode != Opcodes.GOTO) {
           // The next instruction starts a new basic block (except for GOTO: by default the code
           // following a goto is unreachable - unless there is an explicit label for it - and we
           // should not compute stack frame types for its instructions).
-          nextBasicBlock = new top.yqingyu.common.asm.Label();
+          nextBasicBlock = new Label();
         }
       } else if (compute == COMPUTE_INSERTED_FRAMES) {
         currentBasicBlock.frame.execute(baseOpcode, 0, null, null);
@@ -1178,11 +1162,11 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
       } else {
         if (baseOpcode == Opcodes.JSR) {
           // Record the fact that 'label' designates a subroutine, if not already done.
-          if ((label.flags & top.yqingyu.common.asm.Label.FLAG_SUBROUTINE_START) == 0) {
-            label.flags |= top.yqingyu.common.asm.Label.FLAG_SUBROUTINE_START;
+          if ((label.flags & Label.FLAG_SUBROUTINE_START) == 0) {
+            label.flags |= Label.FLAG_SUBROUTINE_START;
             hasSubroutines = true;
           }
-          currentBasicBlock.flags |= top.yqingyu.common.asm.Label.FLAG_SUBROUTINE_CALLER;
+          currentBasicBlock.flags |= Label.FLAG_SUBROUTINE_CALLER;
           // Note that, by construction in this method, a block which calls a subroutine has at
           // least two successors in the control flow graph: the first one (added below) leads to
           // the instruction after the JSR, while the second one (added here) leads to the JSR
@@ -1191,7 +1175,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
           // with a ret, in {@link Label#addSubroutineRetSuccessors}.
           addSuccessorToCurrentBasicBlock(relativeStackSize + 1, label);
           // The instruction after the JSR starts a new basic block.
-          nextBasicBlock = new top.yqingyu.common.asm.Label();
+          nextBasicBlock = new Label();
         } else {
           // No need to update maxRelativeStackSize (the stack size delta is always negative).
           relativeStackSize += STACK_SIZE_DELTA[baseOpcode];
@@ -1202,7 +1186,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
       // instruction as a successor of the current block, and to start a new basic block.
       if (nextBasicBlock != null) {
         if (nextInsnIsJumpTarget) {
-          nextBasicBlock.flags |= top.yqingyu.common.asm.Label.FLAG_JUMP_TARGET;
+          nextBasicBlock.flags |= Label.FLAG_JUMP_TARGET;
         }
         visitLabel(nextBasicBlock);
       }
@@ -1213,12 +1197,12 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
   }
 
   @Override
-  public void visitLabel(final top.yqingyu.common.asm.Label label) {
+  public void visitLabel(final Label label) {
     // Resolve the forward references to this label, if any.
     hasAsmInstructions |= label.resolve(code.data, code.length);
     // visitLabel starts a new basic block (except for debug only labels), so we need to update the
     // previous and current block references and list of successors.
-    if ((label.flags & top.yqingyu.common.asm.Label.FLAG_DEBUG_ONLY) != 0) {
+    if ((label.flags & Label.FLAG_DEBUG_ONLY) != 0) {
       return;
     }
     if (compute == COMPUTE_ALL_FRAMES) {
@@ -1228,7 +1212,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
           // one place, but this does not work for labels which have not been visited yet.
           // Therefore, when we detect here two labels having the same bytecode offset, we need to
           // - consolidate the state scattered in these two instances into the canonical instance:
-          currentBasicBlock.flags |= (label.flags & top.yqingyu.common.asm.Label.FLAG_JUMP_TARGET);
+          currentBasicBlock.flags |= (label.flags & Label.FLAG_JUMP_TARGET);
           // - make sure the two instances share the same Frame instance (the implementation of
           // {@link Label#getCanonicalInstance} relies on this property; here label.frame should be
           // null):
@@ -1238,13 +1222,13 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
           return;
         }
         // End the current basic block (with one new successor).
-        addSuccessorToCurrentBasicBlock(top.yqingyu.common.asm.Edge.JUMP, label);
+        addSuccessorToCurrentBasicBlock(Edge.JUMP, label);
       }
       // Append 'label' at the end of the basic block list.
       if (lastBasicBlock != null) {
         if (label.bytecodeOffset == lastBasicBlock.bytecodeOffset) {
           // Same comment as above.
-          lastBasicBlock.flags |= (label.flags & top.yqingyu.common.asm.Label.FLAG_JUMP_TARGET);
+          lastBasicBlock.flags |= (label.flags & Label.FLAG_JUMP_TARGET);
           // Here label.frame should be null.
           label.frame = lastBasicBlock.frame;
           currentBasicBlock = lastBasicBlock;
@@ -1256,7 +1240,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
       // Make it the new current basic block.
       currentBasicBlock = label;
       // Here label.frame should be null.
-      label.frame = new top.yqingyu.common.asm.Frame(label);
+      label.frame = new Frame(label);
     } else if (compute == COMPUTE_INSERTED_FRAMES) {
       if (currentBasicBlock == null) {
         // This case should happen only once, for the visitLabel call in the constructor. Indeed, if
@@ -1303,9 +1287,9 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
                 && ((firstDescriptorChar = constantSymbol.value.charAt(0)) == 'J'
                     || firstDescriptorChar == 'D'));
     if (isLongOrDouble) {
-      code.put12(top.yqingyu.common.asm.Constants.LDC2_W, constantIndex);
+      code.put12(Constants.LDC2_W, constantIndex);
     } else if (constantIndex >= 256) {
-      code.put12(top.yqingyu.common.asm.Constants.LDC_W, constantIndex);
+      code.put12(Constants.LDC_W, constantIndex);
     } else {
       code.put11(Opcodes.LDC, constantIndex);
     }
@@ -1328,7 +1312,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
     lastBytecodeOffset = code.length;
     // Add the instruction to the bytecode of the method.
     if ((varIndex > 255) || (increment > 127) || (increment < -128)) {
-      code.putByte(top.yqingyu.common.asm.Constants.WIDE).put12(Opcodes.IINC, varIndex).putShort(increment);
+      code.putByte(Constants.WIDE).put12(Opcodes.IINC, varIndex).putShort(increment);
     } else {
       code.putByte(Opcodes.IINC).put11(varIndex, increment);
     }
@@ -1347,13 +1331,13 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
 
   @Override
   public void visitTableSwitchInsn(
-          final int min, final int max, final top.yqingyu.common.asm.Label dflt, final top.yqingyu.common.asm.Label... labels) {
+          final int min, final int max, final Label dflt, final Label... labels) {
     lastBytecodeOffset = code.length;
     // Add the instruction to the bytecode of the method.
     code.putByte(Opcodes.TABLESWITCH).putByteArray(null, 0, (4 - code.length % 4) % 4);
     dflt.put(code, lastBytecodeOffset, true);
     code.putInt(min).putInt(max);
-    for (top.yqingyu.common.asm.Label label : labels) {
+    for (Label label : labels) {
       label.put(code, lastBytecodeOffset, true);
     }
     // If needed, update the maximum stack size and number of locals, and stack map frames.
@@ -1361,7 +1345,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
   }
 
   @Override
-  public void visitLookupSwitchInsn(final top.yqingyu.common.asm.Label dflt, final int[] keys, final top.yqingyu.common.asm.Label[] labels) {
+  public void visitLookupSwitchInsn(final Label dflt, final int[] keys, final Label[] labels) {
     lastBytecodeOffset = code.length;
     // Add the instruction to the bytecode of the method.
     code.putByte(Opcodes.LOOKUPSWITCH).putByteArray(null, 0, (4 - code.length % 4) % 4);
@@ -1375,23 +1359,23 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
     visitSwitchInsn(dflt, labels);
   }
 
-  private void visitSwitchInsn(final top.yqingyu.common.asm.Label dflt, final top.yqingyu.common.asm.Label[] labels) {
+  private void visitSwitchInsn(final Label dflt, final Label[] labels) {
     if (currentBasicBlock != null) {
       if (compute == COMPUTE_ALL_FRAMES) {
         currentBasicBlock.frame.execute(Opcodes.LOOKUPSWITCH, 0, null, null);
         // Add all the labels as successors of the current basic block.
-        addSuccessorToCurrentBasicBlock(top.yqingyu.common.asm.Edge.JUMP, dflt);
-        dflt.getCanonicalInstance().flags |= top.yqingyu.common.asm.Label.FLAG_JUMP_TARGET;
-        for (top.yqingyu.common.asm.Label label : labels) {
-          addSuccessorToCurrentBasicBlock(top.yqingyu.common.asm.Edge.JUMP, label);
-          label.getCanonicalInstance().flags |= top.yqingyu.common.asm.Label.FLAG_JUMP_TARGET;
+        addSuccessorToCurrentBasicBlock(Edge.JUMP, dflt);
+        dflt.getCanonicalInstance().flags |= Label.FLAG_JUMP_TARGET;
+        for (Label label : labels) {
+          addSuccessorToCurrentBasicBlock(Edge.JUMP, label);
+          label.getCanonicalInstance().flags |= Label.FLAG_JUMP_TARGET;
         }
       } else if (compute == COMPUTE_MAX_STACK_AND_LOCAL) {
         // No need to update maxRelativeStackSize (the stack size delta is always negative).
         --relativeStackSize;
         // Add all the labels as successors of the current basic block.
         addSuccessorToCurrentBasicBlock(relativeStackSize, dflt);
-        for (top.yqingyu.common.asm.Label label : labels) {
+        for (Label label : labels) {
           addSuccessorToCurrentBasicBlock(relativeStackSize, label);
         }
       }
@@ -1419,11 +1403,11 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
   }
 
   @Override
-  public top.yqingyu.common.asm.AnnotationVisitor visitInsnAnnotation(
+  public AnnotationVisitor visitInsnAnnotation(
       final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (visible) {
       return lastCodeRuntimeVisibleTypeAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(
+          AnnotationWriter.create(
               symbolTable,
               (typeRef & 0xFF0000FF) | (lastBytecodeOffset << 8),
               typePath,
@@ -1431,7 +1415,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
               lastCodeRuntimeVisibleTypeAnnotation);
     } else {
       return lastCodeRuntimeInvisibleTypeAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(
+          AnnotationWriter.create(
               symbolTable,
               (typeRef & 0xFF0000FF) | (lastBytecodeOffset << 8),
               typePath,
@@ -1442,9 +1426,9 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
 
   @Override
   public void visitTryCatchBlock(
-          final top.yqingyu.common.asm.Label start, final top.yqingyu.common.asm.Label end, final top.yqingyu.common.asm.Label handler, final String type) {
-    top.yqingyu.common.asm.Handler newHandler =
-        new top.yqingyu.common.asm.Handler(
+          final Label start, final Label end, final Label handler, final String type) {
+    Handler newHandler =
+        new Handler(
             start, end, handler, type != null ? symbolTable.addConstantClass(type).index : 0, type);
     if (firstHandler == null) {
       firstHandler = newHandler;
@@ -1455,15 +1439,15 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
   }
 
   @Override
-  public top.yqingyu.common.asm.AnnotationVisitor visitTryCatchAnnotation(
+  public AnnotationVisitor visitTryCatchAnnotation(
       final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (visible) {
       return lastCodeRuntimeVisibleTypeAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(
+          AnnotationWriter.create(
               symbolTable, typeRef, typePath, descriptor, lastCodeRuntimeVisibleTypeAnnotation);
     } else {
       return lastCodeRuntimeInvisibleTypeAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(
+          AnnotationWriter.create(
               symbolTable, typeRef, typePath, descriptor, lastCodeRuntimeInvisibleTypeAnnotation);
     }
   }
@@ -1473,12 +1457,12 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
       final String name,
       final String descriptor,
       final String signature,
-      final top.yqingyu.common.asm.Label start,
-      final top.yqingyu.common.asm.Label end,
+      final Label start,
+      final Label end,
       final int index) {
     if (signature != null) {
       if (localVariableTypeTable == null) {
-        localVariableTypeTable = new top.yqingyu.common.asm.ByteVector();
+        localVariableTypeTable = new ByteVector();
       }
       ++localVariableTypeTableLength;
       localVariableTypeTable
@@ -1489,7 +1473,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
           .putShort(index);
     }
     if (localVariableTable == null) {
-      localVariableTable = new top.yqingyu.common.asm.ByteVector();
+      localVariableTable = new ByteVector();
     }
     ++localVariableTableLength;
     localVariableTable
@@ -1511,14 +1495,14 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
   public AnnotationVisitor visitLocalVariableAnnotation(
       final int typeRef,
       final TypePath typePath,
-      final top.yqingyu.common.asm.Label[] start,
-      final top.yqingyu.common.asm.Label[] end,
+      final Label[] start,
+      final Label[] end,
       final int[] index,
       final String descriptor,
       final boolean visible) {
     // Create a ByteVector to hold a 'type_annotation' JVMS structure.
     // See https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.7.20.
-    top.yqingyu.common.asm.ByteVector typeAnnotation = new top.yqingyu.common.asm.ByteVector();
+    ByteVector typeAnnotation = new ByteVector();
     // Write target_type, target_info, and target_path.
     typeAnnotation.putByte(typeRef >>> 24).putShort(start.length);
     for (int i = 0; i < start.length; ++i) {
@@ -1532,14 +1516,14 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
     typeAnnotation.putShort(symbolTable.addConstantUtf8(descriptor)).putShort(0);
     if (visible) {
       return lastCodeRuntimeVisibleTypeAnnotation =
-          new top.yqingyu.common.asm.AnnotationWriter(
+          new AnnotationWriter(
               symbolTable,
               /* useNamedValues = */ true,
               typeAnnotation,
               lastCodeRuntimeVisibleTypeAnnotation);
     } else {
       return lastCodeRuntimeInvisibleTypeAnnotation =
-          new top.yqingyu.common.asm.AnnotationWriter(
+          new AnnotationWriter(
               symbolTable,
               /* useNamedValues = */ true,
               typeAnnotation,
@@ -1548,9 +1532,9 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
   }
 
   @Override
-  public void visitLineNumber(final int line, final top.yqingyu.common.asm.Label start) {
+  public void visitLineNumber(final int line, final Label start) {
     if (lineNumberTable == null) {
-      lineNumberTable = new top.yqingyu.common.asm.ByteVector();
+      lineNumberTable = new ByteVector();
     }
     ++lineNumberTableLength;
     lineNumberTable.putShort(start.bytecodeOffset);
@@ -1574,27 +1558,27 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
   /** Computes all the stack map frames of the method, from scratch. */
   private void computeAllFrames() {
     // Complete the control flow graph with exception handler blocks.
-    top.yqingyu.common.asm.Handler handler = firstHandler;
+    Handler handler = firstHandler;
     while (handler != null) {
       String catchTypeDescriptor =
           handler.catchTypeDescriptor == null ? "java/lang/Throwable" : handler.catchTypeDescriptor;
-      int catchType = top.yqingyu.common.asm.Frame.getAbstractTypeFromInternalName(symbolTable, catchTypeDescriptor);
+      int catchType = Frame.getAbstractTypeFromInternalName(symbolTable, catchTypeDescriptor);
       // Mark handlerBlock as an exception handler.
-      top.yqingyu.common.asm.Label handlerBlock = handler.handlerPc.getCanonicalInstance();
-      handlerBlock.flags |= top.yqingyu.common.asm.Label.FLAG_JUMP_TARGET;
+      Label handlerBlock = handler.handlerPc.getCanonicalInstance();
+      handlerBlock.flags |= Label.FLAG_JUMP_TARGET;
       // Add handlerBlock as a successor of all the basic blocks in the exception handler range.
-      top.yqingyu.common.asm.Label handlerRangeBlock = handler.startPc.getCanonicalInstance();
-      top.yqingyu.common.asm.Label handlerRangeEnd = handler.endPc.getCanonicalInstance();
+      Label handlerRangeBlock = handler.startPc.getCanonicalInstance();
+      Label handlerRangeEnd = handler.endPc.getCanonicalInstance();
       while (handlerRangeBlock != handlerRangeEnd) {
         handlerRangeBlock.outgoingEdges =
-            new top.yqingyu.common.asm.Edge(catchType, handlerBlock, handlerRangeBlock.outgoingEdges);
+            new Edge(catchType, handlerBlock, handlerRangeBlock.outgoingEdges);
         handlerRangeBlock = handlerRangeBlock.nextBasicBlock;
       }
       handler = handler.nextHandler;
     }
 
     // Create and visit the first (implicit) frame.
-    top.yqingyu.common.asm.Frame firstFrame = firstBasicBlock.frame;
+    Frame firstFrame = firstBasicBlock.frame;
     firstFrame.setInputFrameFromDescriptor(symbolTable, accessFlags, descriptor, this.maxLocals);
     firstFrame.accept(this);
 
@@ -1604,25 +1588,25 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
     // (which might change them, in which case these blocks must be processed too, and are thus
     // added to the list of blocks to process). Also compute the maximum stack size of the method,
     // as a by-product.
-    top.yqingyu.common.asm.Label listOfBlocksToProcess = firstBasicBlock;
-    listOfBlocksToProcess.nextListElement = top.yqingyu.common.asm.Label.EMPTY_LIST;
+    Label listOfBlocksToProcess = firstBasicBlock;
+    listOfBlocksToProcess.nextListElement = Label.EMPTY_LIST;
     int maxStackSize = 0;
-    while (listOfBlocksToProcess != top.yqingyu.common.asm.Label.EMPTY_LIST) {
+    while (listOfBlocksToProcess != Label.EMPTY_LIST) {
       // Remove a basic block from the list of blocks to process.
-      top.yqingyu.common.asm.Label basicBlock = listOfBlocksToProcess;
+      Label basicBlock = listOfBlocksToProcess;
       listOfBlocksToProcess = listOfBlocksToProcess.nextListElement;
       basicBlock.nextListElement = null;
       // By definition, basicBlock is reachable.
-      basicBlock.flags |= top.yqingyu.common.asm.Label.FLAG_REACHABLE;
+      basicBlock.flags |= Label.FLAG_REACHABLE;
       // Update the (absolute) maximum stack size.
       int maxBlockStackSize = basicBlock.frame.getInputStackSize() + basicBlock.outputStackMax;
       if (maxBlockStackSize > maxStackSize) {
         maxStackSize = maxBlockStackSize;
       }
       // Update the successor blocks of basicBlock in the control flow graph.
-      top.yqingyu.common.asm.Edge outgoingEdge = basicBlock.outgoingEdges;
+      Edge outgoingEdge = basicBlock.outgoingEdges;
       while (outgoingEdge != null) {
-        top.yqingyu.common.asm.Label successorBlock = outgoingEdge.successor.getCanonicalInstance();
+        Label successorBlock = outgoingEdge.successor.getCanonicalInstance();
         boolean successorBlockChanged =
             basicBlock.frame.merge(symbolTable, successorBlock.frame, outgoingEdge.info);
         if (successorBlockChanged && successorBlock.nextListElement == null) {
@@ -1638,15 +1622,15 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
     // Loop over all the basic blocks and visit the stack map frames that must be stored in the
     // StackMapTable attribute. Also replace unreachable code with NOP* ATHROW, and remove it from
     // exception handler ranges.
-    top.yqingyu.common.asm.Label basicBlock = firstBasicBlock;
+    Label basicBlock = firstBasicBlock;
     while (basicBlock != null) {
-      if ((basicBlock.flags & (top.yqingyu.common.asm.Label.FLAG_JUMP_TARGET | top.yqingyu.common.asm.Label.FLAG_REACHABLE))
-          == (top.yqingyu.common.asm.Label.FLAG_JUMP_TARGET | top.yqingyu.common.asm.Label.FLAG_REACHABLE)) {
+      if ((basicBlock.flags & (Label.FLAG_JUMP_TARGET | Label.FLAG_REACHABLE))
+          == (Label.FLAG_JUMP_TARGET | Label.FLAG_REACHABLE)) {
         basicBlock.frame.accept(this);
       }
-      if ((basicBlock.flags & top.yqingyu.common.asm.Label.FLAG_REACHABLE) == 0) {
+      if ((basicBlock.flags & Label.FLAG_REACHABLE) == 0) {
         // Find the start and end bytecode offsets of this unreachable block.
-        top.yqingyu.common.asm.Label nextBasicBlock = basicBlock.nextBasicBlock;
+        Label nextBasicBlock = basicBlock.nextBasicBlock;
         int startOffset = basicBlock.bytecodeOffset;
         int endOffset = (nextBasicBlock == null ? code.length : nextBasicBlock.bytecodeOffset) - 1;
         if (endOffset >= startOffset) {
@@ -1659,10 +1643,10 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
           // (so that the ATHROW could consume this Throwable if it were reachable).
           int frameIndex = visitFrameStart(startOffset, /* numLocal = */ 0, /* numStack = */ 1);
           currentFrame[frameIndex] =
-              top.yqingyu.common.asm.Frame.getAbstractTypeFromInternalName(symbolTable, "java/lang/Throwable");
+              Frame.getAbstractTypeFromInternalName(symbolTable, "java/lang/Throwable");
           visitFrameEnd();
           // Remove this unreachable basic block from the exception handler ranges.
-          firstHandler = top.yqingyu.common.asm.Handler.removeRange(firstHandler, basicBlock, nextBasicBlock);
+          firstHandler = Handler.removeRange(firstHandler, basicBlock, nextBasicBlock);
           // The maximum stack size is now at least one, because of the Throwable declared above.
           maxStackSize = Math.max(maxStackSize, 1);
         }
@@ -1676,23 +1660,23 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
   /** Computes the maximum stack size of the method. */
   private void computeMaxStackAndLocal() {
     // Complete the control flow graph with exception handler blocks.
-    top.yqingyu.common.asm.Handler handler = firstHandler;
+    Handler handler = firstHandler;
     while (handler != null) {
-      top.yqingyu.common.asm.Label handlerBlock = handler.handlerPc;
-      top.yqingyu.common.asm.Label handlerRangeBlock = handler.startPc;
-      top.yqingyu.common.asm.Label handlerRangeEnd = handler.endPc;
+      Label handlerBlock = handler.handlerPc;
+      Label handlerRangeBlock = handler.startPc;
+      Label handlerRangeEnd = handler.endPc;
       // Add handlerBlock as a successor of all the basic blocks in the exception handler range.
       while (handlerRangeBlock != handlerRangeEnd) {
-        if ((handlerRangeBlock.flags & top.yqingyu.common.asm.Label.FLAG_SUBROUTINE_CALLER) == 0) {
+        if ((handlerRangeBlock.flags & Label.FLAG_SUBROUTINE_CALLER) == 0) {
           handlerRangeBlock.outgoingEdges =
-              new top.yqingyu.common.asm.Edge(top.yqingyu.common.asm.Edge.EXCEPTION, handlerBlock, handlerRangeBlock.outgoingEdges);
+              new Edge(Edge.EXCEPTION, handlerBlock, handlerRangeBlock.outgoingEdges);
         } else {
           // If handlerRangeBlock is a JSR block, add handlerBlock after the first two outgoing
           // edges to preserve the hypothesis about JSR block successors order (see
           // {@link #visitJumpInsn}).
           handlerRangeBlock.outgoingEdges.nextEdge.nextEdge =
-              new top.yqingyu.common.asm.Edge(
-                  top.yqingyu.common.asm.Edge.EXCEPTION, handlerBlock, handlerRangeBlock.outgoingEdges.nextEdge.nextEdge);
+              new Edge(
+                  Edge.EXCEPTION, handlerBlock, handlerRangeBlock.outgoingEdges.nextEdge.nextEdge);
         }
         handlerRangeBlock = handlerRangeBlock.nextBasicBlock;
       }
@@ -1708,11 +1692,11 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
       // Then, mark the subroutines called by the main subroutine, then the subroutines called by
       // those called by the main subroutine, etc.
       for (short currentSubroutine = 1; currentSubroutine <= numSubroutines; ++currentSubroutine) {
-        top.yqingyu.common.asm.Label basicBlock = firstBasicBlock;
+        Label basicBlock = firstBasicBlock;
         while (basicBlock != null) {
-          if ((basicBlock.flags & top.yqingyu.common.asm.Label.FLAG_SUBROUTINE_CALLER) != 0
+          if ((basicBlock.flags & Label.FLAG_SUBROUTINE_CALLER) != 0
               && basicBlock.subroutineId == currentSubroutine) {
-            top.yqingyu.common.asm.Label jsrTarget = basicBlock.outgoingEdges.nextEdge.successor;
+            Label jsrTarget = basicBlock.outgoingEdges.nextEdge.successor;
             if (jsrTarget.subroutineId == 0) {
               // If this subroutine has not been marked yet, find its basic blocks.
               jsrTarget.markSubroutine(++numSubroutines);
@@ -1724,12 +1708,12 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
       // Second step: find the successors in the control flow graph of each subroutine basic block
       // 'r' ending with a RET instruction. These successors are the virtual successors of the basic
       // blocks ending with JSR instructions (see {@link #visitJumpInsn)} that can reach 'r'.
-      top.yqingyu.common.asm.Label basicBlock = firstBasicBlock;
+      Label basicBlock = firstBasicBlock;
       while (basicBlock != null) {
-        if ((basicBlock.flags & top.yqingyu.common.asm.Label.FLAG_SUBROUTINE_CALLER) != 0) {
+        if ((basicBlock.flags & Label.FLAG_SUBROUTINE_CALLER) != 0) {
           // By construction, jsr targets are stored in the second outgoing edge of basic blocks
           // that ends with a jsr instruction (see {@link #FLAG_SUBROUTINE_CALLER}).
-          top.yqingyu.common.asm.Label subroutine = basicBlock.outgoingEdges.nextEdge.successor;
+          Label subroutine = basicBlock.outgoingEdges.nextEdge.successor;
           subroutine.addSubroutineRetSuccessors(basicBlock);
         }
         basicBlock = basicBlock.nextBasicBlock;
@@ -1740,14 +1724,14 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
     // whose input stack size has changed) and, while there are blocks to process, remove one
     // from the list, update the input stack size of its successor blocks in the control flow
     // graph, and add these blocks to the list of blocks to process (if not already done).
-    top.yqingyu.common.asm.Label listOfBlocksToProcess = firstBasicBlock;
-    listOfBlocksToProcess.nextListElement = top.yqingyu.common.asm.Label.EMPTY_LIST;
+    Label listOfBlocksToProcess = firstBasicBlock;
+    listOfBlocksToProcess.nextListElement = Label.EMPTY_LIST;
     int maxStackSize = maxStack;
-    while (listOfBlocksToProcess != top.yqingyu.common.asm.Label.EMPTY_LIST) {
+    while (listOfBlocksToProcess != Label.EMPTY_LIST) {
       // Remove a basic block from the list of blocks to process. Note that we don't reset
       // basicBlock.nextListElement to null on purpose, to make sure we don't reprocess already
       // processed basic blocks.
-      top.yqingyu.common.asm.Label basicBlock = listOfBlocksToProcess;
+      Label basicBlock = listOfBlocksToProcess;
       listOfBlocksToProcess = listOfBlocksToProcess.nextListElement;
       // Compute the (absolute) input stack size and maximum stack size of this block.
       int inputStackTop = basicBlock.inputStackSize;
@@ -1758,8 +1742,8 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
       }
       // Update the input stack size of the successor blocks of basicBlock in the control flow
       // graph, and add these blocks to the list of blocks to process, if not already done.
-      top.yqingyu.common.asm.Edge outgoingEdge = basicBlock.outgoingEdges;
-      if ((basicBlock.flags & top.yqingyu.common.asm.Label.FLAG_SUBROUTINE_CALLER) != 0) {
+      Edge outgoingEdge = basicBlock.outgoingEdges;
+      if ((basicBlock.flags & Label.FLAG_SUBROUTINE_CALLER) != 0) {
         // Ignore the first outgoing edge of the basic blocks ending with a jsr: these are virtual
         // edges which lead to the instruction just after the jsr, and do not correspond to a
         // possible execution path (see {@link #visitJumpInsn} and
@@ -1767,10 +1751,10 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
         outgoingEdge = outgoingEdge.nextEdge;
       }
       while (outgoingEdge != null) {
-        top.yqingyu.common.asm.Label successorBlock = outgoingEdge.successor;
+        Label successorBlock = outgoingEdge.successor;
         if (successorBlock.nextListElement == null) {
           successorBlock.inputStackSize =
-              (short) (outgoingEdge.info == top.yqingyu.common.asm.Edge.EXCEPTION ? 1 : inputStackTop + outgoingEdge.info);
+              (short) (outgoingEdge.info == Edge.EXCEPTION ? 1 : inputStackTop + outgoingEdge.info);
           successorBlock.nextListElement = listOfBlocksToProcess;
           listOfBlocksToProcess = successorBlock;
         }
@@ -1795,8 +1779,8 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
    * @param info information about the control flow edge to be added.
    * @param successor the successor block to be added to the current basic block.
    */
-  private void addSuccessorToCurrentBasicBlock(final int info, final top.yqingyu.common.asm.Label successor) {
-    currentBasicBlock.outgoingEdges = new top.yqingyu.common.asm.Edge(info, successor, currentBasicBlock.outgoingEdges);
+  private void addSuccessorToCurrentBasicBlock(final int info, final Label successor) {
+    currentBasicBlock.outgoingEdges = new Edge(info, successor, currentBasicBlock.outgoingEdges);
   }
 
   /**
@@ -1809,8 +1793,8 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
    */
   private void endCurrentBasicBlockWithNoSuccessor() {
     if (compute == COMPUTE_ALL_FRAMES) {
-      top.yqingyu.common.asm.Label nextBasicBlock = new top.yqingyu.common.asm.Label();
-      nextBasicBlock.frame = new top.yqingyu.common.asm.Frame(nextBasicBlock);
+      Label nextBasicBlock = new Label();
+      nextBasicBlock.frame = new Frame(nextBasicBlock);
       nextBasicBlock.resolve(code.data, code.length);
       lastBasicBlock.nextBasicBlock = nextBasicBlock;
       lastBasicBlock = nextBasicBlock;
@@ -1862,7 +1846,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
   void visitFrameEnd() {
     if (previousFrame != null) {
       if (stackMapTableEntries == null) {
-        stackMapTableEntries = new top.yqingyu.common.asm.ByteVector();
+        stackMapTableEntries = new ByteVector();
       }
       putFrame();
       ++stackMapTableNumberOfEntries;
@@ -1889,21 +1873,21 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
             : currentFrame[0] - previousFrame[0] - 1;
     final int previousNumlocal = previousFrame[1];
     final int numLocalDelta = numLocal - previousNumlocal;
-    int type = top.yqingyu.common.asm.Frame.FULL_FRAME;
+    int type = Frame.FULL_FRAME;
     if (numStack == 0) {
       switch (numLocalDelta) {
         case -3:
         case -2:
         case -1:
-          type = top.yqingyu.common.asm.Frame.CHOP_FRAME;
+          type = Frame.CHOP_FRAME;
           break;
         case 0:
-          type = offsetDelta < 64 ? top.yqingyu.common.asm.Frame.SAME_FRAME : top.yqingyu.common.asm.Frame.SAME_FRAME_EXTENDED;
+          type = offsetDelta < 64 ? Frame.SAME_FRAME : Frame.SAME_FRAME_EXTENDED;
           break;
         case 1:
         case 2:
         case 3:
-          type = top.yqingyu.common.asm.Frame.APPEND_FRAME;
+          type = Frame.APPEND_FRAME;
           break;
         default:
           // Keep the FULL_FRAME type.
@@ -1912,51 +1896,51 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
     } else if (numLocalDelta == 0 && numStack == 1) {
       type =
           offsetDelta < 63
-              ? top.yqingyu.common.asm.Frame.SAME_LOCALS_1_STACK_ITEM_FRAME
-              : top.yqingyu.common.asm.Frame.SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED;
+              ? Frame.SAME_LOCALS_1_STACK_ITEM_FRAME
+              : Frame.SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED;
     }
-    if (type != top.yqingyu.common.asm.Frame.FULL_FRAME) {
+    if (type != Frame.FULL_FRAME) {
       // Verify if locals are the same as in the previous frame.
       int frameIndex = 3;
       for (int i = 0; i < previousNumlocal && i < numLocal; i++) {
         if (currentFrame[frameIndex] != previousFrame[frameIndex]) {
-          type = top.yqingyu.common.asm.Frame.FULL_FRAME;
+          type = Frame.FULL_FRAME;
           break;
         }
         frameIndex++;
       }
     }
     switch (type) {
-      case top.yqingyu.common.asm.Frame.SAME_FRAME:
+      case Frame.SAME_FRAME:
         stackMapTableEntries.putByte(offsetDelta);
         break;
-      case top.yqingyu.common.asm.Frame.SAME_LOCALS_1_STACK_ITEM_FRAME:
-        stackMapTableEntries.putByte(top.yqingyu.common.asm.Frame.SAME_LOCALS_1_STACK_ITEM_FRAME + offsetDelta);
+      case Frame.SAME_LOCALS_1_STACK_ITEM_FRAME:
+        stackMapTableEntries.putByte(Frame.SAME_LOCALS_1_STACK_ITEM_FRAME + offsetDelta);
         putAbstractTypes(3 + numLocal, 4 + numLocal);
         break;
-      case top.yqingyu.common.asm.Frame.SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED:
+      case Frame.SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED:
         stackMapTableEntries
-            .putByte(top.yqingyu.common.asm.Frame.SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED)
+            .putByte(Frame.SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED)
             .putShort(offsetDelta);
         putAbstractTypes(3 + numLocal, 4 + numLocal);
         break;
-      case top.yqingyu.common.asm.Frame.SAME_FRAME_EXTENDED:
-        stackMapTableEntries.putByte(top.yqingyu.common.asm.Frame.SAME_FRAME_EXTENDED).putShort(offsetDelta);
+      case Frame.SAME_FRAME_EXTENDED:
+        stackMapTableEntries.putByte(Frame.SAME_FRAME_EXTENDED).putShort(offsetDelta);
         break;
-      case top.yqingyu.common.asm.Frame.CHOP_FRAME:
+      case Frame.CHOP_FRAME:
         stackMapTableEntries
-            .putByte(top.yqingyu.common.asm.Frame.SAME_FRAME_EXTENDED + numLocalDelta)
+            .putByte(Frame.SAME_FRAME_EXTENDED + numLocalDelta)
             .putShort(offsetDelta);
         break;
-      case top.yqingyu.common.asm.Frame.APPEND_FRAME:
+      case Frame.APPEND_FRAME:
         stackMapTableEntries
-            .putByte(top.yqingyu.common.asm.Frame.SAME_FRAME_EXTENDED + numLocalDelta)
+            .putByte(Frame.SAME_FRAME_EXTENDED + numLocalDelta)
             .putShort(offsetDelta);
         putAbstractTypes(3 + previousNumlocal, 3 + numLocal);
         break;
-      case top.yqingyu.common.asm.Frame.FULL_FRAME:
+      case Frame.FULL_FRAME:
       default:
-        stackMapTableEntries.putByte(top.yqingyu.common.asm.Frame.FULL_FRAME).putShort(offsetDelta).putShort(numLocal);
+        stackMapTableEntries.putByte(Frame.FULL_FRAME).putShort(offsetDelta).putShort(numLocal);
         putAbstractTypes(3, 3 + numLocal);
         stackMapTableEntries.putShort(numStack);
         putAbstractTypes(3 + numLocal, 3 + numLocal + numStack);
@@ -1973,7 +1957,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
    */
   private void putAbstractTypes(final int start, final int end) {
     for (int i = start; i < end; ++i) {
-      top.yqingyu.common.asm.Frame.putAbstractType(symbolTable, currentFrame[i], stackMapTableEntries);
+      Frame.putAbstractType(symbolTable, currentFrame[i], stackMapTableEntries);
     }
   }
 
@@ -1992,11 +1976,11 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
       stackMapTableEntries.putByte(((Integer) type).intValue());
     } else if (type instanceof String) {
       stackMapTableEntries
-          .putByte(top.yqingyu.common.asm.Frame.ITEM_OBJECT)
+          .putByte(Frame.ITEM_OBJECT)
           .putShort(symbolTable.addConstantClass((String) type).index);
     } else {
       stackMapTableEntries
-          .putByte(top.yqingyu.common.asm.Frame.ITEM_UNINITIALIZED)
+          .putByte(Frame.ITEM_UNINITIALIZED)
           .putShort(((Label) type).bytecodeOffset);
     }
   }
@@ -2103,40 +2087,40 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
         throw new MethodTooLargeException(
             symbolTable.getClassName(), name, descriptor, code.length);
       }
-      symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.CODE);
+      symbolTable.addConstantUtf8(Constants.CODE);
       // The Code attribute has 6 header bytes, plus 2, 2, 4 and 2 bytes respectively for max_stack,
       // max_locals, code_length and attributes_count, plus the bytecode and the exception table.
-      size += 16 + code.length + top.yqingyu.common.asm.Handler.getExceptionTableSize(firstHandler);
+      size += 16 + code.length + Handler.getExceptionTableSize(firstHandler);
       if (stackMapTableEntries != null) {
         boolean useStackMapTable = symbolTable.getMajorVersion() >= Opcodes.V1_6;
-        symbolTable.addConstantUtf8(useStackMapTable ? top.yqingyu.common.asm.Constants.STACK_MAP_TABLE : "StackMap");
+        symbolTable.addConstantUtf8(useStackMapTable ? Constants.STACK_MAP_TABLE : "StackMap");
         // 6 header bytes and 2 bytes for number_of_entries.
         size += 8 + stackMapTableEntries.length;
       }
       if (lineNumberTable != null) {
-        symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.LINE_NUMBER_TABLE);
+        symbolTable.addConstantUtf8(Constants.LINE_NUMBER_TABLE);
         // 6 header bytes and 2 bytes for line_number_table_length.
         size += 8 + lineNumberTable.length;
       }
       if (localVariableTable != null) {
-        symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.LOCAL_VARIABLE_TABLE);
+        symbolTable.addConstantUtf8(Constants.LOCAL_VARIABLE_TABLE);
         // 6 header bytes and 2 bytes for local_variable_table_length.
         size += 8 + localVariableTable.length;
       }
       if (localVariableTypeTable != null) {
-        symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.LOCAL_VARIABLE_TYPE_TABLE);
+        symbolTable.addConstantUtf8(Constants.LOCAL_VARIABLE_TYPE_TABLE);
         // 6 header bytes and 2 bytes for local_variable_type_table_length.
         size += 8 + localVariableTypeTable.length;
       }
       if (lastCodeRuntimeVisibleTypeAnnotation != null) {
         size +=
             lastCodeRuntimeVisibleTypeAnnotation.computeAnnotationsSize(
-                top.yqingyu.common.asm.Constants.RUNTIME_VISIBLE_TYPE_ANNOTATIONS);
+                Constants.RUNTIME_VISIBLE_TYPE_ANNOTATIONS);
       }
       if (lastCodeRuntimeInvisibleTypeAnnotation != null) {
         size +=
             lastCodeRuntimeInvisibleTypeAnnotation.computeAnnotationsSize(
-                top.yqingyu.common.asm.Constants.RUNTIME_INVISIBLE_TYPE_ANNOTATIONS);
+                Constants.RUNTIME_INVISIBLE_TYPE_ANNOTATIONS);
       }
       if (firstCodeAttribute != null) {
         size +=
@@ -2145,20 +2129,20 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
       }
     }
     if (numberOfExceptions > 0) {
-      symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.EXCEPTIONS);
+      symbolTable.addConstantUtf8(Constants.EXCEPTIONS);
       size += 8 + 2 * numberOfExceptions;
     }
-    size += top.yqingyu.common.asm.Attribute.computeAttributesSize(symbolTable, accessFlags, signatureIndex);
+    size += Attribute.computeAttributesSize(symbolTable, accessFlags, signatureIndex);
     size +=
-        top.yqingyu.common.asm.AnnotationWriter.computeAnnotationsSize(
+        AnnotationWriter.computeAnnotationsSize(
             lastRuntimeVisibleAnnotation,
             lastRuntimeInvisibleAnnotation,
             lastRuntimeVisibleTypeAnnotation,
             lastRuntimeInvisibleTypeAnnotation);
     if (lastRuntimeVisibleParameterAnnotations != null) {
       size +=
-          top.yqingyu.common.asm.AnnotationWriter.computeParameterAnnotationsSize(
-              top.yqingyu.common.asm.Constants.RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS,
+          AnnotationWriter.computeParameterAnnotationsSize(
+              Constants.RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS,
               lastRuntimeVisibleParameterAnnotations,
               visibleAnnotableParameterCount == 0
                   ? lastRuntimeVisibleParameterAnnotations.length
@@ -2166,19 +2150,19 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
     }
     if (lastRuntimeInvisibleParameterAnnotations != null) {
       size +=
-          top.yqingyu.common.asm.AnnotationWriter.computeParameterAnnotationsSize(
-              top.yqingyu.common.asm.Constants.RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS,
+          AnnotationWriter.computeParameterAnnotationsSize(
+              Constants.RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS,
               lastRuntimeInvisibleParameterAnnotations,
               invisibleAnnotableParameterCount == 0
                   ? lastRuntimeInvisibleParameterAnnotations.length
                   : invisibleAnnotableParameterCount);
     }
     if (defaultValue != null) {
-      symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.ANNOTATION_DEFAULT);
+      symbolTable.addConstantUtf8(Constants.ANNOTATION_DEFAULT);
       size += 6 + defaultValue.length;
     }
     if (parameters != null) {
-      symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.METHOD_PARAMETERS);
+      symbolTable.addConstantUtf8(Constants.METHOD_PARAMETERS);
       // 6 header bytes and 1 byte for parameters_count.
       size += 7 + parameters.length;
     }
@@ -2252,7 +2236,7 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
     if (code.length > 0) {
       // 2, 2, 4 and 2 bytes respectively for max_stack, max_locals, code_length and
       // attributes_count, plus the bytecode and the exception table.
-      int size = 10 + code.length + top.yqingyu.common.asm.Handler.getExceptionTableSize(firstHandler);
+      int size = 10 + code.length + Handler.getExceptionTableSize(firstHandler);
       int codeAttributeCount = 0;
       if (stackMapTableEntries != null) {
         // 6 header bytes and 2 bytes for number_of_entries.
@@ -2277,13 +2261,13 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
       if (lastCodeRuntimeVisibleTypeAnnotation != null) {
         size +=
             lastCodeRuntimeVisibleTypeAnnotation.computeAnnotationsSize(
-                top.yqingyu.common.asm.Constants.RUNTIME_VISIBLE_TYPE_ANNOTATIONS);
+                Constants.RUNTIME_VISIBLE_TYPE_ANNOTATIONS);
         ++codeAttributeCount;
       }
       if (lastCodeRuntimeInvisibleTypeAnnotation != null) {
         size +=
             lastCodeRuntimeInvisibleTypeAnnotation.computeAnnotationsSize(
-                top.yqingyu.common.asm.Constants.RUNTIME_INVISIBLE_TYPE_ANNOTATIONS);
+                Constants.RUNTIME_INVISIBLE_TYPE_ANNOTATIONS);
         ++codeAttributeCount;
       }
       if (firstCodeAttribute != null) {
@@ -2293,52 +2277,52 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
         codeAttributeCount += firstCodeAttribute.getAttributeCount();
       }
       output
-          .putShort(symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.CODE))
+          .putShort(symbolTable.addConstantUtf8(Constants.CODE))
           .putInt(size)
           .putShort(maxStack)
           .putShort(maxLocals)
           .putInt(code.length)
           .putByteArray(code.data, 0, code.length);
-      top.yqingyu.common.asm.Handler.putExceptionTable(firstHandler, output);
+      Handler.putExceptionTable(firstHandler, output);
       output.putShort(codeAttributeCount);
       if (stackMapTableEntries != null) {
         boolean useStackMapTable = symbolTable.getMajorVersion() >= Opcodes.V1_6;
         output
             .putShort(
                 symbolTable.addConstantUtf8(
-                    useStackMapTable ? top.yqingyu.common.asm.Constants.STACK_MAP_TABLE : "StackMap"))
+                    useStackMapTable ? Constants.STACK_MAP_TABLE : "StackMap"))
             .putInt(2 + stackMapTableEntries.length)
             .putShort(stackMapTableNumberOfEntries)
             .putByteArray(stackMapTableEntries.data, 0, stackMapTableEntries.length);
       }
       if (lineNumberTable != null) {
         output
-            .putShort(symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.LINE_NUMBER_TABLE))
+            .putShort(symbolTable.addConstantUtf8(Constants.LINE_NUMBER_TABLE))
             .putInt(2 + lineNumberTable.length)
             .putShort(lineNumberTableLength)
             .putByteArray(lineNumberTable.data, 0, lineNumberTable.length);
       }
       if (localVariableTable != null) {
         output
-            .putShort(symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.LOCAL_VARIABLE_TABLE))
+            .putShort(symbolTable.addConstantUtf8(Constants.LOCAL_VARIABLE_TABLE))
             .putInt(2 + localVariableTable.length)
             .putShort(localVariableTableLength)
             .putByteArray(localVariableTable.data, 0, localVariableTable.length);
       }
       if (localVariableTypeTable != null) {
         output
-            .putShort(symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.LOCAL_VARIABLE_TYPE_TABLE))
+            .putShort(symbolTable.addConstantUtf8(Constants.LOCAL_VARIABLE_TYPE_TABLE))
             .putInt(2 + localVariableTypeTable.length)
             .putShort(localVariableTypeTableLength)
             .putByteArray(localVariableTypeTable.data, 0, localVariableTypeTable.length);
       }
       if (lastCodeRuntimeVisibleTypeAnnotation != null) {
         lastCodeRuntimeVisibleTypeAnnotation.putAnnotations(
-            symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.RUNTIME_VISIBLE_TYPE_ANNOTATIONS), output);
+            symbolTable.addConstantUtf8(Constants.RUNTIME_VISIBLE_TYPE_ANNOTATIONS), output);
       }
       if (lastCodeRuntimeInvisibleTypeAnnotation != null) {
         lastCodeRuntimeInvisibleTypeAnnotation.putAnnotations(
-            symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.RUNTIME_INVISIBLE_TYPE_ANNOTATIONS), output);
+            symbolTable.addConstantUtf8(Constants.RUNTIME_INVISIBLE_TYPE_ANNOTATIONS), output);
       }
       if (firstCodeAttribute != null) {
         firstCodeAttribute.putAttributes(
@@ -2347,15 +2331,15 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
     }
     if (numberOfExceptions > 0) {
       output
-          .putShort(symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.EXCEPTIONS))
+          .putShort(symbolTable.addConstantUtf8(Constants.EXCEPTIONS))
           .putInt(2 + 2 * numberOfExceptions)
           .putShort(numberOfExceptions);
       for (int exceptionIndex : exceptionIndexTable) {
         output.putShort(exceptionIndex);
       }
     }
-    top.yqingyu.common.asm.Attribute.putAttributes(symbolTable, accessFlags, signatureIndex, output);
-    top.yqingyu.common.asm.AnnotationWriter.putAnnotations(
+    Attribute.putAttributes(symbolTable, accessFlags, signatureIndex, output);
+    AnnotationWriter.putAnnotations(
         symbolTable,
         lastRuntimeVisibleAnnotation,
         lastRuntimeInvisibleAnnotation,
@@ -2363,8 +2347,8 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
         lastRuntimeInvisibleTypeAnnotation,
         output);
     if (lastRuntimeVisibleParameterAnnotations != null) {
-      top.yqingyu.common.asm.AnnotationWriter.putParameterAnnotations(
-          symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS),
+      AnnotationWriter.putParameterAnnotations(
+          symbolTable.addConstantUtf8(Constants.RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS),
           lastRuntimeVisibleParameterAnnotations,
           visibleAnnotableParameterCount == 0
               ? lastRuntimeVisibleParameterAnnotations.length
@@ -2372,8 +2356,8 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
           output);
     }
     if (lastRuntimeInvisibleParameterAnnotations != null) {
-      top.yqingyu.common.asm.AnnotationWriter.putParameterAnnotations(
-          symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS),
+      AnnotationWriter.putParameterAnnotations(
+          symbolTable.addConstantUtf8(Constants.RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS),
           lastRuntimeInvisibleParameterAnnotations,
           invisibleAnnotableParameterCount == 0
               ? lastRuntimeInvisibleParameterAnnotations.length
@@ -2382,13 +2366,13 @@ final class MethodWriter extends top.yqingyu.common.asm.MethodVisitor {
     }
     if (defaultValue != null) {
       output
-          .putShort(symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.ANNOTATION_DEFAULT))
+          .putShort(symbolTable.addConstantUtf8(Constants.ANNOTATION_DEFAULT))
           .putInt(defaultValue.length)
           .putByteArray(defaultValue.data, 0, defaultValue.length);
     }
     if (parameters != null) {
       output
-          .putShort(symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.METHOD_PARAMETERS))
+          .putShort(symbolTable.addConstantUtf8(Constants.METHOD_PARAMETERS))
           .putInt(1 + parameters.length)
           .putByte(parametersCount)
           .putByteArray(parameters.data, 0, parameters.length);

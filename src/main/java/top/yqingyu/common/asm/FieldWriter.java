@@ -27,14 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.*;
-import top.yqingyu.common.asm.AnnotationVisitor;
-import top.yqingyu.common.asm.AnnotationWriter;
-import top.yqingyu.common.asm.Attribute;
-import top.yqingyu.common.asm.ByteVector;
-import top.yqingyu.common.asm.Constants;
-import top.yqingyu.common.asm.FieldVisitor;
-
 /**
  * A {@link top.yqingyu.common.asm.FieldVisitor} that generates a corresponding 'field_info' structure, as defined in the
  * Java Virtual Machine Specification (JVMS).
@@ -80,25 +72,25 @@ final class FieldWriter extends FieldVisitor {
    * The last runtime visible annotation of this field. The previous ones can be accessed with the
    * {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter lastRuntimeVisibleAnnotation;
+  private AnnotationWriter lastRuntimeVisibleAnnotation;
 
   /**
    * The last runtime invisible annotation of this field. The previous ones can be accessed with the
    * {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter lastRuntimeInvisibleAnnotation;
+  private AnnotationWriter lastRuntimeInvisibleAnnotation;
 
   /**
    * The last runtime visible type annotation of this field. The previous ones can be accessed with
    * the {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter lastRuntimeVisibleTypeAnnotation;
+  private AnnotationWriter lastRuntimeVisibleTypeAnnotation;
 
   /**
    * The last runtime invisible type annotation of this field. The previous ones can be accessed
    * with the {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter lastRuntimeInvisibleTypeAnnotation;
+  private AnnotationWriter lastRuntimeInvisibleTypeAnnotation;
 
   /**
    * The first non standard attribute of this field. The next ones can be accessed with the {@link
@@ -150,13 +142,13 @@ final class FieldWriter extends FieldVisitor {
   // -----------------------------------------------------------------------------------------------
 
   @Override
-  public top.yqingyu.common.asm.AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
+  public AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
     if (visible) {
       return lastRuntimeVisibleAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(symbolTable, descriptor, lastRuntimeVisibleAnnotation);
+          AnnotationWriter.create(symbolTable, descriptor, lastRuntimeVisibleAnnotation);
     } else {
       return lastRuntimeInvisibleAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(symbolTable, descriptor, lastRuntimeInvisibleAnnotation);
+          AnnotationWriter.create(symbolTable, descriptor, lastRuntimeInvisibleAnnotation);
     }
   }
 
@@ -165,11 +157,11 @@ final class FieldWriter extends FieldVisitor {
           final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (visible) {
       return lastRuntimeVisibleTypeAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(
+          AnnotationWriter.create(
               symbolTable, typeRef, typePath, descriptor, lastRuntimeVisibleTypeAnnotation);
     } else {
       return lastRuntimeInvisibleTypeAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(
+          AnnotationWriter.create(
               symbolTable, typeRef, typePath, descriptor, lastRuntimeInvisibleTypeAnnotation);
     }
   }
@@ -207,7 +199,7 @@ final class FieldWriter extends FieldVisitor {
     }
     size += top.yqingyu.common.asm.Attribute.computeAttributesSize(symbolTable, accessFlags, signatureIndex);
     size +=
-        top.yqingyu.common.asm.AnnotationWriter.computeAnnotationsSize(
+        AnnotationWriter.computeAnnotationsSize(
             lastRuntimeVisibleAnnotation,
             lastRuntimeInvisibleAnnotation,
             lastRuntimeVisibleTypeAnnotation,
@@ -268,8 +260,8 @@ final class FieldWriter extends FieldVisitor {
           .putInt(2)
           .putShort(constantValueIndex);
     }
-    top.yqingyu.common.asm.Attribute.putAttributes(symbolTable, accessFlags, signatureIndex, output);
-    top.yqingyu.common.asm.AnnotationWriter.putAnnotations(
+    Attribute.putAttributes(symbolTable, accessFlags, signatureIndex, output);
+    AnnotationWriter.putAnnotations(
         symbolTable,
         lastRuntimeVisibleAnnotation,
         lastRuntimeInvisibleAnnotation,

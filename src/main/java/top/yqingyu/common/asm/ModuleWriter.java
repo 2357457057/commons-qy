@@ -27,14 +27,8 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.ByteVector;
-import top.yqingyu.common.asm.Constants;
-import top.yqingyu.common.asm.ModuleVisitor;
-import top.yqingyu.common.asm.Opcodes;
-import top.yqingyu.common.asm.SymbolTable;
-
 /**
- * A {@link top.yqingyu.common.asm.ModuleVisitor} that generates the corresponding Module, ModulePackages and
+ * A {@link ModuleVisitor} that generates the corresponding Module, ModulePackages and
  * ModuleMainClass attributes, as defined in the Java Virtual Machine Specification (JVMS).
  *
  * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.7.25">JVMS
@@ -64,37 +58,37 @@ final class ModuleWriter extends ModuleVisitor {
   private int requiresCount;
 
   /** The binary content of the 'requires' array of the JVMS Module attribute. */
-  private final top.yqingyu.common.asm.ByteVector requires;
+  private final ByteVector requires;
 
   /** The exports_count field of the JVMS Module attribute. */
   private int exportsCount;
 
   /** The binary content of the 'exports' array of the JVMS Module attribute. */
-  private final top.yqingyu.common.asm.ByteVector exports;
+  private final ByteVector exports;
 
   /** The opens_count field of the JVMS Module attribute. */
   private int opensCount;
 
   /** The binary content of the 'opens' array of the JVMS Module attribute. */
-  private final top.yqingyu.common.asm.ByteVector opens;
+  private final ByteVector opens;
 
   /** The uses_count field of the JVMS Module attribute. */
   private int usesCount;
 
   /** The binary content of the 'uses_index' array of the JVMS Module attribute. */
-  private final top.yqingyu.common.asm.ByteVector usesIndex;
+  private final ByteVector usesIndex;
 
   /** The provides_count field of the JVMS Module attribute. */
   private int providesCount;
 
   /** The binary content of the 'provides' array of the JVMS Module attribute. */
-  private final top.yqingyu.common.asm.ByteVector provides;
+  private final ByteVector provides;
 
   /** The provides_count field of the JVMS ModulePackages attribute. */
   private int packageCount;
 
   /** The binary content of the 'package_index' array of the JVMS ModulePackages attribute. */
-  private final top.yqingyu.common.asm.ByteVector packageIndex;
+  private final ByteVector packageIndex;
 
   /** The main_class_index field of the JVMS ModuleMainClass attribute, or 0. */
   private int mainClassIndex;
@@ -105,12 +99,12 @@ final class ModuleWriter extends ModuleVisitor {
     this.moduleNameIndex = name;
     this.moduleFlags = access;
     this.moduleVersionIndex = version;
-    this.requires = new top.yqingyu.common.asm.ByteVector();
-    this.exports = new top.yqingyu.common.asm.ByteVector();
-    this.opens = new top.yqingyu.common.asm.ByteVector();
-    this.usesIndex = new top.yqingyu.common.asm.ByteVector();
-    this.provides = new top.yqingyu.common.asm.ByteVector();
-    this.packageIndex = new top.yqingyu.common.asm.ByteVector();
+    this.requires = new ByteVector();
+    this.exports = new ByteVector();
+    this.opens = new ByteVector();
+    this.usesIndex = new ByteVector();
+    this.provides = new ByteVector();
+    this.packageIndex = new ByteVector();
   }
 
   @Override
@@ -199,17 +193,17 @@ final class ModuleWriter extends ModuleVisitor {
    * @return the size in bytes of the Module, ModulePackages and ModuleMainClass attributes.
    */
   int computeAttributesSize() {
-    symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.MODULE);
+    symbolTable.addConstantUtf8(Constants.MODULE);
     // 6 attribute header bytes, 6 bytes for name, flags and version, and 5 * 2 bytes for counts.
     int size =
         22 + requires.length + exports.length + opens.length + usesIndex.length + provides.length;
     if (packageCount > 0) {
-      symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.MODULE_PACKAGES);
+      symbolTable.addConstantUtf8(Constants.MODULE_PACKAGES);
       // 6 attribute header bytes, and 2 bytes for package_count.
       size += 8 + packageIndex.length;
     }
     if (mainClassIndex > 0) {
-      symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.MODULE_MAIN_CLASS);
+      symbolTable.addConstantUtf8(Constants.MODULE_MAIN_CLASS);
       // 6 attribute header bytes, and 2 bytes for main_class_index.
       size += 8;
     }
@@ -227,7 +221,7 @@ final class ModuleWriter extends ModuleVisitor {
     int moduleAttributeLength =
         16 + requires.length + exports.length + opens.length + usesIndex.length + provides.length;
     output
-        .putShort(symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.MODULE))
+        .putShort(symbolTable.addConstantUtf8(Constants.MODULE))
         .putInt(moduleAttributeLength)
         .putShort(moduleNameIndex)
         .putShort(moduleFlags)
@@ -244,14 +238,14 @@ final class ModuleWriter extends ModuleVisitor {
         .putByteArray(provides.data, 0, provides.length);
     if (packageCount > 0) {
       output
-          .putShort(symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.MODULE_PACKAGES))
+          .putShort(symbolTable.addConstantUtf8(Constants.MODULE_PACKAGES))
           .putInt(2 + packageIndex.length)
           .putShort(packageCount)
           .putByteArray(packageIndex.data, 0, packageIndex.length);
     }
     if (mainClassIndex > 0) {
       output
-          .putShort(symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.MODULE_MAIN_CLASS))
+          .putShort(symbolTable.addConstantUtf8(Constants.MODULE_MAIN_CLASS))
           .putInt(2)
           .putShort(mainClassIndex);
     }

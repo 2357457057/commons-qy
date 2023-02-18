@@ -28,8 +28,6 @@
 
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.ByteVector;
-
 /**
  * The path to a type argument, wildcard bound, array element type, or static inner type within an
  * enclosing type.
@@ -123,7 +121,7 @@ public final class TypePath {
       return null;
     }
     int typePathLength = typePath.length();
-    top.yqingyu.common.asm.ByteVector output = new top.yqingyu.common.asm.ByteVector(typePathLength);
+    ByteVector output = new ByteVector(typePathLength);
     output.putByte(0);
     int typePathIndex = 0;
     while (typePathIndex < typePathLength) {

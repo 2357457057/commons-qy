@@ -391,13 +391,13 @@ public interface Opcodes {
 
   // Standard stack map frame element types, used in {@link ClassVisitor#visitFrame}.
 
-  Integer TOP = top.yqingyu.common.asm.Frame.ITEM_TOP;
-  Integer INTEGER = top.yqingyu.common.asm.Frame.ITEM_INTEGER;
-  Integer FLOAT = top.yqingyu.common.asm.Frame.ITEM_FLOAT;
-  Integer DOUBLE = top.yqingyu.common.asm.Frame.ITEM_DOUBLE;
-  Integer LONG = top.yqingyu.common.asm.Frame.ITEM_LONG;
-  Integer NULL = top.yqingyu.common.asm.Frame.ITEM_NULL;
-  Integer UNINITIALIZED_THIS = top.yqingyu.common.asm.Frame.ITEM_UNINITIALIZED_THIS;
+  Integer TOP = Frame.ITEM_TOP;
+  Integer INTEGER = Frame.ITEM_INTEGER;
+  Integer FLOAT = Frame.ITEM_FLOAT;
+  Integer DOUBLE = Frame.ITEM_DOUBLE;
+  Integer LONG = Frame.ITEM_LONG;
+  Integer NULL = Frame.ITEM_NULL;
+  Integer UNINITIALIZED_THIS = Frame.ITEM_UNINITIALIZED_THIS;
 
   // The JVM opcode values (with the MethodVisitor method name used to visit them in comment, and
   // where '-' means 'same method name as on the previous line').

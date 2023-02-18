@@ -27,7 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.*;
 
 /**
  * A non standard class, field, method or Code attribute, as defined in the Java Virtual Machine

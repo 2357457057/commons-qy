@@ -27,15 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.*;
-import top.yqingyu.common.asm.AnnotationVisitor;
-import top.yqingyu.common.asm.AnnotationWriter;
-import top.yqingyu.common.asm.Attribute;
-import top.yqingyu.common.asm.ByteVector;
-import top.yqingyu.common.asm.ClassReader;
-import top.yqingyu.common.asm.ClassTooLargeException;
-import top.yqingyu.common.asm.ClassVisitor;
-
 /**
  * A {@link top.yqingyu.common.asm.ClassVisitor} that generates a corresponding ClassFile structure, as defined in the Java
  * Virtual Machine Specification (JVMS). It can be used alone, to generate a Java class "from
@@ -45,7 +36,7 @@ import top.yqingyu.common.asm.ClassVisitor;
  * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html">JVMS 4</a>
  * @author Eric Bruneton
  */
-public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
+public class ClassWriter extends ClassVisitor {
 
   /**
    * A flag to automatically compute the maximum stack size and the maximum number of local
@@ -139,7 +130,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
   private int numberOfInnerClasses;
 
   /** The 'classes' array of the InnerClasses attribute, or {@literal null}. */
-  private top.yqingyu.common.asm.ByteVector innerClasses;
+  private ByteVector innerClasses;
 
   /** The class_index field of the EnclosingMethod attribute, or 0. */
   private int enclosingClassIndex;
@@ -154,31 +145,31 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
   private int sourceFileIndex;
 
   /** The debug_extension field of the SourceDebugExtension attribute, or {@literal null}. */
-  private top.yqingyu.common.asm.ByteVector debugExtension;
+  private ByteVector debugExtension;
 
   /**
    * The last runtime visible annotation of this class. The previous ones can be accessed with the
-   * {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+   * {@link top.yqingyu.common.asm.previousAnnotation} field. May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter lastRuntimeVisibleAnnotation;
+  private AnnotationWriter lastRuntimeVisibleAnnotation;
 
   /**
    * The last runtime invisible annotation of this class. The previous ones can be accessed with the
-   * {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+   * {@link top.yqingyu.common.asm.previousAnnotation} field. May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter lastRuntimeInvisibleAnnotation;
+  private AnnotationWriter lastRuntimeInvisibleAnnotation;
 
   /**
    * The last runtime visible type annotation of this class. The previous ones can be accessed with
-   * the {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+   * the {@link top.yqingyu.common.asm.previousAnnotation} field. May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter lastRuntimeVisibleTypeAnnotation;
+  private AnnotationWriter lastRuntimeVisibleTypeAnnotation;
 
   /**
    * The last runtime invisible type annotation of this class. The previous ones can be accessed
-   * with the {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+   * with the {@link top.yqingyu.common.asm.previousAnnotation} field. May be {@literal null}.
    */
-  private top.yqingyu.common.asm.AnnotationWriter lastRuntimeInvisibleTypeAnnotation;
+  private AnnotationWriter lastRuntimeInvisibleTypeAnnotation;
 
   /** The Module attribute of this class, or {@literal null}. */
   private ModuleWriter moduleWriter;
@@ -190,13 +181,13 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
   private int numberOfNestMemberClasses;
 
   /** The 'classes' array of the NestMembers attribute, or {@literal null}. */
-  private top.yqingyu.common.asm.ByteVector nestMemberClasses;
+  private ByteVector nestMemberClasses;
 
   /** The number_of_classes field of the PermittedSubclasses attribute, or 0. */
   private int numberOfPermittedSubclasses;
 
   /** The 'classes' array of the PermittedSubclasses attribute, or {@literal null}. */
-  private top.yqingyu.common.asm.ByteVector permittedSubclasses;
+  private ByteVector permittedSubclasses;
 
   /**
    * The record components of this class, stored in a linked list of {@link RecordComponentWriter}
@@ -214,14 +205,14 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
 
   /**
    * The first non standard attribute of this class. The next ones can be accessed with the {@link
-   * top.yqingyu.common.asm.Attribute#nextAttribute} field. May be {@literal null}.
+   * Attribute#nextAttribute} field. May be {@literal null}.
    *
    * <p><b>WARNING</b>: this list stores the attributes in the <i>reverse</i> order of their visit.
    * firstAttribute is actually the last attribute visited in {@link #visitAttribute}. The {@link
    * #toByteArray} method writes the attributes in the order defined by this list, i.e. in the
    * reverse order specified by the user.
    */
-  private top.yqingyu.common.asm.Attribute firstAttribute;
+  private Attribute firstAttribute;
 
   /**
    * Indicates what must be automatically computed in {@link MethodWriter}. Must be one of {@link
@@ -257,7 +248,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
    *       original class bytecode (i.e. without emitting visit events for all the method
    *       instructions), which saves a <i>lot</i> of time. Untransformed methods are detected by
    *       the fact that the {@link top.yqingyu.common.asm.ClassReader} receives {@link MethodVisitor} objects that come
-   *       from a {@link ClassWriter} (and not from any other {@link ClassVisitor} instance).
+   *       from a {@link ClassWriter} (and not from any other {@link top.yqingyu.common.asm.ClassVisitor} instance).
    * </ul>
    *
    * @param classReader the {@link top.yqingyu.common.asm.ClassReader} used to read the original class. It will be used to
@@ -268,7 +259,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
    *     do not affect methods that are copied as is in the new class. This means that neither the
    *     maximum stack size nor the stack frames will be computed for these methods</i>.
    */
-  public ClassWriter(final top.yqingyu.common.asm.ClassReader classReader, final int flags) {
+  public ClassWriter(final ClassReader classReader, final int flags) {
     super(/* latest api = */ Opcodes.ASM9);
     this.flags = flags;
     symbolTable = classReader == null ? new SymbolTable(this) : new SymbolTable(this, classReader);
@@ -333,7 +324,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
       sourceFileIndex = symbolTable.addConstantUtf8(file);
     }
     if (debug != null) {
-      debugExtension = new top.yqingyu.common.asm.ByteVector().encodeUtf8(debug, 0, Integer.MAX_VALUE);
+      debugExtension = new ByteVector().encodeUtf8(debug, 0, Integer.MAX_VALUE);
     }
   }
 
@@ -363,13 +354,13 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
   }
 
   @Override
-  public final top.yqingyu.common.asm.AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
+  public final AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
     if (visible) {
       return lastRuntimeVisibleAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(symbolTable, descriptor, lastRuntimeVisibleAnnotation);
+          AnnotationWriter.create(symbolTable, descriptor, lastRuntimeVisibleAnnotation);
     } else {
       return lastRuntimeInvisibleAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(symbolTable, descriptor, lastRuntimeInvisibleAnnotation);
+          AnnotationWriter.create(symbolTable, descriptor, lastRuntimeInvisibleAnnotation);
     }
   }
 
@@ -378,17 +369,17 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
       final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (visible) {
       return lastRuntimeVisibleTypeAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(
+          AnnotationWriter.create(
               symbolTable, typeRef, typePath, descriptor, lastRuntimeVisibleTypeAnnotation);
     } else {
       return lastRuntimeInvisibleTypeAnnotation =
-          top.yqingyu.common.asm.AnnotationWriter.create(
+          AnnotationWriter.create(
               symbolTable, typeRef, typePath, descriptor, lastRuntimeInvisibleTypeAnnotation);
     }
   }
 
   @Override
-  public final void visitAttribute(final top.yqingyu.common.asm.Attribute attribute) {
+  public final void visitAttribute(final Attribute attribute) {
     // Store the attributes in the <i>reverse</i> order of their visit by this method.
     attribute.nextAttribute = firstAttribute;
     firstAttribute = attribute;
@@ -397,7 +388,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
   @Override
   public final void visitNestMember(final String nestMember) {
     if (nestMemberClasses == null) {
-      nestMemberClasses = new top.yqingyu.common.asm.ByteVector();
+      nestMemberClasses = new ByteVector();
     }
     ++numberOfNestMemberClasses;
     nestMemberClasses.putShort(symbolTable.addConstantClass(nestMember).index);
@@ -406,7 +397,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
   @Override
   public final void visitPermittedSubclass(final String permittedSubclass) {
     if (permittedSubclasses == null) {
-      permittedSubclasses = new top.yqingyu.common.asm.ByteVector();
+      permittedSubclasses = new ByteVector();
     }
     ++numberOfPermittedSubclasses;
     permittedSubclasses.putShort(symbolTable.addConstantClass(permittedSubclass).index);
@@ -416,7 +407,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
   public final void visitInnerClass(
       final String name, final String outerName, final String innerName, final int access) {
     if (innerClasses == null) {
-      innerClasses = new top.yqingyu.common.asm.ByteVector();
+      innerClasses = new ByteVector();
     }
     // Section 4.7.6 of the JVMS states "Every CONSTANT_Class_info entry in the constant_pool table
     // which represents a class or interface C that is not a package member must have exactly one
@@ -497,7 +488,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
    * Returns the content of the class file that was built by this ClassWriter.
    *
    * @return the binary content of the JVMS ClassFile structure that was built by this ClassWriter.
-   * @throws top.yqingyu.common.asm.ClassTooLargeException if the constant pool of the class is too large.
+   * @throws ClassTooLargeException if the constant pool of the class is too large.
    * @throws MethodTooLargeException if the Code attribute of a method is too large.
    */
   public byte[] toByteArray() {
@@ -632,7 +623,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
 
     // Second step: allocate a ByteVector of the correct size (in order to avoid any array copy in
     // dynamic resizes) and fill it with the ClassFile content.
-    top.yqingyu.common.asm.ByteVector result = new ByteVector(size);
+    ByteVector result = new ByteVector(size);
     result.putInt(0xCAFEBABE).putInt(version);
     symbolTable.putConstantPool(result);
     int mask = (version & 0xFFFF) < Opcodes.V1_5 ? Opcodes.ACC_SYNTHETIC : 0;
@@ -698,7 +689,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
     if ((accessFlags & Opcodes.ACC_DEPRECATED) != 0) {
       result.putShort(symbolTable.addConstantUtf8(Constants.DEPRECATED)).putInt(0);
     }
-    top.yqingyu.common.asm.AnnotationWriter.putAnnotations(
+    AnnotationWriter.putAnnotations(
         symbolTable,
         lastRuntimeVisibleAnnotation,
         lastRuntimeInvisibleAnnotation,
@@ -763,7 +754,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
    *     ones.
    */
   private byte[] replaceAsmInstructions(final byte[] classFile, final boolean hasFrames) {
-    final top.yqingyu.common.asm.Attribute[] attributes = getAttributePrototypes();
+    final Attribute[] attributes = getAttributePrototypes();
     firstField = null;
     lastField = null;
     firstMethod = null;
@@ -782,11 +773,11 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
     lastRecordComponent = null;
     firstAttribute = null;
     compute = hasFrames ? MethodWriter.COMPUTE_INSERTED_FRAMES : MethodWriter.COMPUTE_NOTHING;
-    new top.yqingyu.common.asm.ClassReader(classFile, 0, /* checkClassVersion = */ false)
+    new ClassReader(classFile, 0, /* checkClassVersion = */ false)
         .accept(
             this,
             attributes,
-            (hasFrames ? top.yqingyu.common.asm.ClassReader.EXPAND_FRAMES : 0) | ClassReader.EXPAND_ASM_INSNS);
+            (hasFrames ? ClassReader.EXPAND_FRAMES : 0) | ClassReader.EXPAND_ASM_INSNS);
     return toByteArray();
   }
 
@@ -795,8 +786,8 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
    *
    * @return the prototypes of the attributes used by this class, its fields and its methods.
    */
-  private top.yqingyu.common.asm.Attribute[] getAttributePrototypes() {
-    top.yqingyu.common.asm.Attribute.Set attributePrototypes = new top.yqingyu.common.asm.Attribute.Set();
+  private Attribute[] getAttributePrototypes() {
+    Attribute.Set attributePrototypes = new Attribute.Set();
     attributePrototypes.addAttributes(firstAttribute);
     FieldWriter fieldWriter = firstField;
     while (fieldWriter != null) {
@@ -823,7 +814,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
   /**
    * Adds a number or string constant to the constant pool of the class being build. Does nothing if
    * the constant pool already contains a similar item. <i>This method is intended for {@link
-   * top.yqingyu.common.asm.Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
+   * Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
    *
    * @param value the value of the constant to be added to the constant pool. This parameter must be
    *     an {@link Integer}, a {@link Float}, a {@link Long}, a {@link Double} or a {@link String}.
@@ -835,7 +826,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
 
   /**
    * Adds an UTF8 string to the constant pool of the class being build. Does nothing if the constant
-   * pool already contains a similar item. <i>This method is intended for {@link top.yqingyu.common.asm.Attribute} sub
+   * pool already contains a similar item. <i>This method is intended for {@link Attribute} sub
    * classes, and is normally not needed by class generators or adapters.</i>
    *
    * @param value the String value.
@@ -848,7 +839,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
 
   /**
    * Adds a class reference to the constant pool of the class being build. Does nothing if the
-   * constant pool already contains a similar item. <i>This method is intended for {@link top.yqingyu.common.asm.Attribute}
+   * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
    * sub classes, and is normally not needed by class generators or adapters.</i>
    *
    * @param value the internal name of the class (see {@link Type#getInternalName()}).
@@ -860,7 +851,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
 
   /**
    * Adds a method type reference to the constant pool of the class being build. Does nothing if the
-   * constant pool already contains a similar item. <i>This method is intended for {@link top.yqingyu.common.asm.Attribute}
+   * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
    * sub classes, and is normally not needed by class generators or adapters.</i>
    *
    * @param methodDescriptor method descriptor of the method type.
@@ -872,7 +863,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
 
   /**
    * Adds a module reference to the constant pool of the class being build. Does nothing if the
-   * constant pool already contains a similar item. <i>This method is intended for {@link top.yqingyu.common.asm.Attribute}
+   * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
    * sub classes, and is normally not needed by class generators or adapters.</i>
    *
    * @param moduleName name of the module.
@@ -884,7 +875,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
 
   /**
    * Adds a package reference to the constant pool of the class being build. Does nothing if the
-   * constant pool already contains a similar item. <i>This method is intended for {@link top.yqingyu.common.asm.Attribute}
+   * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
    * sub classes, and is normally not needed by class generators or adapters.</i>
    *
    * @param packageName name of the package in its internal form.
@@ -896,7 +887,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
 
   /**
    * Adds a handle to the constant pool of the class being build. Does nothing if the constant pool
-   * already contains a similar item. <i>This method is intended for {@link top.yqingyu.common.asm.Attribute} sub classes,
+   * already contains a similar item. <i>This method is intended for {@link Attribute} sub classes,
    * and is normally not needed by class generators or adapters.</i>
    *
    * @param tag the kind of this handle. Must be {@link Opcodes#H_GETFIELD}, {@link
@@ -919,7 +910,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
 
   /**
    * Adds a handle to the constant pool of the class being build. Does nothing if the constant pool
-   * already contains a similar item. <i>This method is intended for {@link top.yqingyu.common.asm.Attribute} sub classes,
+   * already contains a similar item. <i>This method is intended for {@link Attribute} sub classes,
    * and is normally not needed by class generators or adapters.</i>
    *
    * @param tag the kind of this handle. Must be {@link Opcodes#H_GETFIELD}, {@link
@@ -945,7 +936,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
   /**
    * Adds a dynamic constant reference to the constant pool of the class being build. Does nothing
    * if the constant pool already contains a similar item. <i>This method is intended for {@link
-   * top.yqingyu.common.asm.Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
+   * Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
    *
    * @param name name of the invoked method.
    * @param descriptor field descriptor of the constant type.
@@ -966,7 +957,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
   /**
    * Adds an invokedynamic reference to the constant pool of the class being build. Does nothing if
    * the constant pool already contains a similar item. <i>This method is intended for {@link
-   * top.yqingyu.common.asm.Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
+   * Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
    *
    * @param name name of the invoked method.
    * @param descriptor descriptor of the invoke method.
@@ -986,7 +977,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
 
   /**
    * Adds a field reference to the constant pool of the class being build. Does nothing if the
-   * constant pool already contains a similar item. <i>This method is intended for {@link top.yqingyu.common.asm.Attribute}
+   * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
    * sub classes, and is normally not needed by class generators or adapters.</i>
    *
    * @param owner the internal name of the field's owner class (see {@link Type#getInternalName()}).
@@ -1000,7 +991,7 @@ public class ClassWriter extends top.yqingyu.common.asm.ClassVisitor {
 
   /**
    * Adds a method reference to the constant pool of the class being build. Does nothing if the
-   * constant pool already contains a similar item. <i>This method is intended for {@link top.yqingyu.common.asm.Attribute}
+   * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
    * sub classes, and is normally not needed by class generators or adapters.</i>
    *
    * @param owner the internal name of the method's owner class (see {@link

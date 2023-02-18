@@ -27,12 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.*;
-import top.yqingyu.common.asm.Attribute;
-import top.yqingyu.common.asm.ByteVector;
-import top.yqingyu.common.asm.Constants;
-import top.yqingyu.common.asm.Edge;
-import top.yqingyu.common.asm.Frame;
 
 /**
  * A position in the bytecode of a method. Labels are used for jump, goto, and switch instructions,
@@ -65,7 +59,7 @@ public class Label {
 
   /**
    * A flag indicating that the basic block corresponding to a label ends with a subroutine call. By
-   * construction in {@link MethodWriter#visitJumpInsn}, labels with this flag set have at least two
+   * construction in {@link top.yqingyu.common.asm.MethodWriter#visitJumpInsn}, labels with this flag set have at least two
    * outgoing edges:
    *
    * <ul>
@@ -210,8 +204,8 @@ public class Label {
   // builds information about the state of the local variables and the operand stack at the end of
   // each basic block, called the "output frame", <i>relatively</i> to the frame state at the
   // beginning of the basic block, which is called the "input frame", and which is <i>unknown</i>
-  // during this step. The second step, in {@link MethodWriter#computeAllFrames} and {@link
-  // MethodWriter#computeMaxStackAndLocal}, is a fix point algorithm
+  // during this step. The second step, in {@link top.yqingyu.common.asm.MethodWriter#computeAllFrames} and {@link
+  // top.yqingyu.common.asm.MethodWriter#computeMaxStackAndLocal}, is a fix point algorithm
   // that computes information about the input frame of each basic block, from the input state of
   // the first basic block (known from the method signature), and by the using the previously
   // computed relative output frames.
@@ -222,7 +216,7 @@ public class Label {
 
   /**
    * The number of elements in the input stack of the basic block corresponding to this label. This
-   * field is computed in {@link MethodWriter#computeMaxStackAndLocal}.
+   * field is computed in {@link top.yqingyu.common.asm.MethodWriter#computeMaxStackAndLocal}.
    */
   short inputStackSize;
 
@@ -243,22 +237,22 @@ public class Label {
    * The id of the subroutine to which this basic block belongs, or 0. If the basic block belongs to
    * several subroutines, this is the id of the "oldest" subroutine that contains it (with the
    * convention that a subroutine calling another one is "older" than the callee). This field is
-   * computed in {@link MethodWriter#computeMaxStackAndLocal}, if the method contains JSR
+   * computed in {@link top.yqingyu.common.asm.MethodWriter#computeMaxStackAndLocal}, if the method contains JSR
    * instructions.
    */
   short subroutineId;
 
   /**
    * The input and output stack map frames of the basic block corresponding to this label. This
-   * field is only used when the {@link MethodWriter#COMPUTE_ALL_FRAMES} or {@link
-   * MethodWriter#COMPUTE_INSERTED_FRAMES} option is used.
+   * field is only used when the {@link top.yqingyu.common.asm.MethodWriter#COMPUTE_ALL_FRAMES} or {@link
+   * top.yqingyu.common.asm.MethodWriter#COMPUTE_INSERTED_FRAMES} option is used.
    */
-  top.yqingyu.common.asm.Frame frame;
+  Frame frame;
 
   /**
    * The successor of this label, in the order they are visited in {@link MethodVisitor#visitLabel}.
    * This linked list does not include labels used for debug info only. If the {@link
-   * MethodWriter#COMPUTE_ALL_FRAMES} or {@link MethodWriter#COMPUTE_INSERTED_FRAMES} option is used
+   * top.yqingyu.common.asm.MethodWriter#COMPUTE_ALL_FRAMES} or {@link top.yqingyu.common.asm.MethodWriter#COMPUTE_INSERTED_FRAMES} option is used
    * then it does not contain either successive labels that denote the same bytecode offset (in this
    * case only the first label appears in this list).
    */
@@ -266,10 +260,10 @@ public class Label {
 
   /**
    * The outgoing edges of the basic block corresponding to this label, in the control flow graph of
-   * its method. These edges are stored in a linked list of {@link top.yqingyu.common.asm.Edge} objects, linked to each
-   * other by their {@link top.yqingyu.common.asm.Edge#nextEdge} field.
+   * its method. These edges are stored in a linked list of {@link Edge} objects, linked to each
+   * other by their {@link Edge#nextEdge} field.
    */
-  top.yqingyu.common.asm.Edge outgoingEdges;
+  Edge outgoingEdges;
 
   /**
    * The next element in the list of labels to which this label belongs, or {@literal null} if it
@@ -279,8 +273,8 @@ public class Label {
    * a label can belong to at most one list at a time (unless some lists share a common tail, but
    * this is not used in practice).
    *
-   * <p>List of labels are used in {@link MethodWriter#computeAllFrames} and {@link
-   * MethodWriter#computeMaxStackAndLocal} to compute stack map frames and the maximum stack size,
+   * <p>List of labels are used in {@link top.yqingyu.common.asm.MethodWriter#computeAllFrames} and {@link
+   * top.yqingyu.common.asm.MethodWriter#computeMaxStackAndLocal} to compute stack map frames and the maximum stack size,
    * respectively, as well as in {@link #markSubroutine} and {@link #addSubroutineRetSuccessors} to
    * compute the basic blocks belonging to subroutines and their outgoing edges. Outside of these
    * methods, this field should be null (this property is a precondition and a postcondition of
@@ -318,12 +312,12 @@ public class Label {
    * of their visit by {@link MethodVisitor#visitLabel}) corresponding to this bytecode offset. It
    * cannot be known for labels which have not been visited yet.
    *
-   * <p><i>This method should only be used when the {@link MethodWriter#COMPUTE_ALL_FRAMES} option
+   * <p><i>This method should only be used when the {@link top.yqingyu.common.asm.MethodWriter#COMPUTE_ALL_FRAMES} option
    * is used.</i>
    *
    * @return the label itself if {@link #frame} is null, otherwise the Label's frame owner. This
    *     corresponds to the "canonical" label instance described above thanks to the way the label
-   *     frame is set in {@link MethodWriter#visitLabel}.
+   *     frame is set in {@link top.yqingyu.common.asm.MethodWriter#visitLabel}.
    */
   final Label getCanonicalInstance() {
     return frame == null ? this : frame.owner;
@@ -470,10 +464,10 @@ public class Label {
           int opcode = code[sourceInsnBytecodeOffset] & 0xFF;
           if (opcode < Opcodes.IFNULL) {
             // Change IFEQ ... JSR to ASM_IFEQ ... ASM_JSR.
-            code[sourceInsnBytecodeOffset] = (byte) (opcode + top.yqingyu.common.asm.Constants.ASM_OPCODE_DELTA);
+            code[sourceInsnBytecodeOffset] = (byte) (opcode + Constants.ASM_OPCODE_DELTA);
           } else {
             // Change IFNULL and IFNONNULL to ASM_IFNULL and ASM_IFNONNULL.
-            code[sourceInsnBytecodeOffset] = (byte) (opcode + top.yqingyu.common.asm.Constants.ASM_IFNULL_OPCODE_DELTA);
+            code[sourceInsnBytecodeOffset] = (byte) (opcode + Constants.ASM_IFNULL_OPCODE_DELTA);
           }
           hasAsmInstructions = true;
         }
@@ -562,7 +556,7 @@ public class Label {
       if ((basicBlock.flags & FLAG_SUBROUTINE_END) != 0
           && basicBlock.subroutineId != subroutineCaller.subroutineId) {
         basicBlock.outgoingEdges =
-            new top.yqingyu.common.asm.Edge(
+            new Edge(
                 basicBlock.outputStackSize,
                 // By construction, the first outgoing edge of a basic block that ends with a jsr
                 // instruction leads to the jsr continuation block, i.e. where execution continues
@@ -596,7 +590,7 @@ public class Label {
    */
   private Label pushSuccessors(final Label listOfLabelsToProcess) {
     Label newListOfLabelsToProcess = listOfLabelsToProcess;
-    top.yqingyu.common.asm.Edge outgoingEdge = outgoingEdges;
+    Edge outgoingEdge = outgoingEdges;
     while (outgoingEdge != null) {
       // By construction, the second outgoing edge of a basic block that ends with a jsr instruction
       // leads to the jsr target (see {@link #FLAG_SUBROUTINE_CALLER}).

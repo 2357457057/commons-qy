@@ -27,8 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.ClassWriter;
-import top.yqingyu.common.asm.Type;
 
 /**
  * Exception thrown when the Code attribute of a method produced by a {@link ClassWriter} is too

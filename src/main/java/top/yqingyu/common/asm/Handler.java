@@ -27,9 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.ByteVector;
-import top.yqingyu.common.asm.Label;
-
 /**
  * Information about an exception handler. Corresponds to an element of the exception_table array of
  * a Code attribute, as defined in the Java Virtual Machine Specification (JVMS). Handler instances

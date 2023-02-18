@@ -27,10 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.*;
-import top.yqingyu.common.asm.ByteVector;
-import top.yqingyu.common.asm.Constants;
-
 /**
  * The input and output stack map frames of a basic block.
  *
@@ -42,7 +38,7 @@ import top.yqingyu.common.asm.Constants;
  *       previous state of this so called "output frame".
  *   <li>After all instructions have been visited, a fix point algorithm is used in MethodWriter to
  *       compute the "input frame" of each basic block (i.e. the stack map frame at the beginning of
- *       the basic block). See {@link MethodWriter#computeAllFrames}.
+ *       the basic block). See {@link top.yqingyu.common.asm.MethodWriter#computeAllFrames}.
  * </ul>
  *
  * <p>Output stack map frames are computed relatively to the input frame of the basic block, which
@@ -402,7 +398,7 @@ class Frame {
     inputStack = new int[0];
     int inputLocalIndex = 0;
     if ((access & Opcodes.ACC_STATIC) == 0) {
-      if ((access & top.yqingyu.common.asm.Constants.ACC_CONSTRUCTOR) == 0) {
+      if ((access & Constants.ACC_CONSTRUCTOR) == 0) {
         inputLocals[inputLocalIndex++] =
             REFERENCE_KIND | symbolTable.addType(symbolTable.getClassName());
       } else {

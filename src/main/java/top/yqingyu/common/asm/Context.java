@@ -28,9 +28,6 @@
 
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.*;
-import top.yqingyu.common.asm.Attribute;
-import top.yqingyu.common.asm.ClassReader;
 
 /**
  * Information about a class being parsed in a {@link top.yqingyu.common.asm.ClassReader}.

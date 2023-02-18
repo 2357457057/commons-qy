@@ -27,10 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.Constants;
-import top.yqingyu.common.asm.Opcodes;
-import top.yqingyu.common.asm.Type;
-
 /**
  * A visitor to visit a Java module. The methods of this class must be called in the following
  * order: ( {@code visitMainClass} | ( {@code visitPackage} | {@code visitRequire} | {@code
@@ -78,9 +74,6 @@ public abstract class ModuleVisitor {
         && api != Opcodes.ASM4
         && api != Opcodes.ASM10_EXPERIMENTAL) {
       throw new IllegalArgumentException("Unsupported api " + api);
-    }
-    if (api == Opcodes.ASM10_EXPERIMENTAL) {
-      top.yqingyu.common.asm.Constants.checkAsmExperimental(this);
     }
     this.api = api;
     this.mv = moduleVisitor;

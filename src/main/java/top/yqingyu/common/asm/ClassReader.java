@@ -27,10 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.*;
-import top.yqingyu.common.asm.AnnotationVisitor;
-import top.yqingyu.common.asm.Attribute;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -113,7 +109,7 @@ public class ClassReader {
 
   /**
    * A byte array containing the JVMS ClassFile structure to be parsed. <i>The content of this array
-   * must not be modified. This field is intended for {@link top.yqingyu.common.asm.Attribute} sub classes, and is normally
+   * must not be modified. This field is intended for {@link Attribute} sub classes, and is normally
    * not needed by class visitors.</i>
    *
    * <p>NOTE: the ClassFile structure can start at any offset within this array, i.e. it does not
@@ -425,7 +421,7 @@ public class ClassReader {
    *     #SKIP_CODE}, {@link #SKIP_DEBUG}, {@link #SKIP_FRAMES} or {@link #EXPAND_FRAMES}.
    */
   public void accept(final ClassVisitor classVisitor, final int parsingOptions) {
-    accept(classVisitor, new top.yqingyu.common.asm.Attribute[0], parsingOptions);
+    accept(classVisitor, new Attribute[0], parsingOptions);
   }
 
   /**
@@ -444,7 +440,7 @@ public class ClassReader {
    */
   public void accept(
       final ClassVisitor classVisitor,
-      final top.yqingyu.common.asm.Attribute[] attributePrototypes,
+      final Attribute[] attributePrototypes,
       final int parsingOptions) {
     Context context = new Context();
     context.attributePrototypes = attributePrototypes;
@@ -500,7 +496,7 @@ public class ClassReader {
     int recordOffset = 0;
     // - The non standard attributes (linked with their {@link Attribute#nextAttribute} field).
     //   This list in the <i>reverse order</i> or their order in the ClassFile structure.
-    top.yqingyu.common.asm.Attribute attributes = null;
+    Attribute attributes = null;
 
     int currentAttributeOffset = getFirstAttributeOffset();
     for (int i = readUnsignedShort(currentAttributeOffset - 2); i > 0; --i) {
@@ -553,7 +549,7 @@ public class ClassReader {
         modulePackagesOffset = currentAttributeOffset;
       } else if (!Constants.BOOTSTRAP_METHODS.equals(attributeName)) {
         // The BootstrapMethods attribute is read in the constructor.
-        top.yqingyu.common.asm.Attribute attribute =
+        Attribute attribute =
             readAttribute(
                 attributePrototypes,
                 attributeName,
@@ -686,7 +682,7 @@ public class ClassReader {
     // Visit the non standard attributes.
     while (attributes != null) {
       // Copy and reset the nextAttribute field so that it can also be used in ClassWriter.
-      top.yqingyu.common.asm.Attribute nextAttribute = attributes.nextAttribute;
+      Attribute nextAttribute = attributes.nextAttribute;
       attributes.nextAttribute = null;
       classVisitor.visitAttribute(attributes);
       attributes = nextAttribute;
@@ -916,7 +912,7 @@ public class ClassReader {
     int runtimeInvisibleTypeAnnotationsOffset = 0;
     // - The non standard attributes (linked with their {@link Attribute#nextAttribute} field).
     //   This list in the <i>reverse order</i> or their order in the ClassFile structure.
-    top.yqingyu.common.asm.Attribute attributes = null;
+    Attribute attributes = null;
 
     int attributesCount = readUnsignedShort(currentOffset);
     currentOffset += 2;
@@ -938,7 +934,7 @@ public class ClassReader {
       } else if (Constants.RUNTIME_INVISIBLE_TYPE_ANNOTATIONS.equals(attributeName)) {
         runtimeInvisibleTypeAnnotationsOffset = currentOffset;
       } else {
-        top.yqingyu.common.asm.Attribute attribute =
+        Attribute attribute =
             readAttribute(
                 context.attributePrototypes,
                 attributeName,
@@ -1046,7 +1042,7 @@ public class ClassReader {
     // Visit the non standard attributes.
     while (attributes != null) {
       // Copy and reset the nextAttribute field so that it can also be used in FieldWriter.
-      top.yqingyu.common.asm.Attribute nextAttribute = attributes.nextAttribute;
+      Attribute nextAttribute = attributes.nextAttribute;
       attributes.nextAttribute = null;
       recordComponentVisitor.visitAttribute(attributes);
       attributes = nextAttribute;
@@ -1092,7 +1088,7 @@ public class ClassReader {
     int runtimeInvisibleTypeAnnotationsOffset = 0;
     // - The non standard attributes (linked with their {@link Attribute#nextAttribute} field).
     //   This list in the <i>reverse order</i> or their order in the ClassFile structure.
-    top.yqingyu.common.asm.Attribute attributes = null;
+    Attribute attributes = null;
 
     int attributesCount = readUnsignedShort(currentOffset);
     currentOffset += 2;
@@ -1121,7 +1117,7 @@ public class ClassReader {
       } else if (Constants.RUNTIME_INVISIBLE_TYPE_ANNOTATIONS.equals(attributeName)) {
         runtimeInvisibleTypeAnnotationsOffset = currentOffset;
       } else {
-        top.yqingyu.common.asm.Attribute attribute =
+        Attribute attribute =
             readAttribute(
                 context.attributePrototypes,
                 attributeName,
@@ -1230,7 +1226,7 @@ public class ClassReader {
     // Visit the non standard attributes.
     while (attributes != null) {
       // Copy and reset the nextAttribute field so that it can also be used in FieldWriter.
-      top.yqingyu.common.asm.Attribute nextAttribute = attributes.nextAttribute;
+      Attribute nextAttribute = attributes.nextAttribute;
       attributes.nextAttribute = null;
       fieldVisitor.visitAttribute(attributes);
       attributes = nextAttribute;
@@ -1290,7 +1286,7 @@ public class ClassReader {
     int methodParametersOffset = 0;
     // - The non standard attributes (linked with their {@link Attribute#nextAttribute} field).
     //   This list in the <i>reverse order</i> or their order in the ClassFile structure.
-    top.yqingyu.common.asm.Attribute attributes = null;
+    Attribute attributes = null;
 
     int attributesCount = readUnsignedShort(currentOffset);
     currentOffset += 2;
@@ -1337,7 +1333,7 @@ public class ClassReader {
       } else if (Constants.METHOD_PARAMETERS.equals(attributeName)) {
         methodParametersOffset = currentOffset;
       } else {
-        top.yqingyu.common.asm.Attribute attribute =
+        Attribute attribute =
             readAttribute(
                 context.attributePrototypes,
                 attributeName,
@@ -1397,7 +1393,7 @@ public class ClassReader {
 
     // Visit the AnnotationDefault attribute.
     if (annotationDefaultOffset != 0) {
-      top.yqingyu.common.asm.AnnotationVisitor annotationVisitor = methodVisitor.visitAnnotationDefault();
+      AnnotationVisitor annotationVisitor = methodVisitor.visitAnnotationDefault();
       readElementValue(annotationVisitor, annotationDefaultOffset, null, charBuffer);
       if (annotationVisitor != null) {
         annotationVisitor.visitEnd();
@@ -1506,7 +1502,7 @@ public class ClassReader {
     // Visit the non standard attributes.
     while (attributes != null) {
       // Copy and reset the nextAttribute field so that it can also be used in MethodWriter.
-      top.yqingyu.common.asm.Attribute nextAttribute = attributes.nextAttribute;
+      Attribute nextAttribute = attributes.nextAttribute;
       attributes.nextAttribute = null;
       methodVisitor.visitAttribute(attributes);
       attributes = nextAttribute;
@@ -1884,7 +1880,7 @@ public class ClassReader {
     int[] invisibleTypeAnnotationOffsets = null;
     // - The non standard attributes (linked with their {@link Attribute#nextAttribute} field).
     //   This list in the <i>reverse order</i> or their order in the ClassFile structure.
-    top.yqingyu.common.asm.Attribute attributes = null;
+    Attribute attributes = null;
 
     int attributesCount = readUnsignedShort(currentOffset);
     currentOffset += 2;
@@ -1965,7 +1961,7 @@ public class ClassReader {
         // extraction of the labels corresponding to this attribute (see the comment above for the
         // StackMapTable attribute).
       } else {
-        top.yqingyu.common.asm.Attribute attribute =
+        Attribute attribute =
             readAttribute(
                 context.attributePrototypes,
                 attributeName,
@@ -2659,7 +2655,7 @@ public class ClassReader {
     // Visit the non standard attributes.
     while (attributes != null) {
       // Copy and reset the nextAttribute field so that it can also be used in MethodWriter.
-      top.yqingyu.common.asm.Attribute nextAttribute = attributes.nextAttribute;
+      Attribute nextAttribute = attributes.nextAttribute;
       attributes.nextAttribute = null;
       methodVisitor.visitAttribute(attributes);
       attributes = nextAttribute;
@@ -2981,7 +2977,7 @@ public class ClassReader {
    * @return the end offset of the JVMS 'annotation' or 'array_value' structure.
    */
   private int readElementValues(
-      final top.yqingyu.common.asm.AnnotationVisitor annotationVisitor,
+      final AnnotationVisitor annotationVisitor,
       final int annotationOffset,
       final boolean named,
       final char[] charBuffer) {
@@ -3522,21 +3518,21 @@ public class ClassReader {
    *     is not a code attribute.
    * @return the attribute that has been read.
    */
-  private top.yqingyu.common.asm.Attribute readAttribute(
-      final top.yqingyu.common.asm.Attribute[] attributePrototypes,
+  private Attribute readAttribute(
+      final Attribute[] attributePrototypes,
       final String type,
       final int offset,
       final int length,
       final char[] charBuffer,
       final int codeAttributeOffset,
       final Label[] labels) {
-    for (top.yqingyu.common.asm.Attribute attributePrototype : attributePrototypes) {
+    for (Attribute attributePrototype : attributePrototypes) {
       if (attributePrototype.type.equals(type)) {
         return attributePrototype.read(
             this, offset, length, charBuffer, codeAttributeOffset, labels);
       }
     }
-    return new top.yqingyu.common.asm.Attribute(type).read(this, offset, length, null, -1, null);
+    return new Attribute(type).read(this, offset, length, null, -1, null);
   }
 
   // -----------------------------------------------------------------------------------------------
@@ -3554,7 +3550,7 @@ public class ClassReader {
 
   /**
    * Returns the start offset in this {@link ClassReader} of a JVMS 'cp_info' structure (i.e. a
-   * constant pool entry), plus one. <i>This method is intended for {@link top.yqingyu.common.asm.Attribute} sub classes,
+   * constant pool entry), plus one. <i>This method is intended for {@link Attribute} sub classes,
    * and is normally not needed by class generators or adapters.</i>
    *
    * @param constantPoolEntryIndex the index a constant pool entry in the class's constant pool
@@ -3579,7 +3575,7 @@ public class ClassReader {
 
   /**
    * Reads a byte value in this {@link ClassReader}. <i>This method is intended for {@link
-   * top.yqingyu.common.asm.Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
+   * Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
    *
    * @param offset the start offset of the value to be read in this {@link ClassReader}.
    * @return the read value.
@@ -3590,7 +3586,7 @@ public class ClassReader {
 
   /**
    * Reads an unsigned short value in this {@link ClassReader}. <i>This method is intended for
-   * {@link top.yqingyu.common.asm.Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
+   * {@link Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
    *
    * @param offset the start index of the value to be read in this {@link ClassReader}.
    * @return the read value.
@@ -3602,7 +3598,7 @@ public class ClassReader {
 
   /**
    * Reads a signed short value in this {@link ClassReader}. <i>This method is intended for {@link
-   * top.yqingyu.common.asm.Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
+   * Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
    *
    * @param offset the start offset of the value to be read in this {@link ClassReader}.
    * @return the read value.
@@ -3614,7 +3610,7 @@ public class ClassReader {
 
   /**
    * Reads a signed int value in this {@link ClassReader}. <i>This method is intended for {@link
-   * top.yqingyu.common.asm.Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
+   * Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
    *
    * @param offset the start offset of the value to be read in this {@link ClassReader}.
    * @return the read value.
@@ -3629,7 +3625,7 @@ public class ClassReader {
 
   /**
    * Reads a signed long value in this {@link ClassReader}. <i>This method is intended for {@link
-   * top.yqingyu.common.asm.Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
+   * Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
    *
    * @param offset the start offset of the value to be read in this {@link ClassReader}.
    * @return the read value.
@@ -3642,7 +3638,7 @@ public class ClassReader {
 
   /**
    * Reads a CONSTANT_Utf8 constant pool entry in this {@link ClassReader}. <i>This method is
-   * intended for {@link top.yqingyu.common.asm.Attribute} sub classes, and is normally not needed by class generators or
+   * intended for {@link Attribute} sub classes, and is normally not needed by class generators or
    * adapters.</i>
    *
    * @param offset the start offset of an unsigned short value in this {@link ClassReader}, whose
@@ -3714,7 +3710,7 @@ public class ClassReader {
   /**
    * Reads a CONSTANT_Class, CONSTANT_String, CONSTANT_MethodType, CONSTANT_Module or
    * CONSTANT_Package constant pool entry in {@link #classFileBuffer}. <i>This method is intended
-   * for {@link top.yqingyu.common.asm.Attribute} sub classes, and is normally not needed by class generators or
+   * for {@link Attribute} sub classes, and is normally not needed by class generators or
    * adapters.</i>
    *
    * @param offset the start offset of an unsigned short value in {@link #classFileBuffer}, whose
@@ -3732,7 +3728,7 @@ public class ClassReader {
 
   /**
    * Reads a CONSTANT_Class constant pool entry in this {@link ClassReader}. <i>This method is
-   * intended for {@link top.yqingyu.common.asm.Attribute} sub classes, and is normally not needed by class generators or
+   * intended for {@link Attribute} sub classes, and is normally not needed by class generators or
    * adapters.</i>
    *
    * @param offset the start offset of an unsigned short value in this {@link ClassReader}, whose
@@ -3747,7 +3743,7 @@ public class ClassReader {
 
   /**
    * Reads a CONSTANT_Module constant pool entry in this {@link ClassReader}. <i>This method is
-   * intended for {@link top.yqingyu.common.asm.Attribute} sub classes, and is normally not needed by class generators or
+   * intended for {@link Attribute} sub classes, and is normally not needed by class generators or
    * adapters.</i>
    *
    * @param offset the start offset of an unsigned short value in this {@link ClassReader}, whose
@@ -3762,7 +3758,7 @@ public class ClassReader {
 
   /**
    * Reads a CONSTANT_Package constant pool entry in this {@link ClassReader}. <i>This method is
-   * intended for {@link top.yqingyu.common.asm.Attribute} sub classes, and is normally not needed by class generators or
+   * intended for {@link Attribute} sub classes, and is normally not needed by class generators or
    * adapters.</i>
    *
    * @param offset the start offset of an unsigned short value in this {@link ClassReader}, whose

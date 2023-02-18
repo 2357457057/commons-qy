@@ -27,8 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-import top.yqingyu.common.asm.ClassWriter;
-import top.yqingyu.common.asm.Label;
 
 /**
  * An edge in the control flow graph of a method. Each node of this graph is a basic block,

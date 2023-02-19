@@ -17,9 +17,11 @@ public class VirtualConsoleTable {
     private final AtomicInteger X = new AtomicInteger(0);
     private final AtomicInteger Y = new AtomicInteger(0);
     private final AtomicInteger maxX = new AtomicInteger(0);
+    private final AtomicInteger maxY = new AtomicInteger(0);
     private final List<Column> columns = new ArrayList<>();
     private final ReentrantLock lock = new ReentrantLock();
     private final String colSpacing;
+
     public VirtualConsoleTable() {
         colSpacing = " ";
     }
@@ -30,6 +32,7 @@ public class VirtualConsoleTable {
     public VirtualConsoleTable(int num) {
         this.colSpacing = StringUtil.SPACE.repeat(num);
     }
+
     /**
      * @param s 放置的字符串
      * @param x x 横坐标
@@ -48,11 +51,13 @@ public class VirtualConsoleTable {
             }
             Column column = columns.get(x);
             column.put(y, s);
+            if (y > maxY.get()) maxY.set(y);
         } finally {
             lock.unlock();
         }
         return this;
     }
+
     public VirtualConsoleTable append(String s) {
         if (s == null) s = "";
         try {
@@ -67,17 +72,20 @@ public class VirtualConsoleTable {
             if (X.get() > maxX.get()) {
                 maxX.set(X.get());
             }
+            if (Y.get() > maxY.get()) maxY.set(Y.get());
         } finally {
             lock.unlock();
         }
         return this;
     }
+
     public VirtualConsoleTable append(String... s) {
         for (String s1 : s) {
             append(s1);
         }
         return this;
     }
+
     public VirtualConsoleTable appendCrossCol(String s, int num) {
         s = "c$" + s;
         append(s);
@@ -86,6 +94,7 @@ public class VirtualConsoleTable {
         }
         return this;
     }
+
     public VirtualConsoleTable appendCrossRow(String s, int num) {
         s = "r$" + s;
         append(s);
@@ -95,11 +104,13 @@ public class VirtualConsoleTable {
         }
         return this;
     }
+
     public VirtualConsoleTable newLine() {
         X.set(0);
         Y.incrementAndGet();
         return this;
     }
+
     private static class Column {
         private final HashMap<Integer, String> column = new HashMap<>();
         private int maxLength = 0;
@@ -130,11 +141,12 @@ public class VirtualConsoleTable {
             return maxLength;
         }
     }
+
     public String toString() {
         try {
             lock.lock();
             StringBuilder sb = new StringBuilder();
-            for (int j = 0; j < maxX.get(); j++) {
+            for (int j = 0; j < maxY.get(); j++) {
                 sb.append("\n");
                 for (Column value : columns) {
                     String column = value.getColumn(j);
@@ -144,7 +156,7 @@ public class VirtualConsoleTable {
                     }
                 }
             }
-            return sb.toString().replaceFirst("\n","");
+            return sb.toString().replaceFirst("\n", "");
         } finally {
             lock.unlock();
         }

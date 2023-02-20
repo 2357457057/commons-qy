@@ -69,6 +69,14 @@ public class TransObj implements Serializable {
         return fileId;
     }
 
+    public void setFileId(String fileId) {
+        this.fileId = fileId;
+    }
+
+    public void setHasNext(boolean hasNext) {
+        this.hasNext = hasNext;
+    }
+
     public boolean isHasNext() {
         return hasNext;
     }

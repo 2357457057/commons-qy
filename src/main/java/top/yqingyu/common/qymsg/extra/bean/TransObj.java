@@ -9,11 +9,14 @@ public class TransObj implements Serializable {
     private String fileName;
     private final String fileId;
     private long size;
-    private boolean isUpload = false;
     private String sendPath;
     private String savePath;
-    private boolean hasNext = false;
     private String nextId;
+    private boolean overwrite = false;
+    private boolean rename = false;
+    private String newName;
+    private boolean isUpload = false;
+    private boolean hasNext = false;
 
     public TransObj(String fileId) {
         this.fileId = fileId;
@@ -69,6 +72,31 @@ public class TransObj implements Serializable {
 
     public String getNextId() {
         return nextId;
+    }
+
+
+    public boolean isOverwrite() {
+        return overwrite;
+    }
+
+    public void setOverwrite(boolean overwrite) {
+        this.overwrite = overwrite;
+    }
+
+    public boolean isRename() {
+        return rename;
+    }
+
+    public void setRename(boolean rename) {
+        this.rename = rename;
+    }
+
+    public String getNewName() {
+        return newName;
+    }
+
+    public void setNewName(String newName) {
+        this.newName = newName;
     }
 
     public void setNextId(String nextId) {

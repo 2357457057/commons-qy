@@ -9,10 +9,7 @@ import top.yqingyu.common.bean.NetChannel;
 import java.io.*;
 import java.net.Socket;
 import java.nio.ByteBuffer;
-import java.nio.channels.AsynchronousSocketChannel;
-import java.nio.channels.CompletionHandler;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -428,7 +425,23 @@ public class IoUtil {
         } while (read != l);
 
         return read;
+    }
 
+    public static void writeFile(FileChannel fileChannel, SocketChannel channel) throws Exception {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(1024 * 8);
+        long size = fileChannel.size();
+        long l = 0;
+        do {
+            byteBuffer.clear();
+            fileChannel.read(byteBuffer, l);
+            byteBuffer.flip();
+            int limit = byteBuffer.limit();
+            l += limit;
+            do {
+                channel.write(byteBuffer);
+            } while (limit != byteBuffer.position());
+
+        } while (l != size);
     }
 
 

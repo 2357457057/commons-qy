@@ -7,7 +7,7 @@ public class TransObj implements Serializable {
     @Serial
     private static final long serialVersionUID = 704921303243464801L;
     private String fileName;
-    private final String fileId;
+    private  String fileId;
     private long size;
     private String sendPath;
     private String savePath;
@@ -17,6 +17,9 @@ public class TransObj implements Serializable {
     private String newName;
     private boolean isUpload = false;
     private boolean hasNext = false;
+
+    public TransObj() {
+    }
 
     public TransObj(String fileId) {
         this.fileId = fileId;

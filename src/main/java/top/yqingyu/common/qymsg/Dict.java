@@ -3,7 +3,7 @@ package top.yqingyu.common.qymsg;
 /**
  * @author YYJ
  * @version 1.0.0
- * @ClassName top.yqingyu.common.qymsg.Dict
+ * @ClassName top.yqingyu.common.qymsg.ChannelStatus
  * @description
  * @createTime 2023年01月05日 23:23:00
  */

@@ -69,7 +69,6 @@ public abstract class EventHandler implements Runnable {
                 selector.select();
                 Set<SelectionKey> keys = selector.selectedKeys();
                 Iterator<SelectionKey> iterator = keys.iterator();
-
                 if (keys.size() == 0)
                     OPERATE_RECORDER.add2(selector.hashCode());
 
@@ -77,12 +76,19 @@ public abstract class EventHandler implements Runnable {
                     SelectionKey selectionKey = iterator.next();
                     iterator.remove();
                     SocketChannel channel = (SocketChannel) selectionKey.channel();
-
+                    ConcurrentQyMap<String, Object> status = NET_CHANNELS.get(channel.hashCode());
                     if (selectionKey.isReadable()) {
-                        read(selector,new NetChannel(channel));
+                        if (ChannelStatus.canDo(status, ChannelStatus.READ)) {
+                            ChannelStatus.statusTrue(status, ChannelStatus.READ);
+                            read(selector, new NetChannel(channel));
+                        }
                     } else {
-                        write(selector, new NetChannel(channel));
+                        if (ChannelStatus.canDo(status, ChannelStatus.WRITE)) {
+                            ChannelStatus.statusTrue(status, ChannelStatus.WRITE);
+                            write(selector, new NetChannel(channel));
+                        }
                     }
+
                 }
 
             } catch (RebuildSelectorException e) {

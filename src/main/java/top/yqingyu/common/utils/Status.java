@@ -8,7 +8,7 @@ public interface Status {
     }
 
     static void statusFalse(ConcurrentQyMap<String, Object> map, String statusKey) {
-        map.put(statusKey, Boolean.TRUE);
+        map.put(statusKey, Boolean.FALSE);
     }
 
     static boolean canDo(ConcurrentQyMap<String, Object> map, String statusKey) {

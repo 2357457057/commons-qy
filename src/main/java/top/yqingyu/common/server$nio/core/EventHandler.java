@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.bean.NetChannel;
 import top.yqingyu.common.qydata.ConcurrentQyMap;
+import top.yqingyu.common.utils.Status;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
@@ -78,13 +79,13 @@ public abstract class EventHandler implements Runnable {
                     SocketChannel channel = (SocketChannel) selectionKey.channel();
                     ConcurrentQyMap<String, Object> status = NET_CHANNELS.get(channel.hashCode());
                     if (selectionKey.isReadable()) {
-                        if (ChannelStatus.canDo(status, ChannelStatus.READ)) {
-                            ChannelStatus.statusTrue(status, ChannelStatus.READ);
+                        if (Status.canDo(status, ChannelStatus.READ)) {
+                            Status.statusTrue(status, ChannelStatus.READ);
                             read(selector, new NetChannel(channel));
                         }
                     } else {
-                        if (ChannelStatus.canDo(status, ChannelStatus.WRITE)) {
-                            ChannelStatus.statusTrue(status, ChannelStatus.WRITE);
+                        if (Status.canDo(status, ChannelStatus.WRITE)) {
+                            Status.statusTrue(status, ChannelStatus.WRITE);
                             write(selector, new NetChannel(channel));
                         }
                     }

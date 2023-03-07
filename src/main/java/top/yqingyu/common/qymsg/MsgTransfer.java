@@ -39,7 +39,7 @@ public class MsgTransfer {
 //    private static final int MSG_LENGTH_MAX = 33_554_432;
 
     private static final int BODY_LENGTH_LENGTH = 5;
-    protected static int MSG_LENGTH_RADIX = 0;
+    public static int MSG_LENGTH_RADIX = 0;
 
     private static ExecutorService IO_POOL = null;
 
@@ -111,7 +111,7 @@ public class MsgTransfer {
         return DATA_TYPE_2_CHAR.get(dataType);
     }
 
-    protected static DataType CHAR_2_DATA_TYPE(char c) {
+    public static DataType CHAR_2_DATA_TYPE(char c) {
         return CHAR_2_DATA_TYPE.get(c);
     }
 
@@ -119,11 +119,11 @@ public class MsgTransfer {
         return MSG_TYPE_2_CHAR.get(msgType);
     }
 
-    protected static MsgType CHAR_2_MSG_TYPE(char c) {
+    public static MsgType CHAR_2_MSG_TYPE(char c) {
         return CHAR_2_MSG_TYPE.get(c);
     }
 
-    protected static boolean SEGMENTATION_2_BOOLEAN(char c) {
+    public static boolean SEGMENTATION_2_BOOLEAN(char c) {
 
         return SEGMENTATION_2_BOOLEAN.get(c);
     }

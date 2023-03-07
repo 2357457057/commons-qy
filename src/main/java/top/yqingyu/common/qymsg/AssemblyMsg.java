@@ -23,7 +23,7 @@ import static top.yqingyu.common.qymsg.MsgTransfer.MSG_LENGTH_RADIX;
  * @createTime 2022年09月06日 10:36:00
  */
 
-class AssemblyMsg {
+public class AssemblyMsg {
     private static final Logger log = LoggerFactory.getLogger(AssemblyMsg.class);
 
     /**

@@ -89,6 +89,10 @@ public abstract class EventHandler implements Runnable {
                             write(selector, new NetChannel(channel));
                         }
                     }
+                    if (status == null) {
+                        log.warn("{} is null", channel.hashCode());
+                        selectionKey.cancel();
+                    }
 
                 }
 
@@ -117,7 +121,7 @@ public abstract class EventHandler implements Runnable {
         IS_REBUILDING.setRelease(true);
 
         OPERATE_RECORDER.remove(this.selector.hashCode());
-
+        this.selector.close();
         this.selector = Selector.open();
         NET_CHANNELS.forEach((I, S) -> {
             try {
@@ -129,6 +133,7 @@ public abstract class EventHandler implements Runnable {
             }
         });
         IS_REBUILDING.setRelease(false);
+        this.selector.wakeup();
         log.info("Selector重构完成");
     }
 }

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.bean.NetChannel;
 import top.yqingyu.common.qydata.ConcurrentQyMap;
+import top.yqingyu.common.utils.Status;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -63,6 +64,8 @@ public class HandlerRouter {
                     new ConcurrentQyMap<String, Object>()
                             .putConsecutive("NetChannel", netChannel)
                             .putConsecutive("LocalDateTime", LocalDateTime.now())
+                            .putConsecutive(ChannelStatus.WRITE, Boolean.FALSE)
+                            .putConsecutive(ChannelStatus.READ, Boolean.FALSE)
             );
 
             socketChannel.register(nextSelector, SelectionKey.OP_READ);

@@ -1,9 +1,8 @@
-package qymsg.testMsg;
+package top.yqingyu.common.qymsg.netty;
 
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import top.yqingyu.common.qymsg.QyMsg;
-import top.yqingyu.common.qymsg.netty.QyMsgServerHandler;
 @ChannelHandler.Sharable
 public class MsgHandler extends QyMsgServerHandler {
     @Override

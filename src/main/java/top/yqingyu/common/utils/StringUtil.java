@@ -3136,7 +3136,7 @@ public class StringUtil {
      * </pre>
      *
      * @param <T>    the specific kind of CharSequence
-     * @param values the values to test, may be {@code null} or empty
+     * @param values the values to DemoServer, may be {@code null} or empty
      * @return the first value from {@code values} which is not blank,
      * or {@code null} if there are no non-blank values
      * @since 3.8
@@ -3171,7 +3171,7 @@ public class StringUtil {
      * </pre>
      *
      * @param <T>    the specific kind of CharSequence
-     * @param values the values to test, may be {@code null} or empty
+     * @param values the values to DemoServer, may be {@code null} or empty
      * @return the first value from {@code values} which is not empty,
      * or {@code null} if there are no non-empty values
      * @since 3.8
@@ -4951,7 +4951,7 @@ public class StringUtil {
      * An empty CharSequence (length()=0) will return {@code false}.</p>
      *
      * <p>Note that the method does not allow for a leading sign, either positive or negative.
-     * Also, if a String passes the numeric test, it may still generate a NumberFormatException
+     * Also, if a String passes the numeric DemoServer, it may still generate a NumberFormatException
      * when parsed by Integer.parseInt or Long.parseLong, e.g. if the value is outside the range
      * for int or long respectively.</p>
      *
@@ -6720,7 +6720,7 @@ public class StringUtil {
      */
     public static String normalizeSpace(final String str) {
         // LANG-1020: Improved performance significantly by normalizing manually instead of using regex
-        // See https://github.com/librucha/commons-lang-normalizespaces-benchmark for performance test
+        // See https://github.com/librucha/commons-lang-normalizespaces-benchmark for performance DemoServer
         if (isEmpty(str)) {
             return str;
         }

@@ -10,7 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author YYJ
  * @version 1.0.0
- * @ClassName PACKAGE_NAME.test
+ * @ClassName PACKAGE_NAME.DemoServer
  * @description
  * @createTime 2022年09月13日 23:45:00
  */
@@ -29,7 +29,7 @@ public class test {
         MsgTransfer.init(32,3, ThreadUtil.createQyFixedThreadPool(1,null,null));
 
         CreateServer
-                .createDefault("test")
+                .createDefault("DemoServer")
                 .implEvent(aa.class)
                 .defaultRouter()
                 .listenPort(444)

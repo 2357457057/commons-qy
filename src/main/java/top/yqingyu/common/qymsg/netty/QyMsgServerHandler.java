@@ -8,10 +8,11 @@ import top.yqingyu.common.qymsg.QyMsg;
 public abstract class QyMsgServerHandler extends SimpleChannelInboundHandler<QyMsg> {
     @Override
     protected final void channelRead0(ChannelHandlerContext ctx, QyMsg msg) throws Exception {
+        QyMsg handle = handle(ctx, msg);
         Channel channel = ctx.channel();
-        channel.write(msg);
+        channel.write(handle);
         channel.flush();
     }
 
-    protected abstract void handle(ChannelHandlerContext ctx, QyMsg msg);
+    protected abstract QyMsg handle(ChannelHandlerContext ctx, QyMsg msg);
 }

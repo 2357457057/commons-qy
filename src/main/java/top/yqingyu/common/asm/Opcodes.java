@@ -86,9 +86,9 @@ public interface Opcodes {
    * <p>If 'api' is equal to API_NEW, there are two cases:
    *
    * <ul>
-   *   <li>call visitNewStuff: the redirection test is skipped and 'do stuff' is executed directly.
+   *   <li>call visitNewStuff: the redirection DemoServer is skipped and 'do stuff' is executed directly.
    *   <li>call visitOldSuff: the source is not set to SOURCE_DEPRECATED before calling
-   *       visitNewStuff, but the redirection test is skipped anyway in visitNewStuff, which
+   *       visitNewStuff, but the redirection DemoServer is skipped anyway in visitNewStuff, which
    *       directly executes 'do stuff'.
    * </ul>
    *

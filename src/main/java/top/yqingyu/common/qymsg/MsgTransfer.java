@@ -34,14 +34,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MsgTransfer {
     //消息长度占位长度
     private static final Logger log = LoggerFactory.getLogger(MsgTransfer.class);
-    protected static int BODY_LENGTH_MAX = 1024 * 1;
+    protected static int BODY_LENGTH_MAX = 1400;
 
 //    private static final int MSG_LENGTH_MAX = 33_554_432;
 
     private static final int BODY_LENGTH_LENGTH = 5;
     public static int MSG_LENGTH_RADIX = 0;
 
-    private static ExecutorService IO_POOL = null;
 
     private static Hashtable<DataType, Character> DATA_TYPE_2_CHAR;
     private static Hashtable<Character, DataType> CHAR_2_DATA_TYPE;
@@ -100,11 +99,9 @@ public class MsgTransfer {
     }
 
 
-    public static void init(int radix, int body_length_max, ExecutorService pool) {
+    public static void init(int radix, int body_length_max) {
         MSG_LENGTH_RADIX = radix;
         BODY_LENGTH_MAX = body_length_max;
-        IO_POOL = pool;
-
     }
 
     protected static char DATA_TYPE_2_CHAR(DataType dataType) {

@@ -3,10 +3,12 @@ package top.yqingyu.common.qymsg.netty;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import top.yqingyu.common.qymsg.QyMsg;
+
 @ChannelHandler.Sharable
-public class MsgHandler extends QyMsgServerHandler {
+public class DemoMsgHandler extends QyMsgServerHandler {
     @Override
-    protected void handle(ChannelHandlerContext ctx, QyMsg msg) {
-        System.out.println(msg.toString());
+    protected QyMsg handle(ChannelHandlerContext ctx, QyMsg msg) {
+        //无条件回显。
+        return msg;
     }
 }

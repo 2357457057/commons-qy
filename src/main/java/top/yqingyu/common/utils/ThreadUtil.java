@@ -104,11 +104,11 @@ public class ThreadUtil {
     }
 
 
-    public static ThreadFactory createThFactoryG(String poolName, String threadName){
+    public static ThreadFactory createThFactoryG(String poolName, String threadName) {
         return new QyGlobalPoolNameFactory().QyThreadFactory(poolName, threadName);
     }
 
-    public static ThreadFactory createThFactoryC(String poolName, String threadName){
+    public static ThreadFactory createThFactoryC(String poolName, String threadName) {
         return new QyCurrentPoolNameFactory().QyThreadFactory(poolName, threadName);
     }
 

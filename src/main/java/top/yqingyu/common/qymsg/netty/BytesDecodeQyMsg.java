@@ -51,7 +51,6 @@ public class BytesDecodeQyMsg extends ByteToMessageDecoder {
             readBytes = readBytes(in, HEADER_LENGTH);
             header = new String(readBytes, StandardCharsets.UTF_8);
         }
-        System.out.println(header);
         if (StringUtil.isNotBlank(header) && header.length() != HEADER_LENGTH) {
             throw new IllegalQyMsgException("消息头长度非法 消息头为：" + header);
         }
@@ -64,8 +63,6 @@ public class BytesDecodeQyMsg extends ByteToMessageDecoder {
         try {
             segmentation = MsgTransfer.SEGMENTATION_2_BOOLEAN($2);
         } catch (Exception e) {
-            System.out.println(header + new String(readBytes(in, in.readableBytes()), StandardCharsets.UTF_8));
-            ctx.fireChannelRead(null);
             throw new IllegalQyMsgException("非法分片字符: " + $2, e);
         }
 

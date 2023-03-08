@@ -39,7 +39,7 @@ public class MsgTransfer {
 //    private static final int MSG_LENGTH_MAX = 33_554_432;
 
     private static final int BODY_LENGTH_LENGTH = 5;
-    public static int MSG_LENGTH_RADIX = 0;
+    public static int MSG_LENGTH_RADIX = 24;
 
 
     private static Hashtable<DataType, Character> DATA_TYPE_2_CHAR;
@@ -102,6 +102,10 @@ public class MsgTransfer {
     public static void init(int radix, int body_length_max) {
         MSG_LENGTH_RADIX = radix;
         BODY_LENGTH_MAX = body_length_max;
+    }
+
+    public static void init(int radix) {
+        MSG_LENGTH_RADIX = radix;
     }
 
     protected static char DATA_TYPE_2_CHAR(DataType dataType) {

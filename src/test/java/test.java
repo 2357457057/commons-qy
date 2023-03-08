@@ -26,7 +26,7 @@ public class test {
         l = file1.length() / 10;
         FileUtil.createSizeFile2(file, file1.length());
 
-        MsgTransfer.init(32,3, ThreadUtil.createQyFixedThreadPool(1,null,null));
+        MsgTransfer.init(32);
 
         CreateServer
                 .createDefault("DemoServer")

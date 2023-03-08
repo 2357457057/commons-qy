@@ -12,7 +12,7 @@ public class QyMsgServerInitializer extends ChannelInitializer<SocketChannel> {
     private ServerExceptionHandler serverExceptionHandler;
 
     public QyMsgServerInitializer(QyMsgServerHandler qyMsgServerHandler) {
-        MsgTransfer.init(32, 99999);
+        //TEST CODE   MsgTransfer.init(32, 99999);
         this.qyMsgServerHandler = qyMsgServerHandler;
     }
 

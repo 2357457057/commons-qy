@@ -9,9 +9,11 @@ public abstract class QyMsgServerHandler extends SimpleChannelInboundHandler<QyM
     @Override
     protected final void channelRead0(ChannelHandlerContext ctx, QyMsg msg) throws Exception {
         QyMsg handle = handle(ctx, msg);
-        Channel channel = ctx.channel();
-        channel.write(handle);
-        channel.flush();
+        if (handle != null) {
+            Channel channel = ctx.channel();
+            channel.write(handle);
+            channel.flush();
+        }
     }
 
     protected abstract QyMsg handle(ChannelHandlerContext ctx, QyMsg msg) throws Exception;

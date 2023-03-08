@@ -63,7 +63,7 @@ public class BytesDecodeQyMsg extends ByteToMessageDecoder {
         try {
             segmentation = MsgTransfer.SEGMENTATION_2_BOOLEAN($2);
         } catch (Exception e) {
-            throw new IllegalQyMsgException("非法分片字符: " + $2, e);
+            throw new IllegalQyMsgException("非法分片字符: " + header, e);
         }
 
         if (segmentation) {
@@ -209,19 +209,19 @@ public class BytesDecodeQyMsg extends ByteToMessageDecoder {
         try {
             msgType = MsgTransfer.CHAR_2_MSG_TYPE(msg_type);
         } catch (Exception e) {
-            throw new IllegalQyMsgException("非法的消息类型: " + msg_type, e);
+            throw new IllegalQyMsgException("非法的消息类型: " + header, e);
         }
         DataType dataType;
         try {
             dataType = MsgTransfer.CHAR_2_DATA_TYPE(data_type);
         } catch (Exception e) {
-            throw new IllegalQyMsgException("非法的数据类型: " + data_type, e);
+            throw new IllegalQyMsgException("非法的数据类型: " + header, e);
         }
         boolean segmentation;
         try {
             segmentation = MsgTransfer.SEGMENTATION_2_BOOLEAN(segmentationC);
         } catch (Exception e) {
-            throw new IllegalQyMsgException("非法分片字符: " + segmentationC, e);
+            throw new IllegalQyMsgException("非法分片字符: " + header, e);
         }
 
         QyMsg qyMsg = new QyMsg(msgType, dataType);
@@ -240,13 +240,13 @@ public class BytesDecodeQyMsg extends ByteToMessageDecoder {
         try {
             msgType = MsgTransfer.CHAR_2_MSG_TYPE(msg_type);
         } catch (Exception e) {
-            throw new IllegalQyMsgException("非法的消息类型: " + msg_type, e);
+            throw new IllegalQyMsgException("非法的消息类型: " + header, e);
         }
         DataType dataType;
         try {
             dataType = MsgTransfer.CHAR_2_DATA_TYPE(data_type);
         } catch (Exception e) {
-            throw new IllegalQyMsgException("非法的数据类型: " + data_type, e);
+            throw new IllegalQyMsgException("非法的数据类型: " + header, e);
         }
         switch (dataType) {
             case STRING -> {
@@ -284,7 +284,7 @@ public class BytesDecodeQyMsg extends ByteToMessageDecoder {
         try {
             dataType = MsgTransfer.CHAR_2_DATA_TYPE(data_type);
         } catch (Exception e) {
-            throw new IllegalQyMsgException("非法的数据类型:" + data_type, e);
+            throw new IllegalQyMsgException("非法的数据类型: " + header, e);
         }
         if (DataType.JSON.equals(dataType)) {
             byte[] bytes = readBytes2(msg_length, in, ctxHashCode, ctxInfo, header, body);
@@ -304,13 +304,13 @@ public class BytesDecodeQyMsg extends ByteToMessageDecoder {
         try {
             msgType = MsgTransfer.CHAR_2_MSG_TYPE(msg_type);
         } catch (Exception e) {
-            throw new IllegalQyMsgException("非法的消息类型: " + msg_type, e);
+            throw new IllegalQyMsgException("非法的消息类型: " + header, e);
         }
         DataType dataType;
         try {
             dataType = MsgTransfer.CHAR_2_DATA_TYPE(data_type);
         } catch (Exception e) {
-            throw new IllegalQyMsgException("非法的数据类型: " + data_type, e);
+            throw new IllegalQyMsgException("非法的数据类型: " + header, e);
         }
         QyMsg qyMsg = new QyMsg(msgType, dataType);
 

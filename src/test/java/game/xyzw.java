@@ -1,14 +1,10 @@
+package game;
+
 import cn.hutool.core.swing.RobotUtil;
 
 import java.awt.*;
 
-/**
- * @author YYJ
- * @version 1.0.0 * @ClassName PACKAGE_NAME.TestTable
- * @description
- * @createTime 2023年02月19日 03:30:00
- */
-public class TestTable {
+public class xyzw {
 
     static double[] BOTTOM_BTN1 = new double[]{2032.0, 1050.0};
     static double[] BOTTOM_BTN2 = new double[]{2151.0, 1050.0};

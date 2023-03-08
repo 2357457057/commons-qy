@@ -14,5 +14,5 @@ public abstract class QyMsgServerHandler extends SimpleChannelInboundHandler<QyM
         channel.flush();
     }
 
-    protected abstract QyMsg handle(ChannelHandlerContext ctx, QyMsg msg);
+    protected abstract QyMsg handle(ChannelHandlerContext ctx, QyMsg msg) throws Exception;
 }

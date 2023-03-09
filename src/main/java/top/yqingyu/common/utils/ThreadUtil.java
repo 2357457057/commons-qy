@@ -130,6 +130,18 @@ public class ThreadUtil {
      * @description 创建阻塞无界线程池
      */
     public static ThreadPoolExecutor createQyFixedThreadPool(int size, String poolName, String threadName) {
+        return createQyFixedThreadPool(size, size, 0L, poolName, threadName);
+    }
+
+    /**
+     * @param coreSize   核心线程数
+     * @param maxSize    最大线程数
+     * @param poolName   池名
+     * @param threadName 线程名
+     * @author YYJ
+     * @description 创建阻塞无界线程池
+     */
+    public static ThreadPoolExecutor createQyFixedThreadPool(int coreSize, int maxSize, long keepLive, String poolName, String threadName) {
 
         if (StringUtils.isBlank(poolName))
             poolName = "Pool";
@@ -138,7 +150,7 @@ public class ThreadUtil {
             threadName = "th";
 
 
-        return new ThreadPoolExecutor(size, size, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new QyGlobalPoolNameFactory().QyThreadFactory(poolName, threadName));
+        return new ThreadPoolExecutor(coreSize, maxSize, keepLive, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(), new QyGlobalPoolNameFactory().QyThreadFactory(poolName, threadName));
     }
 
     /**

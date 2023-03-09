@@ -5,9 +5,10 @@ import cn.hutool.core.util.RandomUtil;
 import java.util.concurrent.ArrayBlockingQueue;
 
 /**
+ * 根据 输入的百分比返回 true or false
+ *
  * @author YYJ
  * @version 1.0.0
- * @ClassName top.yqingyu.thread.RandomCacheThread
  * @description
  * @createTime 2022年09月01日 00:18:00
  */

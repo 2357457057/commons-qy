@@ -1,6 +1,7 @@
 package top.yqingyu.common.qymsg;
 
 /**
+ * QyMsg 的常量字段。
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.qymsg.ChannelStatus

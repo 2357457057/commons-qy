@@ -3,12 +3,13 @@ package top.yqingyu.common.qydata;
 import java.util.HashMap;
 
 /**
+ * * 将会有一个默认值的键值对
+ * * 非线程安全.
+ * * 考虑到性能以及作为选择器使用，应该不会出现同时写入的操作。
+ *
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.qydata.ChoiceHashMap
- * @description 将会有一个默认值的键值对
- * 非线程安全.
- * 考虑到性能以及作为选择器使用，应该不会出现同时写入的操作。
  * @createTime 2023年01月09日 23:29:00
  */
 public class ChoiceHashMap<A, B> extends HashMap<A, B> {

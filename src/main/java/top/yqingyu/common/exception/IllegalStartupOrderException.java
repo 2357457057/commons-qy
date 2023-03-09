@@ -1,6 +1,8 @@
 package top.yqingyu.common.exception;
 
 /**
+ * 启动顺序异常
+ *
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.exception.IllegalStartupOrderException

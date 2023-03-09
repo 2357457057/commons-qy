@@ -1,16 +1,16 @@
 package top.yqingyu.common.response;
 
 
-
 import top.yqingyu.common.exception.QyExceptionEnum;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- *description: 发送数据
- *@author 杨永基
- *date: 2021/09/09
+ * web接口的统一响应对象 发送数据
+ *
+ * @author 杨永基
+ * date: 2021/09/09
  */
 public class R extends HashMap<String, Object> {
     private static final long serialVersionUID = 1L;
@@ -41,6 +41,7 @@ public class R extends HashMap<String, Object> {
         r.put("msg", msg);
         return r;
     }
+
     public static R error(int code) {
         R r = new R();
         r.put("code", code);
@@ -69,16 +70,15 @@ public class R extends HashMap<String, Object> {
     }
 
 
-
     public R put(String key, Object value) {
         super.put(key, value);
         return this;
     }
 
-    public static R error(QyExceptionEnum e){
+    public static R error(QyExceptionEnum e) {
         R r = new R();
-        r.put("code",e.getResultCode());
-        r.put("msg",e.getResultMsg());
+        r.put("code", e.getResultCode());
+        r.put("msg", e.getResultMsg());
         return r;
     }
 }

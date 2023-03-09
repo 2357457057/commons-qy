@@ -24,6 +24,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import static top.yqingyu.common.qymsg.Dict.*;
 
+/**
+ * 配合netty的QyMsg解析器
+ *
+ * @// TODO: 2023/3/9 {@// FIXME: 2023/3/9 待处理} segmentation$queue 分片消息待处理。
+ */
 public class BytesDecodeQyMsg extends ByteToMessageDecoder {
 
     final static BlockingQueue<QyMsg> segmentation$queue = new LinkedBlockingQueue<>();

@@ -4,6 +4,9 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import top.yqingyu.common.qymsg.QyMsg;
 
+/**
+ * 样例消息处理样例，接收数据  进行响应处理。
+ */
 @ChannelHandler.Sharable
 public class DemoMsgHandler extends QyMsgServerHandler {
     @Override

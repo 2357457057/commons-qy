@@ -7,6 +7,9 @@ import top.yqingyu.common.exception.IllegalQyMsgException;
 
 import java.net.SocketException;
 
+/**
+ * 具体的异常消息实现 ，可重写default方法
+ */
 public interface ServerExceptionHandler {
 
     Logger logger = LoggerFactory.getLogger(ServerExceptionHandler.class);

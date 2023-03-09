@@ -3,6 +3,10 @@ package top.yqingyu.common.qymsg.netty;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 
+/**
+ * 异常处理类
+ * 持有{@link ServerExceptionHandler} 具体实现异常处理
+ */
 public class QyMsgExceptionHandler extends ChannelDuplexHandler {
     private final ServerExceptionHandler serverExceptionHandler;
 

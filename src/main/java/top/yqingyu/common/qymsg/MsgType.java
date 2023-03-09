@@ -3,10 +3,10 @@ package top.yqingyu.common.qymsg;
 
 
 /**
+ * QyMsg消息类型
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.qymsg.MsgType
- * @description
  * @createTime 2022年09月02日 00:12:00
  */
 public enum MsgType {

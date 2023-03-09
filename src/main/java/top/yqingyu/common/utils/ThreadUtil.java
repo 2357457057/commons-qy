@@ -6,11 +6,11 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * 线程工具类
  * @author YYJ
  * @version 1.0.0
  * @date 2022/7/9 22:33
  * @description
- * @modified by
  */
 public class ThreadUtil {
 

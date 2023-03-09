@@ -5,7 +5,9 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import top.yqingyu.common.qymsg.MsgTransfer;
 
-
+/**
+ * 初始化工具
+ */
 public class QyMsgServerInitializer extends ChannelInitializer<SocketChannel> {
 
     private final QyMsgServerHandler qyMsgServerHandler;

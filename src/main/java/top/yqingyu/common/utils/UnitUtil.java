@@ -9,10 +9,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * 数据单位转换工具
  * @author YYJ
  * @version 1.0.0
  * @Classvalue top.yqingyu.common.utils.UnitUtil
- * @description
  * @createTime 2022年09月18日 22:10:00
  */
 public class UnitUtil {

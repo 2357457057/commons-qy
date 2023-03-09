@@ -10,7 +10,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
+/**
+ * 基于OKHTTP3 封装的http请求工具类
+ */
 public class HttpUtil {
 
     private static final MediaType JSON_TYPE = MediaType.parse("application/json; charset=UTF-8");

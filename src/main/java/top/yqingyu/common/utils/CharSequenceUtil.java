@@ -4,10 +4,10 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
+ * Sping的字符串处理类
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.utils.CharSequenceUtil
- * @Description TODO
  * @createTime 2022年09月29日 13:53:00
  */
 public class CharSequenceUtil {

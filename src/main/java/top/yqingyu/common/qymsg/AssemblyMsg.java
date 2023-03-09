@@ -16,10 +16,10 @@ import static top.yqingyu.common.qymsg.Dict.*;
 import static top.yqingyu.common.qymsg.MsgTransfer.MSG_LENGTH_RADIX;
 
 /**
+ * QyMsg 转为字节数据
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.qymsg.AssemblyMsg
- * @description
  * @createTime 2022年09月06日 10:36:00
  */
 

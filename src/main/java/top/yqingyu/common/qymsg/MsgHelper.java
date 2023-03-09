@@ -57,6 +57,11 @@ public class MsgHelper implements Runnable {
 //     * 文件总长度
 //     * 切分次数
 //     * 切分长度
+
+    /**
+     * 暂且不用
+     */
+    @Deprecated
     public static List<QyMsg> buildFileMsg(File file, int transThread, String remotePath) throws CloneNotSupportedException {
         if (!(transThread > 0 && transThread <= TRANS_THREAD_MAX))
             throw new IllegalArgumentException("线程数不对！");
@@ -170,7 +175,7 @@ public class MsgHelper implements Runnable {
             try {
                 lock.lock();
                 QyMsg take = inQueue.poll(1000, TimeUnit.MILLISECONDS);
-                if (take == null){
+                if (take == null) {
                     continue;
                 }
                 String partition_id = take.getPartition_id();

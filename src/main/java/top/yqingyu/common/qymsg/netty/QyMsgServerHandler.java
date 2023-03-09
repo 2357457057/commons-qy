@@ -5,6 +5,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import top.yqingyu.common.qymsg.QyMsg;
 
+/**
+ * QyMsg服务器业务逻辑的抽象类
+ */
 public abstract class QyMsgServerHandler extends SimpleChannelInboundHandler<QyMsg> {
     @Override
     protected final void channelRead0(ChannelHandlerContext ctx, QyMsg msg) throws Exception {

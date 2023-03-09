@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * The array-related operations. partly original and partly copied from commons-lang3   ^ u ^
+ *
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.utils.ArrayUtil
- * @Description The array-related operations. partly original and partly copied from commons-lang3   ^ u ^
  * @createTime 2022年09月03日 08:12:00
  */
 @SuppressWarnings("all")
@@ -272,12 +273,12 @@ public class ArrayUtil {
      *
      * @param source 源数组
      * @param target 目标数组
-     * @param list 下标索引位置
+     * @param list   下标索引位置
      * @return 拆分合集
      * @author YYJ
      * @description
      */
-    public static ArrayList<byte[]> splitByTarget(byte[] source, byte[] target,ArrayList<Integer> list) {
+    public static ArrayList<byte[]> splitByTarget(byte[] source, byte[] target, ArrayList<Integer> list) {
         ArrayList<byte[]> bytes = new ArrayList<>();
 
         int targetLength = target.length;
@@ -304,7 +305,7 @@ public class ArrayUtil {
             }
             preIdx = currentIdx + targetLength;
         }
-        if (indexListLength == 0){
+        if (indexListLength == 0) {
             bytes.add(source);
         }
         return bytes;
@@ -339,7 +340,7 @@ public class ArrayUtil {
             }
             preIdx = currentIdx + targetLength;
         }
-        if (indexListLength == 0){
+        if (indexListLength == 0) {
             bytes.add(source);
         }
         return bytes;

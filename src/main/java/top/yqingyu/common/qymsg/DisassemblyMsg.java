@@ -18,10 +18,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static top.yqingyu.common.qymsg.Dict.*;
 
 /**
+ * 从socket、SocketChannel读取并解析QyMsg
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.qymsg.DisassemblyMsg
- * @description
  * @createTime 2022年09月06日 10:36:00
  */
 

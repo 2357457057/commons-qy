@@ -23,10 +23,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
+ * 各种消息类型的处理
+ *
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.qymsg.MsgTransfer
- * @description
  * @createTime 2022年09月01日 23:03:00
  */
 
@@ -34,6 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MsgTransfer {
     //消息长度占位长度
     private static final Logger log = LoggerFactory.getLogger(MsgTransfer.class);
+    //默认为 大部分网卡的一帧的长度
     protected static int BODY_LENGTH_MAX = 1400;
 
 //    private static final int MSG_LENGTH_MAX = 33_554_432;

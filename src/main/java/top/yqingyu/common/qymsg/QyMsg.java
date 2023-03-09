@@ -9,6 +9,8 @@ import static top.yqingyu.common.qymsg.Dict.MSG_ID;
 import static top.yqingyu.common.qymsg.Dict.QYMSG;
 
 /**
+ * QyMsg 传输对象
+ *
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.qymsg.QyMessage

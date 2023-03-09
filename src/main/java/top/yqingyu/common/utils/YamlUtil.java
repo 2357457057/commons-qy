@@ -13,6 +13,7 @@ import static top.yqingyu.common.utils.ResourceUtil.getConfigFileInner;
 import static top.yqingyu.common.utils.ResourceUtil.getConfigFileOuter;
 
 /**
+ * Yaml 的资源加载。
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.utils.YamlUtil

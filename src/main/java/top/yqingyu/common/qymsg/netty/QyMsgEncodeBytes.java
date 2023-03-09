@@ -8,6 +8,9 @@ import top.yqingyu.common.qymsg.QyMsg;
 
 import java.util.ArrayList;
 
+/**
+ * QyMsg 转Byte发送出去。
+ */
 public class QyMsgEncodeBytes extends MessageToByteEncoder<QyMsg> {
     @Override
     protected void encode(ChannelHandlerContext ctx, QyMsg msg, ByteBuf out) throws Exception {

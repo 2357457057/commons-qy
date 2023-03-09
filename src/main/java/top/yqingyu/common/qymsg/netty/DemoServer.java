@@ -6,12 +6,14 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import top.yqingyu.common.utils.ThreadUtil;
 
-
+/**
+ * netty Qymsg 的服务器demo
+ */
 public class DemoServer {
 
     public static void main(String[] args) throws InterruptedException {
-        NioEventLoopGroup serverGroup = new NioEventLoopGroup(1, ThreadUtil.createThFactoryC("BOSS","Th"));
-        NioEventLoopGroup clientGroup = new NioEventLoopGroup(2, ThreadUtil.createThFactoryC("Main","handler"));
+        NioEventLoopGroup serverGroup = new NioEventLoopGroup(1, ThreadUtil.createThFactoryC("BOSS", "Th"));
+        NioEventLoopGroup clientGroup = new NioEventLoopGroup(2, ThreadUtil.createThFactoryC("Main", "handler"));
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
             serverBootstrap.group(serverGroup, clientGroup);

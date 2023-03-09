@@ -15,10 +15,10 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 /**
+ * LocalDateTime 的工具类
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.utils.LocalDateTimeUtil
- * @description
  * @createTime 2022年09月15日 01:03:00
  */
 public class LocalDateTimeUtil {

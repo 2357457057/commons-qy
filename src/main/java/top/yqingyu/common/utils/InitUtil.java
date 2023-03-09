@@ -7,6 +7,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+/**
+ * 可用于初始化一些类的数据 配合注解 {@link Init}使用
+ */
 public class InitUtil {
     public static void init(String basePackage) {
         List<Method> methods = ClazzUtil.getMethodByAnno(basePackage, Init.class, true);

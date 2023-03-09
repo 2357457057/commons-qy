@@ -1,10 +1,11 @@
 package top.yqingyu.common.exception;
 
 /**
-  *description:
-  *@author 杨永基
-  *date: 2021/09/09
-  */
+ * 服务器异常
+ *
+ * @author 杨永基
+ * date: 2021/09/09
+ */
 public class QyException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 

@@ -7,10 +7,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
+ * 虚拟console表格适用于等线的字体
+ * 关于坐标 左上角第一位坐标为（0，0）【x,y】
+ *
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.utils.VirtualConsoleTable
- * @description 关于坐标 左上角第一位坐标为（0，0）【x,y】
  * @createTime 2023年02月19日 02:10:00
  */
 public class VirtualConsoleTable {

@@ -1,13 +1,15 @@
 package top.yqingyu.common.exception;
 
 /**
+ * 文件创建异常
+ *
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.exception.IllegalFileCreateException
  * @description
- * @createTime 2023年01月04日 18:38:00
+ * @date 2023年01月04日 18:38:00
  */
-public class IllegalFileCreateException extends RuntimeException{
+public class IllegalFileCreateException extends RuntimeException {
     /**
      * Constructs a new runtime exception with {@code null} as its
      * detail message.  The cause is not initialized, and may subsequently be

@@ -3,6 +3,8 @@ package top.yqingyu.common.qydata;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 继承 {@link ConcurrentHashMap} 可以根据指定的数据类型进行转换
+ *
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.qydata.ConcurrentQyMap
@@ -23,6 +25,9 @@ public class ConcurrentQyMap<A, B> extends ConcurrentHashMap<A, B> {
         }
     }
 
+    /**
+     * 连续put
+     */
     public ConcurrentQyMap<A, B> putConsecutive(A a, B b) {
         super.put(a, b);
         return this;

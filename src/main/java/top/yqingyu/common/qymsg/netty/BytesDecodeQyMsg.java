@@ -102,8 +102,6 @@ public class BytesDecodeQyMsg extends ByteToMessageDecoder {
                     readBytes = readBytes(in, bodySize);
                     parse.putMsg(readBytes);
                     segmentation$queue.add(parse);
-                    //待处理
-                    log.debug("part msg id: {} the part {} of {}", parse.getPartition_id(), parse.getNumerator(), parse.getDenominator());
                 } else {
                     ConcurrentQyMap<String, Object> ctxInfo = new ConcurrentQyMap<>();
                     updateSegCtxInfo(ctxHashCode, ctxInfo, header, segmentationInfo, readBytes(in, readableSize));
@@ -115,8 +113,6 @@ public class BytesDecodeQyMsg extends ByteToMessageDecoder {
                     readBytes = ArrayUtil.addAll(segBody, readBytes(in, bodySize));
                     parse.putMsg(readBytes);
                     segmentation$queue.add(parse);
-                    //待处理
-                    log.debug("part msg id: {} the part {} of {}", parse.getPartition_id(), parse.getNumerator(), parse.getDenominator());
                 } else {
                     segBody = ArrayUtil.addAll(segBody, readBytes(in, readableSize));
                     updateSegCtxInfo(ctxHashCode, ctxData, header, segmentationInfo, segBody);

@@ -14,7 +14,6 @@ import static top.yqingyu.common.qymsg.Dict.QYMSG;
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.qymsg.QyMessage
- * @description
  * @createTime 2022年07月12日 01:13:00
  */
 @SuppressWarnings("all")

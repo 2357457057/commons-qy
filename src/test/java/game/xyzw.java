@@ -40,7 +40,6 @@ public class xyzw {
 
             //助战
             clickRepeat(CENTER_CLICK, 900000);
-            Thread.sleep(1800000);
 
             //挂机材料
             onHoke$();

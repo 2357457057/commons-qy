@@ -131,7 +131,6 @@ public class AssemblyMsg {
     private static void OUT_OF_LENGTH_MSG_Assembly(byte[] body, StringBuilder sb, ArrayList<byte[]> list) {
         ArrayList<byte[]> bodyList = ArrayUtil.checkArrayLength(body, MsgTransfer.BODY_LENGTH_MAX);
         if (bodyList.size() == 1) {
-            log.debug("single msg {}", new String(body, StandardCharsets.UTF_8));
             sb.append(MsgTransfer.BOOLEAN_2_SEGMENTATION(false));
             sb.append(MsgTransfer.getLength(body));
             byte[] header = sb.toString().getBytes(StandardCharsets.UTF_8);
@@ -149,7 +148,6 @@ public class AssemblyMsg {
                 byte[] cHeader = builder.toString().getBytes(StandardCharsets.UTF_8);
                 byte[] bytes = ArrayUtil.addAll(cHeader, cBody);
                 list.add(bytes);
-                log.debug("part msg {}", new String(bytes, StandardCharsets.UTF_8));
             }
         }
     }

@@ -19,6 +19,7 @@ import static top.yqingyu.common.qymsg.Dict.*;
 
 /**
  * 从socket、SocketChannel读取并解析QyMsg
+ *
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.qymsg.DisassemblyMsg
@@ -35,7 +36,7 @@ public class DisassemblyMsg {
      */
     public static QyMsg disassembly(Socket socket, BlockingQueue<QyMsg> segmentation$queue, AtomicBoolean runFlag) throws IOException, ClassNotFoundException, InterruptedException {
         InputStream inputStream = socket.getInputStream();
-        byte[] readBytes = IoUtil.readBytes2(inputStream, HEADER_LENGTH, runFlag);
+        byte[] readBytes = IoUtil.readBytes3(socket, HEADER_LENGTH, runFlag);
         if (!runFlag.get()) {
             return null;
         }
@@ -66,12 +67,12 @@ public class DisassemblyMsg {
 
             QyMsg parse = new QyMsg(msgType, dataType);
             parse.setSegmentation(true);
-            readBytes = IoUtil.readBytes2(inputStream, SEGMENTATION_INFO_LENGTH, runFlag);
+            readBytes = IoUtil.readBytes3(socket, SEGMENTATION_INFO_LENGTH, runFlag);
             String segmentationInfo = new String(readBytes, StandardCharsets.UTF_8);
             parse.setPartition_id(segmentationInfo.substring(PARTITION_ID_IDX_START, PARTITION_ID_IDX_END));
             parse.setNumerator(Integer.parseInt(segmentationInfo.substring(NUMERATOR_IDX_START, NUMERATOR_IDX_END), MsgTransfer.MSG_LENGTH_RADIX));
             parse.setDenominator(Integer.parseInt(segmentationInfo.substring(DENOMINATOR_IDX_START, DENOMINATOR_IDX_END), MsgTransfer.MSG_LENGTH_RADIX));
-            readBytes = IoUtil.readBytes2(inputStream, Integer.parseInt($3, MsgTransfer.MSG_LENGTH_RADIX), runFlag);
+            readBytes = IoUtil.readBytes3(socket, Integer.parseInt($3, MsgTransfer.MSG_LENGTH_RADIX), runFlag);
             parse.putMsg(readBytes);
             segmentation$queue.add(parse);
             log.debug("part msg id: {} the part {} of {}", parse.getPartition_id(), parse.getNumerator(), parse.getDenominator());
@@ -85,16 +86,16 @@ public class DisassemblyMsg {
             }
             switch (msgType) {
                 case AC -> {
-                    return AC_Disassembly($3, inputStream);
+                    return AC_Disassembly($3, socket, runFlag);
                 }
                 case HEART_BEAT -> {
-                    return HEART_BEAT_Disassembly($0, $1, $2, $3, inputStream);
+                    return HEART_BEAT_Disassembly($0, $1, $2, $3, socket, runFlag);
                 }
                 case ERR_MSG -> {
-                    return ERR_MSG_Disassembly($0, $1, $2, $3, inputStream);
+                    return ERR_MSG_Disassembly($0, $1, $2, $3, socket, runFlag);
                 }
                 default -> {
-                    return NORM_MSG_Disassembly($0, $1, $2, $3, inputStream);
+                    return NORM_MSG_Disassembly($0, $1, $2, $3, socket, runFlag);
                 }
             }
         }
@@ -176,19 +177,19 @@ public class DisassemblyMsg {
 
 
     /**
-     * @param msg_length  消息长度
-     * @param inputStream 流
+     * @param msg_length 消息长度
+     * @param socket     socket
      * @description 认证消息解析
      */
-    private static QyMsg AC_Disassembly(String msg_length, InputStream inputStream) throws IOException {
-        byte[] bytes = IoUtil.readBytes2(inputStream, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
+    private static QyMsg AC_Disassembly(String msg_length, Socket socket, AtomicBoolean runFlag) throws IOException {
+        byte[] bytes = IoUtil.readBytes3(socket, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX), runFlag);
         return JSON.parseObject(bytes, QyMsg.class);
     }
 
     /**
      * 心跳消息组装
      */
-    private static QyMsg HEART_BEAT_Disassembly(char msg_type, char data_type, char segmentationC, String msg_length, InputStream inputStream) throws IOException {
+    private static QyMsg HEART_BEAT_Disassembly(char msg_type, char data_type, char segmentationC, String msg_length, Socket socket, AtomicBoolean runFlag) throws IOException {
         MsgType msgType;
         try {
             msgType = MsgTransfer.CHAR_2_MSG_TYPE(msg_type);
@@ -210,7 +211,7 @@ public class DisassemblyMsg {
 
         QyMsg qyMsg = new QyMsg(msgType, dataType);
         qyMsg.setSegmentation(segmentation);
-        byte[] bytes = IoUtil.readBytes2(inputStream, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
+        byte[] bytes = IoUtil.readBytes3(socket, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX), runFlag);
         qyMsg.setFrom(new String(bytes, StandardCharsets.UTF_8));
         return qyMsg;
     }
@@ -218,7 +219,7 @@ public class DisassemblyMsg {
     /**
      * 常规消息组装
      */
-    private static QyMsg NORM_MSG_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, InputStream inputStream) throws IOException, ClassNotFoundException {
+    private static QyMsg NORM_MSG_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, Socket socket, AtomicBoolean runFlag) throws IOException, ClassNotFoundException {
         MsgType msgType;
         try {
             msgType = MsgTransfer.CHAR_2_MSG_TYPE(msg_type);
@@ -234,7 +235,7 @@ public class DisassemblyMsg {
 
         switch (dataType) {
             case STRING -> {
-                byte[] bytes = IoUtil.readBytes2(inputStream, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
+                byte[] bytes = IoUtil.readBytes3(socket, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX), runFlag);
                 String s = new String(bytes, StandardCharsets.UTF_8);
                 String from = s.substring(0, CLIENT_ID_LENGTH);
                 String msg = s.substring(CLIENT_ID_LENGTH);
@@ -244,14 +245,14 @@ public class DisassemblyMsg {
                 return qyMsg;
             }
             case OBJECT -> {
-                byte[] bytes = IoUtil.readBytes2(inputStream, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
+                byte[] bytes = IoUtil.readBytes3(socket, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX), runFlag);
                 return IoUtil.deserializationObj(bytes, QyMsg.class);
             }
             case STREAM -> {
-                return streamDeal(msg_type, data_type, msg_length, inputStream);
+                return streamDeal(msg_type, data_type, msg_length, socket, runFlag);
             }
             default -> { //JSON\FILE
-                byte[] bytes = IoUtil.readBytes2(inputStream, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
+                byte[] bytes = IoUtil.readBytes3(socket, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX), runFlag);
                 return JSON.parseObject(bytes, QyMsg.class);
             }
         }
@@ -260,7 +261,7 @@ public class DisassemblyMsg {
     /**
      * 异常消息组装
      */
-    private static QyMsg ERR_MSG_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, InputStream inputStream) throws IOException {
+    private static QyMsg ERR_MSG_Disassembly(char msg_type, char data_type, char segmentation, String msg_length, Socket socket, AtomicBoolean runFlag) throws IOException {
         DataType dataType;
         try {
             dataType = MsgTransfer.CHAR_2_DATA_TYPE(data_type);
@@ -268,10 +269,10 @@ public class DisassemblyMsg {
             throw new IllegalQyMsgException("非法的数据类型:" + data_type, e);
         }
         if (DataType.JSON.equals(dataType)) {
-            byte[] bytes = IoUtil.readBytes2(inputStream, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
+            byte[] bytes = IoUtil.readBytes3(socket, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX), runFlag);
             return JSON.parseObject(bytes, QyMsg.class);
         } else {
-            return streamDeal(msg_type, data_type, msg_length, inputStream);
+            return streamDeal(msg_type, data_type, msg_length, socket, runFlag);
         }
     }
 
@@ -279,7 +280,7 @@ public class DisassemblyMsg {
      * @author YYJ
      * @description 流类型数据处理
      */
-    private static QyMsg streamDeal(char msg_type, char data_type, String msg_length, InputStream inputStream) throws IOException {
+    private static QyMsg streamDeal(char msg_type, char data_type, String msg_length, Socket socket, AtomicBoolean runFlag) throws IOException {
         MsgType msgType;
         try {
             msgType = MsgTransfer.CHAR_2_MSG_TYPE(msg_type);
@@ -293,9 +294,9 @@ public class DisassemblyMsg {
             throw new IllegalQyMsgException("非法的数据类型: " + data_type, e);
         }
         QyMsg qyMsg = new QyMsg(msgType, dataType);
-        byte[] bytes = IoUtil.readBytes2(inputStream, CLIENT_ID_LENGTH);
+        byte[] bytes = IoUtil.readBytes3(socket, CLIENT_ID_LENGTH, runFlag);
         qyMsg.setFrom(new String(bytes, StandardCharsets.UTF_8));
-        qyMsg.putMsg(IoUtil.readBytes2(inputStream, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX) - CLIENT_ID_LENGTH));
+        qyMsg.putMsg(IoUtil.readBytes3(socket, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX) - CLIENT_ID_LENGTH, runFlag));
         return qyMsg;
     }
 

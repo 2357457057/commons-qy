@@ -712,22 +712,6 @@ public class DataMap extends JSONObject implements Serializable, Cloneable {
         return super.to(type, features);
     }
 
-    /**
-     * Convert this {@link DataMap} to the specified Object
-     *
-     * <pre>{@code
-     * DataMap obj = ...
-     * Map<String, User> users = obj.to(new TypeReference<HashMap<String, User>>(){});
-     * }</pre>
-     *
-     * @param typeReference specify the {@link TypeReference} to be converted
-     * @param features      features to be enabled in parsing
-     * @since 2.0.7
-     */
-    @Override
-    public <T> T to(TypeReference<?> typeReference, JSONReader.Feature... features) {
-        return super.to(typeReference, features);
-    }
 
     /**
      * Convert this {@link DataMap} to the specified Object
@@ -771,18 +755,6 @@ public class DataMap extends JSONObject implements Serializable, Cloneable {
     }
 
     /**
-     * Convert this {@link DataMap} to the specified Object
-     *
-     * @param typeReference specify the {@link TypeReference} to be converted
-     * @param features      features to be enabled in parsing
-     * @deprecated since 2.0.4, please use {@link #to(Type, JSONReader.Feature...)}
-     */
-    @Override
-    public <T> T toJavaObject(TypeReference<?> typeReference, JSONReader.Feature... features) {
-        return super.toJavaObject(typeReference, features);
-    }
-
-    /**
      * Returns the result of the {@link Type} converter conversion of the associated value in this {@link DataMap}.
      * <p>
      * {@code User user = DataMap.getObject("user", User.class);}
@@ -814,22 +786,6 @@ public class DataMap extends JSONObject implements Serializable, Cloneable {
         return super.getObject(key, type, features);
     }
 
-    /**
-     * Returns the result of the {@link Type} converter conversion of the associated value in this {@link DataMap}.
-     * <p>
-     * {@code User user = DataMap.getObject("user", User.class);}
-     *
-     * @param key           the key whose associated value is to be returned
-     * @param typeReference specify the {@link TypeReference} to be converted
-     * @param features      features to be enabled in parsing
-     * @return {@code <T>} or {@code null}
-     * @throws JSONException If no suitable conversion method is found
-     * @since 2.0.3
-     */
-    @Override
-    public <T> T getObject(String key, TypeReference<?> typeReference, JSONReader.Feature... features) {
-        return super.getObject(key, typeReference, features);
-    }
 
     /**
      * @param key
@@ -1810,13 +1766,6 @@ public class DataMap extends JSONObject implements Serializable, Cloneable {
      */
     public static <T> T parseObject(String text, Type objectType, JSONReader.Feature... features) {
         return JSON.parseObject(text, objectType, features);
-    }
-
-    /**
-     * See {@link DataMap#parseObject} for details
-     */
-    public static <T> T parseObject(String text, TypeReference<?> typeReference, JSONReader.Feature... features) {
-        return JSON.parseObject(text, typeReference, features);
     }
 
     /**

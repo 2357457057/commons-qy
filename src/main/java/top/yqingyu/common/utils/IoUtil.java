@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class IoUtil {
 
     private static final Logger log = LoggerFactory.getLogger(IoUtil.class);
+    public static final int spinsTimesMax = 1000;
 
     /**
      * description: 读取InputStream中的数据读到一定长度的 byte (非绝对长度)
@@ -145,6 +146,69 @@ public class IoUtil {
         } else {
             return b;
         }
+    }
+
+
+    /**
+     * 当远端主动断开后 客户端在读取数据时将一直为-1,并不会抛出异常，
+     * socket 的状态是本地的，远端断开链接,状态并不会主动感知。
+     * 所以需要去写出数据判断是否畅通，
+     * 只有在write的时候才会抛出异常，
+     * 通过outStream写出数据会影响正常业务数据，
+     * {@link java.net.Socket}提供了 {@link java.net.Socket#sendUrgentData} 方法。
+     * 不会影响正常的业务数据(远端未开启 {@link java.net.SocketOptions#SO_OOBINLINE} (默认 false)。)
+     *
+     * @version v3
+     * @author YYJ
+     */
+    public static byte[] readBytes3(Socket socket, int len, AtomicBoolean breakFlag) throws IORuntimeException, IOException {
+        InputStream in = socket.getInputStream();
+        if (len <= 0) {
+            return new byte[0];
+        }
+
+        byte[] b = new byte[len];
+        int readLength;
+        var ref = new Object() {
+            int i = 0;
+        };
+        int spinsTimes = 0;
+        for (; ref.i < len; ref.i++) {
+            int c = in.read();
+            if (c == -1) {
+                //保持此位读取 直至读完
+                ref.i -= 1;
+                if (!breakFlag.get())
+                    break;
+                //当超过最大自旋值，去校验socket是否健康。
+                if (spinsTimes++ > spinsTimesMax && !testSocket(socket)) {
+                    break;
+                }
+                continue;
+            } else {
+                spinsTimes = 0;
+            }
+            b[ref.i] = (byte) c;
+        }
+
+        readLength = ref.i + 1;
+
+        if (readLength > 0 && readLength < len) {
+            byte[] b2 = new byte[readLength];
+            System.arraycopy(b, 0, b2, 0, readLength);
+            return b2;
+        } else {
+            return b;
+        }
+    }
+
+    public static boolean testSocket(Socket socket) {
+        try {
+            socket.sendUrgentData(0xFF);
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
     }
 
     /**

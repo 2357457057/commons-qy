@@ -134,43 +134,44 @@ public class MsgHelper implements Runnable {
 
         String monitor = Thread.currentThread().getName() + "monitor";
 
-
-        ScheduledThreadPoolExecutor scheduled = ThreadUtil.createPeriodScheduled(0, 30, TimeUnit.MINUTES, () -> {
+        Thread thread = new Thread(() -> {
             ThreadUtil.setThisThreadName(monitor);
-            try {
-                lock.lock();
-                LocalDateTime now = LocalDateTime.now();
-                MSG_CONTAINER.forEach((k, list) -> {
-                    Optional<QyMsg> max =
-                            list.stream()
-                                    .max((o1, o2) ->
-                                            (int) LocalDateTimeUtil.between(
-                                                    (LocalDateTime) MsgHelper.gainMsgOBJ(o1, "now"),
-                                                    (LocalDateTime) MsgHelper.gainMsgOBJ(o2, "now"),
-                                                    ChronoUnit.SECONDS)
-                                    );
+            while (running.get())
+                try {
+                    Thread.sleep(30 * 60 * 1000);
+                    lock.lock();
+                    LocalDateTime now = LocalDateTime.now();
+                    MSG_CONTAINER.forEach((k, list) -> {
+                        Optional<QyMsg> max =
+                                list.stream()
+                                        .max((o1, o2) ->
+                                                (int) LocalDateTimeUtil.between(
+                                                        (LocalDateTime) MsgHelper.gainMsgOBJ(o1, "now"),
+                                                        (LocalDateTime) MsgHelper.gainMsgOBJ(o2, "now"),
+                                                        ChronoUnit.SECONDS)
+                                        );
 
-                    if (max.isPresent()) {
+                        if (max.isPresent()) {
 
-                        //当前分区的数据最老数据
-                        QyMsg maxMsg = max.get();
-                        long min = LocalDateTimeUtil.between(now, (LocalDateTime) MsgHelper.gainMsgOBJ(maxMsg, "now"), ChronoUnit.MINUTES);
-                        if (min > clearTime) {
-                            MSG_CONTAINER.remove(k);
-                            log.debug("消息过期，已清除 {} ", maxMsg);
+                            //当前分区的数据最老数据
+                            QyMsg maxMsg = max.get();
+                            long min = LocalDateTimeUtil.between(now, (LocalDateTime) MsgHelper.gainMsgOBJ(maxMsg, "now"), ChronoUnit.MINUTES);
+                            if (min > clearTime) {
+                                MSG_CONTAINER.remove(k);
+                                log.debug("消息过期，已清除 {} ", maxMsg);
+                            }
+
                         }
-
-                    }
-                });
-            } catch (Exception e) {
-
-                log.error("容器清除器异常", e);
-
-            } finally {
-                lock.unlock();
-            }
-
+                    });
+                } catch (Exception e) {
+                    log.error("容器清除器异常", e);
+                } finally {
+                    lock.unlock();
+                }
         });
+        thread.setName(monitor);
+        thread.setDaemon(true);
+        thread.start();
         while (running.get()) {
             try {
                 lock.lock();
@@ -244,6 +245,5 @@ public class MsgHelper implements Runnable {
                 lock.unlock();
             }
         }
-        scheduled.shutdown();
     }
 }

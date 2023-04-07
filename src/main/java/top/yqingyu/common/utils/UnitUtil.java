@@ -1,6 +1,6 @@
 package top.yqingyu.common.utils;
 
-import org.apache.commons.lang3.StringUtils;
+
 
 import java.util.Arrays;
 import java.util.IdentityHashMap;
@@ -63,67 +63,67 @@ public class UnitUtil {
 
 
     public static Long $2B(String value) {
-        return turnLong2(StringUtils.isBlank(value) ? "" :value, BYTE_UNIT.get(B), BYTE_UNIT);
+        return turnLong2(StringUtil.isBlank(value) ? "" :value, BYTE_UNIT.get(B), BYTE_UNIT);
     }
 
     public static Long $2KB(String value) {
-        return turnLong2(StringUtils.isBlank(value) ? "" :value, BYTE_UNIT.get(KB), BYTE_UNIT);
+        return turnLong2(StringUtil.isBlank(value) ? "" :value, BYTE_UNIT.get(KB), BYTE_UNIT);
     }
 
     public static Long $2MB(String value) {
-        return turnLong2(StringUtils.isBlank(value) ? "" :value, BYTE_UNIT.get(MB), BYTE_UNIT);
+        return turnLong2(StringUtil.isBlank(value) ? "" :value, BYTE_UNIT.get(MB), BYTE_UNIT);
     }
 
     public static Long $2GB(String value) {
-        return turnLong2(StringUtils.isBlank(value) ? "" :value, BYTE_UNIT.get(GB), BYTE_UNIT);
+        return turnLong2(StringUtil.isBlank(value) ? "" :value, BYTE_UNIT.get(GB), BYTE_UNIT);
     }
 
     public static Long $2TB(String value) {
-        return turnLong2(StringUtils.isBlank(value) ? "" :value, BYTE_UNIT.get(TB), BYTE_UNIT);
+        return turnLong2(StringUtil.isBlank(value) ? "" :value, BYTE_UNIT.get(TB), BYTE_UNIT);
     }
 
     public static Long $2YEAR(String value) {
-        return turnLong2(StringUtils.isBlank(value) ? "" :value, TIME_UNIT.get(YEAR), TIME_UNIT);
+        return turnLong2(StringUtil.isBlank(value) ? "" :value, TIME_UNIT.get(YEAR), TIME_UNIT);
     }
 
     public static Long $2QUARTER(String value) {
-        return turnLong2(StringUtils.isBlank(value) ? "" :value, TIME_UNIT.get(QUARTER), TIME_UNIT);
+        return turnLong2(StringUtil.isBlank(value) ? "" :value, TIME_UNIT.get(QUARTER), TIME_UNIT);
     }
 
     public static Long $2MONTH(String value) {
-        return turnLong2(StringUtils.isBlank(value) ? "" :value, TIME_UNIT.get(MONTH), TIME_UNIT);
+        return turnLong2(StringUtil.isBlank(value) ? "" :value, TIME_UNIT.get(MONTH), TIME_UNIT);
     }
 
     public static Long $2WEEK(String value) {
-        return turnLong2(StringUtils.isBlank(value) ? "" :value, TIME_UNIT.get(WEEK), TIME_UNIT);
+        return turnLong2(StringUtil.isBlank(value) ? "" :value, TIME_UNIT.get(WEEK), TIME_UNIT);
     }
 
     public static Long $2DAY(String value) {
-        return turnLong2(StringUtils.isBlank(value) ? "" :value, TIME_UNIT.get(DAY), TIME_UNIT);
+        return turnLong2(StringUtil.isBlank(value) ? "" :value, TIME_UNIT.get(DAY), TIME_UNIT);
     }
 
     public static Long $2H(String value) {
-        return turnLong2(StringUtils.isBlank(value) ? "" :value, TIME_UNIT.get(H), TIME_UNIT);
+        return turnLong2(StringUtil.isBlank(value) ? "" :value, TIME_UNIT.get(H), TIME_UNIT);
     }
 
     public static Long $2MIN(String value) {
-        return turnLong2(StringUtils.isBlank(value) ? "" :value, TIME_UNIT.get(MIN), TIME_UNIT);
+        return turnLong2(StringUtil.isBlank(value) ? "" :value, TIME_UNIT.get(MIN), TIME_UNIT);
     }
 
     public static Long $2S(String value) {
-        return turnLong2(StringUtils.isBlank(value) ? "" :value, TIME_UNIT.get(S), TIME_UNIT);
+        return turnLong2(StringUtil.isBlank(value) ? "" :value, TIME_UNIT.get(S), TIME_UNIT);
     }
 
     public static Long $2MILLS(String value) {
-        return turnLong2(StringUtils.isBlank(value) ? "" :value, TIME_UNIT.get(MILLS), TIME_UNIT);
+        return turnLong2(StringUtil.isBlank(value) ? "" :value, TIME_UNIT.get(MILLS), TIME_UNIT);
     }
 
     public static Long $2MICOS(String value) {
-        return turnLong2(StringUtils.isBlank(value) ? "" :value, TIME_UNIT.get(MICOS), TIME_UNIT);
+        return turnLong2(StringUtil.isBlank(value) ? "" :value, TIME_UNIT.get(MICOS), TIME_UNIT);
     }
 
     public static Long $2NANOS(String value) {
-        return turnLong2(StringUtils.isBlank(value) ? "" :value, TIME_UNIT.get(NANOS), TIME_UNIT);
+        return turnLong2(StringUtil.isBlank(value) ? "" :value, TIME_UNIT.get(NANOS), TIME_UNIT);
     }
 
 

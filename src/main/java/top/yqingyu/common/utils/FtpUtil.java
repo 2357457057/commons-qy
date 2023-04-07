@@ -2,7 +2,7 @@ package top.yqingyu.common.utils;
 
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
+
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.slf4j.Logger;
@@ -194,7 +194,7 @@ public class FtpUtil {
                 }
                 for (String fileName : fileNames) {
                     String ftpName = new String(fileName.getBytes(SERVER_CHARSET), LOCAL_CHARSET);
-                    if (StringUtils.equals(ftpName, filename)) {
+                    if (StringUtil.equals(ftpName, filename)) {
                         InputStream in = ftpClient.retrieveFileStream(fileName);
                         IOUtils.copy(in, out);
                     }

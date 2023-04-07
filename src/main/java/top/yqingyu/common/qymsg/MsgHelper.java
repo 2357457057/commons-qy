@@ -3,9 +3,9 @@ package top.yqingyu.common.qymsg;
 
 import cn.hutool.core.lang.UUID;
 import com.alibaba.fastjson2.JSON;
-import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.yqingyu.common.utils.ArrayUtil;
 import top.yqingyu.common.utils.IoUtil;
 import top.yqingyu.common.utils.LocalDateTimeUtil;
 import top.yqingyu.common.utils.ThreadUtil;
@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -194,7 +193,7 @@ public class MsgHelper implements Runnable {
                             .sorted(Comparator.comparingInt(QyMsg::getNumerator))
                             .forEach(a ->
                                     buf.set(
-                                            ArrayUtils.addAll(buf.get(), (byte[]) MsgHelper.gainObjMsg(a))
+                                            ArrayUtil.addAll(buf.get(), (byte[]) MsgHelper.gainObjMsg(a))
                                     )
                             );
 

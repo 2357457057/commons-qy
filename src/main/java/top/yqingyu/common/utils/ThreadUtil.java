@@ -1,6 +1,6 @@
 package top.yqingyu.common.utils;
 
-import org.apache.commons.lang3.StringUtils;
+
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -143,10 +143,10 @@ public class ThreadUtil {
      */
     public static ThreadPoolExecutor createQyFixedThreadPool(int coreSize, int maxSize, long keepLive, String poolName, String threadName) {
 
-        if (StringUtils.isBlank(poolName))
+        if (StringUtil.isBlank(poolName))
             poolName = "Pool";
 
-        if (StringUtils.isBlank(threadName))
+        if (StringUtil.isBlank(threadName))
             threadName = "th";
 
 

@@ -2,7 +2,7 @@ package top.yqingyu.common.utils;
 
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
+
 import top.yqingyu.common.qymsg.QyMsg;
 
 import javax.crypto.*;
@@ -33,7 +33,7 @@ public class DecryptAES {
      */
     public static byte[] encryptKeyByte(String key) {
 
-        if (StringUtils.isEmpty(key)) {
+        if (StringUtil.isEmpty(key)) {
             key = def_key;
         }
 
@@ -166,7 +166,7 @@ public class DecryptAES {
      */
     public static byte[] encryptKeyByteBase64(String key) {
 
-        if (StringUtils.isEmpty(key)) {
+        if (StringUtil.isEmpty(key)) {
             key = def_key;
         }
 

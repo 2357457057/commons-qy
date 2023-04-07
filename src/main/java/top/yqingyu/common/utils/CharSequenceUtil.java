@@ -1,7 +1,7 @@
 package top.yqingyu.common.utils;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
+
+
 
 /**
  * Sping的字符串处理类
@@ -286,9 +286,9 @@ public class CharSequenceUtil {
      * @since 3.11
      */
     public static char[] toCharArray(final CharSequence source) {
-        final int len = StringUtils.length(source);
+        final int len = StringUtil.length(source);
         if (len == 0) {
-            return ArrayUtils.EMPTY_CHAR_ARRAY;
+            return ArrayUtil.EMPTY_CHAR_ARRAY;
         }
         if (source instanceof String) {
             return ((String) source).toCharArray();

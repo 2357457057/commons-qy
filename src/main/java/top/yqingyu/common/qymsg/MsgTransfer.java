@@ -1,10 +1,10 @@
 package top.yqingyu.common.qymsg;
 
-import cn.hutool.core.io.IORuntimeException;
+
 import com.alibaba.fastjson2.JSON;
-import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.yqingyu.common.utils.ArrayUtil;
 import top.yqingyu.common.utils.IoUtil;
 import top.yqingyu.common.utils.StringUtil;
 
@@ -18,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -140,8 +139,8 @@ public class MsgTransfer {
         byte[] buf = new byte[0];
 
         for (byte[] bytes : bytess) {
-            buf = ArrayUtils.addAll(buf, getLength(bytes).getBytes(StandardCharsets.UTF_8));
-            buf = ArrayUtils.addAll(buf, bytes);
+            buf = ArrayUtil.addAll(buf, getLength(bytes).getBytes(StandardCharsets.UTF_8));
+            buf = ArrayUtil.addAll(buf, bytes);
         }
         //将信息长度与信息组合
         return buf;
@@ -352,7 +351,7 @@ public class MsgTransfer {
         String msg;
         try {
             msg = new String(readQyBytes(socket), StandardCharsets.UTF_8);
-        } catch (IORuntimeException e) {
+        } catch (IOException e) {
             msg = "";
             log.error("消息读取异常 ", e);
         }
@@ -379,7 +378,7 @@ public class MsgTransfer {
         String msg;
         try {
             msg = new String(readQyBytes(socket, timeout), StandardCharsets.UTF_8);
-        } catch (IORuntimeException e) {
+        } catch (IOException e) {
             msg = "";
             e.printStackTrace();
             throw e;

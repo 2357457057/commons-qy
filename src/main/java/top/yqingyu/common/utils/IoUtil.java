@@ -1,7 +1,7 @@
 package top.yqingyu.common.utils;
 
 import cn.hutool.core.io.IORuntimeException;
-import org.apache.commons.lang3.ArrayUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.bean.NetChannel;
@@ -39,7 +39,7 @@ public class IoUtil {
      * @author yqingyu
      * DATE 2022/4/22
      */
-    public static byte[] readBytes(InputStream in, int len) throws IORuntimeException {
+    public static byte[] readBytes(InputStream in, int len) throws IOException {
         if (null == in) {
             return null;
         }
@@ -288,7 +288,7 @@ public class IoUtil {
             for (int i = 0; i < limit; i++) {
                 currentData[i] = byteBuffer.get(i);
             }
-            bytes = ArrayUtils.addAll(bytes, currentData);
+            bytes = ArrayUtil.addAll(bytes, currentData);
 
             if (bytes.length == len) {
                 break;
@@ -320,7 +320,7 @@ public class IoUtil {
             for (int i = 0; i < limit; i++) {
                 currentData[i] = byteBuffer.get(i);
             }
-            bytes = ArrayUtils.addAll(bytes, currentData);
+            bytes = ArrayUtil.addAll(bytes, currentData);
 
             if (bytes.length == len) {
                 break;
@@ -365,7 +365,7 @@ public class IoUtil {
             for (int i = 0; i < limit; i++) {
                 currentData[i] = byteBuffer.get(i);
             }
-            bytes = ArrayUtils.addAll(bytes, currentData);
+            bytes = ArrayUtil.addAll(bytes, currentData);
 
             if (bytes.length == len) {
                 break;

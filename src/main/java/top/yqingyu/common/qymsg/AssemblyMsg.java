@@ -1,11 +1,11 @@
 package top.yqingyu.common.qymsg;
 
 import com.alibaba.fastjson2.JSON;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.utils.ArrayUtil;
 import top.yqingyu.common.utils.IoUtil;
+import top.yqingyu.common.utils.RandomStringUtil;
 import top.yqingyu.common.utils.StringUtil;
 
 import java.io.IOException;
@@ -137,7 +137,7 @@ public class AssemblyMsg {
             list.add(ArrayUtil.addAll(header, body));
         } else {
             sb.append(MsgTransfer.BOOLEAN_2_SEGMENTATION(true));
-            String part_trade_id = RandomStringUtils.random(PARTITION_ID_LENGTH, MsgTransfer.DICT);
+            String part_trade_id = RandomStringUtil.random(PARTITION_ID_LENGTH, MsgTransfer.DICT);
             for (int i = 1; i <= bodyList.size(); i++) {
                 StringBuilder builder = new StringBuilder(sb);
                 byte[] cBody = bodyList.get(i - 1);

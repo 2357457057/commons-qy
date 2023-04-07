@@ -1,7 +1,7 @@
 package top.yqingyu.common.utils;
 
-import org.apache.commons.lang3.*;
-import org.apache.commons.lang3.function.ToBooleanBiFunction;
+
+import top.yqingyu.common.function.ToBooleanBiFunction;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -1640,7 +1640,7 @@ public class StringUtil {
         if (str == null || isEmpty(suffix) || endsWith(str, suffix, ignoreCase)) {
             return str;
         }
-        if (ArrayUtils.isNotEmpty(suffixes)) {
+        if (ArrayUtil.isNotEmpty(suffixes)) {
             for (final CharSequence s : suffixes) {
                 if (endsWith(str, s, ignoreCase)) {
                     return str;
@@ -1726,7 +1726,7 @@ public class StringUtil {
      * <p>Capitalizes a String changing the first character to title case as
      * per {@link Character#toTitleCase(int)}. No other characters are changed.</p>
      *
-     * <p>For a word based algorithm, see {@link org.apache.commons.lang3.text.WordUtils#capitalize(String)}.
+     * <p>For a word based algorithm, see {@link .text.WordUtils#capitalize(String)}.
      * A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
@@ -1739,7 +1739,7 @@ public class StringUtil {
      *
      * @param str the String to capitalize, may be null
      * @return the capitalized String, {@code null} if null String input
-     * @see org.apache.commons.lang3.text.WordUtils#capitalize(String)
+     * @see .text.WordUtils#capitalize(String)
      * @see #uncapitalize(String)
      * @since 2.0
      */
@@ -1907,7 +1907,7 @@ public class StringUtil {
 
         if (str.length() == 1) {
             final char ch = str.charAt(0);
-            if (ch == CharUtils.CR || ch == CharUtils.LF) {
+            if (ch == CharUtil.CR || ch == CharUtil.LF) {
                 return EMPTY;
             }
             return str;
@@ -1916,11 +1916,11 @@ public class StringUtil {
         int lastIdx = str.length() - 1;
         final char last = str.charAt(lastIdx);
 
-        if (last == CharUtils.LF) {
-            if (str.charAt(lastIdx - 1) == CharUtils.CR) {
+        if (last == CharUtil.LF) {
+            if (str.charAt(lastIdx - 1) == CharUtil.CR) {
                 lastIdx--;
             }
-        } else if (last != CharUtils.CR) {
+        } else if (last != CharUtil.CR) {
             lastIdx++;
         }
         return str.substring(0, lastIdx);
@@ -1992,7 +1992,7 @@ public class StringUtil {
         final int lastIdx = strLen - 1;
         final String ret = str.substring(0, lastIdx);
         final char last = str.charAt(lastIdx);
-        if (last == CharUtils.LF && ret.charAt(lastIdx - 1) == CharUtils.CR) {
+        if (last == CharUtil.LF && ret.charAt(lastIdx - 1) == CharUtil.CR) {
             return ret.substring(0, lastIdx - 1);
         }
         return ret;
@@ -2256,7 +2256,7 @@ public class StringUtil {
      * @since 3.0 Changed signature from containsAny(String, char[]) to containsAny(CharSequence, char...)
      */
     public static boolean containsAny(final CharSequence cs, final char... searchChars) {
-        if (isEmpty(cs) || ArrayUtils.isEmpty(searchChars)) {
+        if (isEmpty(cs) || ArrayUtil.isEmpty(searchChars)) {
             return false;
         }
         final int csLength = cs.length();
@@ -2369,7 +2369,7 @@ public class StringUtil {
      */
     private static boolean containsAny(final ToBooleanBiFunction<CharSequence, CharSequence> test,
                                        final CharSequence cs, final CharSequence... searchCharSequences) {
-        if (isEmpty(cs) || ArrayUtils.isEmpty(searchCharSequences)) {
+        if (isEmpty(cs) || ArrayUtil.isEmpty(searchCharSequences)) {
             return false;
         }
         for (final CharSequence searchCharSequence : searchCharSequences) {
@@ -2939,7 +2939,7 @@ public class StringUtil {
      * @since 3.0
      */
     public static boolean endsWithAny(final CharSequence sequence, final CharSequence... searchStrings) {
-        if (isEmpty(sequence) || ArrayUtils.isEmpty(searchStrings)) {
+        if (isEmpty(sequence) || ArrayUtil.isEmpty(searchStrings)) {
             return false;
         }
         for (final CharSequence searchString : searchStrings) {
@@ -3042,7 +3042,7 @@ public class StringUtil {
      * @since 3.5
      */
     public static boolean equalsAny(final CharSequence string, final CharSequence... searchStrings) {
-        if (ArrayUtils.isNotEmpty(searchStrings)) {
+        if (ArrayUtil.isNotEmpty(searchStrings)) {
             for (final CharSequence next : searchStrings) {
                 if (equals(string, next)) {
                     return true;
@@ -3072,7 +3072,7 @@ public class StringUtil {
      * @since 3.5
      */
     public static boolean equalsAnyIgnoreCase(final CharSequence string, final CharSequence... searchStrings) {
-        if (ArrayUtils.isNotEmpty(searchStrings)) {
+        if (ArrayUtil.isNotEmpty(searchStrings)) {
             for (final CharSequence next : searchStrings) {
                 if (equalsIgnoreCase(string, next)) {
                     return true;
@@ -3198,7 +3198,7 @@ public class StringUtil {
      * @since 3.10
      */
     public static byte[] getBytes(final String string, final Charset charset) {
-        return string == null ? ArrayUtils.EMPTY_BYTE_ARRAY : string.getBytes(Charsets.toCharset(charset));
+        return string == null ? ArrayUtil.EMPTY_BYTE_ARRAY : string.getBytes(Charsets.toCharset(charset));
     }
 
     /**
@@ -3212,7 +3212,7 @@ public class StringUtil {
      * @since 3.10
      */
     public static byte[] getBytes(final String string, final String charset) throws UnsupportedEncodingException {
-        return string == null ? ArrayUtils.EMPTY_BYTE_ARRAY : string.getBytes(Charsets.toCharsetName(charset));
+        return string == null ? ArrayUtil.EMPTY_BYTE_ARRAY : string.getBytes(Charsets.toCharsetName(charset));
     }
 
     /**
@@ -3249,7 +3249,7 @@ public class StringUtil {
      * @since 2.4
      */
     public static String getCommonPrefix(final String... strs) {
-        if (ArrayUtils.isEmpty(strs)) {
+        if (ArrayUtil.isEmpty(strs)) {
             return EMPTY;
         }
         final int smallestIndexOfDiff = indexOfDifference(strs);
@@ -3956,7 +3956,7 @@ public class StringUtil {
      * @since 3.0 Changed signature from indexOfAny(String, char[]) to indexOfAny(CharSequence, char...)
      */
     public static int indexOfAny(final CharSequence cs, final char... searchChars) {
-        if (isEmpty(cs) || ArrayUtils.isEmpty(searchChars)) {
+        if (isEmpty(cs) || ArrayUtil.isEmpty(searchChars)) {
             return INDEX_NOT_FOUND;
         }
         final int csLen = cs.length();
@@ -4089,7 +4089,7 @@ public class StringUtil {
      * @since 3.0 Changed signature from indexOfAnyBut(String, char[]) to indexOfAnyBut(CharSequence, char...)
      */
     public static int indexOfAnyBut(final CharSequence cs, final char... searchChars) {
-        if (isEmpty(cs) || ArrayUtils.isEmpty(searchChars)) {
+        if (isEmpty(cs) || ArrayUtil.isEmpty(searchChars)) {
             return INDEX_NOT_FOUND;
         }
         final int csLen = cs.length();
@@ -4191,7 +4191,7 @@ public class StringUtil {
      * @since 3.0 Changed signature from indexOfDifference(String...) to indexOfDifference(CharSequence...)
      */
     public static int indexOfDifference(final CharSequence... css) {
-        if (ArrayUtils.getLength(css) <= 1) {
+        if (ArrayUtil.getLength(css) <= 1) {
             return INDEX_NOT_FOUND;
         }
         boolean anyStringNull = false;
@@ -4397,7 +4397,7 @@ public class StringUtil {
      * @since 3.6
      */
     public static boolean isAllBlank(final CharSequence... css) {
-        if (ArrayUtils.isEmpty(css)) {
+        if (ArrayUtil.isEmpty(css)) {
             return true;
         }
         for (final CharSequence cs : css) {
@@ -4428,7 +4428,7 @@ public class StringUtil {
      * @since 3.6
      */
     public static boolean isAllEmpty(final CharSequence... css) {
-        if (ArrayUtils.isEmpty(css)) {
+        if (ArrayUtil.isEmpty(css)) {
             return true;
         }
         for (final CharSequence cs : css) {
@@ -4673,7 +4673,7 @@ public class StringUtil {
      * @since 3.2
      */
     public static boolean isAnyBlank(final CharSequence... css) {
-        if (ArrayUtils.isEmpty(css)) {
+        if (ArrayUtil.isEmpty(css)) {
             return false;
         }
         for (final CharSequence cs : css) {
@@ -4705,7 +4705,7 @@ public class StringUtil {
      * @since 3.2
      */
     public static boolean isAnyEmpty(final CharSequence... css) {
-        if (ArrayUtils.isEmpty(css)) {
+        if (ArrayUtil.isEmpty(css)) {
             return false;
         }
         for (final CharSequence cs : css) {
@@ -4748,7 +4748,7 @@ public class StringUtil {
         }
         final int sz = cs.length();
         for (int i = 0; i < sz; i++) {
-            if (!CharUtils.isAsciiPrintable(cs.charAt(i))) {
+            if (!CharUtil.isAsciiPrintable(cs.charAt(i))) {
                 return false;
             }
         }
@@ -6573,7 +6573,7 @@ public class StringUtil {
         if (str == null) {
             return null;
         }
-        return str.toLowerCase(LocaleUtils.toLocale(locale));
+        return str.toLowerCase(LocaleUtil.toLocale(locale));
     }
 
     private static int[] matches(final CharSequence first, final CharSequence second) {
@@ -6916,7 +6916,7 @@ public class StringUtil {
         if (str == null || isEmpty(prefix) || startsWith(str, prefix, ignoreCase)) {
             return str;
         }
-        if (ArrayUtils.isNotEmpty(prefixes)) {
+        if (ArrayUtil.isNotEmpty(prefixes)) {
             for (final CharSequence p : prefixes) {
                 if (startsWith(str, p, ignoreCase)) {
                     return str;
@@ -7100,11 +7100,11 @@ public class StringUtil {
      * @see java.util.regex.Pattern
      * @see java.util.regex.Pattern#DOTALL
      * @since 3.5
-     * @deprecated Moved to RegExUtils.
+     * @deprecated Moved to RegExUtil.
      */
     @Deprecated
     public static String removeAll(final String text, final String regex) {
-        return RegExUtils.removeAll(text, regex);
+        return RegExUtil.removeAll(text, regex);
     }
 
     /**
@@ -7215,7 +7215,7 @@ public class StringUtil {
      * @see java.util.regex.Pattern
      * @see java.util.regex.Pattern#DOTALL
      * @since 3.5
-     * @deprecated Moved to RegExUtils.
+     * @deprecated Moved to RegExUtil.
      */
     @Deprecated
     public static String removeFirst(final String text, final String regex) {
@@ -7284,11 +7284,11 @@ public class StringUtil {
      * @see Pattern#DOTALL
      * @since 3.2
      * @since 3.5 Changed {@code null} reference passed to this method is a no-op.
-     * @deprecated Moved to RegExUtils.
+     * @deprecated Moved to RegExUtil.
      */
     @Deprecated
     public static String removePattern(final String source, final String regex) {
-        return RegExUtils.removePattern(source, regex);
+        return RegExUtil.removePattern(source, regex);
     }
 
     /**
@@ -7635,11 +7635,11 @@ public class StringUtil {
      * @see java.util.regex.Pattern
      * @see java.util.regex.Pattern#DOTALL
      * @since 3.5
-     * @deprecated Moved to RegExUtils.
+     * @deprecated Moved to RegExUtil.
      */
     @Deprecated
     public static String replaceAll(final String text, final String regex, final String replacement) {
-        return RegExUtils.replaceAll(text, regex, replacement);
+        return RegExUtil.replaceAll(text, regex, replacement);
     }
 
     /**
@@ -7834,7 +7834,7 @@ public class StringUtil {
             }
         }
 
-        if (isEmpty(text) || ArrayUtils.isEmpty(searchList) || ArrayUtils.isEmpty(replacementList) || (ArrayUtils.isNotEmpty(searchList) && timeToLive == -1)) {
+        if (isEmpty(text) || ArrayUtil.isEmpty(searchList) || ArrayUtil.isEmpty(replacementList) || (ArrayUtil.isNotEmpty(searchList) && timeToLive == -1)) {
             return text;
         }
 
@@ -8029,11 +8029,11 @@ public class StringUtil {
      * @see java.util.regex.Pattern
      * @see java.util.regex.Pattern#DOTALL
      * @since 3.5
-     * @deprecated Moved to RegExUtils.
+     * @deprecated Moved to RegExUtil.
      */
     @Deprecated
     public static String replaceFirst(final String text, final String regex, final String replacement) {
-        return RegExUtils.replaceFirst(text, regex, replacement);
+        return RegExUtil.replaceFirst(text, regex, replacement);
     }
 
     /**
@@ -8188,11 +8188,11 @@ public class StringUtil {
      * @see Pattern#DOTALL
      * @since 3.2
      * @since 3.5 Changed {@code null} reference passed to this method is a no-op.
-     * @deprecated Moved to RegExUtils.
+     * @deprecated Moved to RegExUtil.
      */
     @Deprecated
     public static String replacePattern(final String source, final String regex, final String replacement) {
-        return RegExUtils.replacePattern(source, regex, replacement);
+        return RegExUtil.replacePattern(source, regex, replacement);
     }
 
     /**
@@ -8242,7 +8242,7 @@ public class StringUtil {
         // could implement manually, but simple way is to reuse other,
         // probably slower, methods.
         final String[] strs = split(str, separatorChar);
-        ArrayUtils.reverse(strs);
+        ArrayUtil.reverse(strs);
         return join(strs, separatorChar);
     }
 
@@ -8595,7 +8595,7 @@ public class StringUtil {
             return null;
         }
         if (str.isEmpty()) {
-            return ArrayUtils.EMPTY_STRING_ARRAY;
+            return ArrayUtil.EMPTY_STRING_ARRAY;
         }
         final char[] c = str.toCharArray();
         final List<String> list = new ArrayList<>();
@@ -8619,7 +8619,7 @@ public class StringUtil {
             currentType = type;
         }
         list.add(new String(c, tokenStart, c.length - tokenStart));
-        return list.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
+        return list.toArray(ArrayUtil.EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -8794,7 +8794,7 @@ public class StringUtil {
         final int len = str.length();
 
         if (len == 0) {
-            return ArrayUtils.EMPTY_STRING_ARRAY;
+            return ArrayUtil.EMPTY_STRING_ARRAY;
         }
 
         if (separator == null || EMPTY.equals(separator)) {
@@ -8848,7 +8848,7 @@ public class StringUtil {
             }
         }
 
-        return substrings.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
+        return substrings.toArray(ArrayUtil.EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -9012,7 +9012,7 @@ public class StringUtil {
         }
         final int len = str.length();
         if (len == 0) {
-            return ArrayUtils.EMPTY_STRING_ARRAY;
+            return ArrayUtil.EMPTY_STRING_ARRAY;
         }
         final List<String> list = new ArrayList<>();
         int i = 0;
@@ -9036,7 +9036,7 @@ public class StringUtil {
         if (match || preserveAllTokens && lastMatch) {
             list.add(str.substring(start, i));
         }
-        return list.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
+        return list.toArray(ArrayUtil.EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -9063,7 +9063,7 @@ public class StringUtil {
         }
         final int len = str.length();
         if (len == 0) {
-            return ArrayUtils.EMPTY_STRING_ARRAY;
+            return ArrayUtil.EMPTY_STRING_ARRAY;
         }
         final List<String> list = new ArrayList<>();
         int sizePlus1 = 1;
@@ -9136,7 +9136,7 @@ public class StringUtil {
         if (match || preserveAllTokens && lastMatch) {
             list.add(str.substring(start, i));
         }
-        return list.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
+        return list.toArray(ArrayUtil.EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -9211,7 +9211,7 @@ public class StringUtil {
      * @since 3.0 Changed signature from startsWithAny(String, String[]) to startsWithAny(CharSequence, CharSequence...)
      */
     public static boolean startsWithAny(final CharSequence sequence, final CharSequence... searchStrings) {
-        if (isEmpty(sequence) || ArrayUtils.isEmpty(searchStrings)) {
+        if (isEmpty(sequence) || ArrayUtil.isEmpty(searchStrings)) {
             return false;
         }
         for (final CharSequence searchString : searchStrings) {
@@ -9381,7 +9381,7 @@ public class StringUtil {
      * @return the stripped Strings, {@code null} if null array input
      */
     public static String[] stripAll(final String[] strs, final String stripChars) {
-        final int strsLen = ArrayUtils.getLength(strs);
+        final int strsLen = ArrayUtil.getLength(strs);
         if (strsLen == 0) {
             return strs;
         }
@@ -9978,7 +9978,7 @@ public class StringUtil {
      * @since 2.0
      */
     public static String substringBetween(final String str, final String open, final String close) {
-        if (!ObjectUtils.allNotNull(str, open, close)) {
+        if (!ObjectUtil.allNotNull(str, open, close)) {
             return null;
         }
         final int start = str.indexOf(open);
@@ -10019,7 +10019,7 @@ public class StringUtil {
         }
         final int strLen = str.length();
         if (strLen == 0) {
-            return ArrayUtils.EMPTY_STRING_ARRAY;
+            return ArrayUtil.EMPTY_STRING_ARRAY;
         }
         final int closeLen = close.length();
         final int openLen = open.length();
@@ -10041,7 +10041,7 @@ public class StringUtil {
         if (list.isEmpty()) {
             return null;
         }
-        return list.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
+        return list.toArray(ArrayUtil.EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -10054,7 +10054,7 @@ public class StringUtil {
      *  <li>Lower case character converts to Upper case</li>
      * </ul>
      *
-     * <p>For a word based algorithm, see {@link org.apache.commons.lang3.text.WordUtils#swapCase(String)}.
+     * <p>For a word based algorithm, see {@link .text.WordUtils#swapCase(String)}.
      * A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
@@ -10066,7 +10066,7 @@ public class StringUtil {
      * <p>NOTE: This method changed in Lang version 2.0.
      * It no longer performs a word based algorithm.
      * If you only use ASCII, you will notice no change.
-     * That functionality is available in org.apache.commons.lang3.text.WordUtils.</p>
+     * That functionality is available in .text.WordUtils.</p>
      *
      * @param str the String to swap case, may be null
      * @return the changed String, {@code null} if null String input
@@ -10116,7 +10116,7 @@ public class StringUtil {
             return null;
         }
         if (cs.length() == 0) {
-            return ArrayUtils.EMPTY_INT_ARRAY;
+            return ArrayUtil.EMPTY_INT_ARRAY;
         }
 
         final String s = cs.toString();
@@ -10384,7 +10384,7 @@ public class StringUtil {
      * <p>Uncapitalizes a String, changing the first character to lower case as
      * per {@link Character#toLowerCase(int)}. No other characters are changed.</p>
      *
-     * <p>For a word based algorithm, see {@link org.apache.commons.lang3.text.WordUtils#uncapitalize(String)}.
+     * <p>For a word based algorithm, see {@link .text.WordUtils#uncapitalize(String)}.
      * A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
@@ -10397,7 +10397,7 @@ public class StringUtil {
      *
      * @param str the String to uncapitalize, may be null
      * @return the uncapitalized String, {@code null} if null String input
-     * @see org.apache.commons.lang3.text.WordUtils#uncapitalize(String)
+     * @see .text.WordUtils#uncapitalize(String)
      * @see #capitalize(String)
      * @since 2.0
      */
@@ -10450,7 +10450,7 @@ public class StringUtil {
      * @since 3.6
      */
     public static String unwrap(final String str, final char wrapChar) {
-        if (isEmpty(str) || wrapChar == CharUtils.NUL || str.length() == 1) {
+        if (isEmpty(str) || wrapChar == CharUtil.NUL || str.length() == 1) {
             return str;
         }
 
@@ -10553,7 +10553,7 @@ public class StringUtil {
         if (str == null) {
             return null;
         }
-        return str.toUpperCase(LocaleUtils.toLocale(locale));
+        return str.toUpperCase(LocaleUtil.toLocale(locale));
     }
 
     /**
@@ -10589,7 +10589,7 @@ public class StringUtil {
      */
     public static String wrap(final String str, final char wrapWith) {
 
-        if (isEmpty(str) || wrapWith == CharUtils.NUL) {
+        if (isEmpty(str) || wrapWith == CharUtil.NUL) {
             return str;
         }
 
@@ -10658,7 +10658,7 @@ public class StringUtil {
      * @since 3.5
      */
     public static String wrapIfMissing(final String str, final char wrapWith) {
-        if (isEmpty(str) || wrapWith == CharUtils.NUL) {
+        if (isEmpty(str) || wrapWith == CharUtil.NUL) {
             return str;
         }
         final boolean wrapStart = str.charAt(0) != wrapWith;

@@ -1,7 +1,7 @@
 package top.yqingyu.common.utils;
 
 import cn.hutool.core.lang.Assert;
-import org.apache.commons.lang3.StringUtils;
+
 import top.yqingyu.common.qydata.DataList;
 import top.yqingyu.common.qydata.DataMap;
 
@@ -288,10 +288,10 @@ public class ResourceUtil {
         String file_separator = System.getProperty("file.separator");
 
         if (isWindows() && rootPath.indexOf("/") == rootPath.length() - 1)
-            rootPath = StringUtils.removeEnd(rootPath, "/");
+            rootPath = StringUtil.removeEnd(rootPath, "/");
 
         if (rootPath.endsWith(file_separator) && rootPath.length() > 1)
-            rootPath = StringUtils.removeEnd(rootPath, file_separator);
+            rootPath = StringUtil.removeEnd(rootPath, file_separator);
 
         File file = new File(rootPath);
         File[] files = file.listFiles();

@@ -1,6 +1,5 @@
 package top.yqingyu.common.utils;
 
-import cn.hutool.core.lang.Assert;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -144,7 +143,9 @@ public abstract class ObjectUtil {
                 return null;
             }
             Object result = optional.get();
-            Assert.isTrue(!(result instanceof Optional), "Multi-level Optional usage not supported");
+            if (!(result instanceof Optional)) {
+                throw new IllegalArgumentException("Multi-level Optional usage not supported");
+            }
             return result;
         }
         return obj;
@@ -899,4 +900,70 @@ public abstract class ObjectUtil {
         return stringJoiner.toString();
     }
 
+    /**
+     * Checks if any value in the given array is {@code null}.
+     *
+     * <p>
+     * If any of the values are {@code null} or the array is {@code null},
+     * then {@code true} is returned, otherwise {@code false} is returned.
+     * </p>
+     *
+     * <pre>
+     * ObjectUtils.anyNull(*)             = false
+     * ObjectUtils.anyNull(*, *)          = false
+     * ObjectUtils.anyNull(null)          = true
+     * ObjectUtils.anyNull(null, null)    = true
+     * ObjectUtils.anyNull(null, *)       = true
+     * ObjectUtils.anyNull(*, null)       = true
+     * ObjectUtils.anyNull(*, *, null, *) = true
+     * </pre>
+     *
+     * @param values the values to test, may be {@code null} or empty
+     * @return {@code true} if there is at least one {@code null} value in the array,
+     * {@code false} if all the values are non-null.
+     * If the array is {@code null} or empty, {@code true} is also returned.
+     * @since 3.11
+     */
+    public static boolean anyNull(final Object... values) {
+        return !allNotNull(values);
+    }
+
+    /**
+     * Checks if all values in the array are not {@code nulls}.
+     *
+     * <p>
+     * If any value is {@code null} or the array is {@code null} then
+     * {@code false} is returned. If all elements in array are not
+     * {@code null} or the array is empty (contains no elements) {@code true}
+     * is returned.
+     * </p>
+     *
+     * <pre>
+     * ObjectUtils.allNotNull(*)             = true
+     * ObjectUtils.allNotNull(*, *)          = true
+     * ObjectUtils.allNotNull(null)          = false
+     * ObjectUtils.allNotNull(null, null)    = false
+     * ObjectUtils.allNotNull(null, *)       = false
+     * ObjectUtils.allNotNull(*, null)       = false
+     * ObjectUtils.allNotNull(*, *, null, *) = false
+     * </pre>
+     *
+     * @param values the values to test, may be {@code null} or empty
+     * @return {@code false} if there is at least one {@code null} value in the array or the array is {@code null},
+     * {@code true} if all values in the array are not {@code null}s or array contains no elements.
+     * @since 3.5
+     */
+    public static boolean allNotNull(final Object... values) {
+        if (values == null) {
+            return false;
+        }
+
+        for (final Object val : values) {
+            if (val == null) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

@@ -2,9 +2,10 @@ package top.yqingyu.common.qymsg;
 
 /**
  * QyMsg 的常量字段。
+ *
  * @author YYJ
  * @version 1.0.0
- * @ClassName top.yqingyu.common.qymsg.ChannelStatus
+ * @ClassName top.yqingyu.common.qymsg.Dict
  * @description
  * @createTime 2023年01月05日 23:23:00
  */
@@ -14,7 +15,7 @@ public interface Dict {
     Integer MSG_TYPE_IDX = 0;
     Integer DATA_TYPE_IDX = 1;
     Integer SEGMENTATION_IDX = 2;
-    Integer MSG_LENGTH_IDX_START = 4;
+    Integer MSG_LENGTH_IDX_START = 3;
     Integer MSG_LENGTH_IDX_END = 8;
     /*==========================HEADER=============================*/
 
@@ -34,7 +35,7 @@ public interface Dict {
 
 
     /*==========================QyMSG=============================*/
-    Integer CLIENT_ID_LENGTH = 36;
+    Integer CLIENT_ID_LENGTH = 32;
     String QYMSG = "MSG";
     String MSG_ID = "Q_MSG_ID";
     /*==========================QyMSG=============================*/

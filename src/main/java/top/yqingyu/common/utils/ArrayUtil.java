@@ -9208,6 +9208,10 @@ public class ArrayUtil {
         return result;
     }
 
+    public static boolean isArray(Object obj) {
+        return null != obj && obj.getClass().isArray();
+    }
+
     /**
      * <p>Returns an array containing the string representation of each element in the argument
      * array handling {@code null} elements.</p>

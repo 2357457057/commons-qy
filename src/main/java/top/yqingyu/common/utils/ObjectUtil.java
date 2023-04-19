@@ -3,6 +3,7 @@ package top.yqingyu.common.utils;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * @author YYJ
@@ -965,5 +966,22 @@ public abstract class ObjectUtil {
         }
 
         return true;
+    }
+
+    /**
+     * 如果被检查对象为 {@code null}， 返回默认值（由 defaultValueSupplier 提供）；否则直接返回
+     *
+     * @param source               被检查对象
+     * @param defaultValueSupplier 默认值提供者
+     * @param <T>                  对象类型
+     * @return 被检查对象为{@code null}返回默认值，否则返回自定义handle处理后的返回值
+     * @throws NullPointerException {@code defaultValueSupplier == null} 时，抛出
+     * @since 5.7.20
+     */
+    public static <T> T defaultIfNull(T source, Supplier<? extends T> defaultValueSupplier) {
+        if (anyNull(source)) {
+            return defaultValueSupplier.get();
+        }
+        return source;
     }
 }

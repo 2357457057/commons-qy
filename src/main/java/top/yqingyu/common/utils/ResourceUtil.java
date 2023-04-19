@@ -1,6 +1,6 @@
 package top.yqingyu.common.utils;
 
-import cn.hutool.core.lang.Assert;
+
 
 import top.yqingyu.common.qydata.DataList;
 import top.yqingyu.common.qydata.DataMap;
@@ -351,7 +351,7 @@ public class ResourceUtil {
      * @throws FileNotFoundException if the resource cannot be resolved to a URL
      */
     public static URL getURL(String resourceLocation) throws FileNotFoundException {
-        Assert.notNull(resourceLocation, "Resource location must not be null");
+        AssertUtil.notNull(resourceLocation, "Resource location must not be null");
         if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
             String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
             ClassLoader cl = ClazzUtil.getDefaultClassLoader();
@@ -390,7 +390,7 @@ public class ResourceUtil {
      *                               a file in the file system
      */
     public static File getFile(String resourceLocation) throws FileNotFoundException {
-        Assert.notNull(resourceLocation, "Resource location must not be null");
+        AssertUtil.notNull(resourceLocation, "Resource location must not be null");
         if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
             String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
             String description = "class path resource [" + path + "]";
@@ -436,7 +436,7 @@ public class ResourceUtil {
      *                               a file in the file system
      */
     public static File getFile(URL resourceUrl, String description) throws FileNotFoundException {
-        Assert.notNull(resourceUrl, "Resource URL must not be null");
+        AssertUtil.notNull(resourceUrl, "Resource URL must not be null");
         if (!URL_PROTOCOL_FILE.equals(resourceUrl.getProtocol())) {
             throw new FileNotFoundException(
                     description + " cannot be resolved to absolute file path " +
@@ -477,7 +477,7 @@ public class ResourceUtil {
      * @since 2.5
      */
     public static File getFile(URI resourceUri, String description) throws FileNotFoundException {
-        Assert.notNull(resourceUri, "Resource URI must not be null");
+        AssertUtil.notNull(resourceUri, "Resource URI must not be null");
         if (!URL_PROTOCOL_FILE.equals(resourceUri.getScheme())) {
             throw new FileNotFoundException(
                     description + " cannot be resolved to absolute file path " +

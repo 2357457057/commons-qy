@@ -4,7 +4,9 @@ package top.yqingyu.common.utils;
 import top.yqingyu.common.function.ToBooleanBiFunction;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.charset.UnsupportedCharsetException;
 import java.text.Normalizer;
 import java.util.*;
@@ -20,6 +22,145 @@ import java.util.regex.Pattern;
  */
 @SuppressWarnings("all")
 public class StringUtil {
+    /**
+     * 字符常量：双引号 {@code '"'}
+     */
+    public static final char DOUBLE_QUOTES = '"';
+    /**
+     * 字符常量：单引号 {@code '\''}
+     */
+    public static final char SINGLE_QUOTE = '\'';
+    /**
+     * 字符常量：与 {@code '&'}
+     */
+    public static final char AMP = '&';
+
+
+    /**
+     * 字符串常量：制表符 {@code "\t"}
+     */
+    public static final String TAB = "\t";
+
+    /**
+     * 字符串常量：点 {@code "."}
+     */
+    public static final String DOT = ".";
+
+    /**
+     * 字符串常量：双点 {@code ".."} <br>
+     * 用途：作为指向上级文件夹的路径，如：{@code "../path"}
+     */
+    public static final String DOUBLE_DOT = "..";
+
+    /**
+     * 字符串常量：斜杠 {@code "/"}
+     */
+    public static final String SLASH = "/";
+
+    /**
+     * 字符串常量：反斜杠 {@code "\\"}
+     */
+    public static final String BACKSLASH = "\\";
+    public static final char C_BACKSLASH = '\\';
+
+    /**
+     * 字符串常量：回车符 {@code "\r"} <br>
+     * 解释：该字符常用于表示 Linux 系统和 MacOS 系统下的文本换行
+     */
+    public static final String CR = "\r";
+
+    /**
+     * 字符串常量：换行符 {@code "\n"}
+     */
+    public static final String LF = "\n";
+
+    /**
+     * 字符串常量：Windows 换行 {@code "\r\n"} <br>
+     * 解释：该字符串常用于表示 Windows 系统下的文本换行
+     */
+    public static final String CRLF = "\r\n";
+
+    /**
+     * 字符串常量：下划线 {@code "_"}
+     */
+    public static final String UNDERLINE = "_";
+
+    /**
+     * 字符串常量：减号（连接符） {@code "-"}
+     */
+    public static final String DASHED = "-";
+
+    /**
+     * 字符串常量：逗号 {@code ","}
+     */
+    public static final String COMMA = ",";
+
+    /**
+     * 字符串常量：花括号（左） <code>"{"</code>
+     */
+    public static final String DELIM_START = "{";
+
+    /**
+     * 字符串常量：花括号（右） <code>"}"</code>
+     */
+    public static final String DELIM_END = "}";
+
+    /**
+     * 字符串常量：中括号（左） {@code "["}
+     */
+    public static final String BRACKET_START = "[";
+
+    /**
+     * 字符串常量：中括号（右） {@code "]"}
+     */
+    public static final String BRACKET_END = "]";
+
+    /**
+     * 字符串常量：冒号 {@code ":"}
+     */
+    public static final String COLON = ":";
+
+    /**
+     * 字符串常量：艾特 {@code "@"}
+     */
+    public static final String AT = "@";
+
+
+    /**
+     * 字符串常量：HTML 不间断空格转义 {@code "&nbsp;" -> " "}
+     */
+    public static final String HTML_NBSP = "&nbsp;";
+
+    /**
+     * 字符串常量：HTML And 符转义 {@code "&amp;" -> "&"}
+     */
+    public static final String HTML_AMP = "&amp;";
+
+    /**
+     * 字符串常量：HTML 双引号转义 {@code "&quot;" -> "\""}
+     */
+    public static final String HTML_QUOTE = "&quot;";
+
+    /**
+     * 字符串常量：HTML 单引号转义 {@code "&apos" -> "'"}
+     */
+    public static final String HTML_APOS = "&apos;";
+
+    /**
+     * 字符串常量：HTML 小于号转义 {@code "&lt;" -> "<"}
+     */
+    public static final String HTML_LT = "&lt;";
+
+    /**
+     * 字符串常量：HTML 大于号转义 {@code "&gt;" -> ">"}
+     */
+    public static final String HTML_GT = "&gt;";
+
+    /**
+     * 字符串常量：空 JSON {@code "{}"}
+     */
+    public static final String EMPTY_JSON = "{}";
+
     /**
      * 根据给定的中文字节长度，
      * 以及目标数据库所占字节数，
@@ -1362,23 +1503,6 @@ public class StringUtil {
      */
     public static final String EMPTY = "";
 
-    /**
-     * A String for linefeed LF ("\n").
-     *
-     * @see <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.10.6">JLF: Escape Sequences
-     * for Character and String Literals</a>
-     * @since 3.2
-     */
-    public static final String LF = "\n";
-
-    /**
-     * A String for carriage return CR ("\r").
-     *
-     * @see <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.10.6">JLF: Escape Sequences
-     * for Character and String Literals</a>
-     * @since 3.2
-     */
-    public static final String CR = "\r";
 
     /**
      * Represents a failed index search.
@@ -10594,6 +10718,235 @@ public class StringUtil {
         }
 
         return wrapWith + str + wrapWith;
+    }
+
+    /**
+     * 格式化字符串<br>
+     * 此方法只是简单将占位符 {} 按照顺序替换为参数<br>
+     * 如果想输出 {} 使用 \\转义 { 即可，如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可<br>
+     * 例：<br>
+     * 通常使用：format("this is {} for {}", "a", "b") =》 this is a for b<br>
+     * 转义{}： format("this is \\{} for {}", "a", "b") =》 this is \{} for a<br>
+     * 转义\： format("this is \\\\{} for {}", "a", "b") =》 this is \a for b<br>
+     *
+     * @param strPattern 字符串模板
+     * @param argArray   参数列表
+     * @return 结果
+     */
+    public static String fillBrace(String strPattern, Object... argArray) {
+        return fillBrace(strPattern, EMPTY_JSON, argArray);
+    }
+
+    /**
+     * 格式化字符串<br>
+     * 此方法只是简单将指定占位符 按照顺序替换为参数<br>
+     * 如果想输出占位符使用 \\转义即可，如果想输出占位符之前的 \ 使用双转义符 \\\\ 即可<br>
+     * 例：<br>
+     * 通常使用：format("this is {} for {}", "{}", "a", "b") =》 this is a for b<br>
+     * 转义{}： format("this is \\{} for {}", "{}", "a", "b") =》 this is {} for a<br>
+     * 转义\： format("this is \\\\{} for {}", "{}", "a", "b") =》 this is \a for b<br>
+     *
+     * @param strPattern  字符串模板
+     * @param placeHolder 占位符，例如{}
+     * @param argArray    参数列表
+     * @return 结果
+     * @since 5.7.14
+     */
+    public static String fillBrace(String strPattern, String placeHolder, Object... argArray) {
+        if (isBlank(strPattern) || isBlank(placeHolder) || ArrayUtil.isEmpty(argArray)) {
+            return strPattern;
+        }
+        final int strPatternLength = strPattern.length();
+        final int placeHolderLength = placeHolder.length();
+
+        // 初始化定义好的长度以获得更好的性能
+        final StringBuilder sbuf = new StringBuilder(strPatternLength + 50);
+
+        int handledPosition = 0;// 记录已经处理到的位置
+        int delimIndex;// 占位符所在位置
+        for (int argIndex = 0; argIndex < argArray.length; argIndex++) {
+            delimIndex = strPattern.indexOf(placeHolder, handledPosition);
+            if (delimIndex == -1) {// 剩余部分无占位符
+                if (handledPosition == 0) { // 不带占位符的模板直接返回
+                    return strPattern;
+                }
+                // 字符串模板剩余部分不再包含占位符，加入剩余部分后返回结果
+                sbuf.append(strPattern, handledPosition, strPatternLength);
+                return sbuf.toString();
+            }
+
+            // 转义符
+            if (delimIndex > 0 && strPattern.charAt(delimIndex - 1) == C_BACKSLASH) {// 转义符
+                if (delimIndex > 1 && strPattern.charAt(delimIndex - 2) == C_BACKSLASH) {// 双转义符
+                    // 转义符之前还有一个转义符，占位符依旧有效
+                    sbuf.append(strPattern, handledPosition, delimIndex - 1);
+                    sbuf.append(getUtf8Str(argArray[argIndex]));
+                    handledPosition = delimIndex + placeHolderLength;
+                } else {
+                    // 占位符被转义
+                    argIndex--;
+                    sbuf.append(strPattern, handledPosition, delimIndex - 1);
+                    sbuf.append(placeHolder.charAt(0));
+                    handledPosition = delimIndex + 1;
+                }
+            } else {// 正常占位符
+                sbuf.append(strPattern, handledPosition, delimIndex);
+                sbuf.append(getUtf8Str(argArray[argIndex]));
+                handledPosition = delimIndex + placeHolderLength;
+            }
+        }
+
+        // 加入最后一个占位符后所有的字符
+        sbuf.append(strPattern, handledPosition, strPatternLength);
+
+        return sbuf.toString();
+    }
+
+    /**
+     * 格式化文本，使用 {varName} 占位<br>
+     * map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) ---=》 aValue and bValue
+     *
+     * @param template   文本模板，被替换的部分用 {key} 表示
+     * @param map        参数值对
+     * @param ignoreNull 是否忽略 {@code null} 值，忽略则 {@code null} 值对应的变量不被替换，否则替换为""
+     * @return 格式化后的文本
+     * @since 5.7.10
+     */
+    public static String format(CharSequence template, Map<?, ?> map, boolean ignoreNull) {
+        if (null == template) {
+            return null;
+        }
+        if (null == map || map.isEmpty()) {
+            return template.toString();
+        }
+
+        String template2 = template.toString();
+        String value;
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+            value = getUtf8Str(entry.getValue());
+            if (null == value && ignoreNull) {
+                continue;
+            }
+            template2 = replace(template2, "{" + entry.getKey() + "}", value);
+        }
+        return template2;
+    }
+
+    public static String getUtf8Str(Object o) {
+        return getStr(o, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * 将对象转为字符串
+     *
+     * <pre>
+     * 1、Byte数组和ByteBuffer会被转换为对应字符串的数组
+     * 2、对象数组会调用Arrays.toString方法
+     * </pre>
+     *
+     * @param obj         对象
+     * @param charsetName 字符集
+     * @return 字符串
+     * @deprecated 请使用 {@link #getStr(Object, Charset)}
+     */
+    public static String getStr(Object obj, String charsetName) {
+        return getStr(obj, Charset.forName(charsetName));
+    }
+
+    /**
+     * 将对象转为字符串
+     * <pre>
+     * 	 1、Byte数组和ByteBuffer会被转换为对应字符串的数组
+     * 	 2、对象数组会调用Arrays.toString方法
+     * </pre>
+     *
+     * @param obj     对象
+     * @param charset 字符集
+     * @return 字符串
+     */
+    public static String getStr(Object obj, Charset charset) {
+        if (null == obj) {
+            return null;
+        }
+        if (obj instanceof String) {
+            String str = (String) obj;
+            return getStr(str.getBytes(charset), charset);
+        } else if (obj instanceof byte[]) {
+            return getStr((byte[]) obj, charset);
+        } else if (obj instanceof Byte[]) {
+            return getStr((Byte[]) obj, charset);
+        } else if (obj instanceof ByteBuffer) {
+            return getStr((ByteBuffer) obj, charset);
+        } else if (ArrayUtil.isArray(obj)) {
+            return getStr(arrayToString(obj), charset);
+        }
+        return obj.toString();
+    }
+
+    public static String getStr(ByteBuffer byteBuffer, Charset charset) {
+        if (null == byteBuffer) {
+            return null;
+        }
+        return charset.decode(byteBuffer).toString();
+    }
+
+    public static String getStr(byte[] data, Charset charset) {
+        if (data == null) {
+            return null;
+        }
+
+        if (null == charset) {
+            return new String(data);
+        }
+        return new String(data, charset);
+    }
+
+    public static String getStr(Byte[] data, Charset charset) {
+        if (data == null) {
+            return null;
+        }
+
+        byte[] bytes = new byte[data.length];
+        Byte dataByte;
+        for (int i = 0; i < data.length; i++) {
+            dataByte = data[i];
+            bytes[i] = (null == dataByte) ? -1 : dataByte;
+        }
+
+        return getStr(bytes, charset);
+    }
+
+    public static String arrayToString(Object obj) {
+        if (null == obj) {
+            return null;
+        }
+
+        if (obj instanceof long[]) {
+            return Arrays.toString((long[]) obj);
+        } else if (obj instanceof int[]) {
+            return Arrays.toString((int[]) obj);
+        } else if (obj instanceof short[]) {
+            return Arrays.toString((short[]) obj);
+        } else if (obj instanceof char[]) {
+            return Arrays.toString((char[]) obj);
+        } else if (obj instanceof byte[]) {
+            return Arrays.toString((byte[]) obj);
+        } else if (obj instanceof boolean[]) {
+            return Arrays.toString((boolean[]) obj);
+        } else if (obj instanceof float[]) {
+            return Arrays.toString((float[]) obj);
+        } else if (obj instanceof double[]) {
+            return Arrays.toString((double[]) obj);
+        } else if (ArrayUtil.isArray(obj)) {
+            // 对象数组
+            try {
+                return Arrays.deepToString((Object[]) obj);
+            } catch (Exception ignore) {
+                //ignore
+            }
+        }
+
+        return obj.toString();
     }
 
     /**

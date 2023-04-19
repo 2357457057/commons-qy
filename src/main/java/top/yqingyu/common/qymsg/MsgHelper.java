@@ -1,14 +1,10 @@
 package top.yqingyu.common.qymsg;
 
 
-import cn.hutool.core.lang.UUID;
 import com.alibaba.fastjson2.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.yqingyu.common.utils.ArrayUtil;
-import top.yqingyu.common.utils.IoUtil;
-import top.yqingyu.common.utils.LocalDateTimeUtil;
-import top.yqingyu.common.utils.ThreadUtil;
+import top.yqingyu.common.utils.*;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -70,7 +66,7 @@ public class MsgHelper implements Runnable {
         long yu = fileLength % transThread;
 
         QyMsg qyMsg = new QyMsg(MsgType.NORM_MSG, DataType.FILE);
-        qyMsg.putMsgData(FILE_ID, UUID.fastUUID().toString());
+        qyMsg.putMsgData(FILE_ID, UUIDUtil.randomUUID().toString());
         qyMsg.putMsgData(FILE_NAME, file.getName());
         qyMsg.putMsgData(FILE_LENGTH, fileLength);
 

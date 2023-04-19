@@ -1,6 +1,6 @@
 package top.yqingyu.common.utils;
 
-import cn.hutool.core.lang.Assert;
+
 import top.yqingyu.common.qydata.ConcurrentReferenceHashMap;
 
 import java.lang.reflect.*;
@@ -215,8 +215,8 @@ public abstract class ReflectionUtil {
      */
 
     public static Method findMethod(Class<?> clazz, String name, Class<?>... paramTypes) {
-        Assert.notNull(clazz, "Class must not be null");
-        Assert.notNull(name, "Method name must not be null");
+        AssertUtil.notNull(clazz, "Class must not be null");
+        AssertUtil.notNull(name, "Method name must not be null");
         Class<?> searchType = clazz;
         while (searchType != null) {
             Method[] methods = (searchType.isInterface() ? searchType.getMethods() :
@@ -283,7 +283,7 @@ public abstract class ReflectionUtil {
      * {@code false} if it needs to be wrapped
      */
     public static boolean declaresException(Method method, Class<?> exceptionType) {
-        Assert.notNull(method, "Method must not be null");
+        AssertUtil.notNull(method, "Method must not be null");
         Class<?>[] declaredExceptions = method.getExceptionTypes();
         for (Class<?> declaredException : declaredExceptions) {
             if (declaredException.isAssignableFrom(exceptionType)) {
@@ -449,7 +449,7 @@ public abstract class ReflectionUtil {
     }
 
     private static Method[] getDeclaredMethods(Class<?> clazz, boolean defensive) {
-        Assert.notNull(clazz, "Class must not be null");
+        AssertUtil.notNull(clazz, "Class must not be null");
         Method[] result = declaredMethodsCache.get(clazz);
         if (result == null) {
             try {
@@ -598,8 +598,8 @@ public abstract class ReflectionUtil {
      */
 
     public static Field findField(Class<?> clazz, String name, Class<?> type) {
-        Assert.notNull(clazz, "Class must not be null");
-        Assert.isTrue(name != null || type != null, "Either name or type of the field must be specified");
+        AssertUtil.notNull(clazz, "Class must not be null");
+        AssertUtil.isTrue(name != null || type != null, "Either name or type of the field must be specified");
         Class<?> searchType = clazz;
         while (Object.class != searchType && searchType != null) {
             Field[] fields = getDeclaredFields(searchType);
@@ -727,7 +727,7 @@ public abstract class ReflectionUtil {
      * @see Class#getDeclaredFields()
      */
     private static Field[] getDeclaredFields(Class<?> clazz) {
-        Assert.notNull(clazz, "Class must not be null");
+        AssertUtil.notNull(clazz, "Class must not be null");
         Field[] result = declaredFieldsCache.get(clazz);
         if (result == null) {
             try {
@@ -749,8 +749,8 @@ public abstract class ReflectionUtil {
      * @throws IllegalStateException if introspection fails
      */
     public static void shallowCopyFieldState(final Object src, final Object dest) {
-        Assert.notNull(src, "Source for field copy cannot be null");
-        Assert.notNull(dest, "Destination for field copy cannot be null");
+        AssertUtil.notNull(src, "Source for field copy cannot be null");
+        AssertUtil.notNull(dest, "Destination for field copy cannot be null");
         if (!src.getClass().isAssignableFrom(dest.getClass())) {
             throw new IllegalArgumentException("Destination class [" + dest.getClass().getName() +
                     "] must be same or subclass as source class [" + src.getClass().getName() + "]");
@@ -842,7 +842,7 @@ public abstract class ReflectionUtil {
          * @since 5.3.2
          */
         default MethodFilter and(MethodFilter next) {
-            Assert.notNull(next, "Next MethodFilter must not be null");
+            AssertUtil.notNull(next, "Next MethodFilter must not be null");
             return method -> matches(method) && next.matches(method);
         }
     }
@@ -886,7 +886,7 @@ public abstract class ReflectionUtil {
          * @since 5.3.2
          */
         default FieldFilter and(FieldFilter next) {
-            Assert.notNull(next, "Next FieldFilter must not be null");
+            AssertUtil.notNull(next, "Next FieldFilter must not be null");
             return field -> matches(field) && next.matches(field);
         }
     }

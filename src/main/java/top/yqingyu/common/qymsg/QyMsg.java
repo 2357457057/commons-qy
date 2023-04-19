@@ -1,7 +1,7 @@
 package top.yqingyu.common.qymsg;
 
-import cn.hutool.core.lang.UUID;
 import top.yqingyu.common.qydata.DataMap;
+import top.yqingyu.common.utils.UUIDUtil;
 
 import java.io.Serializable;
 
@@ -53,7 +53,7 @@ public class QyMsg implements Serializable {
     }
 
     public String genMsgId() {
-        String s = UUID.fastUUID().toString();
+        String s = UUIDUtil.randomUUID().toString2();
         this.dataMap.put(MSG_ID, s);
         return s;
     }

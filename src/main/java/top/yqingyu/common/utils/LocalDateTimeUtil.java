@@ -1,7 +1,5 @@
 package top.yqingyu.common.utils;
 
-import cn.hutool.core.date.DateTime;
-import cn.hutool.core.util.ObjectUtil;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -92,9 +90,6 @@ public class LocalDateTimeUtil {
     public static LocalDateTime of(Date date) {
         if (null == date) {
             return null;
-        }
-        if (date instanceof DateTime) {
-            return of(date.toInstant(), ((DateTime) date).getZoneId());
         }
         return of(date.toInstant());
     }

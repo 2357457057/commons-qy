@@ -1,6 +1,5 @@
 package top.yqingyu.common.utils;
 
-import cn.hutool.core.util.RandomUtil;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -24,7 +23,7 @@ public class PercentUtil implements Runnable {
     public void run() {
         while (true) {
             try {
-                int i = RandomUtil.randomInt(1, PERCENT + 1);
+                int i = RandomUtil.nextInt(1, PERCENT + 1);
                 SendPercent.put(i);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);

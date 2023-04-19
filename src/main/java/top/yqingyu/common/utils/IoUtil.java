@@ -1,6 +1,5 @@
 package top.yqingyu.common.utils;
 
-import cn.hutool.core.io.IORuntimeException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,11 +48,7 @@ public class IoUtil {
 
         byte[] b = new byte[len];
         int readLength;
-        try {
-            readLength = in.read(b);
-        } catch (IOException e) {
-            throw new IORuntimeException(e);
-        }
+        readLength = in.read(b);
         if (readLength > 0 && readLength < len) {
             byte[] b2 = new byte[readLength];
             System.arraycopy(b, 0, b2, 0, readLength);
@@ -73,7 +68,7 @@ public class IoUtil {
      * @author yqingyu
      * DATE 2022/4/22
      */
-    public static byte[] readBytes2(InputStream in, int len) throws IORuntimeException, IOException {
+    public static byte[] readBytes2(InputStream in, int len) throws IOException {
         if (null == in) {
             return null;
         }
@@ -112,7 +107,7 @@ public class IoUtil {
      * @author YYJ
      * @description 当远端主动断开后 客户端在读取数据时将一直为-1 并不会抛出异常，只有在write的时候才会抛出异常
      */
-    public static byte[] readBytes2(InputStream in, int len, AtomicBoolean breakFlag) throws IORuntimeException, IOException {
+    public static byte[] readBytes2(InputStream in, int len, AtomicBoolean breakFlag) throws IOException {
         if (null == in) {
             return null;
         }
@@ -161,7 +156,7 @@ public class IoUtil {
      * @version v3
      * @author YYJ
      */
-    public static byte[] readBytes3(Socket socket, int len, AtomicBoolean breakFlag) throws IORuntimeException, IOException {
+    public static byte[] readBytes3(Socket socket, int len, AtomicBoolean breakFlag) throws IOException {
         InputStream in = socket.getInputStream();
         if (len <= 0) {
             return new byte[0];
@@ -217,7 +212,7 @@ public class IoUtil {
      * @author yqingyu
      * DATE 2022/4/22
      */
-    public static byte[] readBytes(InputStream in, int len, int timeout) throws IORuntimeException {
+    public static byte[] readBytes(InputStream in, int len, int timeout) {
         if (null == in) {
             return null;
         }

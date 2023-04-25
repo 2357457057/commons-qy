@@ -1,6 +1,7 @@
 package top.yqingyu.common.utils;
 
 
+import java.io.*;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Supplier;
@@ -983,5 +984,15 @@ public abstract class ObjectUtil {
             return defaultValueSupplier.get();
         }
         return source;
+    }
+
+    public static <T> T cloneObjSerial(T obj) throws IOException, ClassNotFoundException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(os);
+        oos.writeObject(obj);
+        oos.flush();
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(os.toByteArray()));
+        Object o = ois.readObject();
+        return (T) o;
     }
 }

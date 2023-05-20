@@ -6,6 +6,7 @@ import okhttp3.*;
 import okio.Timeout;
 import top.yqingyu.common.exception.IllegalMediaTypeException;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,9 +21,73 @@ public class HttpUtil {
     /**
      * get
      */
-    static OkHttpClient httpclient = new OkHttpClient();
+    static volatile OkHttpClient httpclient = new OkHttpClient();
+
+
+    public static void initUnsafe() {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.setHostnameVerifier$okhttp((s, sslSession) -> true);
+        httpclient = builder.build();
+    }
+
 
     public static JSONObject doGet(String url, Map<String, String> headers, Map<String, String> urlParam) throws Exception {
+        ResponseBody body = getPub(url, headers, urlParam);
+        MediaType contentType = body.contentType();
+        if (JSON_TYPE.type().equals(contentType.type())) {
+            String string = body.string();
+            return JSON.parseObject(string);
+        } else {
+            throw new IllegalMediaTypeException("不支持的媒体类型");
+        }
+    }
+
+    public static String doGet2(String url, Map<String, String> headers, Map<String, String> urlParam) throws Exception {
+        ResponseBody body = getPub(url, headers, urlParam);
+        return body.string();
+    }
+
+    public static byte[] doGet3(String url, Map<String, String> headers, Map<String, String> urlParam) throws Exception {
+        ResponseBody body = getPub(url, headers, urlParam);
+        return body.bytes();
+    }
+
+    public static JSONObject doPost(String url, Map<String, String> headers, Map<String, String> urlParam, Object body) throws Exception {
+        ResponseBody responseBody = postPub(url, headers, urlParam, body, JSON_TYPE);
+        MediaType contentType = responseBody.contentType();
+        if (JSON_TYPE.type().equals(contentType.type())) {
+            String string = responseBody.string();
+            return JSON.parseObject(string);
+        } else {
+            throw new IllegalMediaTypeException("不支持的媒体类型");
+        }
+    }
+
+    public static JSONObject doPost(String url, Map<String, String> headers, Map<String, String> urlParam, Object body, MediaType requestType) throws Exception {
+        if (requestType.equals(JSON_TYPE)) {
+            body = JSON.toJSONString(body);
+        }
+        ResponseBody responseBody = postPub(url, headers, urlParam, body, requestType);
+        MediaType contentType = responseBody.contentType();
+        if (JSON_TYPE.type().equals(contentType.type())) {
+            String string = responseBody.string();
+            return JSON.parseObject(string);
+        } else {
+            throw new IllegalMediaTypeException("不支持的媒体类型");
+        }
+    }
+
+    public static String doPost1(String url, Map<String, String> headers, Map<String, String> urlParam, Object body, MediaType requestType) throws Exception {
+        ResponseBody responseBody = postPub(url, headers, urlParam, body, requestType);
+        return responseBody.string();
+    }
+
+    public static byte[] doPost2(String url, Map<String, String> headers, Map<String, String> urlParam, Object body, MediaType requestType) throws Exception {
+        ResponseBody responseBody = postPub(url, headers, urlParam, body, requestType);
+        return responseBody.bytes();
+    }
+
+    public static ResponseBody getPub(String url, Map<String, String> headers, Map<String, String> urlParam) throws IOException {
         Request.Builder builder = new Request.Builder().get();
         StringBuilder sb = new StringBuilder(url);
         boolean contains = url.contains("?");
@@ -47,18 +112,11 @@ public class HttpUtil {
         Timeout timeout = call.timeout();
         timeout.timeout(30, TimeUnit.SECONDS);
         Response execute = call.execute();
-        ResponseBody body = execute.body();
-
-        MediaType contentType = body.contentType();
-        if (JSON_TYPE.type().equals(contentType.type())) {
-            String string = body.string();
-            return JSON.parseObject(string);
-        } else {
-            throw new IllegalMediaTypeException("不支持的媒体类型");
-        }
+        return execute.body();
     }
-    public static JSONObject doPost(String url, Map<String, String> headers, Map<String, String> urlParam, Object body) throws Exception {
-        RequestBody requestBody = RequestBody.create(JSON.toJSONString(body), JSON_TYPE);
+
+    public static ResponseBody postPub(String url, Map<String, String> headers, Map<String, String> urlParam, Object body, MediaType requestType) throws IOException {
+        RequestBody requestBody = RequestBody.create(body.toString(), requestType);
         Request.Builder builder = new Request.Builder();
         StringBuilder sb = new StringBuilder(url);
         boolean contains = url.contains("?");
@@ -83,13 +141,6 @@ public class HttpUtil {
         Timeout timeout = call.timeout();
         timeout.timeout(30, TimeUnit.SECONDS);
         Response execute = call.execute();
-        ResponseBody responseBody = execute.body();
-        MediaType contentType = responseBody.contentType();
-        if (JSON_TYPE.type().equals(contentType.type())) {
-            String string = responseBody.string();
-            return JSON.parseObject(string);
-        } else {
-            throw new IllegalMediaTypeException("不支持的媒体类型");
-        }
+        return execute.body();
     }
 }

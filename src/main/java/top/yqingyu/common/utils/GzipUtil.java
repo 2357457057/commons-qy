@@ -53,9 +53,8 @@ public class GzipUtil {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream(); GZIPOutputStream gzip = new GZIPOutputStream(out)) { // 将字符串以字节的形式写入到 GZIP 压缩输出流中
             gzip.write(str.getBytes(StandardCharsets.UTF_8));
             gzip.close();
-            return out.toString(StandardCharsets.ISO_8859_1.name());
-        } catch (
-                IOException e) {
+            return out.toString(StandardCharsets.UTF_8.name());
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -69,7 +68,7 @@ public class GzipUtil {
         if (str == null || str.length() == 0) {
             return str;
         }
-        try (ByteArrayOutputStream out = new ByteArrayOutputStream(); ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes(StandardCharsets.ISO_8859_1)); GZIPInputStream gunzip = new GZIPInputStream(in)) {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream(); ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8)); GZIPInputStream gunzip = new GZIPInputStream(in)) {
             byte[] buffer = new byte[256];
             int n;
             // 从 GZIP 压缩输入流读取字节数据到 buffer 数组中

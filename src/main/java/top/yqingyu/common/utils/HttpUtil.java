@@ -53,14 +53,7 @@ public class HttpUtil {
     }
 
     public static JSONObject doPost(String url, Map<String, String> headers, Map<String, String> urlParam, Object body) throws Exception {
-        ResponseBody responseBody = postPub(url, headers, urlParam, body, JSON_TYPE);
-        MediaType contentType = responseBody.contentType();
-        if (JSON_TYPE.type().equals(contentType.type())) {
-            String string = responseBody.string();
-            return JSON.parseObject(string);
-        } else {
-            throw new IllegalMediaTypeException("不支持的媒体类型");
-        }
+        return doPost(url, headers, urlParam, body, JSON_TYPE);
     }
 
     public static JSONObject doPost(String url, Map<String, String> headers, Map<String, String> urlParam, Object body, MediaType requestType) throws Exception {

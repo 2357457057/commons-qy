@@ -1,6 +1,7 @@
 package top.yqingyu.common.response;
 
 
+import com.alibaba.fastjson2.JSON;
 import top.yqingyu.common.exception.QyExceptionEnum;
 
 import java.util.HashMap;
@@ -80,5 +81,10 @@ public class R extends HashMap<String, Object> {
         r.put("code", e.getResultCode());
         r.put("msg", e.getResultMsg());
         return r;
+    }
+
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
     }
 }

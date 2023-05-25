@@ -1,11 +1,9 @@
-import top.yqingyu.common.server$nio.CreateServer;
-import top.yqingyu.common.qymsg.MsgTransfer;
-import top.yqingyu.common.utils.FileUtil;
-import top.yqingyu.common.utils.ThreadUtil;
+import com.auth0.jwt.HeaderParams;
+import top.yqingyu.common.utils.HttpUtil;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 
 /**
  * @author YYJ
@@ -18,22 +16,11 @@ public class test {
     public static File file = null;
     public static long l = 0;
 
-    public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-
-        file = new File("H:/sdk.mkv");
-        file.delete();
-        File file1 = new File("H:/the.boy.the.mole.the.fox.and.the.horse.2022.dv.2160p.web.h265-naisu.mkv");
-        l = file1.length() / 10;
-        FileUtil.createSizeFile2(file, file1.length());
-
-        MsgTransfer.init(32);
-
-        CreateServer
-                .createDefault("DemoServer")
-                .implEvent(aa.class)
-                .defaultRouter()
-                .listenPort(444)
-                .start();
-
+    public static void main(String[] args) throws Exception {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put(HeaderParams.CONTENT_TYPE,"text/html");
+        byte[] bytes = HttpUtil.doGet3("http://localhost:4728/blog/queryAllPagesV2", hashMap, new HashMap<>());
+        System.out.println(new String(bytes, StandardCharsets.UTF_8));
+        System.out.println(new String(bytes, StandardCharsets.ISO_8859_1));
     }
 }

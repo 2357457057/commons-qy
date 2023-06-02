@@ -89,7 +89,7 @@ public class HttpUtil {
             urlParam.forEach((a, b) -> {
                 if (integer.getAndIncrement() == 0 && !contains) {
                     sb.append("?");
-                } else if (sb.charAt('?') != sb.length() - 1) {
+                } else if (sb.lastIndexOf("?") != sb.length() - 1) {
                     sb.append("&");
                 }
                 sb.append(a).append("=").append(b);
@@ -118,7 +118,7 @@ public class HttpUtil {
             urlParam.forEach((a, b) -> {
                 if (integer.getAndIncrement() == 0 && !contains) {
                     sb.append("?");
-                } else if (sb.charAt('?') != sb.length() - 1) {
+                } else if (sb.lastIndexOf("?") != sb.length() - 1) {
                     sb.append("&");
                 }
                 sb.append(a).append("=").append(b);

@@ -1,5 +1,6 @@
+import top.yqingyu.common.utils.StringUtil;
+
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author YYJ
@@ -9,24 +10,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class TestTable {
     public static void main(String[] args) throws IOException {
-//        ServerSocket serverSocket = new ServerSocket(4736);
-//        while (true) {
-//            Socket accept = serverSocket.accept();
-//                InputStream inputStream = accept.getInputStream();
-//                OutputStream outputStream = accept.getOutputStream();
-//            while (true){
-//                try {
-//                    byte[] bytes = new byte[8];
-//                    inputStream.read(bytes);
-//                    outputStream.write(s.getBytes(StandardCharsets.UTF_8));
-//                    outputStream.flush();
-//                }catch (Exception e){
-//                    break;
-//                }
-//
-//            }
-//        }
-        System.out.println(s.getBytes(StandardCharsets.UTF_8).length);
+        System.out.println(StringUtil.fillBrace("bb{}aaa", "bb"));
     }
 
     static String s = "附录结构图\n" +

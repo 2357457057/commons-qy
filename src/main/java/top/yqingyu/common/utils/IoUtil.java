@@ -503,6 +503,19 @@ public class IoUtil {
         } while (l != size);
     }
 
+    public static void writeFile(File file, Socket socket) throws Exception {
+        byte[] buf = new byte[1024 * 8];
+        FileInputStream inputStream = new FileInputStream(file);
+        OutputStream outputStream = socket.getOutputStream();
+        while (true) {
+            int read = inputStream.read(buf);
+            if (read == -1) break;
+            outputStream.write(buf, 0, read);
+        }
+        outputStream.flush();
+        inputStream.close();
+    }
+
 
     public static void writeBytes(Socket socket, byte[] bytes) throws Exception {
         OutputStream outputStream = socket.getOutputStream();

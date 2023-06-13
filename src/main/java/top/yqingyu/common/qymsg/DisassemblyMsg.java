@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -86,7 +87,7 @@ public class DisassemblyMsg {
             }
             switch (msgType) {
                 case AC -> {
-                    return AC_Disassembly($3, socket, runFlag);
+                    return AC_Disassembly($1, $3, socket, runFlag);
                 }
                 case HEART_BEAT -> {
                     return HEART_BEAT_Disassembly($0, $1, $2, $3, socket, runFlag);
@@ -160,7 +161,7 @@ public class DisassemblyMsg {
             }
             switch (msgType) {
                 case AC -> {
-                    return AC_Disassembly($3, socketChannel);
+                    return AC_Disassembly($1, $3, socketChannel);
                 }
                 case HEART_BEAT -> {
                     return HEART_BEAT_Disassembly($0, $1, $2, $3, socketChannel);
@@ -181,7 +182,18 @@ public class DisassemblyMsg {
      * @param socket     socket
      * @description 认证消息解析
      */
-    private static QyMsg AC_Disassembly(String msg_length, Socket socket, AtomicBoolean runFlag) throws IOException {
+    private static QyMsg AC_Disassembly(char data_type, String msg_length, Socket socket, AtomicBoolean runFlag) throws IOException, ClassNotFoundException {
+        DataType dataType;
+        try {
+            dataType = MsgTransfer.CHAR_2_DATA_TYPE(data_type);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法的数据类型:" + data_type, e);
+        }
+
+        if (Objects.requireNonNull(dataType) == DataType.OBJECT) {
+            byte[] bytes = IoUtil.readBytes3(socket, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX), runFlag);
+            return IoUtil.deserializationObj(bytes, QyMsg.class);
+        }
         byte[] bytes = IoUtil.readBytes3(socket, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX), runFlag);
         return JSON.parseObject(bytes, QyMsg.class);
     }
@@ -305,7 +317,18 @@ public class DisassemblyMsg {
      * @param socketChannel 流
      * @description 认证消息解析
      */
-    private static QyMsg AC_Disassembly(String msg_length, SocketChannel socketChannel) throws IOException {
+    private static QyMsg AC_Disassembly(char data_type, String msg_length, SocketChannel socketChannel) throws IOException, ClassNotFoundException {
+        DataType dataType;
+        try {
+            dataType = MsgTransfer.CHAR_2_DATA_TYPE(data_type);
+        } catch (Exception e) {
+            throw new IllegalQyMsgException("非法的数据类型:" + data_type, e);
+        }
+
+        if (Objects.requireNonNull(dataType) == DataType.OBJECT) {
+            byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
+            return IoUtil.deserializationObj(bytes, QyMsg.class);
+        }
         byte[] bytes = IoUtil.readBytes(socketChannel, Integer.parseInt(msg_length, MsgTransfer.MSG_LENGTH_RADIX));
         return JSON.parseObject(bytes, QyMsg.class);
     }

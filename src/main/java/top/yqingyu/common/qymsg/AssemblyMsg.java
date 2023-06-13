@@ -11,6 +11,7 @@ import top.yqingyu.common.utils.StringUtil;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static top.yqingyu.common.qymsg.Dict.*;
 import static top.yqingyu.common.qymsg.MsgTransfer.MSG_LENGTH_RADIX;
@@ -55,13 +56,14 @@ public class AssemblyMsg {
      * @param sb    消息头SB
      * @param list  返回的消息集合
      */
-    private static void AC_Assembly(StringBuilder sb, QyMsg qyMsg, ArrayList<byte[]> list) {
-        sb.setCharAt(1, MsgTransfer.DATA_TYPE_2_CHAR(DataType.JSON));
-        sb.append(MsgTransfer.BOOLEAN_2_SEGMENTATION(false));
-        byte[] body = JSON.toJSONBytes(qyMsg);
-        sb.append(MsgTransfer.getLength(body));
-        byte[] header = sb.toString().getBytes(StandardCharsets.UTF_8);
-        list.add(ArrayUtil.addAll(header, body));
+    private static void AC_Assembly(StringBuilder sb, QyMsg qyMsg, ArrayList<byte[]> list) throws IOException {
+        byte[] body;
+        if (Objects.requireNonNull(qyMsg.getDataType()) == DataType.OBJECT) {
+            body = IoUtil.objToSerializBytes(qyMsg);
+        } else {
+            body = JSON.toJSONString(qyMsg).getBytes(StandardCharsets.UTF_8);
+        }
+        OUT_OF_LENGTH_MSG_Assembly(body, sb, list);
     }
 
     /**

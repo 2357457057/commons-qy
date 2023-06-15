@@ -1,5 +1,7 @@
 package top.yqingyu.common.qydata;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -11,7 +13,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @description
  * @createTime 2022年12月21日 23:24:00
  */
-public class ConcurrentQyMap<A, B> extends ConcurrentHashMap<A, B> {
+public class ConcurrentQyMap<A, B> extends ConcurrentHashMap<A, B> implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 4115577532915649244L;
+
     /**
      * @param key the key whose associated value is to be returned
      * @return

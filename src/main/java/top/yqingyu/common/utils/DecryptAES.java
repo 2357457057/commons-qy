@@ -3,7 +3,6 @@ package top.yqingyu.common.utils;
 
 import org.apache.commons.codec.binary.Base64;
 
-import top.yqingyu.common.qymsg.QyMsg;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
@@ -127,7 +126,7 @@ public class DecryptAES {
      * @param value
      * @return
      */
-    public static byte[] encryptKeyByte2(QyMsg value) {
+    public static byte[] encryptKeyByte2(Object value) {
 
 
         byte[]  key = value.toString().getBytes(StandardCharsets.UTF_8);

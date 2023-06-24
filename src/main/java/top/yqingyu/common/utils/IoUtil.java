@@ -9,8 +9,6 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.*;
@@ -261,34 +259,35 @@ public class IoUtil {
 
 
     /**
-     * description:读取SocketChannel中的数据直至读到一定长度的    byte
-     *
-     * @author yqingyu
-     * DATE 2022/4/21
+     * 严格的定长读取
      */
     public static byte[] readBytes(SocketChannel socketChannel, int len) throws IOException {
-
         ByteBuffer byteBuffer = ByteBuffer.allocate(len);
-        byte[] bytes = new byte[0];
-        while (true) {
-            byteBuffer.clear();
-            int n = socketChannel.read(byteBuffer);
-            if (n == -1) {
-                break;
-            }
+        byte[] bytes;
+        do {
+            socketChannel.read(byteBuffer);
+        } while (byteBuffer.position() != len);
+        byteBuffer.flip();
+        int limit = byteBuffer.limit();
+        bytes = new byte[limit];
+        byteBuffer.get(bytes, 0, limit);
+        return bytes;
 
-            byteBuffer.flip();
-            int limit = byteBuffer.limit();
-            byte[] currentData = new byte[limit];
-            for (int i = 0; i < limit; i++) {
-                currentData[i] = byteBuffer.get(i);
-            }
-            bytes = ArrayUtil.addAll(bytes, currentData);
+    }
 
-            if (bytes.length == len) {
-                break;
-            }
-        }
+    /**
+     * 不严格的定长读取
+     */
+    public static byte[] readByteLax(SocketChannel socketChannel, int len) throws IOException {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(len);
+        byte[] bytes;
+        do {
+            socketChannel.read(byteBuffer);
+        } while (byteBuffer.position() != len);
+        byteBuffer.flip();
+        int limit = byteBuffer.limit();
+        bytes = new byte[limit];
+        byteBuffer.get(bytes, 0, limit);
         return bytes;
 
     }
@@ -339,33 +338,22 @@ public class IoUtil {
      * DATE 2022/4/21
      */
     public static byte[] readBytes2(SocketChannel socketChannel, int len) throws IOException {
-
         AtomicInteger integer = new AtomicInteger();
         ByteBuffer byteBuffer = ByteBuffer.allocate(len);
-        byte[] bytes = new byte[0];
+        byte[] bytes;
         while (true) {
-            byteBuffer.clear();
             int n = socketChannel.read(byteBuffer);
-            if (n == -1) {
+            if (n == -1 || byteBuffer.limit() == len) {
                 break;
             }
-            if (n == 0) {
-                if (integer.getAndIncrement() == 3) {
-                    break;
-                }
-            }
-            byteBuffer.flip();
-            int limit = byteBuffer.limit();
-            byte[] currentData = new byte[limit];
-            for (int i = 0; i < limit; i++) {
-                currentData[i] = byteBuffer.get(i);
-            }
-            bytes = ArrayUtil.addAll(bytes, currentData);
-
-            if (bytes.length == len) {
+            if (n == 0 && integer.getAndIncrement() == 3) {
                 break;
             }
         }
+        byteBuffer.flip();
+        int limit = byteBuffer.limit();
+        bytes = new byte[limit];
+        byteBuffer.get(bytes, 0, limit);
         return bytes;
 
     }
@@ -454,7 +442,6 @@ public class IoUtil {
     }
 
     public static <T> boolean writeBytes(AsynchronousSocketChannel socketChannel, ByteBuffer byteBuffer, long timeout, T attachment, CompletionHandler<Integer, ? super T> handler) throws Exception {
-        byteBuffer.limit();
         byteBuffer.flip();
         socketChannel.write(byteBuffer, timeout, TimeUnit.MILLISECONDS, attachment, handler);
         return true;
@@ -524,33 +511,20 @@ public class IoUtil {
     }
 
     public static <T> T deserializationObj(byte[] bytes2, Class<T> tClass) throws IOException, ClassNotFoundException {
-        ArrayList<Integer> integers = new ArrayList<>();
-        for (byte b : bytes2) {
-            integers.add(Integer.decode("" + b));
-        }
-        WriteStreamToInputStream stream = new WriteStreamToInputStream(integers);
-
-        ObjectInputStream inputStream = new ObjectInputStream(stream);
+        ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(bytes2));
         T o = (T) inputStream.readObject();
-        stream.close();
         inputStream.close();
         return o;
     }
 
 
     public static byte[] objToSerializBytes(Serializable obj) throws IOException {
-        LinkedList<Integer> integers = new LinkedList<>();
-        ObjectOutputStream outputStream = new ObjectOutputStream(new ReadStreamFromOutputStream(integers));
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream outputStream = new ObjectOutputStream(bos);
         outputStream.writeObject(obj);
         outputStream.flush();
         outputStream.close();
-        byte[] bytes = new byte[integers.size()];
-        AtomicInteger atomicInteger = new AtomicInteger();
-        integers.forEach(integer -> {
-            byte a = 0;
-            bytes[atomicInteger.getAndIncrement()] = integer.byteValue();
-        });
-        return bytes;
+        return bos.toByteArray();
     }
 
     /**

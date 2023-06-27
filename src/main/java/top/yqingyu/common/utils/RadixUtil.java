@@ -67,8 +67,8 @@ public class RadixUtil {
             numCp = numCp / radix;
         } while (numCp != 0);
         byte[] bs = new byte[bytes.size()];
-        for (int i = 0; i < bs.length; i++) {
-            bs[i] = bytes.get(i);
+        for (int i = 0, j = bs.length - 1; i < bs.length; i++, j--) {
+            bs[j] = bytes.get(i);
         }
         return bs;
     }
@@ -94,8 +94,8 @@ public class RadixUtil {
             numCp = numCp / radix;
         } while (numCp != 0);
         byte[] bs = new byte[bytes.size()];
-        for (int i = 0; i < bs.length; i++) {
-            bs[i] = bytes.get(i);
+        for (int i = 0, j = bs.length - 1; i < bs.length; i++, j--) {
+            bs[j] = bytes.get(i);
         }
         return bs;
     }

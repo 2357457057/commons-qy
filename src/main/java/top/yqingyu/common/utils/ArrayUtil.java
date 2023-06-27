@@ -1474,7 +1474,7 @@ public class ArrayUtil {
         for (int i = 0; i < bytes.length; i++) {
             byte[] aByte = bytes[i];
             if (aByte != null) {
-                System.arraycopy(rtn, position, aByte, 0, aByte.length);
+                System.arraycopy(aByte, 0, rtn, position, aByte.length);
                 position += aByte.length;
             }
         }
@@ -1494,7 +1494,7 @@ public class ArrayUtil {
         for (int i = 0; i < bytes.length; i++) {
             short[] aByte = bytes[i];
             if (aByte != null) {
-                System.arraycopy(rtn, position, aByte, 0, aByte.length);
+                System.arraycopy(aByte, 0, rtn, position, aByte.length);
                 position += aByte.length;
             }
         }
@@ -1514,7 +1514,7 @@ public class ArrayUtil {
         for (int i = 0; i < bytes.length; i++) {
             int[] aByte = bytes[i];
             if (aByte != null) {
-                System.arraycopy(rtn, position, aByte, 0, aByte.length);
+                System.arraycopy(aByte, 0, rtn, position, aByte.length);
                 position += aByte.length;
             }
         }
@@ -1534,7 +1534,7 @@ public class ArrayUtil {
         for (int i = 0; i < bytes.length; i++) {
             long[] aByte = bytes[i];
             if (aByte != null) {
-                System.arraycopy(rtn, position, aByte, 0, aByte.length);
+                System.arraycopy(aByte, 0, rtn, position, aByte.length);
                 position += aByte.length;
             }
         }
@@ -1554,7 +1554,7 @@ public class ArrayUtil {
         for (int i = 0; i < bytes.length; i++) {
             boolean[] aByte = bytes[i];
             if (aByte != null) {
-                System.arraycopy(rtn, position, aByte, 0, aByte.length);
+                System.arraycopy(aByte, 0, rtn, position, aByte.length);
                 position += aByte.length;
             }
         }
@@ -1574,7 +1574,7 @@ public class ArrayUtil {
         for (int i = 0; i < bytes.length; i++) {
             double[] aByte = bytes[i];
             if (aByte != null) {
-                System.arraycopy(rtn, position, aByte, 0, aByte.length);
+                System.arraycopy(aByte, 0, rtn, position, aByte.length);
                 position += aByte.length;
             }
         }
@@ -1594,7 +1594,7 @@ public class ArrayUtil {
         for (int i = 0; i < bytes.length; i++) {
             float[] aByte = bytes[i];
             if (aByte != null) {
-                System.arraycopy(rtn, position, aByte, 0, aByte.length);
+                System.arraycopy(aByte, 0, rtn, position, aByte.length);
                 position += aByte.length;
             }
         }

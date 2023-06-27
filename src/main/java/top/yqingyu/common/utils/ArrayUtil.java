@@ -388,6 +388,7 @@ public class ArrayUtil {
         }
         return ts;
     }
+
     public static int[] leftPad(int[] array, int length, int t) {
         int[] ts = new int[length];
         int l = length - array.length;
@@ -406,6 +407,7 @@ public class ArrayUtil {
         }
         return ts;
     }
+
     public static double[] leftPad(double[] array, int length, double t) {
         double[] ts = new double[length];
         int l = length - array.length;
@@ -424,6 +426,7 @@ public class ArrayUtil {
         }
         return ts;
     }
+
     public static float[] leftPad(float[] array, int length, float t) {
         float[] ts = new float[length];
         int l = length - array.length;
@@ -442,6 +445,7 @@ public class ArrayUtil {
         }
         return ts;
     }
+
     public static long[] leftPad(long[] array, int length, long t) {
         long[] ts = new long[length];
         int l = length - array.length;
@@ -460,6 +464,7 @@ public class ArrayUtil {
         }
         return ts;
     }
+
     /**
      * <p>Adds all the elements of the given arrays into a new array.
      * <p>The new array contains all of the element of {@code array1} followed
@@ -1454,6 +1459,146 @@ public class ArrayUtil {
         System.arraycopy(array1, 0, joinedArray, 0, array1.length);
         System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
         return joinedArray;
+    }
+
+    public static byte[] addAll(final byte[]... bytes) {
+        int total = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            byte[] aByte = bytes[i];
+            if (aByte != null) {
+                total += aByte.length;
+            }
+        }
+        byte[] rtn = new byte[total];
+        int position = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            byte[] aByte = bytes[i];
+            if (aByte != null) {
+                System.arraycopy(rtn, position, aByte, 0, aByte.length);
+                position += aByte.length;
+            }
+        }
+        return rtn;
+    }
+
+    public static short[] addAll(final short[]... bytes) {
+        int total = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            short[] aByte = bytes[i];
+            if (aByte != null) {
+                total += aByte.length;
+            }
+        }
+        short[] rtn = new short[total];
+        int position = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            short[] aByte = bytes[i];
+            if (aByte != null) {
+                System.arraycopy(rtn, position, aByte, 0, aByte.length);
+                position += aByte.length;
+            }
+        }
+        return rtn;
+    }
+
+    public static int[] addAll(final int[]... bytes) {
+        int total = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            int[] aByte = bytes[i];
+            if (aByte != null) {
+                total += aByte.length;
+            }
+        }
+        int[] rtn = new int[total];
+        int position = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            int[] aByte = bytes[i];
+            if (aByte != null) {
+                System.arraycopy(rtn, position, aByte, 0, aByte.length);
+                position += aByte.length;
+            }
+        }
+        return rtn;
+    }
+
+    public static long[] addAll(final long[]... bytes) {
+        int total = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            long[] aByte = bytes[i];
+            if (aByte != null) {
+                total += aByte.length;
+            }
+        }
+        long[] rtn = new long[total];
+        int position = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            long[] aByte = bytes[i];
+            if (aByte != null) {
+                System.arraycopy(rtn, position, aByte, 0, aByte.length);
+                position += aByte.length;
+            }
+        }
+        return rtn;
+    }
+
+    public static boolean[] addAll(final boolean[]... bytes) {
+        int total = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            boolean[] aByte = bytes[i];
+            if (aByte != null) {
+                total += aByte.length;
+            }
+        }
+        boolean[] rtn = new boolean[total];
+        int position = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            boolean[] aByte = bytes[i];
+            if (aByte != null) {
+                System.arraycopy(rtn, position, aByte, 0, aByte.length);
+                position += aByte.length;
+            }
+        }
+        return rtn;
+    }
+
+    public static double[] addAll(final double[]... bytes) {
+        int total = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            double[] aByte = bytes[i];
+            if (aByte != null) {
+                total += aByte.length;
+            }
+        }
+        double[] rtn = new double[total];
+        int position = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            double[] aByte = bytes[i];
+            if (aByte != null) {
+                System.arraycopy(rtn, position, aByte, 0, aByte.length);
+                position += aByte.length;
+            }
+        }
+        return rtn;
+    }
+
+    public static float[] addAll(final float[]... bytes) {
+        int total = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            float[] aByte = bytes[i];
+            if (aByte != null) {
+                total += aByte.length;
+            }
+        }
+        float[] rtn = new float[total];
+        int position = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            float[] aByte = bytes[i];
+            if (aByte != null) {
+                System.arraycopy(rtn, position, aByte, 0, aByte.length);
+                position += aByte.length;
+            }
+        }
+        return rtn;
     }
 
     /**

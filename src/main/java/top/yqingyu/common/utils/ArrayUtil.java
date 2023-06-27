@@ -351,6 +351,115 @@ public class ArrayUtil {
         return bytes;
     }
 
+    public static byte[] leftPad(byte[] array, int length, byte t) {
+        byte[] ts = new byte[length];
+        int l = length - array.length;
+        for (int i = 0; i < l; i++) {
+            ts[i] = t;
+        }
+        System.arraycopy(array, 0, ts, l, array.length);
+        return ts;
+    }
+
+    public static byte[] rigthPad(byte[] array, int length, byte t) {
+        byte[] ts = new byte[length];
+        System.arraycopy(array, 0, ts, 0, array.length);
+        for (int i = ts.length - 1; i >= array.length; i--) {
+            ts[i] = t;
+        }
+        return ts;
+    }
+
+    public static short[] leftPad(short[] array, int length, short t) {
+        short[] ts = new short[length];
+        int l = length - array.length;
+        for (int i = 0; i < l; i++) {
+            ts[i] = t;
+        }
+        System.arraycopy(array, 0, ts, l, array.length);
+        return ts;
+    }
+
+    public static short[] rigthPad(short[] array, int length, short t) {
+        short[] ts = new short[length];
+        System.arraycopy(array, 0, ts, 0, array.length);
+        for (int i = ts.length - 1; i >= array.length; i--) {
+            ts[i] = t;
+        }
+        return ts;
+    }
+    public static int[] leftPad(int[] array, int length, int t) {
+        int[] ts = new int[length];
+        int l = length - array.length;
+        for (int i = 0; i < l; i++) {
+            ts[i] = t;
+        }
+        System.arraycopy(array, 0, ts, l, array.length);
+        return ts;
+    }
+
+    public static int[] rigthPad(int[] array, int length, int t) {
+        int[] ts = new int[length];
+        System.arraycopy(array, 0, ts, 0, array.length);
+        for (int i = ts.length - 1; i >= array.length; i--) {
+            ts[i] = t;
+        }
+        return ts;
+    }
+    public static double[] leftPad(double[] array, int length, double t) {
+        double[] ts = new double[length];
+        int l = length - array.length;
+        for (int i = 0; i < l; i++) {
+            ts[i] = t;
+        }
+        System.arraycopy(array, 0, ts, l, array.length);
+        return ts;
+    }
+
+    public static double[] rigthPad(double[] array, int length, double t) {
+        double[] ts = new double[length];
+        System.arraycopy(array, 0, ts, 0, array.length);
+        for (int i = ts.length - 1; i >= array.length; i--) {
+            ts[i] = t;
+        }
+        return ts;
+    }
+    public static float[] leftPad(float[] array, int length, float t) {
+        float[] ts = new float[length];
+        int l = length - array.length;
+        for (int i = 0; i < l; i++) {
+            ts[i] = t;
+        }
+        System.arraycopy(array, 0, ts, l, array.length);
+        return ts;
+    }
+
+    public static float[] rigthPad(float[] array, int length, float t) {
+        float[] ts = new float[length];
+        System.arraycopy(array, 0, ts, 0, array.length);
+        for (int i = ts.length - 1; i >= array.length; i--) {
+            ts[i] = t;
+        }
+        return ts;
+    }
+    public static long[] leftPad(long[] array, int length, long t) {
+        long[] ts = new long[length];
+        int l = length - array.length;
+        for (int i = 0; i < l; i++) {
+            ts[i] = t;
+        }
+        System.arraycopy(array, 0, ts, l, array.length);
+        return ts;
+    }
+
+    public static long[] rigthPad(long[] array, int length, long t) {
+        long[] ts = new long[length];
+        System.arraycopy(array, 0, ts, 0, array.length);
+        for (int i = ts.length - 1; i >= array.length; i--) {
+            ts[i] = t;
+        }
+        return ts;
+    }
     /**
      * <p>Adds all the elements of the given arrays into a new array.
      * <p>The new array contains all of the element of {@code array1} followed

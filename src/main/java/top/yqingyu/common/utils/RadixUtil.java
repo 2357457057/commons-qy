@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class RadixUtil {
-    private static final byte[] BYTE_DICT = {
+    public static final byte[] BYTE_DICT = {
             '.', '<', '>', 'q', 'r', 's', '/', '?', 'E', 'd',
             'e', '{', '}', ';', ':', 'a', 'b', 'c', '0', '1',
             '2', '`', '!', '@', 'Y', 'Z', '~', 'n', 'o', 'O',

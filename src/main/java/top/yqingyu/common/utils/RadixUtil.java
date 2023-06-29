@@ -14,7 +14,7 @@ public class RadixUtil {
             'C', 'D', '&', 'F', 'G', 'H', 'k', 'l', 'm', '[',
             ']', 'p', '8', '9', 'J', 'z', 'A', 'B', 'K', 'L',
             'M', ',', 'I', 'j', '^', 'N', 'S', '_', 'y', '|',
-            't', '\\', '\'', '\"'
+            't', '\\', '\'', '\"', 127, 31, 26, 27, 28, 29
     };
 
     public static final byte[] BYTE_DICT_S = {
@@ -27,7 +27,7 @@ public class RadixUtil {
             'Y', 'Z', '~', '`', '!', '@', '#', '$', '%', '^',
             '&', '*', '(', ')', '_', '-', '+', '=', '[', ']',
             '{', '}', ';', ':', ',', '.', '<', '>', '/', '?',
-            '\\', '|', '\'', '\"',
+            '\\', '|', '\'', '\"', 127, 31, 26, 27, 28, 29
     };
     private static final HashMap<Byte, Integer> BYTE_MAP = new HashMap<>();
     private static final HashMap<Byte, Integer> BYTE_MAP_S = new HashMap<>();
@@ -46,6 +46,9 @@ public class RadixUtil {
         BYTE_MAP_S.forEach((b, i) -> F_BYTE_MAP_S.put(i, b));
     }
 
+    /**
+     * 乱序串转十进制
+     */
     public static int byte2Radix(byte[] num, int radix) {
         checkRadix(radix);
         int length = num.length - 1;
@@ -58,6 +61,9 @@ public class RadixUtil {
         return total;
     }
 
+    /**
+     * 十进制转乱序串
+     */
     public static byte[] radix2Byte(final int num, int radix) {
         checkRadix(radix);
         ArrayList<Byte> bytes = new ArrayList<>(10);
@@ -73,6 +79,9 @@ public class RadixUtil {
         return bs;
     }
 
+    /**
+     * 顺序串转十进制
+     */
     public static int byte2Radix2(byte[] num, int radix) {
         checkRadix(radix);
         int length = num.length - 1;
@@ -85,6 +94,9 @@ public class RadixUtil {
         return total;
     }
 
+    /**
+     * 顺序串转十进制
+     */
     public static byte[] radix2Byte2(final int num, int radix) {
         checkRadix(radix);
         ArrayList<Byte> bytes = new ArrayList<>(10);
@@ -100,22 +112,22 @@ public class RadixUtil {
         return bs;
     }
 
-    public static int getRadixNumS(byte b, int radix) {
+    private static int getRadixNumS(byte b, int radix) {
         Integer i = BYTE_MAP_S.get(b);
         if (i > radix)
-            throw new IllegalArgumentException("超出解析范围");
+            throw new IllegalArgumentException(StringUtil.fillBrace("超出解析范围{}", radix));
         return i;
     }
 
-    public static int getRadixNum(byte b, int radix) {
+    private static int getRadixNum(byte b, int radix) {
         Integer i = BYTE_MAP.get(b);
         if (i > radix)
-            throw new IllegalArgumentException("超出解析范围");
+            throw new IllegalArgumentException(StringUtil.fillBrace("超出解析范围{}", radix));
         return i;
     }
 
-    public static void checkRadix(int radix) {
+    private static void checkRadix(int radix) {
         if (radix > BYTE_DICT.length)
-            throw new IllegalArgumentException("超出最大进制");
+            throw new IllegalArgumentException(StringUtil.fillBrace("超出解析范围{}", radix));
     }
 }

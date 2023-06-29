@@ -1,5 +1,7 @@
 package top.yqingyu.common.exception;
 
+import java.io.Serial;
+
 /**
  * QyMsg 的部分异常
  *
@@ -10,6 +12,9 @@ package top.yqingyu.common.exception;
  * @createTime 2023年01月05日 22:36:00
  */
 public class IllegalQyMsgException extends RuntimeException {
+    @Serial
+    private static final long serialVersionUID = -723333772533793164L;
+
     public IllegalQyMsgException() {
         super();
     }

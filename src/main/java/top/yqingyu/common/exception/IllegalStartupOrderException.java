@@ -1,5 +1,7 @@
 package top.yqingyu.common.exception;
 
+import java.io.Serial;
+
 /**
  * 启动顺序异常
  *
@@ -12,6 +14,8 @@ package top.yqingyu.common.exception;
 public class IllegalStartupOrderException extends RuntimeException {
 
     private static final String prefix = "非法的启动顺序，应先启动：";
+    @Serial
+    private static final long serialVersionUID = -1161092203853822343L;
 
     public IllegalStartupOrderException() {
         super();

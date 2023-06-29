@@ -1,5 +1,7 @@
 package top.yqingyu.common.exception;
 
+import java.io.Serial;
+
 /**
  * 服务器异常
  *
@@ -7,6 +9,7 @@ package top.yqingyu.common.exception;
  * date: 2021/09/09
  */
 public class QyException extends RuntimeException {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

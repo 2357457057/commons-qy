@@ -1,5 +1,7 @@
 package top.yqingyu.common.server$nio.core;
 
+import java.io.Serial;
+
 /**
  * @author YYJ
  * @version 1.0.0
@@ -8,6 +10,9 @@ package top.yqingyu.common.server$nio.core;
  * @createTime 2022年09月20日 00:24:00
  */
 public class RebuildSelectorException extends RuntimeException{
+    @Serial
+    private static final long serialVersionUID = -6349408313715668018L;
+
     /**
      * @param message 错误信息
      */

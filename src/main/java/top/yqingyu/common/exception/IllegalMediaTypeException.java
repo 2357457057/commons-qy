@@ -1,5 +1,7 @@
 package top.yqingyu.common.exception;
 
+import java.io.Serial;
+
 /**
  * 错误的媒体类型
  *
@@ -10,6 +12,9 @@ package top.yqingyu.common.exception;
  * @createTime 2023年01月06日 21:31:00
  */
 public class IllegalMediaTypeException extends RuntimeException {
+    @Serial
+    private static final long serialVersionUID = -7733694506076874702L;
+
     /**
      * Constructs a new runtime exception with {@code null} as its
      * detail message.  The cause is not initialized, and may subsequently be

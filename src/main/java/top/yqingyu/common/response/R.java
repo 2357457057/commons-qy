@@ -4,6 +4,7 @@ package top.yqingyu.common.response;
 import com.alibaba.fastjson2.JSON;
 import top.yqingyu.common.exception.QyExceptionEnum;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import java.util.Map;
  * date: 2021/09/09
  */
 public class R extends HashMap<String, Object> {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public R() {

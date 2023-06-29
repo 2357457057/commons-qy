@@ -1,5 +1,7 @@
 package top.yqingyu.common.exception;
 
+import java.io.Serial;
+
 /**
  * 文件创建异常
  *
@@ -10,6 +12,9 @@ package top.yqingyu.common.exception;
  * @date 2023年01月04日 18:38:00
  */
 public class IllegalFileCreateException extends RuntimeException {
+    @Serial
+    private static final long serialVersionUID = -7251996375253256840L;
+
     /**
      * Constructs a new runtime exception with {@code null} as its
      * detail message.  The cause is not initialized, and may subsequently be

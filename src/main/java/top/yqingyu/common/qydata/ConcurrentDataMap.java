@@ -3,6 +3,7 @@ package top.yqingyu.common.qydata;
 import com.alibaba.fastjson2.JSON;
 import top.yqingyu.common.utils.ClazzUtil;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -19,6 +20,9 @@ import java.util.concurrent.TimeUnit;
  * @createTime 2022年09月17日 10:59:00
  */
 public class ConcurrentDataMap<K, V> extends ConcurrentReferenceHashMap<K, V> implements ConcurrentMap<K, V>, Serializable, Cloneable {
+    @Serial
+    private static final long serialVersionUID = 5720465655020589716L;
+
     public ConcurrentDataMap() {
     }
 

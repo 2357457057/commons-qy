@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -70,7 +71,7 @@ public abstract class EventHandler implements Runnable {
                 selector.select();
                 Set<SelectionKey> keys = selector.selectedKeys();
                 Iterator<SelectionKey> iterator = keys.iterator();
-                if (keys.size() == 0)
+                if (keys.isEmpty())
                     OPERATE_RECORDER.add2(selector.hashCode());
 
                 while (iterator.hasNext()) {
@@ -78,6 +79,16 @@ public abstract class EventHandler implements Runnable {
                     iterator.remove();
                     SocketChannel channel = (SocketChannel) selectionKey.channel();
                     ConcurrentQyMap<String, Object> status = NET_CHANNELS.get(channel.hashCode());
+
+                    if (status == null) {
+                        NetChannel netChannel = new NetChannel(channel);
+                        status = new ConcurrentQyMap<String, Object>()
+                                .putConsecutive("NetChannel", netChannel)
+                                .putConsecutive("LocalDateTime", LocalDateTime.now())
+                                .putConsecutive(ChannelStatus.WRITE, Boolean.FALSE)
+                                .putConsecutive(ChannelStatus.READ, Boolean.FALSE);
+                        NET_CHANNELS.put(netChannel.hashCode(), status);
+                    }
                     if (selectionKey.isReadable()) {
                         if (Status.canDo(status, ChannelStatus.READ)) {
                             Status.statusTrue(status, ChannelStatus.READ);

@@ -4,6 +4,7 @@ package top.yqingyu.common.qydata;
 import com.alibaba.fastjson2.*;
 import com.alibaba.fastjson2.schema.JSONSchema;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
@@ -23,6 +24,9 @@ import java.util.stream.Stream;
  */
 public class DataList extends JSONArray implements Cloneable, Serializable {
 
+
+    @Serial
+    private static final long serialVersionUID = -2895523847140935634L;
 
     /**
      * default

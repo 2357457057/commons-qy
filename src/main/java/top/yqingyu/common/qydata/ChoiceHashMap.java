@@ -1,5 +1,6 @@
 package top.yqingyu.common.qydata;
 
+import java.io.Serial;
 import java.util.HashMap;
 
 /**
@@ -13,6 +14,8 @@ import java.util.HashMap;
  * @createTime 2023年01月09日 23:29:00
  */
 public class ChoiceHashMap<A, B> extends HashMap<A, B> {
+    @Serial
+    private static final long serialVersionUID = 3105059776160149805L;
     private A defaultKey;
     private B defaultValue;
 

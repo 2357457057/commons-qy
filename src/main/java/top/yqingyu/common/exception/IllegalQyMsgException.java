@@ -16,22 +16,21 @@ public class IllegalQyMsgException extends QyRuntimeException {
     private static final long serialVersionUID = -723333772533793164L;
 
     public IllegalQyMsgException() {
-        super();
     }
 
-    public IllegalQyMsgException(String message) {
-        super(message);
+    public IllegalQyMsgException(String message, Object... o) {
+        super(message, o);
     }
 
-    public IllegalQyMsgException(String message, Throwable cause) {
-        super(message, cause);
+    public IllegalQyMsgException(Throwable cause, String message, Object... o) {
+        super(cause, message, o);
     }
 
     public IllegalQyMsgException(Throwable cause) {
         super(cause);
     }
 
-    protected IllegalQyMsgException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public IllegalQyMsgException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, Object... o) {
+        super(message, cause, enableSuppression, writableStackTrace, o);
     }
 }

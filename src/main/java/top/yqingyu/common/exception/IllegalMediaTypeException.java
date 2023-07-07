@@ -11,7 +11,7 @@ import java.io.Serial;
  * @description
  * @createTime 2023年01月06日 21:31:00
  */
-public class IllegalMediaTypeException extends RuntimeException {
+public class IllegalMediaTypeException extends QyRuntimeException {
     @Serial
     private static final long serialVersionUID = -7733694506076874702L;
 

@@ -11,29 +11,28 @@ import java.io.Serial;
  * @description
  * @createTime 2023年02月09日 22:20:00
  */
-public class IllegalStartupOrderException extends RuntimeException {
+public class IllegalStartupOrderException extends QyRuntimeException {
 
     private static final String prefix = "非法的启动顺序，应先启动：";
     @Serial
     private static final long serialVersionUID = -1161092203853822343L;
 
     public IllegalStartupOrderException() {
-        super();
     }
 
-    public IllegalStartupOrderException(String message) {
-        super(prefix + message);
+    public IllegalStartupOrderException(String message, Object... o) {
+        super(prefix + message, o);
     }
 
-    public IllegalStartupOrderException(String message, Throwable cause) {
-        super(message, cause);
+    public IllegalStartupOrderException(Throwable cause, String message, Object... o) {
+        super(cause, prefix + message, o);
     }
 
     public IllegalStartupOrderException(Throwable cause) {
         super(cause);
     }
 
-    protected IllegalStartupOrderException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public IllegalStartupOrderException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, Object... o) {
+        super(prefix + message, cause, enableSuppression, writableStackTrace, o);
     }
 }

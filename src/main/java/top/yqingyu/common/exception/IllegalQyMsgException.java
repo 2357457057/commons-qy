@@ -11,7 +11,7 @@ import java.io.Serial;
  * @description
  * @createTime 2023年01月05日 22:36:00
  */
-public class IllegalQyMsgException extends RuntimeException {
+public class IllegalQyMsgException extends QyRuntimeException {
     @Serial
     private static final long serialVersionUID = -723333772533793164L;
 

@@ -23,7 +23,7 @@ public final class QyNamingPolicy implements NamingPolicy {
     private final String LABEL;
 
     public QyNamingPolicy(String module) {
-        LABEL = "$$Qy " + module + "CGLIB$$";
+        LABEL = "$$Qy" + module + "CGLIB$$";
     }
 
     @Override

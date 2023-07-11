@@ -8,12 +8,12 @@
     <parent>
         <groupId>top.yqingyu</groupId>
         <artifactId>yqingyu-parent</artifactId>
-        <version>1.9.4</version>
+        <version>1.9.5</version>
     </parent>
 
     <!--gav信息-->
     <artifactId>commons-qy</artifactId>
-    <version>${project.parent.version}</version>
+    <version>${parent.version}</version>
     <name>commons-qy</name>
     <description>Qy's common tools package</description>
     <url>https://github.com/2357457057/commons-qy</url>

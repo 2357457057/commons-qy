@@ -6,7 +6,6 @@ import top.yqingyu.common.exception.QyExceptionEnum;
 
 import java.io.Serial;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * web接口的统一响应对象 发送数据
@@ -55,12 +54,6 @@ public class R extends HashMap<String, Object> {
     public static R ok(String msg) {
         R r = new R();
         r.put("msg", msg);
-        return r;
-    }
-
-    public static R ok(Map<String, Object> map) {
-        R r = new R();
-        r.putAll(map);
         return r;
     }
 

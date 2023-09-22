@@ -396,7 +396,7 @@ public class IoUtil {
      * @author YYJ
      * @version 1.0.0
      * @description      */
-    public static byte[] readUntilTarget(SocketChannel socketChannel) {
+    public static byte[] readUntilTarget(SocketChannel socketChannel, byte[] target) {
         //TODO 待实现
         return new byte[0];
     }

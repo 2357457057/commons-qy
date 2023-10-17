@@ -17,7 +17,15 @@
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
 stages:          # List of stages for jobs, and their order of execution
+  - git_sync
   - install
+
+git_sync:
+  stage: git_sync
+  script: 
+    - cd /data/mycode/commonsqy
+    - git pull gitlab master
+    - git push gitee master
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: install

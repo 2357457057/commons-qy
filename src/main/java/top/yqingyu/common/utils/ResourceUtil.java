@@ -1,12 +1,12 @@
 package top.yqingyu.common.utils;
 
 
-
 import top.yqingyu.common.qydata.DataList;
 import top.yqingyu.common.qydata.DataMap;
 
 import java.io.*;
 import java.net.*;
+import java.nio.file.FileSystems;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -270,22 +270,22 @@ public class ResourceUtil {
 
     /**
      * @param rootPath 文件映射
-     *      eg  /a
-     *           |
-     *           ----c
-     *               |
-     *               ---d.txt
-     *               |
-     *               ---e.exe
-     *  getFilePathMapping("/a")
-     *              return
+     *                 eg  /a
+     *                 |
+     *                 ----c
+     *                 |
+     *                 ---d.txt
+     *                 |
+     *                 ---e.exe
+     *                 getFilePathMapping("/a")
+     *                 return
      *                 /c/d.txt     /a/c/d.txt
      *                 /c/e.txt      /a/c/e.txt
      * @return 目标文件list
      * @author YYJ
      */
     public static HashMap<String, String> getFilePathMapping(String rootPath) {
-        String file_separator = System.getProperty("file.separator");
+        String file_separator = FileSystems.getDefault().getSeparator();
 
         if (isWindows() && rootPath.indexOf("/") == rootPath.length() - 1)
             rootPath = StringUtil.removeEnd(rootPath, "/");
@@ -301,29 +301,30 @@ public class ResourceUtil {
         LinkedList<File> queue = new LinkedList<>(Arrays.asList(files));
         do {
             File poll = queue.poll();
-            if (poll != null) {
-
-                File[] listFiles = null;
-                if (poll.isDirectory()) {
-                    listFiles = poll.listFiles();
-                }
-                if (listFiles != null && listFiles.length > 0)
-                    queue.addAll(Arrays.asList(listFiles));
-
-                if (poll.isFile()) {
-                    String path = poll.getPath();
-                    String key = path.replace(rootPath, "");
-
-                    if (isWindows()) {
-                        key = key.replaceAll("\\\\", "/");
-                        if (key.indexOf("/") != 0)
-                            key = "/" + key;
-                    }
-
-                    map.put(key, path);
-                }
+            if (poll == null) {
+                break;
             }
-        } while (queue.size() > 0);
+            File[] listFiles = null;
+            if (poll.isDirectory()) {
+                listFiles = poll.listFiles();
+            }
+            if (listFiles != null && listFiles.length > 0)
+                queue.addAll(Arrays.asList(listFiles));
+
+            if (poll.isFile()) {
+                String path = poll.getPath();
+                String key = path.replace(rootPath, "");
+
+                if (isWindows()) {
+                    key = key.replaceAll("\\\\", "/");
+                    if (key.indexOf("/") != 0)
+                        key = "/" + key;
+                }
+
+                map.put(key, path);
+            }
+
+        } while (!queue.isEmpty());
 
         return map;
     }
@@ -333,11 +334,11 @@ public class ResourceUtil {
     public static byte[] getFileFromCache(String resourceLocation) throws IOException {
         if (FILE_RESOURCE_CACHE.containsKey(resourceLocation)) {
             return FILE_RESOURCE_CACHE.get(resourceLocation);
-        } else {
-            byte[] resourceAsBytes = getResourceAsBytes(resourceLocation);
-            FILE_RESOURCE_CACHE.put(resourceLocation, resourceAsBytes);
-            return resourceAsBytes;
         }
+        byte[] resourceAsBytes = getResourceAsBytes(resourceLocation);
+        FILE_RESOURCE_CACHE.put(resourceLocation, resourceAsBytes);
+        return resourceAsBytes;
+
     }
 
     /**

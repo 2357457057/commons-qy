@@ -107,7 +107,7 @@ public class ChinaCalendar {
      * @return 彭祖百忌
      */
     public static String PZBJ(int[] rGZ) {
-        return CCConstants.TG_PZBJ[rGZ[0]] + " " + CCConstants.DZ_PZBJ[rGZ[1]];
+        return CCConstants.TG_PZBJ[rGZ[0]] + "  " + CCConstants.DZ_PZBJ[rGZ[1]];
     }
 
     /**

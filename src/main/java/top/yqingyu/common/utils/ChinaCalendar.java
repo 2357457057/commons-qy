@@ -12,7 +12,7 @@ import static top.yqingyu.common.utils.CCConstants.*;
 
 public class ChinaCalendar {
     public static void main(String[] args) throws InterruptedException {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDate now = LocalDate.of(2023, 11, 21);
         HuangLi instance = HuangLi.getInstance(now);
         System.out.println(instance);
     }
@@ -284,7 +284,11 @@ public class ChinaCalendar {
         //当前差
         sss[1] = JIE_QI[Math.abs(i - 1)];
         sss[2] = offset - CCConstants.TermTable[yearOffset + i - 1] + "";
-        if (i != 24) {
+        if (!"".equals(sss[0])) {
+            //下一差
+            sss[3] = JIE_QI[(Math.abs(i + 1)) % 24];
+            sss[4] = CCConstants.TermTable[yearOffset + i + 1] - offset + 1 + "";
+        } else if (i != 24) {
             //下一差
             sss[3] = JIE_QI[Math.abs(i)];
             sss[4] = CCConstants.TermTable[yearOffset + i] - offset + 1 + "";

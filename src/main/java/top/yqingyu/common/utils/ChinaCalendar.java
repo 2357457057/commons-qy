@@ -85,7 +85,7 @@ public class ChinaCalendar {
         while (start > 10) {
             start -= 10;
         }
-        start %= 12;
+        index %= 12;
         return new int[]{start, index};
     }
 

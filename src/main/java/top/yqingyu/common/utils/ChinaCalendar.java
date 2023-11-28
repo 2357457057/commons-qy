@@ -12,7 +12,7 @@ import static top.yqingyu.common.utils.CCConstants.*;
 
 public class ChinaCalendar {
     public static void main(String[] args) throws InterruptedException {
-        LocalDate now = LocalDate.of(2023, 11, 21);
+        LocalDate now = LocalDate.now();
         HuangLi instance = HuangLi.getInstance(now);
         System.out.println(instance);
     }
@@ -85,6 +85,7 @@ public class ChinaCalendar {
         while (start > 10) {
             start -= 10;
         }
+        start %= 12;
         return new int[]{start, index};
     }
 

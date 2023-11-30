@@ -82,7 +82,7 @@ public class ChinaCalendar {
         };
         int index = (int) Math.floor((hour + 1) / 2D);
         start += index;
-        while (start > 10) {
+        while (start >= 10) {
             start -= 10;
         }
         index %= 12;

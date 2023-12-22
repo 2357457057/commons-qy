@@ -13,6 +13,7 @@ import static top.yqingyu.common.utils.CCConstants.*;
 public class ChinaCalendar {
     public static void main(String[] args) throws InterruptedException {
         LocalDate now = LocalDate.now();
+        now = LocalDate.of(2024, 1, 1);
         HuangLi instance = HuangLi.getInstance(now);
         System.out.println(instance);
     }
@@ -266,10 +267,10 @@ public class ChinaCalendar {
         int year = date.getYear();
         int yearOffset = year - 1900;
         yearOffset *= 24;
-        int offset = date.getDayOfYear();
+        int offset = date.getDayOfYear() -1;
         int i = 0;
         boolean JieQi = false;
-        for (; i < 25; i++) {
+        for (; i < 24; i++) {
             int num = CCConstants.TermTable[yearOffset + i];
             if (i == 0 && num > offset) {
                 break;
@@ -284,20 +285,27 @@ public class ChinaCalendar {
         sss[0] = JieQi ? JIE_QI[i] : "";
         //当前差
         sss[1] = JIE_QI[Math.abs(i - 1)];
-        sss[2] = offset - CCConstants.TermTable[yearOffset + i - 1] + "";
+        int wholeYear = isLeapYear(year) ? 366 : 365;
+        int i1 = offset - TermTable[yearOffset + i - 1];
+        if (i1 < 0)
+            i1 += wholeYear;
+        sss[2] = i1 + "";
         if (!"".equals(sss[0])) {
             //下一差
             sss[3] = JIE_QI[(Math.abs(i + 1)) % 24];
-            sss[4] = CCConstants.TermTable[yearOffset + i + 1] - offset + 1 + "";
+            int sub = TermTable[yearOffset + i + 1] - offset + 1;
+            if (sub < 0) {
+                sss[4] = sub + wholeYear + "";
+            } else
+                sss[4] = sub + "";
         } else if (i != 24) {
             //下一差
-            sss[3] = JIE_QI[Math.abs(i)];
+            sss[3] = JIE_QI[Math.abs(i % 24)];
             sss[4] = CCConstants.TermTable[yearOffset + i] - offset + 1 + "";
         } else {
-            int wholeYear = isLeapYear(year) ? 366 : 365;
             int temp = CCConstants.TermTable[yearOffset + i] + wholeYear;
             //下一差
-            sss[3] = JIE_QI[Math.abs(i)];
+            sss[3] = JIE_QI[Math.abs(i % 24)];
             sss[4] = temp - offset + 1 + "";
         }
 

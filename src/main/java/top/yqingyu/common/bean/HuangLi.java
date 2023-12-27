@@ -5,13 +5,16 @@ import top.yqingyu.common.exception.QyRuntimeException;
 import top.yqingyu.common.utils.CCConstants;
 import top.yqingyu.common.utils.StringUtil;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static top.yqingyu.common.utils.ChinaCalendar.*;
 
-public class HuangLi {
+public class HuangLi implements Serializable{
+    @Serial
+    private static final long serialVersionUID = -5714734791603273456L;
     //干支纪
     private String gz;
     private String nongLi;
@@ -25,6 +28,14 @@ public class HuangLi {
     private String star28;
     //节气
     private String jieQi;
+    /**
+     * 节气五位数组
+     * [0]当天如果是节气日 为节气名称。 若当天非节气日此项为空
+     * [1]非节气日 当前的节气名称
+     * [2]当前的节气过了多少天
+     * [3]下一节气名称
+     */
+    private String[] jieQiArr;
     //彭祖百忌
     private String pzbj;
     //日五行
@@ -82,9 +93,9 @@ public class HuangLi {
         String[] jq = JieQi(date);
         String jieQiStr;
         if (StringUtil.isEmpty(jq[0])) {
-            jieQiStr = StringUtil.fillBrace("今天是{}的第{}天,距离{}还有{}天", jq[1], jq[2], jq[3], jq[4]);
+            jieQiStr = StringUtil.fillBrace("{}的第{}天,距离{}还有{}天", jq[1], jq[2], jq[3], jq[4]);
         } else {
-            jieQiStr = StringUtil.fillBrace("今天是{},距离{}还有{}天", jq[0], jq[3], jq[4]);
+            jieQiStr = StringUtil.fillBrace("{},距离{}还有{}天", jq[0], jq[3], jq[4]);
         }
         HuangLi huangLi = new HuangLi();
         huangLi.gz = StringUtil.fillBrace("{}年{}月{}日{}", gzyStr, gzmStr, gzdStr, StringUtil.isEmpty(gzhStr) ? "" : (gzhStr + "时"));
@@ -95,6 +106,7 @@ public class HuangLi {
         huangLi.star28 = STAR_28(date);
         huangLi.pzbj = PZBJ(gzDay);
         huangLi.jieQi = jieQiStr;
+        huangLi.jieQiArr = jq;
         huangLi.wuXingD = WuXing(gzDay);
         huangLi.wuXingY = WuXing(gzYear);
         huangLi.taiShen = TaiShen(CCConstants.DZ[gzMonth[1]], gzdStr);
@@ -174,6 +186,82 @@ public class HuangLi {
 
     public String getChongSha() {
         return chongSha;
+    }
+
+    public void setGz(String gz) {
+        this.gz = gz;
+    }
+
+    public void setNongLi(String nongLi) {
+        this.nongLi = nongLi;
+    }
+
+    public void setShengxiao(String shengxiao) {
+        this.shengxiao = shengxiao;
+    }
+
+    public void setYi(String yi) {
+        this.yi = yi;
+    }
+
+    public void setJi(String ji) {
+        this.ji = ji;
+    }
+
+    public void setStar28(String star28) {
+        this.star28 = star28;
+    }
+
+    public void setJieQi(String jieQi) {
+        this.jieQi = jieQi;
+    }
+
+    public String[] getJieQiArr() {
+        return jieQiArr;
+    }
+
+    public void setJieQiArr(String[] jieQiArr) {
+        this.jieQiArr = jieQiArr;
+    }
+
+    public void setPzbj(String pzbj) {
+        this.pzbj = pzbj;
+    }
+
+    public void setWuXingD(String wuXingD) {
+        this.wuXingD = wuXingD;
+    }
+
+    public void setWuXingY(String wuXingY) {
+        this.wuXingY = wuXingY;
+    }
+
+    public void setTaiShen(String taiShen) {
+        this.taiShen = taiShen;
+    }
+
+    public void setYueXiang(String yueXiang) {
+        this.yueXiang = yueXiang;
+    }
+
+    public void setJsyq(String jsyq) {
+        this.jsyq = jsyq;
+    }
+
+    public void setXsyj(String xsyj) {
+        this.xsyj = xsyj;
+    }
+
+    public void setZhiShen(String zhiShen) {
+        this.zhiShen = zhiShen;
+    }
+
+    public void setJc12Shen(String jc12Shen) {
+        this.jc12Shen = jc12Shen;
+    }
+
+    public void setChongSha(String chongSha) {
+        this.chongSha = chongSha;
     }
 
     @Override

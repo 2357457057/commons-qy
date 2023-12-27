@@ -6,16 +6,18 @@ import top.yqingyu.common.bean.LunarData;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
 import static top.yqingyu.common.utils.CCConstants.*;
 
 public class ChinaCalendar {
     public static void main(String[] args) throws InterruptedException {
-        LocalDate now = LocalDate.now();
-        now = LocalDate.of(2024, 1, 1);
-        HuangLi instance = HuangLi.getInstance(now);
-        System.out.println(instance);
+        LocalDate now = LocalDate.of(2023,11,1);
+        for (int i = 0; i < 90; i++) {
+            HuangLi instance = HuangLi.getInstance(now.plusDays(i));
+            System.out.println(LocalDateTimeUtil.format(LocalDateTimeUtil.YMD_STD, LocalDateTime.of(now.plusDays(i), LocalTime.now()) ) + instance.getJieQi());
+        }
     }
 
     /**
@@ -284,16 +286,18 @@ public class ChinaCalendar {
         String[] sss = new String[5];
         sss[0] = JieQi ? JIE_QI[i] : "";
         //当前差
-        sss[1] = JIE_QI[Math.abs(i - 1)];
+        int i2 = i - 1;
+        i2 = i2 <0 ? 24 + i2 :i2;
+        sss[1] = JIE_QI[i2];
         int wholeYear = isLeapYear(year) ? 366 : 365;
         int i1 = offset - TermTable[yearOffset + i - 1];
         if (i1 < 0)
             i1 += wholeYear;
-        sss[2] = i1 + "";
+        sss[2] = i1 + 1 + "";
         if (!"".equals(sss[0])) {
             //下一差
             sss[3] = JIE_QI[(Math.abs(i + 1)) % 24];
-            int sub = TermTable[yearOffset + i + 1] - offset + 1;
+            int sub = TermTable[yearOffset + i + 1] - offset;
             if (sub < 0) {
                 sss[4] = sub + wholeYear + "";
             } else
@@ -301,12 +305,12 @@ public class ChinaCalendar {
         } else if (i != 24) {
             //下一差
             sss[3] = JIE_QI[Math.abs(i % 24)];
-            sss[4] = CCConstants.TermTable[yearOffset + i] - offset + 1 + "";
+            sss[4] = CCConstants.TermTable[yearOffset + i] - offset + "";
         } else {
             int temp = CCConstants.TermTable[yearOffset + i] + wholeYear;
             //下一差
             sss[3] = JIE_QI[Math.abs(i % 24)];
-            sss[4] = temp - offset + 1 + "";
+            sss[4] = temp - offset + "";
         }
 
         return sss;

@@ -4,12 +4,9 @@ package top.yqingyu.common.utils;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalField;
+import java.time.temporal.*;
 import java.util.Date;
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -40,8 +37,8 @@ public class LocalDateTimeUtil {
     public static final ZoneId CHN = ZoneOffset.ofHours(8);
     public static final ZoneId UTC = ZoneOffset.UTC;
 
-    public static final Map<String, DateTimeFormatter> DFT_FORMATTER_MAP = new IdentityHashMap<>(12);
-    public static final Map<String, DateTimeFormatter> UTC_FORMATTER_MAP = new IdentityHashMap<>(12);
+    public static final Map<String, DateTimeFormatter> DFT_FORMATTER_MAP = new HashMap<>(12);
+    public static final Map<String, DateTimeFormatter> UTC_FORMATTER_MAP = new HashMap<>(12);
 
     static {
         DFT_FORMATTER_MAP.put(YMD_STD, getFormatter(YMD_STD));
@@ -80,11 +77,18 @@ public class LocalDateTimeUtil {
     }
 
     public static DateTimeFormatter getFormatter(String formatStr, ZoneId zoneId) {
-        return DateTimeFormatter.ofPattern(formatStr).withZone(zoneId);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(formatStr).withZone(zoneId);
+        if (zoneId.equals(UTC)){
+            UTC_FORMATTER_MAP.put(formatStr, dateTimeFormatter);
+        }
+        dateTimeFormatter = dateTimeFormatter.withZone(UTC);
+        return dateTimeFormatter;
     }
 
     public static DateTimeFormatter getFormatter(String formatStr) {
-        return getFormatter(formatStr, CHN);
+        DateTimeFormatter formatter = getFormatter(formatStr, CHN);
+        DFT_FORMATTER_MAP.put(formatStr, formatter);
+        return formatter;
     }
 
     public static LocalDateTime of(Date date) {
@@ -187,7 +191,12 @@ public class LocalDateTimeUtil {
     public static LocalDateTime endOfDay(LocalDateTime dateTime) {
         return dateTime.with(LocalTime.of(23, 59, 59, (int) ChronoField.NANO_OF_SECOND.range().getMaximum()));
     }
-
+    public static LocalDateTime startOfMonth(LocalDateTime dateTime){
+    return dateTime.withDayOfMonth(1).with(LocalTime.of(0, 0, 0, 0));
+    }
+    public static LocalDateTime endOfMonth(LocalDateTime dateTime){
+         return dateTime.withDayOfMonth(dateTime.toLocalDate().lengthOfMonth()).with(LocalTime.of(23, 59, 59, (int) ChronoField.NANO_OF_SECOND.range().getMaximum()));
+    }
     /**
      * 提取时间单位
      *

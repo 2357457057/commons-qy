@@ -13,18 +13,19 @@ import static top.yqingyu.common.utils.CCConstants.*;
 
 public class ChinaCalendar {
     public static void main(String[] args) throws InterruptedException {
-        LocalDate now = LocalDate.of(2023,11,1);
+        LocalDate now = LocalDate.of(2024,1,1);
         for (int i = 0; i < 90; i++) {
             HuangLi instance = HuangLi.getInstance(now.plusDays(i));
-            System.out.println(LocalDateTimeUtil.format(LocalDateTimeUtil.YMD_STD, LocalDateTime.of(now.plusDays(i), LocalTime.now()) ) + instance.getJieQi());
+            System.out.println(LocalDateTimeUtil.format(LocalDateTimeUtil.YMD_STD, LocalDateTime.of(now.plusDays(i), LocalTime.now()) ) + instance.getJieQi() + instance.toString());
         }
     }
 
     /**
      * 干支纪年
      */
-    public static int[] getGZYear(LocalDate localDate) {
-        int sub = localDate.getYear() - CCConstants.JZ_YEAR.getYear();
+    public static int[] getGZYear(int lunarYear) {
+
+        int sub = lunarYear - CCConstants.JZ_YEAR.getYear();
         if (sub > 0) {
             sub = sub % 60;
         } else {

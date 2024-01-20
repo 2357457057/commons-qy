@@ -1,7 +1,7 @@
 package top.yqingyu.common.utils;
 
 
-import org.apache.commons.codec.binary.Base64;
+
 
 
 import javax.crypto.*;
@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Base64;
 
 public class DecryptAES {
     final private static SecureRandom random;
@@ -202,7 +203,7 @@ public class DecryptAES {
             store[(i * 3) - 1] = randNum;
 
         }
-        return Base64.encodeBase64(store);
+        return Base64.getEncoder().encode(store);
     }
 
     /**
@@ -247,7 +248,7 @@ public class DecryptAES {
     }
 
     public static String decryptBase64Key(String encryptKey) {
-        byte[] bytes = Base64.decodeBase64(encryptKey.getBytes(StandardCharsets.UTF_8));
+        byte[] bytes = Base64.getDecoder().decode(encryptKey.getBytes(StandardCharsets.UTF_8));
         return new String(decryptKeyByte(bytes), StandardCharsets.UTF_8);
     }
 
@@ -280,7 +281,7 @@ public class DecryptAES {
             Cipher cipher = Cipher.getInstance("AES");// 创建密码器
             cipher.init(Cipher.ENCRYPT_MODE, key);// 初始化
 
-            return Base64.encodeBase64(cipher.doFinal(content.getBytes(StandardCharsets.UTF_8))); // 加密
+            return Base64.getEncoder().encode(cipher.doFinal(content.getBytes(StandardCharsets.UTF_8))); // 加密
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException |
                  BadPaddingException e) {
             e.printStackTrace();
@@ -307,7 +308,7 @@ public class DecryptAES {
             cipher.init(Cipher.DECRYPT_MODE, key);// 初始化
 
 
-            return cipher.doFinal(Base64.decodeBase64(content)); // 解密
+            return cipher.doFinal(Base64.getDecoder().decode(content)); // 解密
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException |
                  BadPaddingException e) {
             e.printStackTrace();
@@ -354,8 +355,4 @@ public class DecryptAES {
         return i;
     }
 
-    public static void main(String[] args) {
-
-        System.out.println(new String(encryptKeyByteBase64("qydb"),StandardCharsets.UTF_8));
-    }
 }

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 import static top.yqingyu.common.utils.ChinaCalendar.*;
 
-public class HuangLi implements Serializable{
+public class HuangLi implements Serializable {
     @Serial
     private static final long serialVersionUID = -5714734791603273456L;
     //干支纪
@@ -56,6 +56,13 @@ public class HuangLi implements Serializable{
     private String jc12Shen;
     //冲煞
     private String chongSha;
+    /**
+     * [0] 当前公历节日
+     * [1] 下一公历节日
+     * [2] 当前农历节日
+     * [3] 下一农历节日
+     */
+    private String[] festival;
 
     private HuangLi() {
     }
@@ -74,7 +81,7 @@ public class HuangLi implements Serializable{
             throw new QyRuntimeException("unsupported time type {}", time == null ? "null" : time.getClass().getName());
         }
         LunarData lunarData = calcLunar(date);
-        int[] gzYear = getGZYear(date);
+        int[] gzYear = getGZYear(lunarData.year);
         int[] gzDay = getGZDay(date);
         int[] gzMonth = getGZMonth(gzYear[0], lunarData.month);
         String gzyStr = getGzStr(gzYear);
@@ -262,6 +269,14 @@ public class HuangLi implements Serializable{
 
     public void setChongSha(String chongSha) {
         this.chongSha = chongSha;
+    }
+
+    public String[] getFestival() {
+        return festival;
+    }
+
+    public void setFestival(String[] festival) {
+        this.festival = festival;
     }
 
     @Override

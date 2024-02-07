@@ -11,6 +11,7 @@ import java.util.Map;
 
 /**
  * LocalDateTime 的工具类
+ *
  * @author YYJ
  * @version 1.0.0
  * @ClassName top.yqingyu.common.utils.LocalDateTimeUtil
@@ -37,8 +38,8 @@ public class LocalDateTimeUtil {
     public static final ZoneId CHN = ZoneOffset.ofHours(8);
     public static final ZoneId UTC = ZoneOffset.UTC;
 
-    public static final Map<String, DateTimeFormatter> DFT_FORMATTER_MAP = new HashMap<>(12);
-    public static final Map<String, DateTimeFormatter> UTC_FORMATTER_MAP = new HashMap<>(12);
+    public static final Map<String, DateTimeFormatter> DFT_FORMATTER_MAP = new HashMap<>(32);
+    public static final Map<String, DateTimeFormatter> UTC_FORMATTER_MAP = new HashMap<>(32);
 
     static {
         DFT_FORMATTER_MAP.put(YMD_STD, getFormatter(YMD_STD));
@@ -78,7 +79,7 @@ public class LocalDateTimeUtil {
 
     public static DateTimeFormatter getFormatter(String formatStr, ZoneId zoneId) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(formatStr).withZone(zoneId);
-        if (zoneId.equals(UTC)){
+        if (zoneId.equals(UTC)) {
             UTC_FORMATTER_MAP.put(formatStr, dateTimeFormatter);
         }
         dateTimeFormatter = dateTimeFormatter.withZone(UTC);
@@ -191,12 +192,15 @@ public class LocalDateTimeUtil {
     public static LocalDateTime endOfDay(LocalDateTime dateTime) {
         return dateTime.with(LocalTime.of(23, 59, 59, (int) ChronoField.NANO_OF_SECOND.range().getMaximum()));
     }
-    public static LocalDateTime startOfMonth(LocalDateTime dateTime){
-    return dateTime.withDayOfMonth(1).with(LocalTime.of(0, 0, 0, 0));
+
+    public static LocalDateTime startOfMonth(LocalDateTime dateTime) {
+        return dateTime.withDayOfMonth(1).with(LocalTime.of(0, 0, 0, 0));
     }
-    public static LocalDateTime endOfMonth(LocalDateTime dateTime){
-         return dateTime.withDayOfMonth(dateTime.toLocalDate().lengthOfMonth()).with(LocalTime.of(23, 59, 59, (int) ChronoField.NANO_OF_SECOND.range().getMaximum()));
+
+    public static LocalDateTime endOfMonth(LocalDateTime dateTime) {
+        return dateTime.withDayOfMonth(dateTime.toLocalDate().lengthOfMonth()).with(LocalTime.of(23, 59, 59, (int) ChronoField.NANO_OF_SECOND.range().getMaximum()));
     }
+
     /**
      * 提取时间单位
      *

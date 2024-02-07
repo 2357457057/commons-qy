@@ -9,6 +9,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
 /**
@@ -61,36 +63,36 @@ public class FileUtil {
         rw.close();
     }
 
+    public static void transFile(Path path, Path target) throws IOException {
+        Files.copy(path, target);
+    }
 
     public static void transFile(File file, long position, long length, WritableByteChannel targetChannel) throws IOException {
-
-        FileChannel fileChannel = FileChannel.open(file.toPath(), StandardOpenOption.READ);
-
-        long lengthTmp1 = length;
-        long lengthTmp2 = 0;
-        long lengthTmp3 = 0;
-        long positionTmp = position;
-        do {
-            lengthTmp2 = fileChannel.transferTo(positionTmp, lengthTmp1, targetChannel);
-            positionTmp += lengthTmp2;
-            lengthTmp1 -= lengthTmp2;
-            lengthTmp3 += lengthTmp2;
-        } while (lengthTmp3 != length);
+        transFile(file.toPath(), position, length, targetChannel);
     }
 
-    public static void transFile2(File file, long position, long length, WritableByteChannel targetChannel) throws IOException {
-        FileChannel fileChannel = FileChannel.open(file.toPath(), StandardOpenOption.READ);
-        long l = fileChannel.transferTo(position, length, targetChannel);
-        System.out.println(l);
+    public static void transFile(Path path, long position, long length, WritableByteChannel targetChannel) throws IOException {
+        try (FileChannel fileChannel = FileChannel.open(path, StandardOpenOption.READ)) {
+            long lengthTmp1 = length;
+            long lengthTmp2 = 0;
+            long lengthTmp3 = 0;
+            long positionTmp = position;
+            do {
+                lengthTmp2 = fileChannel.transferTo(positionTmp, lengthTmp1, targetChannel);
+                positionTmp += lengthTmp2;
+                lengthTmp1 -= lengthTmp2;
+                lengthTmp3 += lengthTmp2;
+            } while (lengthTmp3 != length);
+        }
     }
 
-/*    *//**
+    /*    *//**
      * 文件唯一ID
      * 文件名
      * 文件总长度
      * 切分次数
      * 切分长度
-     * 
+     *
      * 当前切分文件次序
      * *//*
     public static void main(String[] args) throws IOException {

@@ -67,6 +67,14 @@ public class FileFormatCheckUtil {
         }
     }
 
+    public static boolean checkAny(Path path, FileType... fileType) throws IOException {
+        for (FileType type : fileType) {
+            if (check(path, type))
+                return true;
+        }
+        return false;
+    }
+
     public static boolean check(Path path, FileType fileType) throws IOException {
         return check0(path, fileType.maxLength, fileType.CHECK);
     }

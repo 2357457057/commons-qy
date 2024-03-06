@@ -4,7 +4,10 @@ package top.yqingyu.common.utils;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.time.temporal.*;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalField;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +23,6 @@ import java.util.Map;
 public class LocalDateTimeUtil {
 
     public static final DateTimeFormatter HTTP_FORMATTER = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z").withZone(ZoneId.ofOffset("GMT", ZoneOffset.UTC));
-    public static final DateTimeFormatter DEFAULT_FORMATTER;
 
     public static final String YMD_STD = "yyyy-MM-dd";
     public static final String YMD_NO_SYMBOL = "yyyyMMdd";
@@ -67,14 +69,6 @@ public class LocalDateTimeUtil {
         UTC_FORMATTER_MAP.put(FULL, getFormatter(FULL, UTC));
         UTC_FORMATTER_MAP.put(FULL_NO_SYMBOL, getFormatter(FULL_NO_SYMBOL, UTC));
         UTC_FORMATTER_MAP.put(FULL_NO_SYMBOL2, getFormatter(FULL_NO_SYMBOL2, UTC));
-
-        DEFAULT_FORMATTER = new DateTimeFormatterBuilder()
-                .appendPattern("[yyyy[-MM][-dd]][yyyyMMdd][yyyyMM][' 'HHmmssSSS][' 'HHmmss][yyyyMMddHHmmss][yyyyMMddHHmmssSSS][[' ']HH[:mm][:ss][.SSS]]")
-                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
-                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-                .parseDefaulting(ChronoField.NANO_OF_SECOND, 0)
-                .toFormatter();
     }
 
     public static DateTimeFormatter getFormatter(String formatStr, ZoneId zoneId) {
@@ -174,7 +168,18 @@ public class LocalDateTimeUtil {
      */
     public static LocalDateTime parse(CharSequence str) {
         if (null == str) return null;
-        return of(DEFAULT_FORMATTER.parse(str));
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                .appendPattern("[yyyy[-MM][-dd]][yyyyMMdd][yyyyMM][' 'HHmmssSSS][' 'HHmmss][yyyyMMddHHmmss][yyyyMMddHHmmssSSS][[' ']HH[:mm][:ss][.SSS]]")
+                .parseDefaulting(ChronoField.YEAR, now.getYear())
+                .parseDefaulting(ChronoField.MONTH_OF_YEAR, now.getMonthValue())
+                .parseDefaulting(ChronoField.DAY_OF_MONTH, now.getDayOfMonth())
+                .parseDefaulting(ChronoField.HOUR_OF_DAY, now.getHour())
+                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, now.getMinute())
+                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, now.getSecond())
+                .parseDefaulting(ChronoField.NANO_OF_SECOND, now.getNano())
+                .toFormatter();
+        return of(formatter.parse(str));
     }
 
     public static long between(LocalDateTime start, LocalDateTime end, ChronoUnit unit) {

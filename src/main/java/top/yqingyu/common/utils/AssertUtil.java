@@ -576,7 +576,7 @@ public class AssertUtil {
      * @return 被检查集合
      * @throws IllegalArgumentException if the collection is {@code null} or has no elements
      */
-    public static  Collection<?> notEmpty(Collection<?> collection) throws IllegalArgumentException {
+    public static Collection<?> notEmpty(Collection<?> collection) throws IllegalArgumentException {
         return notEmpty(collection, "[Assertion failed] - this collection must not be empty: it must contain at least 1 element");
     }
 
@@ -1065,7 +1065,115 @@ public class AssertUtil {
         }
     }
 
-    // ----------------------------------------------------------------------------------------------------------- Check is equals
+    // ----------------------------------------------------------------------------------------------------------- Check is equals end
+
+
+    // ----------------------------------------------------------------------------------------------------------- Check is gt start
+
+    /**
+     * v1 great than v2
+     */
+    public static void isGt(double v1, double v2) {
+        state(v1 > v2);
+    }
+
+    /**
+     * v1 great than v2
+     */
+    public static void isGt(double v1, double v2, String errMsg, Object... param) {
+        state(v1 > v2, errMsg, param);
+    }
+
+    /**
+     * v1 great than v2
+     */
+    public static void isGt(double v1, double v2, Supplier<String> errorSupplier) {
+        state(v1 > v2, errorSupplier);
+    }
+
+    // ----------------------------------------------------------------------------------------------------------- Check is gt end
+
+
+
+    // ----------------------------------------------------------------------------------------------------------- Check is ge start
+
+    /**
+     * v1 great equals v2
+     */
+    public static void isGe(double v1, double v2) {
+        state(v1 >= v2);
+    }
+
+    /**
+     * v1 great equals v2
+     */
+    public static void isGe(double v1, double v2, String errMsg, Object... param) {
+        state(v1 >= v2, errMsg, param);
+    }
+
+    /**
+     * v1 great equals v2
+     */
+    public static void isGe(double v1, double v2, Supplier<String> errorSupplier) {
+        state(v1 >= v2, errorSupplier);
+    }
+
+    // ----------------------------------------------------------------------------------------------------------- Check is ge end
+
+
+
+
+
+    // ----------------------------------------------------------------------------------------------------------- Check is lt start
+    /**
+     * v1 less than v2
+     */
+    public static void isLt(double v1, double v2) {
+        state(v1 < v2);
+    }
+
+    /**
+     * v1 less than v2
+     */
+    public static void isLt(double v1, double v2, String errMsg, Object... param) {
+        state(v1 > v2, errMsg, param);
+    }
+
+    /**
+     * v1 less than v2
+     */
+    public static void isLt(double v1, double v2, Supplier<String> errorSupplier) {
+        state(v1 < v2, errorSupplier);
+    }
+
+    // ----------------------------------------------------------------------------------------------------------- Check is lt end
+
+
+
+    // ----------------------------------------------------------------------------------------------------------- Check is le start
+
+    /**
+     * v1 less equals v2
+     */
+    public static void isLe(double v1, double v2) {
+        state(v1 <= v2);
+    }
+
+    /**
+     * v1 less equals v2
+     */
+    public static void isLe(double v1, double v2, String errMsg, Object... param) {
+        state(v1 <= v2, errMsg, param);
+    }
+
+    /**
+     * v1 less equals v2
+     */
+    public static void isLe(double v1, double v2, Supplier<String> errorSupplier) {
+        state(v1 <= v2, errorSupplier);
+    }
+
+    // ----------------------------------------------------------------------------------------------------------- Check is le end
 
     // -------------------------------------------------------------------------------------------------------------------------------------------- Private method start
 

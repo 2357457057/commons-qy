@@ -1,5 +1,7 @@
 package top.yqingyu.common.utils;
 
+import top.yqingyu.common.exception.QyRuntimeException;
+
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -19,7 +21,7 @@ public class GzipUtil {
      * 压缩字符串
      */
     public static byte[] $2CompressBytes(String str, Charset charset) throws IOException {
-        if (null == str || str.length() <= 0) {
+        if (null == str || str.isEmpty()) {
             return ArrayUtil.EMPTY_BYTE_ARRAY;
         }
         try (ByteArrayOutputStream out = new ByteArrayOutputStream(); GZIPOutputStream gzip = new GZIPOutputStream(out)) {
@@ -47,25 +49,23 @@ public class GzipUtil {
      * 压缩字符串
      */
     public static String compress(String str) {
-        if (null == str || str.length() <= 0) {
+        if (StringUtil.isEmpty(str)) {
             return str;
         }
         try (ByteArrayOutputStream out = new ByteArrayOutputStream(); GZIPOutputStream gzip = new GZIPOutputStream(out)) { // 将字符串以字节的形式写入到 GZIP 压缩输出流中
             gzip.write(str.getBytes(StandardCharsets.UTF_8));
             gzip.close();
-            return out.toString(StandardCharsets.UTF_8.name());
+            return out.toString(StandardCharsets.UTF_8);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new QyRuntimeException(e, "解压失败");
         }
-
-        return str;
     }
 
     /**
      * 解压缩字符串
      */
     public static String decompress(String str) {
-        if (str == null || str.length() == 0) {
+        if (StringUtil.isEmpty(str)) {
             return str;
         }
         try (ByteArrayOutputStream out = new ByteArrayOutputStream(); ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8)); GZIPInputStream gunzip = new GZIPInputStream(in)) {
@@ -75,10 +75,27 @@ public class GzipUtil {
             while ((n = gunzip.read(buffer)) >= 0) {
                 out.write(buffer, 0, n);
             }
-            return out.toString(StandardCharsets.UTF_8.name());
+            return out.toString(StandardCharsets.UTF_8);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new QyRuntimeException(e, "解压失败");
         }
-        return str;
+    }
+
+
+    public static byte[] decompress(byte[] data) {
+        if (ArrayUtil.isEmpty(data)) {
+            return data;
+        }
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream(); ByteArrayInputStream in = new ByteArrayInputStream(data); GZIPInputStream gunzip = new GZIPInputStream(in)) {
+            byte[] buffer = new byte[256];
+            int n;
+            // 从 GZIP 压缩输入流读取字节数据到 buffer 数组中
+            while ((n = gunzip.read(buffer)) >= 0) {
+                out.write(buffer, 0, n);
+            }
+            return out.toByteArray();
+        } catch (IOException e) {
+            throw new QyRuntimeException(e, "解压失败");
+        }
     }
 }

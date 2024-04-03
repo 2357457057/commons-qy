@@ -32,7 +32,7 @@ public class HttpUtil {
 
 
     public static JSONObject doGet(String url, Map<String, String> headers, Map<String, String> urlParam) throws Exception {
-        ResponseBody body = getPub(url, headers, urlParam);
+        ResponseBody body = getPub(url, headers, urlParam).body();
         MediaType contentType = body.contentType();
         if (JSON_TYPE.type().equals(contentType.type())) {
             String string = body.string();
@@ -43,12 +43,12 @@ public class HttpUtil {
     }
 
     public static String doGet2(String url, Map<String, String> headers, Map<String, String> urlParam) throws Exception {
-        ResponseBody body = getPub(url, headers, urlParam);
+        ResponseBody body = getPub(url, headers, urlParam).body();
         return body.string();
     }
 
     public static byte[] doGet3(String url, Map<String, String> headers, Map<String, String> urlParam) throws Exception {
-        ResponseBody body = getPub(url, headers, urlParam);
+        ResponseBody body = getPub(url, headers, urlParam).body();
         return body.bytes();
     }
 
@@ -60,7 +60,7 @@ public class HttpUtil {
         if (requestType.equals(JSON_TYPE)) {
             body = JSON.toJSONString(body);
         }
-        ResponseBody responseBody = postPub(url, headers, urlParam, body, requestType);
+        ResponseBody responseBody = postPub(url, headers, urlParam, body, requestType).body();
         MediaType contentType = responseBody.contentType();
         if (JSON_TYPE.type().equals(contentType.type())) {
             String string = responseBody.string();
@@ -71,16 +71,16 @@ public class HttpUtil {
     }
 
     public static String doPost1(String url, Map<String, String> headers, Map<String, String> urlParam, Object body, MediaType requestType) throws Exception {
-        ResponseBody responseBody = postPub(url, headers, urlParam, body, requestType);
+        ResponseBody responseBody = postPub(url, headers, urlParam, body, requestType).body();
         return responseBody.string();
     }
 
     public static byte[] doPost2(String url, Map<String, String> headers, Map<String, String> urlParam, Object body, MediaType requestType) throws Exception {
-        ResponseBody responseBody = postPub(url, headers, urlParam, body, requestType);
+        ResponseBody responseBody = postPub(url, headers, urlParam, body, requestType).body();
         return responseBody.bytes();
     }
 
-    public static ResponseBody getPub(String url, Map<String, String> headers, Map<String, String> urlParam) throws IOException {
+    public static Response getPub(String url, Map<String, String> headers, Map<String, String> urlParam) throws IOException {
         Request.Builder builder = new Request.Builder().get();
         StringBuilder sb = new StringBuilder(url);
         boolean contains = url.contains("?");
@@ -104,11 +104,10 @@ public class HttpUtil {
         Call call = httpclient.newCall(request);
         Timeout timeout = call.timeout();
         timeout.timeout(30, TimeUnit.SECONDS);
-        Response execute = call.execute();
-        return execute.body();
+        return call.execute();
     }
 
-    public static ResponseBody postPub(String url, Map<String, String> headers, Map<String, String> urlParam, Object body, MediaType requestType) throws IOException {
+    public static Response postPub(String url, Map<String, String> headers, Map<String, String> urlParam, Object body, MediaType requestType) throws IOException {
         RequestBody requestBody = RequestBody.create(body.toString(), requestType);
         Request.Builder builder = new Request.Builder();
         StringBuilder sb = new StringBuilder(url);
@@ -133,7 +132,6 @@ public class HttpUtil {
         Call call = httpclient.newCall(request);
         Timeout timeout = call.timeout();
         timeout.timeout(30, TimeUnit.SECONDS);
-        Response execute = call.execute();
-        return execute.body();
+        return call.execute();
     }
 }

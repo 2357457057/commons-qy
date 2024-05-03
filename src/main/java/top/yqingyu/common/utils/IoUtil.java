@@ -4,11 +4,13 @@ package top.yqingyu.common.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yqingyu.common.bean.NetChannel;
+import top.yqingyu.common.function.Progress;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.*;
@@ -474,7 +476,7 @@ public class IoUtil {
     }
 
     public static void writeFile(FileChannel fileChannel, SocketChannel channel) throws Exception {
-        ByteBuffer byteBuffer = ByteBuffer.allocate(1024 * 8);
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(1024 * 8);
         long size = fileChannel.size();
         long l = 0;
         do {
@@ -490,7 +492,7 @@ public class IoUtil {
         } while (l != size);
     }
 
-    public static void writeFile(File file, Socket socket) throws Exception {
+    public static void writeFile(File file, Socket socket,) throws Exception {
         byte[] buf = new byte[1024 * 8];
         FileInputStream inputStream = new FileInputStream(file);
         OutputStream outputStream = socket.getOutputStream();
@@ -503,6 +505,51 @@ public class IoUtil {
         inputStream.close();
     }
 
+    public static void writeFile(File file, SocketChannel channel, Progress progress) throws Exception {
+        FileChannel fileChannel = FileChannel.open(file.toPath(), StandardOpenOption.READ);
+        if (progress == null) {
+            writeFile(fileChannel, channel);
+            return;
+        }
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(1024 * 8);
+        long size = fileChannel.size();
+        long l = 0;
+        String name = file.getName();
+        do {
+            byteBuffer.clear();
+            fileChannel.read(byteBuffer, l);
+            byteBuffer.flip();
+            int limit = byteBuffer.limit();
+            l += limit;
+            progress.callback(name, size, l);
+            do {
+                channel.write(byteBuffer);
+            } while (limit != byteBuffer.position());
+
+        } while (l != size);
+    }
+
+    public static void writeFile(File file, Socket socket, Progress progress) throws Exception {
+        if (progress == null) {
+            writeFile(file, socket);
+            return;
+        }
+        byte[] buf = new byte[1024 * 8];
+        FileInputStream inputStream = new FileInputStream(file);
+        OutputStream outputStream = socket.getOutputStream();
+        long l = 0;
+        long size = file.length();
+        String name = file.getName();
+        while (true) {
+            int read = inputStream.read(buf);
+            l += read;
+            progress.callback(name, size, l);
+            if (read == -1) break;
+            outputStream.write(buf, 0, read);
+        }
+        outputStream.flush();
+        inputStream.close();
+    }
 
     public static void writeBytes(Socket socket, byte[] bytes) throws Exception {
         OutputStream outputStream = socket.getOutputStream();

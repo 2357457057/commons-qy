@@ -1,5 +1,7 @@
 package top.yqingyu.common.function;
 
+import java.io.Serializable;
+
 /**
  * @author YYJ
  * @version 1.0.0
@@ -8,7 +10,7 @@ package top.yqingyu.common.function;
  * @createTime 2023年04月08日 01:58:00
  */
 @FunctionalInterface
-public interface ToBooleanBiFunction<T, U> {
+public interface ToBooleanBiFunction<T, U>  extends Serializable {
 
     /**
      * Applies this function to the given arguments.

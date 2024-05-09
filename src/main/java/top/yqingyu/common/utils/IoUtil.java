@@ -492,7 +492,7 @@ public class IoUtil {
         } while (l != size);
     }
 
-    public static void writeFile(File file, Socket socket,) throws Exception {
+    public static void writeFile(File file, Socket socket) throws Exception {
         byte[] buf = new byte[1024 * 8];
         FileInputStream inputStream = new FileInputStream(file);
         OutputStream outputStream = socket.getOutputStream();

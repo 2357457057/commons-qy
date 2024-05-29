@@ -22,10 +22,9 @@ public class R extends HashMap<String, Object> {
 
     public static final String RSP_CODE_SUCC = "000";
     public static final String RSP_MSG_SUCC = "success";
-    public static final String RSP_CODE_FAIL = "999";
-    public static final String RSP_MSG_FAIL = "fail";
-    public static final String RSP_CODE_ERROR = "500";
+    public static final String RSP_CODE_ERROR = "999";
     public static final String RSP_MSG_ERROR = "error";
+
 
     private static final HashMap<String, Boolean> keyWord = new HashMap<>() {
         @Serial
@@ -46,7 +45,7 @@ public class R extends HashMap<String, Object> {
 
     public static R instance() {
         R r = new R();
-        return r.setCodeAndMsg(RSP_CODE_FAIL, RSP_MSG_FAIL);
+        return r.setCodeAndMsg(RSP_CODE_ERROR, RSP_MSG_ERROR);
     }
 
     public static R instance(String code, String msg) {
@@ -98,7 +97,7 @@ public class R extends HashMap<String, Object> {
     }
 
     public R setError() {
-        return this.setCodeAndMsg(RSP_CODE_FAIL, RSP_MSG_FAIL);
+        return this.setCodeAndMsg(RSP_CODE_ERROR, RSP_MSG_ERROR);
     }
 
     public R setFail(Object data) {

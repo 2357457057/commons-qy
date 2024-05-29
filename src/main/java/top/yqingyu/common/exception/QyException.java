@@ -8,7 +8,7 @@ import java.io.Serial;
  * @author 杨永基
  * date: 2021/09/09
  */
-public class QyException extends RuntimeException {
+public class QyException extends RuntimeException implements QyErrorInfoInterface{
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -26,15 +26,15 @@ public class QyException extends RuntimeException {
     }
 
     public QyException(QyErrorInfoInterface errorInfoInterface) {
-        super(errorInfoInterface.getResultCode());
-        this.errorCode = errorInfoInterface.getResultCode();
-        this.errorMsg = errorInfoInterface.getResultMsg();
+        super(errorInfoInterface.getRspMsg());
+        this.errorCode = errorInfoInterface.getRspCode();
+        this.errorMsg = errorInfoInterface.getRspMsg();
     }
 
     public QyException(QyErrorInfoInterface errorInfoInterface, Throwable cause) {
-        super(errorInfoInterface.getResultCode(), cause);
-        this.errorCode = errorInfoInterface.getResultCode();
-        this.errorMsg = errorInfoInterface.getResultMsg();
+        super(errorInfoInterface.getRspMsg(), cause);
+        this.errorCode = errorInfoInterface.getRspCode();
+        this.errorMsg = errorInfoInterface.getRspMsg();
     }
 
     public QyException(String errorMsg) {
@@ -43,13 +43,13 @@ public class QyException extends RuntimeException {
     }
 
     public QyException(String errorCode, String errorMsg) {
-        super(errorCode);
+        super(errorMsg);
         this.errorCode = errorCode;
         this.errorMsg = errorMsg;
     }
 
     public QyException(String errorCode, String errorMsg, Throwable cause) {
-        super(errorCode, cause);
+        super(errorMsg, cause);
         this.errorCode = errorCode;
         this.errorMsg = errorMsg;
     }
@@ -80,5 +80,15 @@ public class QyException extends RuntimeException {
     @Override
     public Throwable fillInStackTrace() {
         return this;
+    }
+
+    @Override
+    public String getRspCode() {
+        return errorCode;
+    }
+
+    @Override
+    public String getRspMsg() {
+        return errorMsg;
     }
 }

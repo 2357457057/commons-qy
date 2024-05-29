@@ -8,7 +8,6 @@ package top.yqingyu.common.exception;
  */
 public enum QyExceptionEnum implements QyErrorInfoInterface {
     // 数据操作错误定义
-    SUCCESS("200", "success!"),
     BODY_NOT_MATCH("400", "request data not match!"),
     SIGNATURE_NOT_MATCH("401", "sign not match!"),
     REQUEST_MOTHERED_NOT_SUPPORTED("500", "method not supposed！"),
@@ -26,39 +25,39 @@ public enum QyExceptionEnum implements QyErrorInfoInterface {
     /**
      * 错误码
      */
-    private String resultCode;
+    private String rspCode;
 
     /**
      * 错误描述
      */
-    private String resultMsg;
+    private String rspMsg;
 
-    public QyExceptionEnum setResultCode(String resultCode) {
-        this.resultCode = resultCode;
+    public QyExceptionEnum setRspCode(String rspCode) {
+        this.rspCode = rspCode;
         return this;
     }
 
-    public QyExceptionEnum setResultMsg(String resultMsg) {
-        this.resultMsg = resultMsg;
+    public QyExceptionEnum setRspMsg(String rspMsg) {
+        this.rspMsg = rspMsg;
         return this;
     }
 
-    QyExceptionEnum(String resultCode, String resultMsg) {
-        this.resultCode = resultCode;
-        this.resultMsg = resultMsg;
+    QyExceptionEnum(String rspCode, String rspMsg) {
+        this.rspCode = rspCode;
+        this.rspMsg = rspMsg;
     }
 
-    QyExceptionEnum(String resultCode) {
-        this.resultCode = resultCode;
-    }
-
-    @Override
-    public String getResultCode() {
-        return resultCode;
+    QyExceptionEnum(String rspCode) {
+        this.rspCode = rspCode;
     }
 
     @Override
-    public String getResultMsg() {
-        return resultMsg;
+    public String getRspCode() {
+        return rspCode;
+    }
+
+    @Override
+    public String getRspMsg() {
+        return rspMsg;
     }
 }

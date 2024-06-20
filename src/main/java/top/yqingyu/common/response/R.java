@@ -39,13 +39,13 @@ public class R extends HashMap<String, Object> {
     @Serial
     private static final long serialVersionUID = 1165937145498782077L;
 
-
-    private R() {
+    public R() {
+        super.put(RSP_CODE, RSP_CODE_ERROR);
+        super.put(RSP_MSG, RSP_MSG_ERROR);
     }
 
     public static R instance() {
-        R r = new R();
-        return r.setCodeAndMsg(RSP_CODE_ERROR, RSP_MSG_ERROR);
+        return new R();
     }
 
     public static R instance(String code, String msg) {

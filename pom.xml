@@ -8,7 +8,7 @@
     <parent>
         <groupId>top.yqingyu</groupId>
         <artifactId>yqingyu-parent</artifactId>
-        <version>1.9.8</version>
+        <version>1.9.9</version>
     </parent>
 
     <!--gav信息-->
@@ -43,7 +43,7 @@
     </scm>
     <distributionManagement>
         <repository>
-            <id>ossrh</id>
+            <id>release</id>
             <url>https://s01.oss.sonatype.org/content/repositories/releases/</url>
         </repository>
         <snapshotRepository>

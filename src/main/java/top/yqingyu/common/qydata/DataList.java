@@ -490,6 +490,7 @@ public class DataList extends JSONArray implements Cloneable, Serializable {
      * @deprecated since 2.0.4, please use {@link #to(Type)}
      */
     @Override
+    @Deprecated
     public <T> T toJavaObject(Type type) {
         return super.toJavaObject(type);
     }
@@ -538,6 +539,7 @@ public class DataList extends JSONArray implements Cloneable, Serializable {
      * @deprecated since 2.0.4, please use {@link #toList(Class, JSONReader.Feature...)}
      */
     @Override
+    @Deprecated
     public <T> List<T> toJavaList(Class<T> clazz, JSONReader.Feature... features) {
         return super.toJavaList(clazz, features);
     }

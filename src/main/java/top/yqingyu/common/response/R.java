@@ -164,6 +164,9 @@ public class R extends HashMap<String, Object> {
         return this.get(DATA, TYPE);
     }
 
+    public boolean test() {
+        return RSP_CODE_SUCC.equals(this.get(RSP_CODE));
+    }
     private static class Type {
     }
 }

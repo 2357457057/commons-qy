@@ -109,9 +109,6 @@ public class R extends HashMap<String, Object> {
     }
 
     public R put(String key, Object value) {
-        if (keyWord.containsKey(key)) {
-            throw new QyRuntimeException("返回值装填失败，与 {} 冲突", key);
-        }
         super.put(key, value);
         return this;
     }

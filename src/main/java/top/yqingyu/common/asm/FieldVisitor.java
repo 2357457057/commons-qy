@@ -73,6 +73,9 @@ public abstract class FieldVisitor {
         && api != Opcodes.ASM10_EXPERIMENTAL) {
       throw new IllegalArgumentException("Unsupported api " + api);
     }
+    if (api == Opcodes.ASM10_EXPERIMENTAL) {
+      Constants.checkAsmExperimental(this);
+    }
     this.api = api;
     this.fv = fieldVisitor;
   }
@@ -115,7 +118,7 @@ public abstract class FieldVisitor {
    *     interested in visiting this annotation.
    */
   public AnnotationVisitor visitTypeAnnotation(
-          final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
+      final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (api < Opcodes.ASM5) {
       throw new UnsupportedOperationException("This feature requires ASM5");
     }

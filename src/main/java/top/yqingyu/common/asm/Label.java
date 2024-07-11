@@ -27,7 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-
 /**
  * A position in the bytecode of a method. Labels are used for jump, goto, and switch instructions,
  * and for try catch blocks. A label designates the <i>instruction</i> that is just after. Note
@@ -59,7 +58,7 @@ public class Label {
 
   /**
    * A flag indicating that the basic block corresponding to a label ends with a subroutine call. By
-   * construction in {@link top.yqingyu.common.asm.MethodWriter#visitJumpInsn}, labels with this flag set have at least two
+   * construction in {@link MethodWriter#visitJumpInsn}, labels with this flag set have at least two
    * outgoing edges:
    *
    * <ul>
@@ -81,6 +80,9 @@ public class Label {
 
   /** A flag indicating that the basic block corresponding to a label is the end of a subroutine. */
   static final int FLAG_SUBROUTINE_END = 64;
+
+  /** A flag indicating that this label has at least one associated line number. */
+  static final int FLAG_LINE_NUMBER = 128;
 
   /**
    * The number of elements to add to the {@link #otherLineNumbers} array when it needs to be
@@ -115,6 +117,13 @@ public class Label {
   static final int FORWARD_REFERENCE_TYPE_WIDE = 0x20000000;
 
   /**
+   * The type of forward references stored in two bytes in the <i>stack map table</i>. This is the
+   * case of the labels of {@link Frame#ITEM_UNINITIALIZED} stack map frame elements, when the NEW
+   * instruction is after the &lt;init&gt; constructor call (in bytecode offset order).
+   */
+  static final int FORWARD_REFERENCE_TYPE_STACK_MAP = 0x30000000;
+
+  /**
    * The bit mask to extract the 'handle' of a forward reference to this label. The extracted handle
    * is the bytecode offset where the forward reference value is stored (using either 2 or 4 bytes,
    * as indicated by the {@link #FORWARD_REFERENCE_TYPE_MASK}).
@@ -146,9 +155,9 @@ public class Label {
   short flags;
 
   /**
-   * The source line number corresponding to this label, or 0. If there are several source line
-   * numbers corresponding to this label, the first one is stored in this field, and the remaining
-   * ones are stored in {@link #otherLineNumbers}.
+   * The source line number corresponding to this label, if {@link #FLAG_LINE_NUMBER} is set. If
+   * there are several source line numbers corresponding to this label, the first one is stored in
+   * this field, and the remaining ones are stored in {@link #otherLineNumbers}.
    */
   private short lineNumber;
 
@@ -204,8 +213,8 @@ public class Label {
   // builds information about the state of the local variables and the operand stack at the end of
   // each basic block, called the "output frame", <i>relatively</i> to the frame state at the
   // beginning of the basic block, which is called the "input frame", and which is <i>unknown</i>
-  // during this step. The second step, in {@link top.yqingyu.common.asm.MethodWriter#computeAllFrames} and {@link
-  // top.yqingyu.common.asm.MethodWriter#computeMaxStackAndLocal}, is a fix point algorithm
+  // during this step. The second step, in {@link MethodWriter#computeAllFrames} and {@link
+  // MethodWriter#computeMaxStackAndLocal}, is a fix point algorithm
   // that computes information about the input frame of each basic block, from the input state of
   // the first basic block (known from the method signature), and by the using the previously
   // computed relative output frames.
@@ -216,7 +225,7 @@ public class Label {
 
   /**
    * The number of elements in the input stack of the basic block corresponding to this label. This
-   * field is computed in {@link top.yqingyu.common.asm.MethodWriter#computeMaxStackAndLocal}.
+   * field is computed in {@link MethodWriter#computeMaxStackAndLocal}.
    */
   short inputStackSize;
 
@@ -237,22 +246,22 @@ public class Label {
    * The id of the subroutine to which this basic block belongs, or 0. If the basic block belongs to
    * several subroutines, this is the id of the "oldest" subroutine that contains it (with the
    * convention that a subroutine calling another one is "older" than the callee). This field is
-   * computed in {@link top.yqingyu.common.asm.MethodWriter#computeMaxStackAndLocal}, if the method contains JSR
+   * computed in {@link MethodWriter#computeMaxStackAndLocal}, if the method contains JSR
    * instructions.
    */
   short subroutineId;
 
   /**
    * The input and output stack map frames of the basic block corresponding to this label. This
-   * field is only used when the {@link top.yqingyu.common.asm.MethodWriter#COMPUTE_ALL_FRAMES} or {@link
-   * top.yqingyu.common.asm.MethodWriter#COMPUTE_INSERTED_FRAMES} option is used.
+   * field is only used when the {@link MethodWriter#COMPUTE_ALL_FRAMES} or {@link
+   * MethodWriter#COMPUTE_INSERTED_FRAMES} option is used.
    */
   Frame frame;
 
   /**
    * The successor of this label, in the order they are visited in {@link MethodVisitor#visitLabel}.
    * This linked list does not include labels used for debug info only. If the {@link
-   * top.yqingyu.common.asm.MethodWriter#COMPUTE_ALL_FRAMES} or {@link top.yqingyu.common.asm.MethodWriter#COMPUTE_INSERTED_FRAMES} option is used
+   * MethodWriter#COMPUTE_ALL_FRAMES} or {@link MethodWriter#COMPUTE_INSERTED_FRAMES} option is used
    * then it does not contain either successive labels that denote the same bytecode offset (in this
    * case only the first label appears in this list).
    */
@@ -273,8 +282,8 @@ public class Label {
    * a label can belong to at most one list at a time (unless some lists share a common tail, but
    * this is not used in practice).
    *
-   * <p>List of labels are used in {@link top.yqingyu.common.asm.MethodWriter#computeAllFrames} and {@link
-   * top.yqingyu.common.asm.MethodWriter#computeMaxStackAndLocal} to compute stack map frames and the maximum stack size,
+   * <p>List of labels are used in {@link MethodWriter#computeAllFrames} and {@link
+   * MethodWriter#computeMaxStackAndLocal} to compute stack map frames and the maximum stack size,
    * respectively, as well as in {@link #markSubroutine} and {@link #addSubroutineRetSuccessors} to
    * compute the basic blocks belonging to subroutines and their outgoing edges. Outside of these
    * methods, this field should be null (this property is a precondition and a postcondition of
@@ -312,12 +321,12 @@ public class Label {
    * of their visit by {@link MethodVisitor#visitLabel}) corresponding to this bytecode offset. It
    * cannot be known for labels which have not been visited yet.
    *
-   * <p><i>This method should only be used when the {@link top.yqingyu.common.asm.MethodWriter#COMPUTE_ALL_FRAMES} option
+   * <p><i>This method should only be used when the {@link MethodWriter#COMPUTE_ALL_FRAMES} option
    * is used.</i>
    *
    * @return the label itself if {@link #frame} is null, otherwise the Label's frame owner. This
    *     corresponds to the "canonical" label instance described above thanks to the way the label
-   *     frame is set in {@link top.yqingyu.common.asm.MethodWriter#visitLabel}.
+   *     frame is set in {@link MethodWriter#visitLabel}.
    */
   final Label getCanonicalInstance() {
     return frame == null ? this : frame.owner;
@@ -333,7 +342,8 @@ public class Label {
    * @param lineNumber a source line number (which should be strictly positive).
    */
   final void addLineNumber(final int lineNumber) {
-    if (this.lineNumber == 0) {
+    if ((flags & FLAG_LINE_NUMBER) == 0) {
+      flags |= FLAG_LINE_NUMBER;
       this.lineNumber = (short) lineNumber;
     } else {
       if (otherLineNumbers == null) {
@@ -357,7 +367,7 @@ public class Label {
    */
   final void accept(final MethodVisitor methodVisitor, final boolean visitLineNumbers) {
     methodVisitor.visitLabel(this);
-    if (visitLineNumbers && lineNumber != 0) {
+    if (visitLineNumbers && (flags & FLAG_LINE_NUMBER) != 0) {
       methodVisitor.visitLineNumber(lineNumber & 0xFFFF, this);
       if (otherLineNumbers != null) {
         for (int i = 1; i <= otherLineNumbers[0]; ++i) {
@@ -383,7 +393,7 @@ public class Label {
    * @param wideReference whether the reference must be stored in 4 bytes (instead of 2 bytes).
    */
   final void put(
-          final ByteVector code, final int sourceInsnBytecodeOffset, final boolean wideReference) {
+      final ByteVector code, final int sourceInsnBytecodeOffset, final boolean wideReference) {
     if ((flags & FLAG_RESOLVED) == 0) {
       if (wideReference) {
         addForwardReference(sourceInsnBytecodeOffset, FORWARD_REFERENCE_TYPE_WIDE, code.length);
@@ -399,6 +409,20 @@ public class Label {
         code.putShort(bytecodeOffset - sourceInsnBytecodeOffset);
       }
     }
+  }
+
+  /**
+   * Puts a reference to this label in the <i>stack map table</i> of a method. If the bytecode
+   * offset of the label is known, it is written directly. Otherwise, a null relative offset is
+   * written and a new forward reference is declared for this label.
+   *
+   * @param stackMapTableEntries the stack map table where the label offset must be added.
+   */
+  final void put(final ByteVector stackMapTableEntries) {
+    if ((flags & FLAG_RESOLVED) == 0) {
+      addForwardReference(0, FORWARD_REFERENCE_TYPE_STACK_MAP, stackMapTableEntries.length);
+    }
+    stackMapTableEntries.putShort(bytecodeOffset);
   }
 
   /**
@@ -433,9 +457,12 @@ public class Label {
    * Sets the bytecode offset of this label to the given value and resolves the forward references
    * to this label, if any. This method must be called when this label is added to the bytecode of
    * the method, i.e. when its bytecode offset becomes known. This method fills in the blanks that
-   * where left in the bytecode by each forward reference previously added to this label.
+   * where left in the bytecode (and optionally in the stack map table) by each forward reference
+   * previously added to this label.
    *
    * @param code the bytecode of the method.
+   * @param stackMapTableEntries the 'entries' array of the StackMapTable code attribute of the
+   *     method. Maybe {@literal null}.
    * @param bytecodeOffset the bytecode offset of this label.
    * @return {@literal true} if a blank that was left for this label was too small to store the
    *     offset. In such a case the corresponding jump instruction is replaced with an equivalent
@@ -443,7 +470,8 @@ public class Label {
    *     instructions are later replaced with standard bytecode instructions with wider offsets (4
    *     bytes instead of 2), in ClassReader.
    */
-  final boolean resolve(final byte[] code, final int bytecodeOffset) {
+  final boolean resolve(
+      final byte[] code, final ByteVector stackMapTableEntries, final int bytecodeOffset) {
     this.flags |= FLAG_RESOLVED;
     this.bytecodeOffset = bytecodeOffset;
     if (forwardReferences == null) {
@@ -473,11 +501,14 @@ public class Label {
         }
         code[handle++] = (byte) (relativeOffset >>> 8);
         code[handle] = (byte) relativeOffset;
-      } else {
+      } else if ((reference & FORWARD_REFERENCE_TYPE_MASK) == FORWARD_REFERENCE_TYPE_WIDE) {
         code[handle++] = (byte) (relativeOffset >>> 24);
         code[handle++] = (byte) (relativeOffset >>> 16);
         code[handle++] = (byte) (relativeOffset >>> 8);
         code[handle] = (byte) relativeOffset;
+      } else {
+        stackMapTableEntries.data[handle++] = (byte) (bytecodeOffset >>> 8);
+        stackMapTableEntries.data[handle] = (byte) bytecodeOffset;
       }
     }
     return hasAsmInstructions;

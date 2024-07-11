@@ -27,7 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-
 /**
  * Exception thrown when the Code attribute of a method produced by a {@link ClassWriter} is too
  * large.

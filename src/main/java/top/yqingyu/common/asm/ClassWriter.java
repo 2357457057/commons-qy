@@ -28,9 +28,9 @@
 package top.yqingyu.common.asm;
 
 /**
- * A {@link top.yqingyu.common.asm.ClassVisitor} that generates a corresponding ClassFile structure, as defined in the Java
+ * A {@link ClassVisitor} that generates a corresponding ClassFile structure, as defined in the Java
  * Virtual Machine Specification (JVMS). It can be used alone, to generate a Java class "from
- * scratch", or with one or more {@link top.yqingyu.common.asm.ClassReader} and adapter {@link top.yqingyu.common.asm.ClassVisitor} to generate a
+ * scratch", or with one or more {@link ClassReader} and adapter {@link ClassVisitor} to generate a
  * modified class from one or more existing Java classes.
  *
  * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html">JVMS 4</a>
@@ -149,25 +149,25 @@ public class ClassWriter extends ClassVisitor {
 
   /**
    * The last runtime visible annotation of this class. The previous ones can be accessed with the
-   * {@link top.yqingyu.common.asm.previousAnnotation} field. May be {@literal null}.
+   * {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
   private AnnotationWriter lastRuntimeVisibleAnnotation;
 
   /**
    * The last runtime invisible annotation of this class. The previous ones can be accessed with the
-   * {@link top.yqingyu.common.asm.previousAnnotation} field. May be {@literal null}.
+   * {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
   private AnnotationWriter lastRuntimeInvisibleAnnotation;
 
   /**
    * The last runtime visible type annotation of this class. The previous ones can be accessed with
-   * the {@link top.yqingyu.common.asm.previousAnnotation} field. May be {@literal null}.
+   * the {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
   private AnnotationWriter lastRuntimeVisibleTypeAnnotation;
 
   /**
    * The last runtime invisible type annotation of this class. The previous ones can be accessed
-   * with the {@link top.yqingyu.common.asm.previousAnnotation} field. May be {@literal null}.
+   * with the {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
   private AnnotationWriter lastRuntimeInvisibleTypeAnnotation;
 
@@ -217,6 +217,7 @@ public class ClassWriter extends ClassVisitor {
   /**
    * Indicates what must be automatically computed in {@link MethodWriter}. Must be one of {@link
    * MethodWriter#COMPUTE_NOTHING}, {@link MethodWriter#COMPUTE_MAX_STACK_AND_LOCAL}, {@link
+   * MethodWriter#COMPUTE_MAX_STACK_AND_LOCAL_FROM_FRAMES}, {@link
    * MethodWriter#COMPUTE_INSERTED_FRAMES}, or {@link MethodWriter#COMPUTE_ALL_FRAMES}.
    */
   private int compute;
@@ -247,11 +248,11 @@ public class ClassWriter extends ClassVisitor {
    *   <li>Methods that are not transformed are copied as is in the new class, directly from the
    *       original class bytecode (i.e. without emitting visit events for all the method
    *       instructions), which saves a <i>lot</i> of time. Untransformed methods are detected by
-   *       the fact that the {@link top.yqingyu.common.asm.ClassReader} receives {@link MethodVisitor} objects that come
-   *       from a {@link ClassWriter} (and not from any other {@link top.yqingyu.common.asm.ClassVisitor} instance).
+   *       the fact that the {@link ClassReader} receives {@link MethodVisitor} objects that come
+   *       from a {@link ClassWriter} (and not from any other {@link ClassVisitor} instance).
    * </ul>
    *
-   * @param classReader the {@link top.yqingyu.common.asm.ClassReader} used to read the original class. It will be used to
+   * @param classReader the {@link ClassReader} used to read the original class. It will be used to
    *     copy the entire constant pool and bootstrap methods from the original class and also to
    *     copy other fragments of original bytecode where applicable.
    * @param flags option flags that can be used to modify the default behavior of this class. Must

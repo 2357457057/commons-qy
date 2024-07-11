@@ -86,9 +86,9 @@ public interface Opcodes {
    * <p>If 'api' is equal to API_NEW, there are two cases:
    *
    * <ul>
-   *   <li>call visitNewStuff: the redirection DemoServer is skipped and 'do stuff' is executed directly.
+   *   <li>call visitNewStuff: the redirection test is skipped and 'do stuff' is executed directly.
    *   <li>call visitOldSuff: the source is not set to SOURCE_DEPRECATED before calling
-   *       visitNewStuff, but the redirection DemoServer is skipped anyway in visitNewStuff, which
+   *       visitNewStuff, but the redirection test is skipped anyway in visitNewStuff, which
    *       directly executes 'do stuff'.
    * </ul>
    *
@@ -286,6 +286,9 @@ public interface Opcodes {
   int V18 = 0 << 16 | 62;
   int V19 = 0 << 16 | 63;
   int V20 = 0 << 16 | 64;
+  int V21 = 0 << 16 | 65;
+  int V22 = 0 << 16 | 66;
+  int V23 = 0 << 16 | 67;
 
   /**
    * Version flag indicating that the class is using 'preview' features.

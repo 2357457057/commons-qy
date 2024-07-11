@@ -40,8 +40,8 @@ final class Context {
   Attribute[] attributePrototypes;
 
   /**
-   * The options used to parse this class. One or more of {@link top.yqingyu.common.asm.ClassReader#SKIP_CODE}, {@link
-   * top.yqingyu.common.asm.ClassReader#SKIP_DEBUG}, {@link top.yqingyu.common.asm.ClassReader#SKIP_FRAMES}, {@link top.yqingyu.common.asm.ClassReader#EXPAND_FRAMES} or
+   * The options used to parse this class. One or more of {@link ClassReader#SKIP_CODE}, {@link
+   * ClassReader#SKIP_DEBUG}, {@link ClassReader#SKIP_FRAMES}, {@link ClassReader#EXPAND_FRAMES} or
    * {@link ClassReader#EXPAND_ASM_INSNS}.
    */
   int parsingOptions;

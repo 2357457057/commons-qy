@@ -27,7 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package top.yqingyu.common.asm;
 
-
 /**
  * An entry of the constant pool, of the BootstrapMethods attribute, or of the (ASM specific) type
  * table of a class.
@@ -104,12 +103,25 @@ abstract class Symbol {
   static final int TYPE_TAG = 128;
 
   /**
-   * The tag value of an {@link top.yqingyu.common.asm.Frame#ITEM_UNINITIALIZED} type entry in the type table of a class.
+   * The tag value of an uninitialized type entry in the type table of a class. This type is used
+   * for the normal case where the NEW instruction is before the &lt;init&gt; constructor call (in
+   * bytecode offset order), i.e. when the label of the NEW instruction is resolved when the
+   * constructor call is visited. If the NEW instruction is after the constructor call, use the
+   * {@link #FORWARD_UNINITIALIZED_TYPE_TAG} tag value instead.
    */
   static final int UNINITIALIZED_TYPE_TAG = 129;
 
+  /**
+   * The tag value of an uninitialized type entry in the type table of a class. This type is used
+   * for the unusual case where the NEW instruction is after the &lt;init&gt; constructor call (in
+   * bytecode offset order), i.e. when the label of the NEW instruction is not resolved when the
+   * constructor call is visited. If the NEW instruction is before the constructor call, use the
+   * {@link #UNINITIALIZED_TYPE_TAG} tag value instead.
+   */
+  static final int FORWARD_UNINITIALIZED_TYPE_TAG = 130;
+
   /** The tag value of a merged type entry in the (ASM specific) type table of a class. */
-  static final int MERGED_TYPE_TAG = 130;
+  static final int MERGED_TYPE_TAG = 131;
 
   // Instance fields.
 
@@ -152,8 +164,8 @@ abstract class Symbol {
    *       #CONSTANT_INVOKE_DYNAMIC_TAG} symbols,
    *   <li>an arbitrary string for {@link #CONSTANT_UTF8_TAG} and {@link #CONSTANT_STRING_TAG}
    *       symbols,
-   *   <li>an internal class name for {@link #CONSTANT_CLASS_TAG}, {@link #TYPE_TAG} and {@link
-   *       #UNINITIALIZED_TYPE_TAG} symbols,
+   *   <li>an internal class name for {@link #CONSTANT_CLASS_TAG}, {@link #TYPE_TAG}, {@link
+   *       #UNINITIALIZED_TYPE_TAG} and {@link #FORWARD_UNINITIALIZED_TYPE_TAG} symbols,
    *   <li>{@literal null} for the other types of symbol.
    * </ul>
    */
@@ -172,7 +184,10 @@ abstract class Symbol {
    *   <li>the offset of a bootstrap method in the BootstrapMethods boostrap_methods array, for
    *       {@link #CONSTANT_DYNAMIC_TAG} or {@link #BOOTSTRAP_METHOD_TAG} symbols,
    *   <li>the bytecode offset of the NEW instruction that created an {@link
-   *       top.yqingyu.common.asm.Frame#ITEM_UNINITIALIZED} type for {@link #UNINITIALIZED_TYPE_TAG} symbols,
+   *       Frame#ITEM_UNINITIALIZED} type for {@link #UNINITIALIZED_TYPE_TAG} symbols,
+   *   <li>the index of the {@link Label} (in the {@link SymbolTable#labelTable} table) of the NEW
+   *       instruction that created an {@link Frame#ITEM_UNINITIALIZED} type for {@link
+   *       #FORWARD_UNINITIALIZED_TYPE_TAG} symbols,
    *   <li>the indices (in the class' type table) of two {@link #TYPE_TAG} source types for {@link
    *       #MERGED_TYPE_TAG} symbols,
    *   <li>0 for the other types of symbol.

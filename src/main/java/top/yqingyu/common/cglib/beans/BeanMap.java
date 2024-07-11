@@ -281,7 +281,7 @@ abstract public class BeanMap implements Map {
             }
             Object v1 = get(key);
             Object v2 = other.get(key);
-            if (!((v1 == null) ? v2 == null : v1.equals(v2))) {
+            if (!(Objects.equals(v1, v2))) {
                 return false;
             }
         }
@@ -313,8 +313,8 @@ abstract public class BeanMap implements Map {
 	public Collection values() {
         Set keys = keySet();
         List values = new ArrayList(keys.size());
-        for (Iterator it = keys.iterator(); it.hasNext();) {
-            values.add(get(it.next()));
+        for (Object key : keys) {
+            values.add(get(key));
         }
         return Collections.unmodifiableCollection(values);
     }

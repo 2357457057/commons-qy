@@ -37,7 +37,7 @@ final class RecordComponentWriter extends RecordComponentVisitor {
   /** The name_index field of the Record attribute. */
   private final int nameIndex;
 
-  /** The descriptor_index field of the the Record attribute. */
+  /** The descriptor_index field of the Record attribute. */
   private final int descriptorIndex;
 
   /**
@@ -120,7 +120,7 @@ final class RecordComponentWriter extends RecordComponentVisitor {
 
   @Override
   public AnnotationVisitor visitTypeAnnotation(
-          final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
+      final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (visible) {
       return lastRuntimeVisibleTypeAnnotation =
           AnnotationWriter.create(

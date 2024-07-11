@@ -28,7 +28,7 @@
 package top.yqingyu.common.asm;
 
 /**
- * A {@link top.yqingyu.common.asm.FieldVisitor} that generates a corresponding 'field_info' structure, as defined in the
+ * A {@link FieldVisitor} that generates a corresponding 'field_info' structure, as defined in the
  * Java Virtual Machine Specification (JVMS).
  *
  * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.5">JVMS
@@ -70,38 +70,38 @@ final class FieldWriter extends FieldVisitor {
 
   /**
    * The last runtime visible annotation of this field. The previous ones can be accessed with the
-   * {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+   * {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
   private AnnotationWriter lastRuntimeVisibleAnnotation;
 
   /**
    * The last runtime invisible annotation of this field. The previous ones can be accessed with the
-   * {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+   * {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
   private AnnotationWriter lastRuntimeInvisibleAnnotation;
 
   /**
    * The last runtime visible type annotation of this field. The previous ones can be accessed with
-   * the {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+   * the {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
   private AnnotationWriter lastRuntimeVisibleTypeAnnotation;
 
   /**
    * The last runtime invisible type annotation of this field. The previous ones can be accessed
-   * with the {@link top.yqingyu.common.asm.AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+   * with the {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
    */
   private AnnotationWriter lastRuntimeInvisibleTypeAnnotation;
 
   /**
    * The first non standard attribute of this field. The next ones can be accessed with the {@link
-   * top.yqingyu.common.asm.Attribute#nextAttribute} field. May be {@literal null}.
+   * Attribute#nextAttribute} field. May be {@literal null}.
    *
    * <p><b>WARNING</b>: this list stores the attributes in the <i>reverse</i> order of their visit.
    * firstAttribute is actually the last attribute visited in {@link #visitAttribute}. The {@link
    * #putFieldInfo} method writes the attributes in the order defined by this list, i.e. in the
    * reverse order specified by the user.
    */
-  private top.yqingyu.common.asm.Attribute firstAttribute;
+  private Attribute firstAttribute;
 
   // -----------------------------------------------------------------------------------------------
   // Constructor
@@ -154,7 +154,7 @@ final class FieldWriter extends FieldVisitor {
 
   @Override
   public AnnotationVisitor visitTypeAnnotation(
-          final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
+      final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (visible) {
       return lastRuntimeVisibleTypeAnnotation =
           AnnotationWriter.create(
@@ -167,7 +167,7 @@ final class FieldWriter extends FieldVisitor {
   }
 
   @Override
-  public void visitAttribute(final top.yqingyu.common.asm.Attribute attribute) {
+  public void visitAttribute(final Attribute attribute) {
     // Store the attributes in the <i>reverse</i> order of their visit by this method.
     attribute.nextAttribute = firstAttribute;
     firstAttribute = attribute;
@@ -194,10 +194,10 @@ final class FieldWriter extends FieldVisitor {
     // For ease of reference, we use here the same attribute order as in Section 4.7 of the JVMS.
     if (constantValueIndex != 0) {
       // ConstantValue attributes always use 8 bytes.
-      symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.CONSTANT_VALUE);
+      symbolTable.addConstantUtf8(Constants.CONSTANT_VALUE);
       size += 8;
     }
-    size += top.yqingyu.common.asm.Attribute.computeAttributesSize(symbolTable, accessFlags, signatureIndex);
+    size += Attribute.computeAttributesSize(symbolTable, accessFlags, signatureIndex);
     size +=
         AnnotationWriter.computeAnnotationsSize(
             lastRuntimeVisibleAnnotation,
@@ -256,7 +256,7 @@ final class FieldWriter extends FieldVisitor {
     // For ease of reference, we use here the same attribute order as in Section 4.7 of the JVMS.
     if (constantValueIndex != 0) {
       output
-          .putShort(symbolTable.addConstantUtf8(top.yqingyu.common.asm.Constants.CONSTANT_VALUE))
+          .putShort(symbolTable.addConstantUtf8(Constants.CONSTANT_VALUE))
           .putInt(2)
           .putShort(constantValueIndex);
     }

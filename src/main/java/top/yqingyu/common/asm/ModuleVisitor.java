@@ -75,6 +75,9 @@ public abstract class ModuleVisitor {
         && api != Opcodes.ASM10_EXPERIMENTAL) {
       throw new IllegalArgumentException("Unsupported api " + api);
     }
+    if (api == Opcodes.ASM10_EXPERIMENTAL) {
+      Constants.checkAsmExperimental(this);
+    }
     this.api = api;
     this.mv = moduleVisitor;
   }

@@ -30,7 +30,7 @@ package top.yqingyu.common.asm;
 /**
  * A visitor to visit a Java method. The methods of this class must be called in the following
  * order: ( {@code visitParameter} )* [ {@code visitAnnotationDefault} ] ( {@code visitAnnotation} |
- * {@code visitAnnotableParameterCount} | {@code visitParameterAnnotation} {@code
+ * {@code visitAnnotableParameterCount} | {@code visitParameterAnnotation} | {@code
  * visitTypeAnnotation} | {@code visitAttribute} )* [ {@code visitCode} ( {@code visitFrame} |
  * {@code visit<i>X</i>Insn} | {@code visitLabel} | {@code visitInsnAnnotation} | {@code
  * visitTryCatchBlock} | {@code visitTryCatchAnnotation} | {@code visitLocalVariable} | {@code
@@ -88,6 +88,9 @@ public abstract class MethodVisitor {
         && api != Opcodes.ASM4
         && api != Opcodes.ASM10_EXPERIMENTAL) {
       throw new IllegalArgumentException("Unsupported api " + api);
+    }
+    if (api == Opcodes.ASM10_EXPERIMENTAL) {
+      Constants.checkAsmExperimental(this);
     }
     this.api = api;
     this.mv = methodVisitor;
@@ -170,7 +173,7 @@ public abstract class MethodVisitor {
    *     interested in visiting this annotation.
    */
   public AnnotationVisitor visitTypeAnnotation(
-          final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
+      final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (api < Opcodes.ASM5) {
       throw new UnsupportedOperationException(REQUIRES_ASM5);
     }
@@ -582,7 +585,7 @@ public abstract class MethodVisitor {
    *     handler block for the {@code min + i} key.
    */
   public void visitTableSwitchInsn(
-          final int min, final int max, final Label dflt, final Label... labels) {
+      final int min, final int max, final Label dflt, final Label... labels) {
     if (mv != null) {
       mv.visitTableSwitchInsn(min, max, dflt, labels);
     }
@@ -661,7 +664,7 @@ public abstract class MethodVisitor {
    *     (by the {@link #visitLabel} method).
    */
   public void visitTryCatchBlock(
-          final Label start, final Label end, final Label handler, final String type) {
+      final Label start, final Label end, final Label handler, final String type) {
     if (mv != null) {
       mv.visitTryCatchBlock(start, end, handler, type);
     }

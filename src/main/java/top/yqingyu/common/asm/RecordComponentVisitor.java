@@ -38,7 +38,7 @@ package top.yqingyu.common.asm;
 public abstract class RecordComponentVisitor {
   /**
    * The ASM API version implemented by this visitor. The value of this field must be one of {@link
-   * top.yqingyu.common.asm.Opcodes#ASM8} or {@link top.yqingyu.common.asm.Opcodes#ASM9}.
+   * Opcodes#ASM8} or {@link Opcodes#ASM9}.
    */
   protected final int api;
 
@@ -50,8 +50,8 @@ public abstract class RecordComponentVisitor {
   /**
    * Constructs a new {@link RecordComponentVisitor}.
    *
-   * @param api the ASM API version implemented by this visitor. Must be one of {@link top.yqingyu.common.asm.Opcodes#ASM8}
-   *     or {@link top.yqingyu.common.asm.Opcodes#ASM9}.
+   * @param api the ASM API version implemented by this visitor. Must be one of {@link Opcodes#ASM8}
+   *     or {@link Opcodes#ASM9}.
    */
   protected RecordComponentVisitor(final int api) {
     this(api, null);
@@ -60,7 +60,7 @@ public abstract class RecordComponentVisitor {
   /**
    * Constructs a new {@link RecordComponentVisitor}.
    *
-   * @param api the ASM API version implemented by this visitor. Must be {@link top.yqingyu.common.asm.Opcodes#ASM8}.
+   * @param api the ASM API version implemented by this visitor. Must be {@link Opcodes#ASM8}.
    * @param recordComponentVisitor the record component visitor to which this visitor must delegate
    *     method calls. May be null.
    */
@@ -74,6 +74,9 @@ public abstract class RecordComponentVisitor {
         && api != Opcodes.ASM4
         && api != Opcodes.ASM10_EXPERIMENTAL) {
       throw new IllegalArgumentException("Unsupported api " + api);
+    }
+    if (api == Opcodes.ASM10_EXPERIMENTAL) {
+      Constants.checkAsmExperimental(this);
     }
     this.api = api;
     this.delegate = recordComponentVisitor;
@@ -120,7 +123,7 @@ public abstract class RecordComponentVisitor {
    *     interested in visiting this annotation.
    */
   public AnnotationVisitor visitTypeAnnotation(
-          final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
+      final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (delegate != null) {
       return delegate.visitTypeAnnotation(typeRef, typePath, descriptor, visible);
     }

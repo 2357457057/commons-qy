@@ -3,7 +3,6 @@ package top.yqingyu.common.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.yqingyu.common.annotation.Init;
 import top.yqingyu.common.qydata.ConcurrentReferenceHashMap;
 
 import java.beans.Introspector;
@@ -29,6 +28,10 @@ public class ClazzUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(ClazzUtil.class);
 
+    public static List<Class<?>> getClassList(String packageName, boolean isRecursive) {
+        return getClassList(packageName, Thread.currentThread().getContextClassLoader(), isRecursive);
+    }
+
     /**
      * description: 获取指定包名下的所有类
      *
@@ -36,7 +39,7 @@ public class ClazzUtil {
      * @author yqingyu
      * DATE 2022/4/24
      */
-    public static List<Class<?>> getClassList(String packageName, boolean isRecursive) {
+    public static List<Class<?>> getClassList(String packageName, ClassLoader classLoader, boolean isRecursive) {
         List<Class<?>> classList = new ArrayList<>();
         try {
             Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources(packageName.replaceAll("\\.", "/"));
@@ -46,7 +49,7 @@ public class ClazzUtil {
                     String protocol = url.getProtocol();
                     if (protocol.equals("file")) {
                         String packagePath = url.getPath();
-                        addClass(classList, packagePath, packageName, isRecursive);
+                        addClass(classList, classLoader, packagePath, packageName, isRecursive);
                     } else if (protocol.equals("jar")) {
                         JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
                         JarFile jarFile = jarURLConnection.getJarFile();
@@ -57,7 +60,7 @@ public class ClazzUtil {
                             if (jarEntryName.endsWith(".class")) {
                                 String className = jarEntryName.substring(0, Math.max(jarEntryName.lastIndexOf("."), 0)).replaceAll("/", ".");
                                 if (isRecursive || className.substring(0, Math.max(className.lastIndexOf("."), 0)).equals(packageName)) {
-                                    classList.add(Class.forName(className));
+                                    classList.add(classLoader.loadClass(className));
                                 }
                             }
                         }
@@ -75,8 +78,12 @@ public class ClazzUtil {
         return ValueOfMap.containsKey(type) || ValueOfMap.containsValue(type);
     }
 
-    // 获取指定包名下的所有类（可根据注解进行过滤）
     public static List<Class<?>> getClassListByAnnotation(String packageName, Class<? extends Annotation> annotationClass) {
+        return getClassListByAnnotation(packageName, annotationClass.getClassLoader(), annotationClass);
+    }
+
+    // 获取指定包名下的所有类（可根据注解进行过滤）
+    public static List<Class<?>> getClassListByAnnotation(String packageName, ClassLoader classLoader, Class<? extends Annotation> annotationClass) {
         List<Class<?>> classList = new ArrayList<Class<?>>();
         String packageUrl = packageName.replaceAll("\\.", "/");
         try {
@@ -87,7 +94,7 @@ public class ClazzUtil {
                     String protocol = url.getProtocol();
                     if (protocol.equals("file")) {
                         String packagePath = url.getPath();
-                        addClassByAnnotation(classList, packagePath, packageName, annotationClass);
+                        addClassByAnnotation(classList, classLoader, packagePath, packageName, annotationClass);
                     } else if (protocol.equals("jar")) {
                         JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
                         JarFile jarFile = jarURLConnection.getJarFile();
@@ -98,7 +105,7 @@ public class ClazzUtil {
                             if (jarEntryName.endsWith(".class") && jarEntryName.contains(packageUrl)) {
                                 String className = jarEntryName.substring(0, Math.max(jarEntryName.lastIndexOf("."), 0)).replaceAll("/", ".");
                                 try {
-                                    Class<?> cls = Class.forName(className);
+                                    Class<?> cls = classLoader.loadClass(className);
                                     if (cls.isAnnotationPresent(annotationClass)) {
                                         classList.add(cls);
                                     }
@@ -145,7 +152,7 @@ public class ClazzUtil {
         return methodList;
     }
 
-    private static void addClass(List<Class<?>> classList, String packagePath, String packageName, boolean isRecursive) {
+    private static void addClass(List<Class<?>> classList, ClassLoader classLoader, String packagePath, String packageName, boolean isRecursive) {
         try {
             File[] files = getClassFiles(packagePath);
             if (files != null) {
@@ -153,12 +160,12 @@ public class ClazzUtil {
                     String fileName = file.getName();
                     if (file.isFile()) {
                         String className = getClassName(packageName, fileName);
-                        classList.add(Class.forName(className));
+                        classList.add(classLoader.loadClass(className));
                     } else {
                         if (isRecursive) {
                             String subPackagePath = getSubPackagePath(packagePath, fileName);
                             String subPackageName = getSubPackageName(packageName, fileName);
-                            addClass(classList, subPackagePath, subPackageName, isRecursive);
+                            addClass(classList, classLoader, subPackagePath, subPackageName, isRecursive);
                         }
                     }
                 }
@@ -201,7 +208,7 @@ public class ClazzUtil {
         return subPackageName;
     }
 
-    private static void addClassByAnnotation(List<Class<?>> classList, String packagePath, String packageName, Class<? extends Annotation> annotationClass) {
+    private static void addClassByAnnotation(List<Class<?>> classList, ClassLoader classLoader, String packagePath, String packageName, Class<? extends Annotation> annotationClass) {
         try {
             File[] files = getClassFiles(packagePath);
             if (files != null) {
@@ -209,14 +216,14 @@ public class ClazzUtil {
                     String fileName = file.getName();
                     if (file.isFile()) {
                         String className = getClassName(packageName, fileName);
-                        Class<?> cls = Class.forName(className);
+                        Class<?> cls = classLoader.loadClass(className);
                         if (cls.isAnnotationPresent(annotationClass)) {
                             classList.add(cls);
                         }
                     } else {
                         String subPackagePath = getSubPackagePath(packagePath, fileName);
                         String subPackageName = getSubPackageName(packageName, fileName);
-                        addClassByAnnotation(classList, subPackagePath, subPackageName, annotationClass);
+                        addClassByAnnotation(classList, classLoader, subPackagePath, subPackageName, annotationClass);
                     }
                 }
             }

@@ -738,6 +738,7 @@ public class DataMap extends JSONObject implements Serializable, Cloneable {
      * @deprecated since 2.0.4, please use {@link #to(Class, JSONReader.Feature...)}
      */
     @Override
+    @Deprecated
     public <T> T toJavaObject(Class<T> clazz, JSONReader.Feature... features) {
         return super.toJavaObject(clazz, features);
     }

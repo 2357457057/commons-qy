@@ -10842,6 +10842,7 @@ public class StringUtil {
      * @return 字符串
      * @deprecated 请使用 {@link #getStr(Object, Charset)}
      */
+    @Deprecated
     public static String getStr(Object obj, String charsetName) {
         return getStr(obj, Charset.forName(charsetName));
     }
